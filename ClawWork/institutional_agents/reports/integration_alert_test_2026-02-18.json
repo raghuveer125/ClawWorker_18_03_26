@@ -1,0 +1,24 @@
+{
+  "test_name": "integration_alerts_smoke",
+  "triggered_expected_alerts": [
+    {
+      "metric": "adapter_failure_rate_pct",
+      "value": 35.0,
+      "threshold": 20.0,
+      "expected_trigger": true
+    },
+    {
+      "metric": "schema_mismatch_count",
+      "value": 2,
+      "threshold": 0,
+      "expected_trigger": true
+    },
+    {
+      "metric": "disagreement_spike_count",
+      "value": 1,
+      "threshold": 0,
+      "expected_trigger": true
+    }
+  ],
+  "passed": true
+}

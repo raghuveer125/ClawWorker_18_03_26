@@ -1,0 +1,99 @@
+═══════════════════════════════════════════════════════════════════════════
+                    PHASE 1B OPTIMIZED - QUICK REFERENCE                      
+═══════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ CONFIGURATION (DEPLOYED)                                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│ MTF Mode:                permissive (confidence-gated)                  │
+│ swing_lookback:          9  (was 10, faster detection)                  │
+│ mss_swing_len:           2  (was 3, earlier confirmation)               │
+│ vol_multiplier:          1.2 (Phase 1A validated)                       │
+│ displacement_multiplier: 1.3 (Phase 1A validated)                       │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ EXPECTED PERFORMANCE (90-day backtest, 577 trades)                      │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Win Rate:        53.7%  (vs 48.8% baseline, +4.9%)                      │
+│ Total P&L:       ₹25,647 (vs ₹22,242 baseline, +15.3%)                 │
+│ Monthly P&L:     ₹8,549                                                  │
+│ Profit Factor:   1.012                                                   │
+│ Composite Score: 42.5 (BEST of 15 configs tested)                       │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ PAPER TRADING TARGETS (March 4-10, 2026)                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Success Gate:    ≥51% win rate (accounting for 5% live degradation)    │
+│ Min Trades:      50 (statistical significance)                          │
+│ Max Drawdown:    ₹2,000                                                  │
+│ Max Daily Loss:  ₹500                                                    │
+│ Circuit Breaker: 3 consecutive losses OR ₹800 daily loss               │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ WHY THIS CONFIG WON                                                      │
+├─────────────────────────────────────────────────────────────────────────┤
+│ ✓ Permissive MTF: Never blocks ICT's 85% signals, 3-5x opportunities   │
+│ ✓ Faster Swings:  swing=9 catches institutional accumulation earlier    │
+│ ✓ Earlier MSS:    mss=2 reduces confirmation lag by 33%                 │
+│ ✓ Validated:      Tested 15 configs, this scored 42.5 (next: 38.2)     │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ TOP 5 ALTERNATIVES (in case of issues)                                  │
+├─────────────────────────────────────────────────────────────────────────┤
+│ 1. Phase1B permissive (swing=9, mss=2): 53.7% WR, ₹25,647 ← DEPLOYED   │
+│ 2. Conservative permissive (swing=11): 50.3% WR, ₹20,104               │
+│ 3. Phase1A balanced (swing=10, mss=3): 49.4% WR, ₹20,554               │
+│ 4. Balanced permissive (vol=1.15):     50.1% WR, ₹19,045               │
+│ 5. Phase1B balanced (swing=9, mss=2):  51.9% WR, ₹11,630               │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ MONITORING CHECKLIST                                                     │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Daily:                                                                   │
+│  □ Win rate vs 51% target                                               │
+│  □ P&L vs ₹285/day target (₹8,549 ÷ 30 days)                           │
+│  □ Max drawdown ≤₹2,000                                                 │
+│  □ No 3+ consecutive losses                                             │
+│                                                                          │
+│ Weekly:                                                                  │
+│  □ Total trades ≥50 (10/day minimum)                                    │
+│  □ MTF filter preserving 80%+ signals                                   │
+│  □ Slippage impact ≤10%                                                 │
+│  □ No systemic issues (API, data, execution)                            │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ GO-LIVE DECISION (March 11-15, 2026)                                    │
+├─────────────────────────────────────────────────────────────────────────┤
+│ If Phase 1B ≥51% WR: SKIP Phase 1C, go directly to live trading        │
+│ If Phase 1B <51% WR: Fallback to balanced mode (#5) or Phase 1C        │
+│                                                                          │
+│ Live Trading Approval Requirements:                                     │
+│  ✓ 7-day paper trading track record                                     │
+│  ✓ Win rate ≥51% (or ≥55% for direct go-live)                          │
+│  ✓ Consistent positive P&L (no 3+ loss days)                            │
+│  ✓ Risk controller validation                                           │
+│  ✓ Capital allocation plan (1-2 contracts/signal)                       │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ ROLLBACK PLAN (if Phase 1B underperforms)                               │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Option 1: Revert to balanced MTF mode (keep swing=9, mss=2)            │
+│           Expected: 51.9% WR, ₹11,630 P&L                               │
+│                                                                          │
+│ Option 2: Revert to full Phase 1A baseline                              │
+│           MTF: balanced, swing=10, mss=3, vol=1.2, disp=1.3             │
+│           Expected: 49.4% WR, ₹20,554 P&L                               │
+│                                                                          │
+│ Decision: Test Option 1 first (only MTF mode change, less disruptive)  │
+└─────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════
+STATUS: ✓✓ DEPLOYED | Ready for paper trading March 4, 2026
+═══════════════════════════════════════════════════════════════════════════

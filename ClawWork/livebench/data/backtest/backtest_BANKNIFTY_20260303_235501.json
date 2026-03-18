@@ -1,0 +1,3517 @@
+{
+  "index": "BANKNIFTY",
+  "period_start": "2025-12-03",
+  "period_end": "2026-03-03",
+  "total_candles": 4864,
+  "total_signals": 1854,
+  "total_trades": 206,
+  "wins": 108,
+  "losses": 98,
+  "breakeven": 0,
+  "win_rate": 52.43,
+  "total_pnl": 10796.0,
+  "avg_win": 410.72,
+  "avg_loss": -342.47,
+  "profit_factor": 1.32,
+  "max_drawdown": 5092.02,
+  "sharpe_ratio": 0.11,
+  "trades": [
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-03 09:45:00+05:30",
+      "exit_time": "2025-12-03 10:35:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48474.83,
+      "exit_price": 49444.3266,
+      "pnl": 969.4965999999986,
+      "pnl_pct": 1.999999999999997,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "MomentumScalper",
+        "OIAnalyst"
+      ],
+      "confidence": 67.12035874419635,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-03 14:55:00+05:30",
+      "exit_time": "2025-12-04 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49209.73,
+      "exit_price": 49269.01,
+      "pnl": 59.279999999998836,
+      "pnl_pct": 0.1204639814118038,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 51.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-04 11:10:00+05:30",
+      "exit_time": "2025-12-04 13:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49084.24,
+      "exit_price": 48997.93,
+      "pnl": 86.30999999999767,
+      "pnl_pct": 0.17584055493168005,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.80010124278304,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-04 13:15:00+05:30",
+      "exit_time": "2025-12-04 15:20:00+05:30",
+      "option_type": "PE",
+      "entry_price": 48997.93,
+      "exit_price": 49218.2,
+      "pnl": -220.2699999999968,
+      "pnl_pct": -0.4495496034220156,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 41.440165920604954,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-05 09:35:00+05:30",
+      "exit_time": "2025-12-05 10:40:00+05:30",
+      "option_type": "PE",
+      "entry_price": 48846.48,
+      "exit_price": 47869.5504,
+      "pnl": 976.9296000000031,
+      "pnl_pct": 2.000000000000006,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.918314849129544,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-05 10:40:00+05:30",
+      "exit_time": "2025-12-05 11:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47785.52,
+      "exit_price": 46829.80959999999,
+      "pnl": -955.7104000000036,
+      "pnl_pct": -2.0000000000000075,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-05 11:30:00+05:30",
+      "exit_time": "2025-12-05 13:35:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46765.99,
+      "exit_price": 46598.59,
+      "pnl": -167.40000000000146,
+      "pnl_pct": -0.35795243509225716,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-05 13:35:00+05:30",
+      "exit_time": "2025-12-08 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46598.59,
+      "exit_price": 46576.17,
+      "pnl": -22.419999999998254,
+      "pnl_pct": -0.048113043763766794,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-08 09:35:00+05:30",
+      "exit_time": "2025-12-08 11:40:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46882.88,
+      "exit_price": 46930.03,
+      "pnl": 47.150000000001455,
+      "pnl_pct": 0.1005697602195118,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.19233120248616,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-08 11:40:00+05:30",
+      "exit_time": "2025-12-08 13:45:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46930.03,
+      "exit_price": 46484.94,
+      "pnl": -445.0899999999965,
+      "pnl_pct": -0.9484119230266772,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 58.64039461958422,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-08 14:15:00+05:30",
+      "exit_time": "2025-12-09 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46364.46,
+      "exit_price": 46580.87,
+      "pnl": -216.4100000000035,
+      "pnl_pct": -0.466758374841427,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.23174168599662,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-09 09:35:00+05:30",
+      "exit_time": "2025-12-09 11:40:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46583.22,
+      "exit_price": 46540.27,
+      "pnl": -42.950000000004366,
+      "pnl_pct": -0.09220058209802663,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.19020967904534,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-09 11:45:00+05:30",
+      "exit_time": "2025-12-09 13:50:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46666.38,
+      "exit_price": 46672.8,
+      "pnl": 6.42000000000553,
+      "pnl_pct": 0.013757227365837097,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.86952248389022,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-09 13:50:00+05:30",
+      "exit_time": "2025-12-10 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46672.8,
+      "exit_price": 46655.75,
+      "pnl": -17.05000000000291,
+      "pnl_pct": -0.036530913080001434,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.99916640172468,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-10 09:35:00+05:30",
+      "exit_time": "2025-12-10 11:05:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46736.9,
+      "exit_price": 47671.638,
+      "pnl": 934.7379999999976,
+      "pnl_pct": 1.999999999999995,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 40.16543927815353,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-10 13:05:00+05:30",
+      "exit_time": "2025-12-10 15:10:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48846.92,
+      "exit_price": 49173.82,
+      "pnl": 326.90000000000146,
+      "pnl_pct": 0.6692335975328669,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-10 15:10:00+05:30",
+      "exit_time": "2025-12-11 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49173.82,
+      "exit_price": 49182.39,
+      "pnl": 8.569999999999709,
+      "pnl_pct": 0.017427972852220367,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-11 09:35:00+05:30",
+      "exit_time": "2025-12-11 11:40:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49302.26,
+      "exit_price": 49237.94,
+      "pnl": -64.31999999999971,
+      "pnl_pct": -0.13046055089563788,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.50248906537463,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-11 11:50:00+05:30",
+      "exit_time": "2025-12-11 13:55:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49265.64,
+      "exit_price": 48709.54,
+      "pnl": -556.0999999999985,
+      "pnl_pct": -1.1287785970100024,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.80280245568216,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-11 13:55:00+05:30",
+      "exit_time": "2025-12-12 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 48709.54,
+      "exit_price": 49006.61,
+      "pnl": -297.0699999999997,
+      "pnl_pct": -0.6098805285371196,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 41.822422111492926,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-12 09:40:00+05:30",
+      "exit_time": "2025-12-12 11:45:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49343.92,
+      "exit_price": 49507.41,
+      "pnl": 163.49000000000524,
+      "pnl_pct": 0.3313275475479152,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 63.8011991558412,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-12 11:45:00+05:30",
+      "exit_time": "2025-12-12 13:50:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49507.41,
+      "exit_price": 49350.23,
+      "pnl": -157.1800000000003,
+      "pnl_pct": -0.3174878265698009,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.42827252273206,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-12 13:50:00+05:30",
+      "exit_time": "2025-12-15 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49350.23,
+      "exit_price": 49093.1,
+      "pnl": -257.13000000000466,
+      "pnl_pct": -0.5210310063397975,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 41.42189053112468,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-15 09:25:00+05:30",
+      "exit_time": "2025-12-15 11:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 48898.22,
+      "exit_price": 47920.2556,
+      "pnl": 977.9644000000044,
+      "pnl_pct": 2.000000000000009,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.63920177061768,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-15 11:15:00+05:30",
+      "exit_time": "2025-12-15 13:20:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47761.76,
+      "exit_price": 47329.39,
+      "pnl": -432.3700000000026,
+      "pnl_pct": -0.9052639601220779,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-15 13:20:00+05:30",
+      "exit_time": "2025-12-15 15:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47329.39,
+      "exit_price": 47551.6,
+      "pnl": 222.20999999999913,
+      "pnl_pct": 0.469496860196168,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-15 15:25:00+05:30",
+      "exit_time": "2025-12-16 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47551.6,
+      "exit_price": 47858.34,
+      "pnl": 306.73999999999796,
+      "pnl_pct": 0.6450676738532415,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 72.5,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-16 09:35:00+05:30",
+      "exit_time": "2025-12-16 11:40:00+05:30",
+      "option_type": "PE",
+      "entry_price": 47660.22,
+      "exit_price": 47630.88,
+      "pnl": 29.340000000003783,
+      "pnl_pct": 0.06156077332417639,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 61.526296755992114,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-16 11:55:00+05:30",
+      "exit_time": "2025-12-16 14:00:00+05:30",
+      "option_type": "PE",
+      "entry_price": 47481.12,
+      "exit_price": 46771.03,
+      "pnl": 710.0900000000038,
+      "pnl_pct": 1.4955207459301798,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 65.03415173968712,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-16 14:00:00+05:30",
+      "exit_time": "2025-12-17 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46771.03,
+      "exit_price": 46598.74,
+      "pnl": -172.29000000000087,
+      "pnl_pct": -0.3683690523813584,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-17 09:35:00+05:30",
+      "exit_time": "2025-12-17 11:40:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46664.9,
+      "exit_price": 46629.54,
+      "pnl": -35.36000000000058,
+      "pnl_pct": -0.07577429716982267,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.98140659849589,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-17 12:20:00+05:30",
+      "exit_time": "2025-12-17 14:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46663.16,
+      "exit_price": 46553.71,
+      "pnl": -109.45000000000437,
+      "pnl_pct": -0.23455333929379057,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.94630146278405,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-17 14:30:00+05:30",
+      "exit_time": "2025-12-18 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46678.59,
+      "exit_price": 46852.22,
+      "pnl": 173.63000000000466,
+      "pnl_pct": 0.3719692475715412,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.25760735015996,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-18 09:20:00+05:30",
+      "exit_time": "2025-12-18 11:05:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46980.8,
+      "exit_price": 47920.416000000005,
+      "pnl": 939.6160000000018,
+      "pnl_pct": 2.000000000000004,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.411497131196825,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-18 15:00:00+05:30",
+      "exit_time": "2025-12-19 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49178.53,
+      "exit_price": 49403.96,
+      "pnl": 225.4300000000003,
+      "pnl_pct": 0.45839109058363536,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-19 09:20:00+05:30",
+      "exit_time": "2025-12-19 09:50:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49272.26,
+      "exit_price": 48286.8148,
+      "pnl": 985.4452000000019,
+      "pnl_pct": 2.000000000000004,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 63.87640174256311,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-19 09:50:00+05:30",
+      "exit_time": "2025-12-19 10:40:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48171.08,
+      "exit_price": 47207.6584,
+      "pnl": -963.4216000000015,
+      "pnl_pct": -2.000000000000003,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-19 10:40:00+05:30",
+      "exit_time": "2025-12-19 12:45:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47177.25,
+      "exit_price": 46639.28,
+      "pnl": -537.9700000000012,
+      "pnl_pct": -1.140316572076586,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-19 12:45:00+05:30",
+      "exit_time": "2025-12-19 14:50:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46639.28,
+      "exit_price": 46412.43,
+      "pnl": -226.84999999999854,
+      "pnl_pct": -0.4863925858203612,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-19 14:50:00+05:30",
+      "exit_time": "2025-12-22 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46412.43,
+      "exit_price": 46448.22,
+      "pnl": 35.79000000000087,
+      "pnl_pct": 0.07711296305752763,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-22 09:20:00+05:30",
+      "exit_time": "2025-12-22 11:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46709.6,
+      "exit_price": 46704.5,
+      "pnl": -5.099999999998545,
+      "pnl_pct": -0.010918526384294759,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 47.67233162473735,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-22 11:25:00+05:30",
+      "exit_time": "2025-12-22 13:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46704.5,
+      "exit_price": 46777.88,
+      "pnl": 73.37999999999738,
+      "pnl_pct": 0.15711548137759185,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 42.56913273433185,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-22 13:30:00+05:30",
+      "exit_time": "2025-12-23 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46777.88,
+      "exit_price": 47253.52,
+      "pnl": 475.6399999999994,
+      "pnl_pct": 1.0168053789526148,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.05398265157843,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-23 09:15:00+05:30",
+      "exit_time": "2025-12-23 11:20:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47253.52,
+      "exit_price": 46798.61,
+      "pnl": -454.9099999999962,
+      "pnl_pct": -0.9627007681120819,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.6240035384423,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-23 11:20:00+05:30",
+      "exit_time": "2025-12-23 13:25:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46798.61,
+      "exit_price": 47052.78,
+      "pnl": -254.16999999999825,
+      "pnl_pct": -0.5431144215608076,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 40.43620447250946,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-23 13:50:00+05:30",
+      "exit_time": "2025-12-24 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46770.03,
+      "exit_price": 46180.41,
+      "pnl": 589.6199999999953,
+      "pnl_pct": 1.2606791143815714,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 46.005417602475866,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-24 09:20:00+05:30",
+      "exit_time": "2025-12-24 11:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46316.15,
+      "exit_price": 46750.54,
+      "pnl": 434.3899999999994,
+      "pnl_pct": 0.9378801994552642,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.89822482089726,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-24 11:30:00+05:30",
+      "exit_time": "2025-12-24 13:35:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46739.1,
+      "exit_price": 46950.16,
+      "pnl": 211.06000000000495,
+      "pnl_pct": 0.45157052660407443,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 63.75,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-24 13:35:00+05:30",
+      "exit_time": "2025-12-25 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46950.16,
+      "exit_price": 46957.69,
+      "pnl": 7.529999999998836,
+      "pnl_pct": 0.01603828400158559,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 46.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-25 09:20:00+05:30",
+      "exit_time": "2025-12-25 11:25:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46882.11,
+      "exit_price": 46553.59,
+      "pnl": 328.5200000000041,
+      "pnl_pct": 0.7007363789727128,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 40.16104343443358,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-25 11:25:00+05:30",
+      "exit_time": "2025-12-25 13:30:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46553.59,
+      "exit_price": 46488.81,
+      "pnl": 64.77999999999884,
+      "pnl_pct": 0.13915145964038184,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst",
+        "VolatilityTrader"
+      ],
+      "confidence": 42.5,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-25 13:30:00+05:30",
+      "exit_time": "2025-12-26 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46488.81,
+      "exit_price": 46734.0,
+      "pnl": -245.19000000000233,
+      "pnl_pct": -0.5274172429881564,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst",
+        "VolatilityTrader"
+      ],
+      "confidence": 42.5,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-26 09:40:00+05:30",
+      "exit_time": "2025-12-26 11:10:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46840.01,
+      "exit_price": 47776.8102,
+      "pnl": 936.8001999999979,
+      "pnl_pct": 1.9999999999999951,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 61.1403881108892,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-26 12:40:00+05:30",
+      "exit_time": "2025-12-26 14:45:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49058.46,
+      "exit_price": 49497.51,
+      "pnl": 439.0500000000029,
+      "pnl_pct": 0.8949526748291791,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 59.5,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-26 14:45:00+05:30",
+      "exit_time": "2025-12-29 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49497.51,
+      "exit_price": 49101.43,
+      "pnl": -396.08000000000175,
+      "pnl_pct": -0.8002018687404714,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-29 09:25:00+05:30",
+      "exit_time": "2025-12-29 10:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49286.59,
+      "exit_price": 48300.858199999995,
+      "pnl": -985.7318000000014,
+      "pnl_pct": -2.0000000000000027,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 47.15352870872081,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-29 10:25:00+05:30",
+      "exit_time": "2025-12-29 12:30:00+05:30",
+      "option_type": "PE",
+      "entry_price": 48304.5,
+      "exit_price": 47880.85,
+      "pnl": 423.65000000000146,
+      "pnl_pct": 0.8770404413667493,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst",
+        "VolatilityTrader"
+      ],
+      "confidence": 45.833333333333336,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-29 12:30:00+05:30",
+      "exit_time": "2025-12-29 14:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47880.85,
+      "exit_price": 46923.233,
+      "pnl": -957.6169999999984,
+      "pnl_pct": -1.9999999999999967,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-29 14:25:00+05:30",
+      "exit_time": "2025-12-30 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46948.42,
+      "exit_price": 46481.88,
+      "pnl": -466.5400000000009,
+      "pnl_pct": -0.993728862440953,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-30 09:55:00+05:30",
+      "exit_time": "2025-12-30 12:00:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46761.29,
+      "exit_price": 47319.75,
+      "pnl": 558.4599999999991,
+      "pnl_pct": 1.194278429872228,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 61.02694251903418,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-30 12:00:00+05:30",
+      "exit_time": "2025-12-30 14:05:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47319.75,
+      "exit_price": 47286.29,
+      "pnl": -33.45999999999913,
+      "pnl_pct": -0.0707104327474239,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 46.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-30 14:05:00+05:30",
+      "exit_time": "2025-12-31 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47286.29,
+      "exit_price": 47755.05,
+      "pnl": 468.76000000000204,
+      "pnl_pct": 0.9913232778465005,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 51.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2025-12-31 09:30:00+05:30",
+      "exit_time": "2025-12-31 11:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48058.46,
+      "exit_price": 49019.6292,
+      "pnl": 961.1692000000039,
+      "pnl_pct": 2.000000000000008,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 46.286218252994004,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-01 09:30:00+05:30",
+      "exit_time": "2026-01-01 11:35:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49386.65,
+      "exit_price": 49231.87,
+      "pnl": -154.77999999999884,
+      "pnl_pct": -0.3134045334113547,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.42212752816156,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-01 13:55:00+05:30",
+      "exit_time": "2026-01-02 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 48882.18,
+      "exit_price": 49160.84,
+      "pnl": -278.6599999999962,
+      "pnl_pct": -0.5700645920456007,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 40.19932798004021,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-02 09:35:00+05:30",
+      "exit_time": "2026-01-02 11:40:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49413.14,
+      "exit_price": 48921.09,
+      "pnl": -492.0500000000029,
+      "pnl_pct": -0.9957877600978261,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 63.1820194700406,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-02 11:55:00+05:30",
+      "exit_time": "2026-01-02 13:40:00+05:30",
+      "option_type": "PE",
+      "entry_price": 48757.76,
+      "exit_price": 47782.6048,
+      "pnl": 975.1552000000011,
+      "pnl_pct": 2.000000000000002,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 46.827661799360065,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-02 13:40:00+05:30",
+      "exit_time": "2026-01-02 14:50:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47798.19,
+      "exit_price": 46842.226200000005,
+      "pnl": -955.9637999999977,
+      "pnl_pct": -1.9999999999999951,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-02 14:50:00+05:30",
+      "exit_time": "2026-01-05 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46738.38,
+      "exit_price": 46525.89,
+      "pnl": -212.48999999999796,
+      "pnl_pct": -0.4546370670100204,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-05 09:35:00+05:30",
+      "exit_time": "2026-01-05 11:40:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46882.42,
+      "exit_price": 46683.43,
+      "pnl": -198.98999999999796,
+      "pnl_pct": -0.4244448132156957,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.75662659910756,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-05 11:55:00+05:30",
+      "exit_time": "2026-01-05 14:00:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46399.66,
+      "exit_price": 46712.92,
+      "pnl": -313.25999999999476,
+      "pnl_pct": -0.6751342574492889,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.95632271231835,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-05 14:10:00+05:30",
+      "exit_time": "2026-01-06 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46341.79,
+      "exit_price": 46806.02,
+      "pnl": -464.2299999999959,
+      "pnl_pct": -1.0017524139658738,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.120645308747726,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-06 09:15:00+05:30",
+      "exit_time": "2026-01-06 10:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46806.02,
+      "exit_price": 47742.1404,
+      "pnl": 936.1203999999998,
+      "pnl_pct": 1.9999999999999998,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 46.05571971731577,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-06 11:30:00+05:30",
+      "exit_time": "2026-01-06 13:35:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48915.02,
+      "exit_price": 49440.96,
+      "pnl": 525.9400000000023,
+      "pnl_pct": 1.0752116630024935,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 59.5,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-06 13:35:00+05:30",
+      "exit_time": "2026-01-07 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49440.96,
+      "exit_price": 49461.45,
+      "pnl": 20.489999999997963,
+      "pnl_pct": 0.04144337003164575,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-07 09:20:00+05:30",
+      "exit_time": "2026-01-07 10:10:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49028.5,
+      "exit_price": 48047.93,
+      "pnl": 980.5699999999997,
+      "pnl_pct": 1.9999999999999993,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst",
+        "VolatilityTrader"
+      ],
+      "confidence": 45.833333333333336,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-07 10:10:00+05:30",
+      "exit_time": "2026-01-07 11:20:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48024.89,
+      "exit_price": 47064.3922,
+      "pnl": -960.4977999999974,
+      "pnl_pct": -1.9999999999999944,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-07 11:20:00+05:30",
+      "exit_time": "2026-01-07 13:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46998.13,
+      "exit_price": 46533.96,
+      "pnl": -464.16999999999825,
+      "pnl_pct": -0.9876350399473304,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-07 13:25:00+05:30",
+      "exit_time": "2026-01-07 15:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46533.96,
+      "exit_price": 46397.52,
+      "pnl": -136.44000000000233,
+      "pnl_pct": -0.2932052204454603,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-07 15:30:00+05:30",
+      "exit_time": "2026-01-08 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46397.52,
+      "exit_price": 46574.22,
+      "pnl": 176.70000000000437,
+      "pnl_pct": 0.3808393207223239,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-08 09:15:00+05:30",
+      "exit_time": "2026-01-08 10:10:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46574.22,
+      "exit_price": 47505.7044,
+      "pnl": 931.4844000000012,
+      "pnl_pct": 2.0000000000000027,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.98308958278365,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-08 11:45:00+05:30",
+      "exit_time": "2026-01-08 13:50:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48628.98,
+      "exit_price": 49444.72,
+      "pnl": 815.739999999998,
+      "pnl_pct": 1.6774770928775349,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 59.5,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-08 13:50:00+05:30",
+      "exit_time": "2026-01-09 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49444.72,
+      "exit_price": 49329.45,
+      "pnl": -115.27000000000407,
+      "pnl_pct": -0.23312903784267375,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-09 09:35:00+05:30",
+      "exit_time": "2026-01-09 11:40:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49664.58,
+      "exit_price": 49061.52,
+      "pnl": -603.060000000005,
+      "pnl_pct": -1.2142657805623343,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.64598660816641,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-09 12:10:00+05:30",
+      "exit_time": "2026-01-09 14:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49075.22,
+      "exit_price": 48607.89,
+      "pnl": 467.33000000000175,
+      "pnl_pct": 0.9522728578700244,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 64.03427825398262,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-09 14:15:00+05:30",
+      "exit_time": "2026-01-12 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48607.89,
+      "exit_price": 48880.35,
+      "pnl": 272.4599999999991,
+      "pnl_pct": 0.5605262849302842,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-12 10:05:00+05:30",
+      "exit_time": "2026-01-12 12:10:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49155.72,
+      "exit_price": 49561.88,
+      "pnl": 406.1599999999962,
+      "pnl_pct": 0.8262721001747023,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.36791915264462,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-12 12:10:00+05:30",
+      "exit_time": "2026-01-12 14:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49561.88,
+      "exit_price": 49549.22,
+      "pnl": -12.659999999996217,
+      "pnl_pct": -0.025543825214048008,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 51.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-12 14:15:00+05:30",
+      "exit_time": "2026-01-13 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49549.22,
+      "exit_price": 49246.89,
+      "pnl": -302.33000000000175,
+      "pnl_pct": -0.6101609672160364,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 51.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-13 09:15:00+05:30",
+      "exit_time": "2026-01-13 10:25:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49246.89,
+      "exit_price": 48261.9522,
+      "pnl": 984.9377999999997,
+      "pnl_pct": 1.9999999999999993,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.29113690322904,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-13 10:25:00+05:30",
+      "exit_time": "2026-01-13 11:20:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48214.22,
+      "exit_price": 47249.9356,
+      "pnl": -964.2844000000041,
+      "pnl_pct": -2.0000000000000084,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-13 11:20:00+05:30",
+      "exit_time": "2026-01-13 13:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47202.66,
+      "exit_price": 46645.06,
+      "pnl": -557.6000000000058,
+      "pnl_pct": -1.1812893595403433,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-13 13:25:00+05:30",
+      "exit_time": "2026-01-13 15:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46645.06,
+      "exit_price": 46590.01,
+      "pnl": -55.049999999995634,
+      "pnl_pct": -0.11801892847816174,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-13 15:30:00+05:30",
+      "exit_time": "2026-01-14 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46590.01,
+      "exit_price": 46177.48,
+      "pnl": -412.52999999999884,
+      "pnl_pct": -0.8854473308762947,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-14 09:15:00+05:30",
+      "exit_time": "2026-01-14 11:20:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46177.48,
+      "exit_price": 46584.5,
+      "pnl": -407.0199999999968,
+      "pnl_pct": -0.881425318142083,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 48.12512786813731,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-14 11:35:00+05:30",
+      "exit_time": "2026-01-14 13:40:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46745.82,
+      "exit_price": 46437.7,
+      "pnl": -308.1200000000026,
+      "pnl_pct": -0.6591391486982208,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.313368013998726,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-14 13:40:00+05:30",
+      "exit_time": "2026-01-15 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46437.7,
+      "exit_price": 46836.01,
+      "pnl": -398.31000000000495,
+      "pnl_pct": -0.8577298186602803,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 42.8879012107678,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-15 09:30:00+05:30",
+      "exit_time": "2026-01-15 11:35:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46467.76,
+      "exit_price": 46695.1,
+      "pnl": -227.3399999999965,
+      "pnl_pct": -0.48924243389394384,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst",
+        "VolatilityTrader"
+      ],
+      "confidence": 44.944438222255904,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-15 11:40:00+05:30",
+      "exit_time": "2026-01-15 13:45:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46634.37,
+      "exit_price": 46661.13,
+      "pnl": -26.75999999999476,
+      "pnl_pct": -0.057382569980027096,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 41.59081032200035,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-15 13:45:00+05:30",
+      "exit_time": "2026-01-16 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46661.13,
+      "exit_price": 47112.93,
+      "pnl": -451.8000000000029,
+      "pnl_pct": -0.9682577340068766,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 63.55663070478287,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-16 09:40:00+05:30",
+      "exit_time": "2026-01-16 11:45:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47232.91,
+      "exit_price": 47461.65,
+      "pnl": 228.73999999999796,
+      "pnl_pct": 0.48428098120568464,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 60.80386455149936,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-16 11:45:00+05:30",
+      "exit_time": "2026-01-16 13:50:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47461.65,
+      "exit_price": 47465.61,
+      "pnl": 3.959999999999127,
+      "pnl_pct": 0.008343578447018017,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 47.85999873797036,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-16 13:50:00+05:30",
+      "exit_time": "2026-01-19 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47465.61,
+      "exit_price": 47390.51,
+      "pnl": -75.09999999999854,
+      "pnl_pct": -0.15821981430344736,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 42.93887559107179,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-19 09:30:00+05:30",
+      "exit_time": "2026-01-19 11:35:00+05:30",
+      "option_type": "PE",
+      "entry_price": 47078.83,
+      "exit_price": 47518.44,
+      "pnl": -439.6100000000006,
+      "pnl_pct": -0.9337742675423341,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.44005515102225,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-19 11:35:00+05:30",
+      "exit_time": "2026-01-19 13:40:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47518.44,
+      "exit_price": 47185.1,
+      "pnl": -333.3400000000038,
+      "pnl_pct": -0.7014960928852121,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.26328077204677,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-19 15:05:00+05:30",
+      "exit_time": "2026-01-20 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47562.07,
+      "exit_price": 47100.41,
+      "pnl": -461.6599999999962,
+      "pnl_pct": -0.9706474087439765,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 61.62706127368112,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-20 09:40:00+05:30",
+      "exit_time": "2026-01-20 11:45:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46744.97,
+      "exit_price": 46734.17,
+      "pnl": 10.80000000000291,
+      "pnl_pct": 0.02310409012991753,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 47.157541407845464,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-20 11:50:00+05:30",
+      "exit_time": "2026-01-20 13:55:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46697.63,
+      "exit_price": 46567.22,
+      "pnl": 130.40999999999622,
+      "pnl_pct": 0.2792647078663226,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.09972645983622,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-20 13:55:00+05:30",
+      "exit_time": "2026-01-21 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46567.22,
+      "exit_price": 46619.44,
+      "pnl": -52.220000000001164,
+      "pnl_pct": -0.1121389681411112,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst",
+        "VolatilityTrader"
+      ],
+      "confidence": 42.130142279097974,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-21 12:05:00+05:30",
+      "exit_time": "2026-01-21 14:10:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46914.11,
+      "exit_price": 46998.23,
+      "pnl": 84.12000000000262,
+      "pnl_pct": 0.17930639630593573,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 40.55349743898954,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-21 14:10:00+05:30",
+      "exit_time": "2026-01-22 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46998.23,
+      "exit_price": 46646.56,
+      "pnl": -351.67000000000553,
+      "pnl_pct": -0.7482622217900663,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 42.24445268048448,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-22 09:20:00+05:30",
+      "exit_time": "2026-01-22 11:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46747.95,
+      "exit_price": 46720.31,
+      "pnl": -27.639999999999418,
+      "pnl_pct": -0.05912558732521836,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.947917338673264,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-22 11:30:00+05:30",
+      "exit_time": "2026-01-22 13:35:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46865.29,
+      "exit_price": 47055.26,
+      "pnl": 189.97000000000116,
+      "pnl_pct": 0.4053533009184434,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 47.31351494499661,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-22 13:35:00+05:30",
+      "exit_time": "2026-01-23 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47055.26,
+      "exit_price": 47122.7,
+      "pnl": 67.43999999999505,
+      "pnl_pct": 0.14332085297158076,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 46.14334771534973,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-23 09:25:00+05:30",
+      "exit_time": "2026-01-23 11:30:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46984.27,
+      "exit_price": 46446.4,
+      "pnl": 537.8699999999953,
+      "pnl_pct": 1.1447873937383626,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.157974418023805,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-23 11:30:00+05:30",
+      "exit_time": "2026-01-23 13:35:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46446.4,
+      "exit_price": 46479.79,
+      "pnl": 33.38999999999942,
+      "pnl_pct": 0.0718893175789715,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-23 13:35:00+05:30",
+      "exit_time": "2026-01-26 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46479.79,
+      "exit_price": 46916.08,
+      "pnl": 436.2900000000009,
+      "pnl_pct": 0.9386660309781969,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-26 09:25:00+05:30",
+      "exit_time": "2026-01-26 10:20:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47073.91,
+      "exit_price": 48015.3882,
+      "pnl": 941.4781999999977,
+      "pnl_pct": 1.9999999999999951,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.55307348463743,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-26 11:15:00+05:30",
+      "exit_time": "2026-01-26 13:20:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49240.48,
+      "exit_price": 49316.52,
+      "pnl": 76.0399999999936,
+      "pnl_pct": 0.15442578951300553,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 59.5,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-26 13:20:00+05:30",
+      "exit_time": "2026-01-26 15:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49316.52,
+      "exit_price": 49466.48,
+      "pnl": 149.9600000000064,
+      "pnl_pct": 0.304076605567478,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-26 15:25:00+05:30",
+      "exit_time": "2026-01-27 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49466.48,
+      "exit_price": 49060.85,
+      "pnl": -405.63000000000466,
+      "pnl_pct": -0.8200098329212117,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-27 09:20:00+05:30",
+      "exit_time": "2026-01-27 10:00:00+05:30",
+      "option_type": "PE",
+      "entry_price": 48911.75,
+      "exit_price": 47933.515,
+      "pnl": 978.2350000000006,
+      "pnl_pct": 2.000000000000001,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.033347723889165,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-27 10:00:00+05:30",
+      "exit_time": "2026-01-27 11:05:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47879.4,
+      "exit_price": 46921.812,
+      "pnl": -957.5880000000034,
+      "pnl_pct": -2.000000000000007,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-27 11:05:00+05:30",
+      "exit_time": "2026-01-27 13:10:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46872.19,
+      "exit_price": 46410.53,
+      "pnl": -461.6600000000035,
+      "pnl_pct": -0.9849337101594857,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-27 13:10:00+05:30",
+      "exit_time": "2026-01-27 15:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46410.53,
+      "exit_price": 46416.69,
+      "pnl": 6.1600000000034925,
+      "pnl_pct": 0.013272849932986096,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-27 15:15:00+05:30",
+      "exit_time": "2026-01-28 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46416.69,
+      "exit_price": 46484.79,
+      "pnl": 68.09999999999854,
+      "pnl_pct": 0.14671446843796604,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-28 09:20:00+05:30",
+      "exit_time": "2026-01-28 10:00:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46773.62,
+      "exit_price": 47709.0924,
+      "pnl": 935.4723999999987,
+      "pnl_pct": 1.9999999999999973,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 48.80397190584243,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-28 10:50:00+05:30",
+      "exit_time": "2026-01-28 12:55:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48751.61,
+      "exit_price": 49509.91,
+      "pnl": 758.3000000000029,
+      "pnl_pct": 1.5554358102224786,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 59.5,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-28 12:55:00+05:30",
+      "exit_time": "2026-01-28 15:00:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49509.91,
+      "exit_price": 49378.98,
+      "pnl": -130.9300000000003,
+      "pnl_pct": -0.2644521066590513,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-28 15:00:00+05:30",
+      "exit_time": "2026-01-29 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49378.98,
+      "exit_price": 49389.35,
+      "pnl": 10.369999999995343,
+      "pnl_pct": 0.02100083881845138,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-29 09:25:00+05:30",
+      "exit_time": "2026-01-29 11:30:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49314.25,
+      "exit_price": 49399.32,
+      "pnl": -85.06999999999971,
+      "pnl_pct": -0.17250591867462187,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.31681277220502,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-29 11:55:00+05:30",
+      "exit_time": "2026-01-29 14:00:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49294.97,
+      "exit_price": 49414.92,
+      "pnl": -119.94999999999709,
+      "pnl_pct": -0.2433311147161609,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.68204294096457,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-29 14:10:00+05:30",
+      "exit_time": "2026-01-30 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49340.41,
+      "exit_price": 49555.74,
+      "pnl": -215.32999999999447,
+      "pnl_pct": -0.4364171274620427,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 42.821251505879715,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-30 09:20:00+05:30",
+      "exit_time": "2026-01-30 11:25:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49333.99,
+      "exit_price": 48910.73,
+      "pnl": 423.25999999999476,
+      "pnl_pct": 0.85794803947541,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 49.06827345112049,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-30 11:25:00+05:30",
+      "exit_time": "2026-01-30 13:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48910.73,
+      "exit_price": 48641.07,
+      "pnl": -269.6600000000035,
+      "pnl_pct": -0.5513309656183898,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-01-30 13:30:00+05:30",
+      "exit_time": "2026-02-02 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48641.07,
+      "exit_price": 48684.76,
+      "pnl": 43.69000000000233,
+      "pnl_pct": 0.08982121487048358,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-02 12:35:00+05:30",
+      "exit_time": "2026-02-02 14:40:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49009.13,
+      "exit_price": 49131.84,
+      "pnl": 122.70999999999913,
+      "pnl_pct": 0.25038191863434245,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 40.293279000253754,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-02 14:40:00+05:30",
+      "exit_time": "2026-02-03 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49131.84,
+      "exit_price": 49124.93,
+      "pnl": -6.9099999999962165,
+      "pnl_pct": -0.01406419950890546,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 42.65386290097022,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-03 09:20:00+05:30",
+      "exit_time": "2026-02-03 11:25:00+05:30",
+      "option_type": "PE",
+      "entry_price": 48903.5,
+      "exit_price": 48930.23,
+      "pnl": -26.7300000000032,
+      "pnl_pct": -0.05465866451277149,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.30531403677212,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-03 11:35:00+05:30",
+      "exit_time": "2026-02-03 13:40:00+05:30",
+      "option_type": "PE",
+      "entry_price": 48896.79,
+      "exit_price": 49094.16,
+      "pnl": -197.37000000000262,
+      "pnl_pct": -0.4036461289176705,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 40.433219531119406,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-03 13:55:00+05:30",
+      "exit_time": "2026-02-04 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 48913.88,
+      "exit_price": 48568.47,
+      "pnl": 345.4099999999962,
+      "pnl_pct": 0.7061594786592195,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.10745128992791,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-04 09:30:00+05:30",
+      "exit_time": "2026-02-04 11:35:00+05:30",
+      "option_type": "PE",
+      "entry_price": 48188.03,
+      "exit_price": 48478.36,
+      "pnl": -290.33000000000175,
+      "pnl_pct": -0.6024940218556387,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.63146977964174,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-04 12:00:00+05:30",
+      "exit_time": "2026-02-04 14:05:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48781.5,
+      "exit_price": 48309.7,
+      "pnl": -471.8000000000029,
+      "pnl_pct": -0.967169931223933,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.84515660724058,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-04 14:10:00+05:30",
+      "exit_time": "2026-02-05 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 48186.15,
+      "exit_price": 48320.37,
+      "pnl": -134.22000000000116,
+      "pnl_pct": -0.27854476856939425,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.66782554759515,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-05 09:25:00+05:30",
+      "exit_time": "2026-02-05 11:00:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48529.47,
+      "exit_price": 49500.059400000006,
+      "pnl": 970.5894000000044,
+      "pnl_pct": 2.000000000000009,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 60.67853184160862,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-05 11:45:00+05:30",
+      "exit_time": "2026-02-05 13:50:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49284.99,
+      "exit_price": 49330.53,
+      "pnl": 45.54000000000087,
+      "pnl_pct": 0.09240135789821784,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 46.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-05 13:50:00+05:30",
+      "exit_time": "2026-02-06 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49330.53,
+      "exit_price": 49705.49,
+      "pnl": 374.9599999999991,
+      "pnl_pct": 0.7600972460664809,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 46.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-06 09:20:00+05:30",
+      "exit_time": "2026-02-06 11:25:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49591.13,
+      "exit_price": 49152.56,
+      "pnl": 438.5699999999997,
+      "pnl_pct": 0.8843718624681465,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.43361068758821,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-06 11:25:00+05:30",
+      "exit_time": "2026-02-06 13:30:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49152.56,
+      "exit_price": 48971.35,
+      "pnl": 181.20999999999913,
+      "pnl_pct": 0.36866848847750583,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst",
+        "VolatilityTrader"
+      ],
+      "confidence": 45.833333333333336,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-06 13:30:00+05:30",
+      "exit_time": "2026-02-09 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48971.35,
+      "exit_price": 49055.56,
+      "pnl": 84.20999999999913,
+      "pnl_pct": 0.17195768546302917,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-09 09:20:00+05:30",
+      "exit_time": "2026-02-09 11:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49336.13,
+      "exit_price": 49424.14,
+      "pnl": 88.01000000000204,
+      "pnl_pct": 0.17838853594718931,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 46.95320637470786,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-09 11:25:00+05:30",
+      "exit_time": "2026-02-09 13:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49424.14,
+      "exit_price": 49437.06,
+      "pnl": 12.919999999998254,
+      "pnl_pct": 0.026141071953904013,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.63800262226599,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-09 13:30:00+05:30",
+      "exit_time": "2026-02-10 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49437.06,
+      "exit_price": 49349.81,
+      "pnl": -87.25,
+      "pnl_pct": -0.17648703219811213,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.8853332383147,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-10 09:30:00+05:30",
+      "exit_time": "2026-02-10 11:00:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49152.24,
+      "exit_price": 48169.195199999995,
+      "pnl": 983.0448000000033,
+      "pnl_pct": 2.000000000000007,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 40.349522356128325,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-10 11:00:00+05:30",
+      "exit_time": "2026-02-10 12:45:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48109.75,
+      "exit_price": 47147.555,
+      "pnl": -962.1949999999997,
+      "pnl_pct": -1.9999999999999993,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-10 12:45:00+05:30",
+      "exit_time": "2026-02-10 14:50:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47144.48,
+      "exit_price": 46560.2,
+      "pnl": -584.2800000000061,
+      "pnl_pct": -1.239339154870318,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-10 14:50:00+05:30",
+      "exit_time": "2026-02-11 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46560.2,
+      "exit_price": 46956.1,
+      "pnl": 395.90000000000146,
+      "pnl_pct": 0.8502970348065547,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-11 09:50:00+05:30",
+      "exit_time": "2026-02-11 11:55:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47149.96,
+      "exit_price": 47287.92,
+      "pnl": 137.95999999999913,
+      "pnl_pct": 0.2925983394259489,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 62.34865274873705,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-11 11:55:00+05:30",
+      "exit_time": "2026-02-11 14:00:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47287.92,
+      "exit_price": 47424.28,
+      "pnl": 136.36000000000058,
+      "pnl_pct": 0.28836117130971417,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 42.60594925828266,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-11 14:00:00+05:30",
+      "exit_time": "2026-02-12 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47424.28,
+      "exit_price": 47043.53,
+      "pnl": -380.75,
+      "pnl_pct": -0.8028587887892026,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 62.83126784368164,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-12 09:15:00+05:30",
+      "exit_time": "2026-02-12 11:20:00+05:30",
+      "option_type": "PE",
+      "entry_price": 47043.53,
+      "exit_price": 46480.49,
+      "pnl": 563.0400000000009,
+      "pnl_pct": 1.1968489609516992,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.633642115015235,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-12 11:20:00+05:30",
+      "exit_time": "2026-02-12 13:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46480.49,
+      "exit_price": 46617.5,
+      "pnl": 137.01000000000204,
+      "pnl_pct": 0.2947688374197476,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-12 13:25:00+05:30",
+      "exit_time": "2026-02-12 15:30:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46617.5,
+      "exit_price": 46447.95,
+      "pnl": 169.5500000000029,
+      "pnl_pct": 0.3637046173647298,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst",
+        "VolatilityTrader"
+      ],
+      "confidence": 42.5,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-12 15:30:00+05:30",
+      "exit_time": "2026-02-13 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46447.95,
+      "exit_price": 46605.9,
+      "pnl": 157.95000000000437,
+      "pnl_pct": 0.3400580649953429,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-13 09:15:00+05:30",
+      "exit_time": "2026-02-13 10:05:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46605.9,
+      "exit_price": 47538.018000000004,
+      "pnl": 932.1180000000022,
+      "pnl_pct": 2.0000000000000044,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 46.9487225212373,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-13 11:00:00+05:30",
+      "exit_time": "2026-02-13 13:05:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48601.26,
+      "exit_price": 49434.71,
+      "pnl": 833.4499999999971,
+      "pnl_pct": 1.7148732357967613,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 59.5,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-13 13:05:00+05:30",
+      "exit_time": "2026-02-13 15:10:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49434.71,
+      "exit_price": 49344.37,
+      "pnl": -90.33999999999651,
+      "pnl_pct": -0.18274609075282633,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-13 15:10:00+05:30",
+      "exit_time": "2026-02-16 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49344.37,
+      "exit_price": 49488.43,
+      "pnl": 144.05999999999767,
+      "pnl_pct": 0.29194819996688104,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-16 09:20:00+05:30",
+      "exit_time": "2026-02-16 10:10:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49185.11,
+      "exit_price": 48201.4078,
+      "pnl": 983.7021999999997,
+      "pnl_pct": 1.9999999999999993,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst",
+        "VolatilityTrader"
+      ],
+      "confidence": 45.328079200993955,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-16 10:10:00+05:30",
+      "exit_time": "2026-02-16 11:00:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48153.97,
+      "exit_price": 47190.8906,
+      "pnl": -963.0794000000024,
+      "pnl_pct": -2.000000000000005,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-16 11:00:00+05:30",
+      "exit_time": "2026-02-16 13:05:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47166.46,
+      "exit_price": 46546.97,
+      "pnl": -619.489999999998,
+      "pnl_pct": -1.313412115303964,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-16 13:05:00+05:30",
+      "exit_time": "2026-02-16 15:10:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46546.97,
+      "exit_price": 46771.53,
+      "pnl": 224.55999999999767,
+      "pnl_pct": 0.4824374175161083,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-16 15:10:00+05:30",
+      "exit_time": "2026-02-17 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46771.53,
+      "exit_price": 46600.78,
+      "pnl": -170.75,
+      "pnl_pct": -0.36507251312924766,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-17 09:30:00+05:30",
+      "exit_time": "2026-02-17 11:35:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46352.16,
+      "exit_price": 46573.09,
+      "pnl": -220.92999999999302,
+      "pnl_pct": -0.4766336671257456,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.54399852977538,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-17 15:00:00+05:30",
+      "exit_time": "2026-02-18 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46740.09,
+      "exit_price": 46827.11,
+      "pnl": 87.02000000000407,
+      "pnl_pct": 0.18617850329343413,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.26408682483027,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-18 09:15:00+05:30",
+      "exit_time": "2026-02-18 10:05:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46827.11,
+      "exit_price": 47763.652200000004,
+      "pnl": 936.5422000000035,
+      "pnl_pct": 2.000000000000007,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.146837315172455,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-18 11:15:00+05:30",
+      "exit_time": "2026-02-18 13:20:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48752.12,
+      "exit_price": 49557.96,
+      "pnl": 805.8399999999965,
+      "pnl_pct": 1.652933246800337,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 59.5,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-18 13:20:00+05:30",
+      "exit_time": "2026-02-18 15:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49557.96,
+      "exit_price": 49598.68,
+      "pnl": 40.720000000001164,
+      "pnl_pct": 0.08216641685816196,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-18 15:25:00+05:30",
+      "exit_time": "2026-02-19 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49598.68,
+      "exit_price": 49366.54,
+      "pnl": -232.13999999999942,
+      "pnl_pct": -0.46803664936244155,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-19 09:15:00+05:30",
+      "exit_time": "2026-02-19 11:20:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49366.54,
+      "exit_price": 48693.56,
+      "pnl": 672.9800000000032,
+      "pnl_pct": 1.3632310467778443,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.374968967542586,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-19 11:20:00+05:30",
+      "exit_time": "2026-02-19 13:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48693.56,
+      "exit_price": 48585.42,
+      "pnl": -108.13999999999942,
+      "pnl_pct": -0.22208275591269036,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-19 13:25:00+05:30",
+      "exit_time": "2026-02-19 15:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48585.42,
+      "exit_price": 47960.95,
+      "pnl": -624.4700000000012,
+      "pnl_pct": -1.2853032864591913,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-19 15:30:00+05:30",
+      "exit_time": "2026-02-20 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47960.95,
+      "exit_price": 47783.8,
+      "pnl": -177.14999999999418,
+      "pnl_pct": -0.36936299218425445,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-20 09:15:00+05:30",
+      "exit_time": "2026-02-20 11:20:00+05:30",
+      "option_type": "PE",
+      "entry_price": 47783.8,
+      "exit_price": 47472.77,
+      "pnl": 311.0300000000061,
+      "pnl_pct": 0.6509109781976447,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.919437062996096,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-20 11:20:00+05:30",
+      "exit_time": "2026-02-20 13:25:00+05:30",
+      "option_type": "PE",
+      "entry_price": 47472.77,
+      "exit_price": 46989.92,
+      "pnl": 482.84999999999854,
+      "pnl_pct": 1.0171093871286605,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst",
+        "VolatilityTrader"
+      ],
+      "confidence": 41.66414362498162,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-20 13:25:00+05:30",
+      "exit_time": "2026-02-20 15:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46989.92,
+      "exit_price": 46892.67,
+      "pnl": -97.25,
+      "pnl_pct": -0.20695927977745018,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-20 15:30:00+05:30",
+      "exit_time": "2026-02-23 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46892.67,
+      "exit_price": 47097.16,
+      "pnl": 204.49000000000524,
+      "pnl_pct": 0.4360809482590888,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-23 09:25:00+05:30",
+      "exit_time": "2026-02-23 10:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47306.71,
+      "exit_price": 48252.8442,
+      "pnl": 946.1342000000004,
+      "pnl_pct": 2.000000000000001,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.544070735443725,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-23 12:10:00+05:30",
+      "exit_time": "2026-02-23 14:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49487.22,
+      "exit_price": 49423.73,
+      "pnl": -63.48999999999796,
+      "pnl_pct": -0.1282957498925944,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 59.5,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-23 14:20:00+05:30",
+      "exit_time": "2026-02-24 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 49534.41,
+      "exit_price": 49191.77,
+      "pnl": -342.6400000000067,
+      "pnl_pct": -0.6917211691832136,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 42.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-24 09:15:00+05:30",
+      "exit_time": "2026-02-24 10:05:00+05:30",
+      "option_type": "PE",
+      "entry_price": 49191.77,
+      "exit_price": 48207.93459999999,
+      "pnl": 983.8354000000036,
+      "pnl_pct": 2.000000000000007,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.799103801268544,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-24 10:05:00+05:30",
+      "exit_time": "2026-02-24 11:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 48209.45,
+      "exit_price": 47245.261,
+      "pnl": -964.1889999999985,
+      "pnl_pct": -1.999999999999997,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-24 11:30:00+05:30",
+      "exit_time": "2026-02-24 13:35:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47145.57,
+      "exit_price": 46769.21,
+      "pnl": -376.3600000000006,
+      "pnl_pct": -0.7982934557796216,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-24 13:35:00+05:30",
+      "exit_time": "2026-02-25 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46769.21,
+      "exit_price": 46302.0,
+      "pnl": -467.2099999999991,
+      "pnl_pct": -0.9989691936211862,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 70.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-25 09:25:00+05:30",
+      "exit_time": "2026-02-25 11:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46609.44,
+      "exit_price": 46738.01,
+      "pnl": 128.5699999999997,
+      "pnl_pct": 0.27584540814049624,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 45.779961246736136,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-25 11:30:00+05:30",
+      "exit_time": "2026-02-25 13:35:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46738.01,
+      "exit_price": 46530.67,
+      "pnl": -207.34000000000378,
+      "pnl_pct": -0.44362179733369855,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 48.381955705744716,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-25 13:40:00+05:30",
+      "exit_time": "2026-02-26 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46652.46,
+      "exit_price": 46714.4,
+      "pnl": 61.94000000000233,
+      "pnl_pct": 0.13276899010256335,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 64.15059826646501,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-26 09:35:00+05:30",
+      "exit_time": "2026-02-26 11:40:00+05:30",
+      "option_type": "PE",
+      "entry_price": 46476.49,
+      "exit_price": 47152.19,
+      "pnl": -675.7000000000044,
+      "pnl_pct": -1.4538533353099694,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 46.24875102456061,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-26 11:40:00+05:30",
+      "exit_time": "2026-02-26 13:45:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47152.19,
+      "exit_price": 47511.92,
+      "pnl": 359.7299999999959,
+      "pnl_pct": 0.7629126027868396,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 42.290276318784564,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-26 13:45:00+05:30",
+      "exit_time": "2026-02-27 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47511.92,
+      "exit_price": 47693.06,
+      "pnl": 181.13999999999942,
+      "pnl_pct": 0.38125169431165784,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 46.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-27 09:20:00+05:30",
+      "exit_time": "2026-02-27 11:25:00+05:30",
+      "option_type": "PE",
+      "entry_price": 47621.78,
+      "exit_price": 47047.82,
+      "pnl": 573.9599999999991,
+      "pnl_pct": 1.2052468429361505,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 40.225202965460184,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-27 11:25:00+05:30",
+      "exit_time": "2026-02-27 13:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47047.82,
+      "exit_price": 46670.03,
+      "pnl": -377.7900000000009,
+      "pnl_pct": -0.8029915094897083,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-27 13:30:00+05:30",
+      "exit_time": "2026-02-27 14:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 46670.03,
+      "exit_price": 47603.4306,
+      "pnl": 933.4006000000008,
+      "pnl_pct": 2.0000000000000018,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 55.0,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-02-27 14:30:00+05:30",
+      "exit_time": "2026-03-02 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 47500.57,
+      "exit_price": 47167.53,
+      "pnl": 333.0400000000009,
+      "pnl_pct": 0.7011284285641222,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 60.098088400413594,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-03-02 09:20:00+05:30",
+      "exit_time": "2026-03-02 11:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47306.79,
+      "exit_price": 47221.34,
+      "pnl": -85.45000000000437,
+      "pnl_pct": -0.18062946143672898,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 43.26775410792009,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "BANKNIFTY",
+      "entry_time": "2026-03-02 14:10:00+05:30",
+      "exit_time": "2026-03-02 15:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 47375.22,
+      "exit_price": 47461.75,
+      "pnl": 86.52999999999884,
+      "pnl_pct": 0.18264822833540156,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 44.62858914689875,
+      "exit_reason": "EOD"
+    }
+  ],
+  "bot_performance": {
+    "TrendFollower": {
+      "signals": 211,
+      "trades": 130,
+      "wins": 75,
+      "win_rate": 57.692307692307686,
+      "total_pnl": 21368.95700000003,
+      "avg_confidence": 47.227227706734844
+    },
+    "ReversalHunter": {
+      "signals": 380,
+      "trades": 52,
+      "wins": 17,
+      "win_rate": 32.69230769230769,
+      "total_pnl": -14063.825799999999,
+      "avg_confidence": 59.66346153846154
+    },
+    "MomentumScalper": {
+      "signals": 1,
+      "trades": 1,
+      "wins": 1,
+      "win_rate": 100.0,
+      "total_pnl": 969.4965999999986,
+      "avg_confidence": 67.12035874419635
+    },
+    "OIAnalyst": {
+      "signals": 866,
+      "trades": 153,
+      "wins": 90,
+      "win_rate": 58.82352941176471,
+      "total_pnl": 24773.297000000013,
+      "avg_confidence": 47.35646798611457
+    },
+    "VolatilityTrader": {
+      "signals": 396,
+      "trades": 10,
+      "wins": 7,
+      "win_rate": 70.0,
+      "total_pnl": 2761.5622000000003,
+      "avg_confidence": 43.90668033273295
+    }
+  },
+  "parameter_suggestions": {
+    "confidence_threshold": {},
+    "bot_weights": {
+      "ReversalHunter": {
+        "action": "decrease",
+        "suggested_weight": 0.5,
+        "reason": "Low win rate (32.7%)"
+      },
+      "VolatilityTrader": {
+        "action": "increase",
+        "suggested_weight": 1.5,
+        "reason": "High win rate (70.0%)"
+      }
+    },
+    "risk_management": {},
+    "general": []
+  }
+}

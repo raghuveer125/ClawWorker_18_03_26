@@ -1,0 +1,1029 @@
+{
+  "index": "NIFTY50",
+  "period_start": "2026-01-30",
+  "period_end": "2026-03-01",
+  "total_candles": 1596,
+  "total_signals": 1069,
+  "total_trades": 57,
+  "wins": 29,
+  "losses": 28,
+  "breakeven": 0,
+  "win_rate": 50.88,
+  "total_pnl": 1684.08,
+  "avg_win": 229.9,
+  "avg_loss": -177.97,
+  "profit_factor": 1.34,
+  "max_drawdown": 1150.36,
+  "sharpe_ratio": 0.11,
+  "trades": [
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-01-30 09:45:00+05:30",
+      "exit_time": "2026-01-30 11:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22748.64,
+      "exit_price": 23203.6128,
+      "pnl": 454.97279999999955,
+      "pnl_pct": 1.999999999999998,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "MomentumScalper",
+        "OIAnalyst"
+      ],
+      "confidence": 58.857416398240524,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-01-30 11:30:00+05:30",
+      "exit_time": "2026-01-30 13:35:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23116.55,
+      "exit_price": 23115.54,
+      "pnl": -1.0099999999983993,
+      "pnl_pct": -0.004369164083733945,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 56.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-01-30 14:05:00+05:30",
+      "exit_time": "2026-02-02 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23116.02,
+      "exit_price": 22995.34,
+      "pnl": -120.68000000000029,
+      "pnl_pct": -0.522062188906223,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 56.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-02 09:15:00+05:30",
+      "exit_time": "2026-02-02 10:50:00+05:30",
+      "option_type": "PE",
+      "entry_price": 22995.34,
+      "exit_price": 22535.4332,
+      "pnl": 459.90680000000066,
+      "pnl_pct": 2.0000000000000027,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst",
+        "VolatilityTrader"
+      ],
+      "confidence": 57.837995258747696,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-02 10:50:00+05:30",
+      "exit_time": "2026-02-02 12:55:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22538.02,
+      "exit_price": 22179.94,
+      "pnl": -358.08000000000175,
+      "pnl_pct": -1.5887819781862018,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 65.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-02 12:55:00+05:30",
+      "exit_time": "2026-02-02 15:00:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22179.94,
+      "exit_price": 22303.74,
+      "pnl": 123.80000000000291,
+      "pnl_pct": 0.558162014865698,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 80.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-02 15:00:00+05:30",
+      "exit_time": "2026-02-03 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22303.74,
+      "exit_price": 22248.17,
+      "pnl": -55.57000000000335,
+      "pnl_pct": -0.24915103924276083,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 65.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-03 09:20:00+05:30",
+      "exit_time": "2026-02-03 10:50:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22316.28,
+      "exit_price": 22762.6056,
+      "pnl": 446.3256000000001,
+      "pnl_pct": 2.000000000000001,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 54.648199285063825,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-04 09:15:00+05:30",
+      "exit_time": "2026-02-04 10:05:00+05:30",
+      "option_type": "PE",
+      "entry_price": 23161.71,
+      "exit_price": 22698.4758,
+      "pnl": 463.23419999999896,
+      "pnl_pct": 1.9999999999999956,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 54.00655149021199,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-04 10:05:00+05:30",
+      "exit_time": "2026-02-04 11:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22699.87,
+      "exit_price": 22245.8726,
+      "pnl": -453.9974000000002,
+      "pnl_pct": -2.000000000000001,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 65.0,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-04 11:30:00+05:30",
+      "exit_time": "2026-02-04 12:45:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22217.73,
+      "exit_price": 21773.3754,
+      "pnl": -444.35459999999875,
+      "pnl_pct": -1.9999999999999944,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 65.0,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-04 12:45:00+05:30",
+      "exit_time": "2026-02-04 14:50:00+05:30",
+      "option_type": "CE",
+      "entry_price": 21767.19,
+      "exit_price": 21829.78,
+      "pnl": 62.590000000000146,
+      "pnl_pct": 0.2875428569328432,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 65.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-04 14:50:00+05:30",
+      "exit_time": "2026-02-05 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 21829.78,
+      "exit_price": 21995.02,
+      "pnl": 165.2400000000016,
+      "pnl_pct": 0.7569476192614017,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 80.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-05 09:20:00+05:30",
+      "exit_time": "2026-02-05 10:10:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22039.47,
+      "exit_price": 22480.259400000003,
+      "pnl": 440.7894000000015,
+      "pnl_pct": 2.0000000000000067,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 53.22603373081916,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-05 11:15:00+05:30",
+      "exit_time": "2026-02-05 13:20:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23102.7,
+      "exit_price": 23174.78,
+      "pnl": 72.07999999999811,
+      "pnl_pct": 0.31199816471666997,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 52.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-05 13:20:00+05:30",
+      "exit_time": "2026-02-05 15:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23174.78,
+      "exit_price": 23179.68,
+      "pnl": 4.900000000001455,
+      "pnl_pct": 0.02114367428731343,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 52.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-05 15:25:00+05:30",
+      "exit_time": "2026-02-06 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23179.68,
+      "exit_price": 23012.72,
+      "pnl": -166.95999999999913,
+      "pnl_pct": -0.7202860436382172,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 52.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-06 09:35:00+05:30",
+      "exit_time": "2026-02-06 10:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23168.92,
+      "exit_price": 22705.541599999997,
+      "pnl": -463.3784000000014,
+      "pnl_pct": -2.000000000000006,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 57.938873840719,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-06 10:15:00+05:30",
+      "exit_time": "2026-02-06 12:20:00+05:30",
+      "option_type": "PE",
+      "entry_price": 22693.71,
+      "exit_price": 22454.05,
+      "pnl": 239.65999999999985,
+      "pnl_pct": 1.0560635524116588,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst",
+        "VolatilityTrader"
+      ],
+      "confidence": 55.833333333333336,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-06 12:20:00+05:30",
+      "exit_time": "2026-02-06 14:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22454.05,
+      "exit_price": 22004.968999999997,
+      "pnl": -449.08100000000195,
+      "pnl_pct": -2.000000000000009,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 80.0,
+      "exit_reason": "STOPLOSS"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-06 14:15:00+05:30",
+      "exit_time": "2026-02-09 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 21964.62,
+      "exit_price": 21806.77,
+      "pnl": -157.84999999999854,
+      "pnl_pct": -0.7186557290770273,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 65.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-09 09:25:00+05:30",
+      "exit_time": "2026-02-09 10:35:00+05:30",
+      "option_type": "CE",
+      "entry_price": 21925.87,
+      "exit_price": 22364.3874,
+      "pnl": 438.51740000000063,
+      "pnl_pct": 2.0000000000000027,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 57.50022411886807,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-09 11:55:00+05:30",
+      "exit_time": "2026-02-09 14:00:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22918.71,
+      "exit_price": 22991.26,
+      "pnl": 72.54999999999927,
+      "pnl_pct": 0.31655359311234915,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 52.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-09 14:00:00+05:30",
+      "exit_time": "2026-02-10 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22991.26,
+      "exit_price": 22916.12,
+      "pnl": -75.13999999999942,
+      "pnl_pct": -0.32681984371452205,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "OIAnalyst"
+      ],
+      "confidence": 52.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-10 11:35:00+05:30",
+      "exit_time": "2026-02-10 13:40:00+05:30",
+      "option_type": "PE",
+      "entry_price": 22853.84,
+      "exit_price": 22589.92,
+      "pnl": 263.9200000000019,
+      "pnl_pct": 1.1548168710378732,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 53.596863985744854,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-10 13:40:00+05:30",
+      "exit_time": "2026-02-11 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22589.92,
+      "exit_price": 22470.59,
+      "pnl": -119.32999999999811,
+      "pnl_pct": -0.5282444559343199,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 65.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-11 09:25:00+05:30",
+      "exit_time": "2026-02-11 10:45:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22593.49,
+      "exit_price": 23045.359800000002,
+      "pnl": 451.8698000000004,
+      "pnl_pct": 2.0000000000000018,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 55.090202113968544,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-12 09:35:00+05:30",
+      "exit_time": "2026-02-12 11:40:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23192.78,
+      "exit_price": 23085.78,
+      "pnl": -107.0,
+      "pnl_pct": -0.4613504720003381,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 55.31106081701898,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-12 11:55:00+05:30",
+      "exit_time": "2026-02-12 14:00:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23164.08,
+      "exit_price": 23169.01,
+      "pnl": 4.929999999996653,
+      "pnl_pct": 0.021282951880655966,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 54.1443754327983,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-12 14:05:00+05:30",
+      "exit_time": "2026-02-13 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23186.46,
+      "exit_price": 23181.08,
+      "pnl": -5.379999999997381,
+      "pnl_pct": -0.023203197038260178,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 50.05414612613831,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-13 09:30:00+05:30",
+      "exit_time": "2026-02-13 11:35:00+05:30",
+      "option_type": "PE",
+      "entry_price": 23091.9,
+      "exit_price": 23133.08,
+      "pnl": -41.18000000000029,
+      "pnl_pct": -0.17833092989316723,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 57.798143615858514,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-13 11:35:00+05:30",
+      "exit_time": "2026-02-13 13:40:00+05:30",
+      "option_type": "PE",
+      "entry_price": 23133.08,
+      "exit_price": 23190.84,
+      "pnl": -57.7599999999984,
+      "pnl_pct": -0.24968573142875222,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 51.14019765013463,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-13 13:45:00+05:30",
+      "exit_time": "2026-02-16 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 23151.56,
+      "exit_price": 23301.93,
+      "pnl": -150.36999999999898,
+      "pnl_pct": -0.6495026685026796,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 50.3961752740643,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-16 09:15:00+05:30",
+      "exit_time": "2026-02-16 11:20:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23301.93,
+      "exit_price": 23086.61,
+      "pnl": -215.3199999999997,
+      "pnl_pct": -0.9240436307207158,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 55.235185799737934,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-16 11:20:00+05:30",
+      "exit_time": "2026-02-16 13:25:00+05:30",
+      "option_type": "PE",
+      "entry_price": 23086.61,
+      "exit_price": 23160.28,
+      "pnl": -73.66999999999825,
+      "pnl_pct": -0.31910271798240736,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 53.47609863920765,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-16 14:10:00+05:30",
+      "exit_time": "2026-02-17 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23258.09,
+      "exit_price": 23224.33,
+      "pnl": -33.7599999999984,
+      "pnl_pct": -0.1451537937981941,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 53.461533980104946,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-17 09:25:00+05:30",
+      "exit_time": "2026-02-17 11:30:00+05:30",
+      "option_type": "PE",
+      "entry_price": 23098.49,
+      "exit_price": 23034.49,
+      "pnl": 64.0,
+      "pnl_pct": 0.2770743888453314,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 56.022336278267694,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-17 11:30:00+05:30",
+      "exit_time": "2026-02-17 13:35:00+05:30",
+      "option_type": "PE",
+      "entry_price": 23034.49,
+      "exit_price": 22973.13,
+      "pnl": 61.36000000000058,
+      "pnl_pct": 0.2663831497897309,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 53.60322232225546,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-17 13:35:00+05:30",
+      "exit_time": "2026-02-18 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22973.13,
+      "exit_price": 22869.89,
+      "pnl": -103.2400000000016,
+      "pnl_pct": -0.44939457531473337,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 60.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-18 09:20:00+05:30",
+      "exit_time": "2026-02-18 11:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22888.91,
+      "exit_price": 23120.56,
+      "pnl": 231.65000000000146,
+      "pnl_pct": 1.0120621733407202,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 50.06803724351923,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-18 11:25:00+05:30",
+      "exit_time": "2026-02-18 13:30:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23120.56,
+      "exit_price": 23150.61,
+      "pnl": 30.049999999999272,
+      "pnl_pct": 0.12997090035881168,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 56.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-18 13:30:00+05:30",
+      "exit_time": "2026-02-19 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23150.61,
+      "exit_price": 23184.61,
+      "pnl": 34.0,
+      "pnl_pct": 0.14686438067938598,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 56.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-19 09:20:00+05:30",
+      "exit_time": "2026-02-19 11:25:00+05:30",
+      "option_type": "PE",
+      "entry_price": 22975.08,
+      "exit_price": 23030.82,
+      "pnl": -55.73999999999796,
+      "pnl_pct": -0.2426106894948699,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst",
+        "VolatilityTrader"
+      ],
+      "confidence": 58.833333333333336,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-19 11:30:00+05:30",
+      "exit_time": "2026-02-19 13:00:00+05:30",
+      "option_type": "PE",
+      "entry_price": 23053.2,
+      "exit_price": 22592.136,
+      "pnl": 461.0640000000021,
+      "pnl_pct": 2.000000000000009,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 53.268408565877294,
+      "exit_reason": "TARGET"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-19 13:00:00+05:30",
+      "exit_time": "2026-02-19 15:05:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22577.09,
+      "exit_price": 22300.77,
+      "pnl": -276.3199999999997,
+      "pnl_pct": -1.2238955507552112,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 65.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-19 15:05:00+05:30",
+      "exit_time": "2026-02-20 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22300.77,
+      "exit_price": 22147.43,
+      "pnl": -153.34000000000015,
+      "pnl_pct": -0.6875995761581333,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "ReversalHunter"
+      ],
+      "confidence": 65.0,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-20 14:15:00+05:30",
+      "exit_time": "2026-02-23 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 22012.4,
+      "exit_price": 22348.47,
+      "pnl": -336.0699999999997,
+      "pnl_pct": -1.5267303883265781,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 50.15760812354821,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-23 11:30:00+05:30",
+      "exit_time": "2026-02-23 13:35:00+05:30",
+      "option_type": "PE",
+      "entry_price": 22240.86,
+      "exit_price": 22241.17,
+      "pnl": -0.3099999999976717,
+      "pnl_pct": -0.0013938309939349094,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 50.17996099162821,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-23 13:35:00+05:30",
+      "exit_time": "2026-02-24 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 22241.17,
+      "exit_price": 22139.83,
+      "pnl": 101.33999999999651,
+      "pnl_pct": 0.45564149727733083,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 50.16696602596185,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-24 09:20:00+05:30",
+      "exit_time": "2026-02-24 11:25:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22271.32,
+      "exit_price": 22677.66,
+      "pnl": 406.34000000000015,
+      "pnl_pct": 1.824498952015418,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 56.44275861227129,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-24 12:00:00+05:30",
+      "exit_time": "2026-02-24 14:05:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22561.35,
+      "exit_price": 22715.33,
+      "pnl": 153.9800000000032,
+      "pnl_pct": 0.6824946202244245,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 56.25,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-25 09:20:00+05:30",
+      "exit_time": "2026-02-25 11:25:00+05:30",
+      "option_type": "PE",
+      "entry_price": 22650.08,
+      "exit_price": 22981.37,
+      "pnl": -331.28999999999724,
+      "pnl_pct": -1.4626438405515443,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 55.122091540059344,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-25 11:30:00+05:30",
+      "exit_time": "2026-02-25 13:35:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22963.32,
+      "exit_price": 23000.25,
+      "pnl": 36.93000000000029,
+      "pnl_pct": 0.16082169303045157,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 52.77225832740205,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-25 13:45:00+05:30",
+      "exit_time": "2026-02-26 09:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22993.21,
+      "exit_price": 23036.85,
+      "pnl": 43.63999999999942,
+      "pnl_pct": 0.18979516126717155,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 59.00266350406664,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-26 11:55:00+05:30",
+      "exit_time": "2026-02-26 14:00:00+05:30",
+      "option_type": "CE",
+      "entry_price": 23162.01,
+      "exit_price": 22985.17,
+      "pnl": -176.84000000000015,
+      "pnl_pct": -0.7634915968001057,
+      "outcome": "LOSS",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 53.360563024496415,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-26 14:00:00+05:30",
+      "exit_time": "2026-02-27 09:15:00+05:30",
+      "option_type": "PE",
+      "entry_price": 22985.17,
+      "exit_price": 22562.45,
+      "pnl": 422.7199999999975,
+      "pnl_pct": 1.8390988624404236,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 53.82282831180178,
+      "exit_reason": "TIMEOUT"
+    },
+    {
+      "index": "NIFTY50",
+      "entry_time": "2026-02-27 09:30:00+05:30",
+      "exit_time": "2026-02-27 10:15:00+05:30",
+      "option_type": "CE",
+      "entry_price": 22737.2,
+      "exit_price": 23191.944,
+      "pnl": 454.7439999999988,
+      "pnl_pct": 1.9999999999999944,
+      "outcome": "WIN",
+      "contributing_bots": [
+        "TrendFollower",
+        "OIAnalyst"
+      ],
+      "confidence": 58.16348667223886,
+      "exit_reason": "TARGET"
+    }
+  ],
+  "bot_performance": {
+    "TrendFollower": {
+      "signals": 74,
+      "trades": 39,
+      "wins": 23,
+      "win_rate": 58.97435897435898,
+      "total_pnl": 3996.1856000000153,
+      "avg_confidence": 54.66125984019252
+    },
+    "ReversalHunter": {
+      "signals": 265,
+      "trades": 13,
+      "wins": 3,
+      "win_rate": 23.076923076923077,
+      "total_pnl": -2219.5329999999994,
+      "avg_confidence": 68.07692307692308
+    },
+    "MomentumScalper": {
+      "signals": 1,
+      "trades": 1,
+      "wins": 1,
+      "win_rate": 100.0,
+      "total_pnl": 454.97279999999955,
+      "avg_confidence": 58.857416398240524
+    },
+    "OIAnalyst": {
+      "signals": 461,
+      "trades": 44,
+      "wins": 26,
+      "win_rate": 59.09090909090909,
+      "total_pnl": 3903.6156000000155,
+      "avg_confidence": 54.35884394926155
+    },
+    "VolatilityTrader": {
+      "signals": 268,
+      "trades": 3,
+      "wins": 2,
+      "win_rate": 66.66666666666666,
+      "total_pnl": 643.8268000000025,
+      "avg_confidence": 57.50155397513813
+    }
+  },
+  "parameter_suggestions": {
+    "confidence_threshold": {},
+    "bot_weights": {
+      "ReversalHunter": {
+        "action": "decrease",
+        "suggested_weight": 0.5,
+        "reason": "Low win rate (23.1%)"
+      }
+    },
+    "risk_management": {},
+    "general": []
+  }
+}

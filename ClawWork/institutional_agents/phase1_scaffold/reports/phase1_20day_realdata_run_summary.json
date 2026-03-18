@@ -1,0 +1,57 @@
+{
+  "workflow": "phase1_realdata_runner",
+  "tag": "phase1_20day",
+  "from_date": "2026-01-01",
+  "to_date": "2026-02-18",
+  "resolution": "D",
+  "underlyings": "NIFTY50,BANKNIFTY,SENSEX",
+  "paths": {
+    "input_csv": "reports/phase1_20day_realdata_input.csv",
+    "validation_json": "reports/phase1_20day_input_validation.json",
+    "pipeline_summary_json": "reports/phase1_20day_pipeline_summary.json",
+    "pipeline_report_json": "reports/phase1_20day_pipeline_report.json",
+    "final_report_md": "reports/phase1_20day_final_report.md"
+  },
+  "exit_codes": {
+    "export": 0,
+    "validate": 0,
+    "pipeline": 0
+  },
+  "passed": true,
+  "validation": {
+    "passed": true,
+    "input_csv": "reports/phase1_20day_realdata_input.csv",
+    "row_count": 102,
+    "min_rows_required": 20,
+    "trading_days": 34,
+    "min_trading_days_required": 20,
+    "underlying_counts": {
+      "BANKNIFTY": 34,
+      "NIFTY50": 34,
+      "SENSEX": 34
+    },
+    "issues": []
+  },
+  "pipeline_summary": {
+    "run_tag": "phase1_20day_pipeline",
+    "record_count": 102,
+    "total_decisions": 102,
+    "action_counts": {
+      "BUY_CALL": 26,
+      "BUY_PUT": 26,
+      "NO_TRADE": 50
+    },
+    "action_distribution_pct": {
+      "BUY_CALL": 25.49,
+      "BUY_PUT": 25.49,
+      "NO_TRADE": 49.02
+    },
+    "confidence_counts": {
+      "HIGH": 25,
+      "MEDIUM": 27,
+      "LOW": 50
+    },
+    "risk_veto_count": 0,
+    "risk_veto_pct": 0.0
+  }
+}

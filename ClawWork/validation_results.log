@@ -1,0 +1,97 @@
+================================================================================
+VALIDATION: Adaptive Learning Best Configuration
+================================================================================
+
+Configuration (from adaptive learning - Generation 12):
+  vol_multiplier: 1.032
+  displacement_multiplier: 1.284
+  swing_lookback: 10
+  mss_swing_len: 3
+  max_bars_after_sweep: 13
+
+================================================================================
+
+
+Testing BANKNIFTY...
+--------------------------------------------------------------------------------
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/200 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235557.json
+BANKNIFTY: 96W/103L (48.00%) P&L: ₹11,416
+
+Testing NIFTY50...
+--------------------------------------------------------------------------------
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING NIFTY50 - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for NIFTY50
+[Backtest] Generated 4864 simulated candles for NIFTY50
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for NIFTY50
+[Backtest] Generated 24064 simulated candles for NIFTY50
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/194 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_NIFTY50_20260303_235558.json
+NIFTY50: 103W/91L (53.09%) P&L: ₹5,080
+
+Testing FINNIFTY...
+--------------------------------------------------------------------------------
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING FINNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for FINNIFTY
+[Backtest] Generated 4864 simulated candles for FINNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for FINNIFTY
+[Backtest] Generated 24064 simulated candles for FINNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/196 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_FINNIFTY_20260303_235559.json
+FINNIFTY: 105W/91L (53.57%) P&L: ₹5,424
+
+================================================================================
+OVERALL PERFORMANCE (3 indices, 90 days)
+================================================================================
+Total: 304W/285L (51.53%)
+Total P&L: ₹21,920
+Avg P&L per Index: ₹7,307
+
+COMPARISON:
+--------------------------------------------------------------------------------
+Phase 1B (permissive):      53.7% WR, ₹25,647 P&L
+Adaptive Learning (Gen 12): 51.5% WR, ₹21,920 P&L
+
+⚠ Phase 1B remains best - Keep previous configuration
+

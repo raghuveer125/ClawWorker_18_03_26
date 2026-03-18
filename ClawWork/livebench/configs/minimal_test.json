@@ -1,0 +1,47 @@
+{
+  "livebench": {
+    "date_range": {
+      "init_date": "2026-02-23",
+      "end_date": "2026-02-23"
+    },
+    "economic": {
+      "initial_balance": 100.0,
+      "token_pricing": {
+        "input_per_1m": 2.5,
+        "output_per_1m": 10.0
+      }
+    },
+    "agents": [
+      {
+        "signature": "minimal-learner",
+        "basemodel": "gpt-4o-mini",
+        "enabled": true,
+        "tasks_per_day": 1,
+        "supports_multimodal": false
+      }
+    ],
+    "agent_params": {
+      "max_steps": 5,
+      "max_retries": 1,
+      "base_delay": 0.5,
+      "tasks_per_day": 1
+    },
+    "evaluation": {
+      "use_llm_evaluation": true,
+      "meta_prompts_dir": "./eval/meta_prompts"
+    },
+    "task_source": {
+      "type": "inline",
+      "tasks": [
+        {
+          "task_id": "simple-edit-001",
+          "sector": "publishing",
+          "occupation": "Editors",
+          "prompt": "Review and improve this sentence for clarity: 'The quick brown fox jumps over the lazy dog but it was very tired and wanted to rest soon.'",
+          "reference_files": []
+        }
+      ]
+    },
+    "data_path": "./livebench/data/agent_data"
+  }
+}

@@ -1,0 +1,261 @@
+
+╔====================================================================╗
+║ ICT SNIPER - MULTI-TIMEFRAME OPTIMIZATION                            ║
+║ Testing MTF modes for best risk-adjusted returns                      ║
+╚====================================================================╝
+
+Testing Strategy:
+- MTF Modes: permissive, balanced, strict
+- Confidence threshold: 50% (baseline)
+- Each config: 3 indices × 90 days = full dataset
+
+Expected behavior:
+  permissive: Block 0%, highest volume, moderate win rate
+  balanced:   Block strong trends only, balanced approach
+  strict:     Block all counter-trend, lowest volume, highest quality
+
+
+
+======================================================================
+Testing: MTF Mode = PERMISSIVE, Min Confidence = 50%
+======================================================================
+
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+Testing BANKNIFTY...
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/192 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_233650.json
+  Trades: 192 | Win Rate: 53.1% | P&L: ₹10346
+
+Testing NIFTY50...
+
+============================================================
+BACKTESTING NIFTY50 - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for NIFTY50
+[Backtest] Generated 4864 simulated candles for NIFTY50
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for NIFTY50
+[Backtest] Generated 24064 simulated candles for NIFTY50
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/386 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_NIFTY50_20260303_233650.json
+  Trades: 194 | Win Rate: 48.5% | P&L: ₹1810
+
+Testing FINNIFTY...
+
+============================================================
+BACKTESTING FINNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for FINNIFTY
+[Backtest] Generated 4864 simulated candles for FINNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for FINNIFTY
+[Backtest] Generated 24064 simulated candles for FINNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/576 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_FINNIFTY_20260303_233651.json
+  Trades: 190 | Win Rate: 52.1% | P&L: ₹5385
+
+──────────────────────────────────────────────────────────────────────
+Summary: PERMISSIVE (Conf: 50%)
+  Total Trades: 576
+  Win Rate: 51.2%
+  Total P&L: ₹17541
+  Avg Trade: ₹30
+
+======================================================================
+Testing: MTF Mode = BALANCED, Min Confidence = 50%
+======================================================================
+
+[MTF] Mode set to: permissive
+[MTF] Mode set to: balanced
+
+Testing BANKNIFTY...
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 17/217 signals blocked (7.8%)
+[MTF] CE blocked: 17, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_233652.json
+  Trades: 200 | Win Rate: 54.5% | P&L: ₹11877
+
+Testing NIFTY50...
+
+============================================================
+BACKTESTING NIFTY50 - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for NIFTY50
+[Backtest] Generated 4864 simulated candles for NIFTY50
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for NIFTY50
+[Backtest] Generated 24064 simulated candles for NIFTY50
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 26/418 signals blocked (6.2%)
+[MTF] CE blocked: 26, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_NIFTY50_20260303_233652.json
+  Trades: 192 | Win Rate: 47.9% | P&L: ₹3978
+
+Testing FINNIFTY...
+
+============================================================
+BACKTESTING FINNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for FINNIFTY
+[Backtest] Generated 4864 simulated candles for FINNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for FINNIFTY
+[Backtest] Generated 24064 simulated candles for FINNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 47/626 signals blocked (7.5%)
+[MTF] CE blocked: 47, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_FINNIFTY_20260303_233653.json
+  Trades: 187 | Win Rate: 47.6% | P&L: ₹907
+
+──────────────────────────────────────────────────────────────────────
+Summary: BALANCED (Conf: 50%)
+  Total Trades: 579
+  Win Rate: 50.1%
+  Total P&L: ₹16762
+  Avg Trade: ₹29
+
+======================================================================
+Testing: MTF Mode = STRICT, Min Confidence = 50%
+======================================================================
+
+[MTF] Mode set to: permissive
+[MTF] Mode set to: strict
+
+Testing BANKNIFTY...
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 1680/1733 signals blocked (96.9%)
+[MTF] CE blocked: 1017, PE blocked: 663
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_233654.json
+  Trades: 53 | Win Rate: 32.1% | P&L: ₹-10405
+
+Testing NIFTY50...
+
+============================================================
+BACKTESTING NIFTY50 - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for NIFTY50
+[Backtest] Generated 4864 simulated candles for NIFTY50
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for NIFTY50
+[Backtest] Generated 24064 simulated candles for NIFTY50
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 3495/3595 signals blocked (97.2%)
+[MTF] CE blocked: 2232, PE blocked: 1263
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_NIFTY50_20260303_233655.json
+  Trades: 47 | Win Rate: 38.3% | P&L: ₹-4580
+
+Testing FINNIFTY...
+
+============================================================
+BACKTESTING FINNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for FINNIFTY
+[Backtest] Generated 4864 simulated candles for FINNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for FINNIFTY
+[Backtest] Generated 24064 simulated candles for FINNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 4625/4810 signals blocked (96.2%)
+[MTF] CE blocked: 2740, PE blocked: 1885
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_FINNIFTY_20260303_233656.json
+  Trades: 85 | Win Rate: 51.8% | P&L: ₹2157
+
+──────────────────────────────────────────────────────────────────────
+Summary: STRICT (Conf: 50%)
+  Total Trades: 185
+  Win Rate: 42.7%
+  Total P&L: ₹-12828
+  Avg Trade: ₹-69
+
+
+======================================================================
+OPTIMIZATION COMPLETE
+Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/optimization_results_mtf.json
+======================================================================
+
+
+📊 FINAL COMPARISON:
+
+MTF Mode        Trades     Win Rate     P&L            
+----------------------------------------------------
+balanced_50     579        50.1%        ₹16762
+permissive_50   576        51.2%        ₹17541
+strict_50       185        42.7%        ₹-12828
+
+────────────────────────────────────────────────────
+
+✓ RECOMMENDED: PERMISSIVE_50
+  Win Rate: 51.2%
+  P&L: ₹17541
+  Trades: 576

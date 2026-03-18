@@ -1,0 +1,11 @@
+Give only one SENSEX options intraday signal in this exact format:
+
+DATE | TIME | SYMBOL | SIDE(CE/PE) | STRIKE | ENTRY | SL | T1 | T2 | INVALIDATION | CONFIDENCE(0-100) | REASON
+
+Rules:
+1) Symbol must be SENSEX option only.
+2) Entry, SL, T1, T2 must be numeric.
+3) Confidence must be integer 0-100.
+4) Keep REASON max 12 words.
+5) If no high-quality setup exists, return:
+NO TRADE | Reason

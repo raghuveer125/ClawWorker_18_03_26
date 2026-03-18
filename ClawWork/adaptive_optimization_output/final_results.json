@@ -1,0 +1,69 @@
+{
+  "timestamp": "2026-03-03T23:55:05.512099",
+  "target_win_rate": 97.0,
+  "achieved_win_rate": 55.96,
+  "total_iterations": 20,
+  "best_config": {
+    "vol_multiplier": 1.032,
+    "displacement_multiplier": 1.284,
+    "swing_lookback": 10,
+    "mss_swing_len": 3,
+    "max_bars_after_sweep": 13,
+    "wins": 108,
+    "losses": 85,
+    "total_pnl": 13506.11,
+    "win_rate": 55.96,
+    "generation": 12,
+    "parent_config": "gen11",
+    "failure_reasons": []
+  },
+  "winning_configs": [
+    {
+      "vol_multiplier": 1.2,
+      "displacement_multiplier": 1.3,
+      "swing_lookback": 9,
+      "mss_swing_len": 2,
+      "max_bars_after_sweep": 10,
+      "wins": 93,
+      "losses": 104,
+      "total_pnl": 8981.11,
+      "win_rate": 47.21,
+      "generation": 0,
+      "parent_config": null,
+      "failure_reasons": []
+    },
+    {
+      "vol_multiplier": 1.1199999999999999,
+      "displacement_multiplier": 1.3,
+      "swing_lookback": 9,
+      "mss_swing_len": 2,
+      "max_bars_after_sweep": 10,
+      "wins": 105,
+      "losses": 87,
+      "total_pnl": 14444.3,
+      "win_rate": 54.69,
+      "generation": 2,
+      "parent_config": "gen0",
+      "failure_reasons": []
+    },
+    {
+      "vol_multiplier": 1.032,
+      "displacement_multiplier": 1.284,
+      "swing_lookback": 10,
+      "mss_swing_len": 3,
+      "max_bars_after_sweep": 13,
+      "wins": 108,
+      "losses": 85,
+      "total_pnl": 13506.11,
+      "win_rate": 55.96,
+      "generation": 12,
+      "parent_config": "gen11",
+      "failure_reasons": []
+    }
+  ],
+  "failure_patterns": {
+    "low_confidence": 189,
+    "small_move_chop": 108
+  },
+  "convergence": false
+}

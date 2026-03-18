@@ -1,0 +1,23 @@
+========================================
+Multi-Index Trading Engine
+========================================
+Indices: SENSEX NIFTY50 BANKNIFTY FINNIFTY
+Press Ctrl+C to stop all.
+
+Starting engines for SENSEX...
+[SENSEX] Daily folder: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/postmortem/2026-03-12/SENSEX
+  - Journal:  decision_journal.csv
+  - Signals:  signals.csv
+  - Trades:   paper_trades.csv
+  - Equity:   paper_equity.csv
+  - Events:   opportunity_events.csv
+  - States:   .signal_state.json, .opportunity_engine_state.json, .paper_trade_state.json
+  - Market:   OPEN (9:00-15:45 IST)
+Starting engines for SENSEX
+1) Signal engine     : interval=15s train_every=30s
+2) Opportunity engine: interval=15s (NO_PULL=1, table/output only)
+3) Paper trading     : interval=15s capital=5000 lot=10
+Market: OPEN - signals will be fetched
+Press Ctrl+C to stop all.
+
+Starting engines for NIFTY50...

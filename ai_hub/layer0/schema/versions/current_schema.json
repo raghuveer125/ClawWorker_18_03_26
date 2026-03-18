@@ -1,0 +1,277 @@
+{
+  "version": 4,
+  "timestamp": "2026-03-14T14:18:56.230869",
+  "hash": "c15ed8b845b7",
+  "fields": {
+    "symbol": {
+      "name": "symbol",
+      "field_type": "base",
+      "source": "fyers",
+      "description": "Trading symbol",
+      "dependencies": [],
+      "formula": null,
+      "compute_fn": null,
+      "params": {},
+      "refresh_rate": "per_tick",
+      "added_by": "system",
+      "added_at": "2026-03-14T14:18:55.605871",
+      "reason": null,
+      "version": 1,
+      "enabled": true
+    },
+    "ltp": {
+      "name": "ltp",
+      "field_type": "base",
+      "source": "fyers",
+      "description": "Last traded price",
+      "dependencies": [],
+      "formula": null,
+      "compute_fn": null,
+      "params": {},
+      "refresh_rate": "per_tick",
+      "added_by": "system",
+      "added_at": "2026-03-14T14:18:55.605899",
+      "reason": null,
+      "version": 1,
+      "enabled": true
+    },
+    "open": {
+      "name": "open",
+      "field_type": "base",
+      "source": "fyers",
+      "description": "Open price",
+      "dependencies": [],
+      "formula": null,
+      "compute_fn": null,
+      "params": {},
+      "refresh_rate": "per_tick",
+      "added_by": "system",
+      "added_at": "2026-03-14T14:18:55.605906",
+      "reason": null,
+      "version": 1,
+      "enabled": true
+    },
+    "high": {
+      "name": "high",
+      "field_type": "base",
+      "source": "fyers",
+      "description": "High price",
+      "dependencies": [],
+      "formula": null,
+      "compute_fn": null,
+      "params": {},
+      "refresh_rate": "per_tick",
+      "added_by": "system",
+      "added_at": "2026-03-14T14:18:55.605911",
+      "reason": null,
+      "version": 1,
+      "enabled": true
+    },
+    "low": {
+      "name": "low",
+      "field_type": "base",
+      "source": "fyers",
+      "description": "Low price",
+      "dependencies": [],
+      "formula": null,
+      "compute_fn": null,
+      "params": {},
+      "refresh_rate": "per_tick",
+      "added_by": "system",
+      "added_at": "2026-03-14T14:18:55.605915",
+      "reason": null,
+      "version": 1,
+      "enabled": true
+    },
+    "close": {
+      "name": "close",
+      "field_type": "base",
+      "source": "fyers",
+      "description": "Close price",
+      "dependencies": [],
+      "formula": null,
+      "compute_fn": null,
+      "params": {},
+      "refresh_rate": "per_tick",
+      "added_by": "system",
+      "added_at": "2026-03-14T14:18:55.605941",
+      "reason": null,
+      "version": 1,
+      "enabled": true
+    },
+    "volume": {
+      "name": "volume",
+      "field_type": "base",
+      "source": "fyers",
+      "description": "Trading volume",
+      "dependencies": [],
+      "formula": null,
+      "compute_fn": null,
+      "params": {},
+      "refresh_rate": "per_tick",
+      "added_by": "system",
+      "added_at": "2026-03-14T14:18:55.605945",
+      "reason": null,
+      "version": 1,
+      "enabled": true
+    },
+    "oi": {
+      "name": "oi",
+      "field_type": "base",
+      "source": "fyers",
+      "description": "Open interest",
+      "dependencies": [],
+      "formula": null,
+      "compute_fn": null,
+      "params": {},
+      "refresh_rate": "per_tick",
+      "added_by": "system",
+      "added_at": "2026-03-14T14:18:55.605949",
+      "reason": null,
+      "version": 1,
+      "enabled": true
+    },
+    "bid": {
+      "name": "bid",
+      "field_type": "base",
+      "source": "fyers",
+      "description": "Best bid price",
+      "dependencies": [],
+      "formula": null,
+      "compute_fn": null,
+      "params": {},
+      "refresh_rate": "per_tick",
+      "added_by": "system",
+      "added_at": "2026-03-14T14:18:55.605953",
+      "reason": null,
+      "version": 1,
+      "enabled": true
+    },
+    "ask": {
+      "name": "ask",
+      "field_type": "base",
+      "source": "fyers",
+      "description": "Best ask price",
+      "dependencies": [],
+      "formula": null,
+      "compute_fn": null,
+      "params": {},
+      "refresh_rate": "per_tick",
+      "added_by": "system",
+      "added_at": "2026-03-14T14:18:55.605957",
+      "reason": null,
+      "version": 1,
+      "enabled": true
+    },
+    "prev_close": {
+      "name": "prev_close",
+      "field_type": "base",
+      "source": "fyers",
+      "description": "Previous close price",
+      "dependencies": [],
+      "formula": null,
+      "compute_fn": null,
+      "params": {},
+      "refresh_rate": "per_tick",
+      "added_by": "system",
+      "added_at": "2026-03-14T14:18:55.605960",
+      "reason": null,
+      "version": 1,
+      "enabled": true
+    },
+    "vwap": {
+      "name": "vwap",
+      "field_type": "computed",
+      "source": "computed",
+      "description": "Volume Weighted Average Price",
+      "dependencies": [
+        "close",
+        "volume"
+      ],
+      "formula": null,
+      "compute_fn": "compute_vwap",
+      "params": {},
+      "refresh_rate": "per_tick",
+      "added_by": "test",
+      "added_at": "2026-03-14T14:17:42.778445",
+      "reason": "Test addition",
+      "version": 2,
+      "enabled": true
+    },
+    "fvg_zones": {
+      "name": "fvg_zones",
+      "field_type": "computed",
+      "source": "computed",
+      "description": "Fair Value Gap zones",
+      "dependencies": [
+        "open",
+        "high",
+        "low",
+        "close"
+      ],
+      "formula": null,
+      "compute_fn": "compute_fvg",
+      "params": {},
+      "refresh_rate": "per_tick",
+      "added_by": "learning_army",
+      "added_at": "2026-03-14T14:17:42.780001",
+      "reason": "FVG zones predict reversals with 73% accuracy",
+      "version": 2,
+      "enabled": true
+    }
+  },
+  "history": [
+    {
+      "version": 1,
+      "timestamp": "2026-03-14T14:17:42.778462",
+      "changes": [
+        {
+          "action": "add_field",
+          "field": "vwap",
+          "added_by": "test",
+          "reason": "Test addition"
+        }
+      ],
+      "hash": "f7f606bd2c45"
+    },
+    {
+      "version": 2,
+      "timestamp": "2026-03-14T14:17:42.780007",
+      "changes": [
+        {
+          "action": "add_field",
+          "field": "fvg_zones",
+          "added_by": "learning_army",
+          "reason": "FVG zones predict reversals with 73% accuracy"
+        }
+      ],
+      "hash": "8d6b270b3c68"
+    },
+    {
+      "version": 3,
+      "timestamp": "2026-03-14T14:18:56.227653",
+      "changes": [
+        {
+          "action": "add_field",
+          "field": "vwap",
+          "added_by": "test",
+          "reason": "Test addition"
+        }
+      ],
+      "hash": "54294294d8d7"
+    },
+    {
+      "version": 4,
+      "timestamp": "2026-03-14T14:18:56.230567",
+      "changes": [
+        {
+          "action": "add_field",
+          "field": "fvg_zones",
+          "added_by": "learning_army",
+          "reason": "FVG zones predict reversals with 73% accuracy"
+        }
+      ],
+      "hash": "c15ed8b845b7"
+    }
+  ]
+}

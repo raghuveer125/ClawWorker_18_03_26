@@ -1,0 +1,38 @@
+{
+  "summary": {
+    "date": "2026-02-18",
+    "shadow_log": "livebench/data/agent_data/gpt-4o-inline-test/trading/institutional_shadow.jsonl",
+    "envelope_count": 1,
+    "record_count": 1,
+    "complete_records": 1,
+    "schema_mismatch_count": 0,
+    "input_completeness_pct": 100.0
+  },
+  "adapter_health": {
+    "source": "shadow_only",
+    "total_runs": 0,
+    "ok_runs": 0,
+    "failed_safe_runs": 0,
+    "success_rate_pct": null,
+    "failure_rate_pct": null
+  },
+  "disagreement_spike": {
+    "threshold_pct": 60.0,
+    "spike_count": 0,
+    "spikes": []
+  },
+  "fallback_verification": {
+    "verified": true,
+    "reason": "ok",
+    "checks": {
+      "failed_safe_status_present": true,
+      "shadow_attached_to_result": true,
+      "adapter_try_except_present": true,
+      "screener_audit_shadow_fields": true
+    },
+    "file": "/workspaces/fyers/ClawWork/livebench/tools/direct_tools.py"
+  },
+  "alerts": [],
+  "alert_count": 0,
+  "status": "OK"
+}

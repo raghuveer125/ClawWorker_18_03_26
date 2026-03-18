@@ -1,0 +1,28 @@
+# Code Review Pipeline
+# Runs on every commit to ensure code quality
+
+id: code_review
+name: Code Review Pipeline
+description: Validates code quality, runs tests, and auto-fixes issues
+
+trigger: event
+trigger_config:
+  event_type: code_changed
+
+enabled: true
+
+steps:
+  - bot: guardian
+    config:
+      run_tests: true
+      run_lint: true
+      run_security: true
+    on_failure: skip
+    timeout: 300
+
+  - bot: self_healing
+    config: {}
+    condition: "last_result and last_result.status.value == 'failed'"
+    on_failure: skip
+    max_retries: 2
+    timeout: 600

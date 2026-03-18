@@ -1,0 +1,560 @@
+{
+  "bot_parameters": {
+    "TrendFollower": [
+      {
+        "name": "min_trend_pct",
+        "current_value": 0.3,
+        "min_value": 0.1,
+        "max_value": 0.8,
+        "step_size": 0.05,
+        "description": "Minimum % move to consider a trend",
+        "last_optimized": "2026-03-18 21:34:46.996866",
+        "optimization_count": 0
+      },
+      {
+        "name": "strong_trend_pct",
+        "current_value": 0.8,
+        "min_value": 0.4,
+        "max_value": 1.5,
+        "step_size": 0.1,
+        "description": "Strong trend threshold",
+        "last_optimized": "2026-03-18 21:34:46.996875",
+        "optimization_count": 0
+      },
+      {
+        "name": "momentum_threshold",
+        "current_value": 0.1,
+        "min_value": 0.02,
+        "max_value": 0.3,
+        "step_size": 0.02,
+        "description": "Momentum must be positive",
+        "last_optimized": "2026-03-18 21:34:46.996877",
+        "optimization_count": 0
+      },
+      {
+        "name": "stop_loss_pct",
+        "current_value": 1.5,
+        "min_value": 0.8,
+        "max_value": 3.0,
+        "step_size": 0.25,
+        "description": "Stop loss percentage",
+        "last_optimized": "2026-03-18 21:34:46.996878",
+        "optimization_count": 0
+      },
+      {
+        "name": "target_pct",
+        "current_value": 3.0,
+        "min_value": 1.5,
+        "max_value": 5.0,
+        "step_size": 0.25,
+        "description": "Target profit percentage",
+        "last_optimized": "2026-03-18 21:34:46.996880",
+        "optimization_count": 0
+      }
+    ],
+    "MomentumScalper": [
+      {
+        "name": "min_momentum",
+        "current_value": 0.08,
+        "min_value": 0.03,
+        "max_value": 0.2,
+        "step_size": 0.01,
+        "description": "Minimum momentum to trigger signal",
+        "last_optimized": "2026-03-18 21:34:46.996881",
+        "optimization_count": 0
+      },
+      {
+        "name": "strong_momentum",
+        "current_value": 0.2,
+        "min_value": 0.1,
+        "max_value": 0.5,
+        "step_size": 0.02,
+        "description": "Threshold for strong momentum",
+        "last_optimized": "2026-03-18 21:34:46.996883",
+        "optimization_count": 0
+      },
+      {
+        "name": "min_change_pct",
+        "current_value": 0.1,
+        "min_value": 0.05,
+        "max_value": 0.3,
+        "step_size": 0.02,
+        "description": "Minimum change percentage",
+        "last_optimized": "2026-03-18 21:34:46.996887",
+        "optimization_count": 0
+      },
+      {
+        "name": "cooldown_seconds",
+        "current_value": 30,
+        "min_value": 10,
+        "max_value": 120,
+        "step_size": 10,
+        "description": "Cooldown between signals",
+        "last_optimized": "2026-03-18 21:34:46.996888",
+        "optimization_count": 0
+      },
+      {
+        "name": "quick_target_pct",
+        "current_value": 1.5,
+        "min_value": 0.8,
+        "max_value": 3.0,
+        "step_size": 0.25,
+        "description": "Quick scalp target percentage",
+        "last_optimized": "2026-03-18 21:34:46.996890",
+        "optimization_count": 0
+      },
+      {
+        "name": "stop_loss_pct",
+        "current_value": 1.0,
+        "min_value": 0.5,
+        "max_value": 2.0,
+        "step_size": 0.25,
+        "description": "Stop loss percentage",
+        "last_optimized": "2026-03-18 21:34:46.996891",
+        "optimization_count": 0
+      }
+    ],
+    "OIAnalyst": [
+      {
+        "name": "bullish_pcr_threshold",
+        "current_value": 1.2,
+        "min_value": 1.0,
+        "max_value": 1.5,
+        "step_size": 0.05,
+        "description": "PCR above this is bullish",
+        "last_optimized": "2026-03-18 21:34:46.996893",
+        "optimization_count": 0
+      },
+      {
+        "name": "bearish_pcr_threshold",
+        "current_value": 0.8,
+        "min_value": 0.5,
+        "max_value": 1.0,
+        "step_size": 0.05,
+        "description": "PCR below this is bearish",
+        "last_optimized": "2026-03-18 21:34:46.996894",
+        "optimization_count": 0
+      },
+      {
+        "name": "oi_change_threshold",
+        "current_value": 5.0,
+        "min_value": 2.0,
+        "max_value": 15.0,
+        "step_size": 1.0,
+        "description": "Significant OI change percentage",
+        "last_optimized": "2026-03-18 21:34:46.996895",
+        "optimization_count": 0
+      },
+      {
+        "name": "stop_loss_pct",
+        "current_value": 1.5,
+        "min_value": 0.8,
+        "max_value": 3.0,
+        "step_size": 0.25,
+        "description": "Stop loss percentage",
+        "last_optimized": "2026-03-18 21:34:46.996896",
+        "optimization_count": 0
+      },
+      {
+        "name": "target_pct",
+        "current_value": 3.0,
+        "min_value": 1.5,
+        "max_value": 5.0,
+        "step_size": 0.25,
+        "description": "Target profit percentage",
+        "last_optimized": "2026-03-18 21:34:46.996898",
+        "optimization_count": 0
+      }
+    ],
+    "VolatilityTrader": [
+      {
+        "name": "low_iv_percentile",
+        "current_value": 45,
+        "min_value": 20,
+        "max_value": 60,
+        "step_size": 5,
+        "description": "Low IV percentile threshold",
+        "last_optimized": "2026-03-18 21:34:46.996899",
+        "optimization_count": 0
+      },
+      {
+        "name": "high_iv_percentile",
+        "current_value": 60,
+        "min_value": 50,
+        "max_value": 85,
+        "step_size": 5,
+        "description": "High IV percentile threshold",
+        "last_optimized": "2026-03-18 21:34:46.996900",
+        "optimization_count": 0
+      },
+      {
+        "name": "vol_breakout_threshold",
+        "current_value": 0.5,
+        "min_value": 0.2,
+        "max_value": 1.0,
+        "step_size": 0.1,
+        "description": "Volatility breakout threshold",
+        "last_optimized": "2026-03-18 21:34:46.996902",
+        "optimization_count": 0
+      },
+      {
+        "name": "stop_loss_pct",
+        "current_value": 2.0,
+        "min_value": 1.0,
+        "max_value": 3.5,
+        "step_size": 0.25,
+        "description": "Stop loss percentage",
+        "last_optimized": "2026-03-18 21:34:46.996903",
+        "optimization_count": 0
+      },
+      {
+        "name": "target_pct",
+        "current_value": 3.5,
+        "min_value": 2.0,
+        "max_value": 5.5,
+        "step_size": 0.25,
+        "description": "Target profit percentage",
+        "last_optimized": "2026-03-18 21:34:46.996904",
+        "optimization_count": 0
+      }
+    ],
+    "ReversalHunter": [
+      {
+        "name": "overbought_threshold",
+        "current_value": 1.0,
+        "min_value": 0.5,
+        "max_value": 2.0,
+        "step_size": 0.1,
+        "description": "Overbought threshold percentage",
+        "last_optimized": "2026-03-18 21:34:46.996905",
+        "optimization_count": 0
+      },
+      {
+        "name": "oversold_threshold",
+        "current_value": -1.0,
+        "min_value": -2.0,
+        "max_value": -0.5,
+        "step_size": 0.1,
+        "description": "Oversold threshold percentage",
+        "last_optimized": "2026-03-18 21:34:46.996906",
+        "optimization_count": 0
+      },
+      {
+        "name": "extreme_threshold",
+        "current_value": 1.5,
+        "min_value": 0.8,
+        "max_value": 2.5,
+        "step_size": 0.1,
+        "description": "Extreme move threshold",
+        "last_optimized": "2026-03-18 21:34:46.996908",
+        "optimization_count": 0
+      },
+      {
+        "name": "momentum_fade_threshold",
+        "current_value": -0.1,
+        "min_value": -0.3,
+        "max_value": -0.05,
+        "step_size": 0.02,
+        "description": "Momentum fade detection threshold",
+        "last_optimized": "2026-03-18 21:34:46.996909",
+        "optimization_count": 0
+      },
+      {
+        "name": "stop_loss_pct",
+        "current_value": 1.5,
+        "min_value": 0.8,
+        "max_value": 3.0,
+        "step_size": 0.25,
+        "description": "Stop loss percentage",
+        "last_optimized": "2026-03-18 21:34:46.996910",
+        "optimization_count": 0
+      },
+      {
+        "name": "target_pct",
+        "current_value": 3.0,
+        "min_value": 1.5,
+        "max_value": 5.0,
+        "step_size": 0.25,
+        "description": "Target profit percentage",
+        "last_optimized": "2026-03-18 21:34:46.996911",
+        "optimization_count": 0
+      }
+    ]
+  },
+  "parameter_performance": {
+    "TrendFollower.min_trend_pct": {
+      "0.3": {
+        "parameter_name": "TrendFollower.min_trend_pct",
+        "value": 0.3,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "TrendFollower.max_trend_pct": {
+      "2.0": {
+        "parameter_name": "TrendFollower.max_trend_pct",
+        "value": 2.0,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "TrendFollower.strong_trend_pct": {
+      "0.8": {
+        "parameter_name": "TrendFollower.strong_trend_pct",
+        "value": 0.8,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "TrendFollower.momentum_threshold": {
+      "0.1": {
+        "parameter_name": "TrendFollower.momentum_threshold",
+        "value": 0.1,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "TrendFollower.risk_reward_min": {
+      "1.5": {
+        "parameter_name": "TrendFollower.risk_reward_min",
+        "value": 1.5,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "TrendFollower.stop_loss_pct": {
+      "1.5": {
+        "parameter_name": "TrendFollower.stop_loss_pct",
+        "value": 1.5,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "TrendFollower.target_pct": {
+      "3.0": {
+        "parameter_name": "TrendFollower.target_pct",
+        "value": 3.0,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "OIAnalyst.bullish_pcr_threshold": {
+      "1.2": {
+        "parameter_name": "OIAnalyst.bullish_pcr_threshold",
+        "value": 1.2,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "OIAnalyst.bearish_pcr_threshold": {
+      "0.8": {
+        "parameter_name": "OIAnalyst.bearish_pcr_threshold",
+        "value": 0.8,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "OIAnalyst.extreme_pcr_high": {
+      "1.5": {
+        "parameter_name": "OIAnalyst.extreme_pcr_high",
+        "value": 1.5,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "OIAnalyst.extreme_pcr_low": {
+      "0.5": {
+        "parameter_name": "OIAnalyst.extreme_pcr_low",
+        "value": 0.5,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "OIAnalyst.oi_change_threshold": {
+      "5.0": {
+        "parameter_name": "OIAnalyst.oi_change_threshold",
+        "value": 5.0,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "OIAnalyst.max_pain_weight": {
+      "0.3": {
+        "parameter_name": "OIAnalyst.max_pain_weight",
+        "value": 0.3,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "OIAnalyst.stop_loss_pct": {
+      "1.5": {
+        "parameter_name": "OIAnalyst.stop_loss_pct",
+        "value": 1.5,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "OIAnalyst.target_pct": {
+      "3.0": {
+        "parameter_name": "OIAnalyst.target_pct",
+        "value": 3.0,
+        "trades": 62,
+        "wins": 62,
+        "losses": 0,
+        "total_pnl": 16399.50610000002,
+        "avg_pnl": 264.50816290322615,
+        "win_rate": 100.0
+      }
+    },
+    "VolatilityTrader.low_iv_percentile": {
+      "45.0": {
+        "parameter_name": "VolatilityTrader.low_iv_percentile",
+        "value": 45.0,
+        "trades": 56,
+        "wins": 56,
+        "losses": 0,
+        "total_pnl": 14923.071900000019,
+        "avg_pnl": 266.48342678571464,
+        "win_rate": 100.0
+      }
+    },
+    "VolatilityTrader.high_iv_percentile": {
+      "60.0": {
+        "parameter_name": "VolatilityTrader.high_iv_percentile",
+        "value": 60.0,
+        "trades": 56,
+        "wins": 56,
+        "losses": 0,
+        "total_pnl": 14923.071900000019,
+        "avg_pnl": 266.48342678571464,
+        "win_rate": 100.0
+      }
+    },
+    "VolatilityTrader.vol_breakout_threshold": {
+      "0.5": {
+        "parameter_name": "VolatilityTrader.vol_breakout_threshold",
+        "value": 0.5,
+        "trades": 56,
+        "wins": 56,
+        "losses": 0,
+        "total_pnl": 14923.071900000019,
+        "avg_pnl": 266.48342678571464,
+        "win_rate": 100.0
+      }
+    },
+    "VolatilityTrader.consolidation_periods": {
+      "3.0": {
+        "parameter_name": "VolatilityTrader.consolidation_periods",
+        "value": 3.0,
+        "trades": 56,
+        "wins": 56,
+        "losses": 0,
+        "total_pnl": 14923.071900000019,
+        "avg_pnl": 266.48342678571464,
+        "win_rate": 100.0
+      }
+    },
+    "VolatilityTrader.iv_crush_threshold": {
+      "0.2": {
+        "parameter_name": "VolatilityTrader.iv_crush_threshold",
+        "value": 0.2,
+        "trades": 56,
+        "wins": 56,
+        "losses": 0,
+        "total_pnl": 14923.071900000019,
+        "avg_pnl": 266.48342678571464,
+        "win_rate": 100.0
+      }
+    },
+    "VolatilityTrader.stop_loss_pct": {
+      "2.0": {
+        "parameter_name": "VolatilityTrader.stop_loss_pct",
+        "value": 2.0,
+        "trades": 56,
+        "wins": 56,
+        "losses": 0,
+        "total_pnl": 14923.071900000019,
+        "avg_pnl": 266.48342678571464,
+        "win_rate": 100.0
+      }
+    },
+    "VolatilityTrader.target_pct": {
+      "3.5": {
+        "parameter_name": "VolatilityTrader.target_pct",
+        "value": 3.5,
+        "trades": 56,
+        "wins": 56,
+        "losses": 0,
+        "total_pnl": 14923.071900000019,
+        "avg_pnl": 266.48342678571464,
+        "win_rate": 100.0
+      }
+    }
+  },
+  "optimization_history": [],
+  "config": {
+    "min_trades_for_optimization": 20,
+    "min_trades_per_value": 5,
+    "optimization_interval_hours": 24,
+    "max_optimizations_per_run": 3,
+    "performance_threshold": 0.1,
+    "rollback_threshold": -0.15
+  },
+  "last_saved": "2026-03-18T21:34:47.003673"
+}

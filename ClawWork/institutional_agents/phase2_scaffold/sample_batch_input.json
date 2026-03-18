@@ -1,0 +1,94 @@
+[
+  {
+    "underlying": "NIFTY50",
+    "underlying_change_pct": 0.62,
+    "iv_percentile": 48.0,
+    "straddle_breakout_direction": "UP",
+    "straddle_band_pct": 12.0,
+    "rows": [
+      {
+        "strike": 22100,
+        "option_type": "CE",
+        "ltp": 122.5,
+        "oi": 182000,
+        "oi_change": 11200,
+        "volume": 64500,
+        "spread_bps": 22.0,
+        "delta": 0.52,
+        "gamma": 0.012,
+        "theta": -4.1,
+        "vega": 10.2
+      },
+      {
+        "strike": 22100,
+        "option_type": "PE",
+        "ltp": 88.2,
+        "oi": 171000,
+        "oi_change": -5200,
+        "volume": 40100,
+        "spread_bps": 28.0,
+        "delta": -0.39,
+        "gamma": 0.010,
+        "theta": -3.4,
+        "vega": 8.8
+      }
+    ]
+  },
+  {
+    "underlying": "BANKNIFTY",
+    "underlying_change_pct": -0.71,
+    "iv_percentile": 66.0,
+    "straddle_breakout_direction": "DOWN",
+    "straddle_band_pct": 10.0,
+    "rows": [
+      {
+        "strike": 47200,
+        "option_type": "PE",
+        "ltp": 205.0,
+        "oi": 194000,
+        "oi_change": 13200,
+        "volume": 70200,
+        "spread_bps": 26.0,
+        "delta": -0.55,
+        "gamma": 0.014,
+        "theta": -5.1,
+        "vega": 12.1
+      },
+      {
+        "strike": 47200,
+        "option_type": "CE",
+        "ltp": 148.0,
+        "oi": 168000,
+        "oi_change": -8400,
+        "volume": 50300,
+        "spread_bps": 29.0,
+        "delta": 0.41,
+        "gamma": 0.011,
+        "theta": -4.0,
+        "vega": 9.7
+      }
+    ]
+  },
+  {
+    "underlying": "SENSEX",
+    "underlying_change_pct": 0.12,
+    "iv_percentile": 38.0,
+    "straddle_breakout_direction": "NONE",
+    "straddle_band_pct": 12.0,
+    "rows": [
+      {
+        "strike": 72900,
+        "option_type": "CE",
+        "ltp": 130.0,
+        "oi": 780,
+        "oi_change": 120,
+        "volume": 220,
+        "spread_bps": 68.0,
+        "delta": 0.33,
+        "gamma": 0.009,
+        "theta": -2.8,
+        "vega": 7.2
+      }
+    ]
+  }
+]

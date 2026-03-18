@@ -1,0 +1,81 @@
+# Learning Control Loop Pipeline
+# The complete quant fund edge - continuous improvement cycle
+#
+# Flow:
+# Backtest → Experiment → MetaStrategy → Correlation → AlphaDecay → Execute
+#
+# Allocation Rule: 70% stable / 20% adaptive / 10% experimental
+
+id: learning_loop
+name: Learning Control Loop
+description: >
+  Complete strategy lifecycle: discover, allocate, monitor, improve.
+  Implements the 70/20/10 allocation rule.
+
+trigger: schedule
+trigger_config:
+  cron: "0 8 * * 1-5"  # Daily at market open (8 AM, weekdays)
+
+enabled: true
+
+steps:
+  # Step 1: Detect current market regime
+  - bot: regime
+    config:
+      symbol: "NSE:NIFTY50-INDEX"
+      lookback_days: 20
+    timeout: 60
+
+  # Step 2: Run backtests on active strategies
+  - bot: backtest
+    config:
+      symbol: "NSE:NIFTY50-INDEX"
+      resolution: "5m"
+      days: 30
+    timeout: 300
+
+  # Step 3: Generate new strategy experiments (10% bucket)
+  - bot: experiment
+    config:
+      max_experiments: 3
+    on_failure: skip  # Don't block if experiments fail
+    timeout: 120
+
+  # Step 4: Meta-strategy allocation (70/20/10 rule)
+  - bot: meta_strategy
+    config:
+      min_trades_for_confidence: 20
+      min_win_rate: 0.45
+      max_drawdown_to_allocate: 10.0
+    timeout: 60
+
+  # Step 5: Check correlations and adjust
+  - bot: correlation
+    config:
+      correlation_threshold: 0.7
+      lookback_trades: 50
+    timeout: 60
+
+  # Step 6: Monitor for alpha decay
+  - bot: alpha_decay
+    config:
+      check_window_days: 30
+      alert_on_decay: true
+      auto_pause: true
+    timeout: 120
+
+  # Step 7: Final risk check
+  - bot: risk_sentinel
+    config:
+      max_drawdown_pct: 5.0
+      max_daily_loss_pct: 2.0
+    on_failure: stop  # CRITICAL - halt if risk breach
+    timeout: 30
+
+  # Step 8: Execute (dry run by default)
+  - bot: execution
+    config:
+      dry_run: true
+      max_slippage_pct: 0.1
+    condition: "not context.has_failures()"
+    timeout: 60

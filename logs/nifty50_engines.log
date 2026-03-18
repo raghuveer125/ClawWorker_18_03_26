@@ -1,0 +1,93 @@
+[NIFTY50] Daily folder: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/postmortem/2026-03-12/NIFTY50
+  - Journal:  decision_journal.csv
+  - Signals:  signals.csv
+  - Trades:   paper_trades.csv
+  - Equity:   paper_equity.csv
+  - Events:   opportunity_events.csv
+  - States:   .signal_state.json, .opportunity_engine_state.json, .paper_trade_state.json
+  - Market:   OPEN (9:00-15:45 IST)
+Starting engines for NIFTY50
+1) Signal engine     : interval=15s train_every=30s
+2) Opportunity engine: interval=15s (NO_PULL=1, table/output only)
+3) Paper trading     : interval=15s capital=5000 lot=10
+Market: OPEN - signals will be fetched
+Press Ctrl+C to stop all.
+
+[NIFTY50:SIG] [NIFTY50] Daily folder: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/postmortem/2026-03-12/NIFTY50
+[NIFTY50:OPP] [NIFTY50] Daily folder: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/postmortem/2026-03-12/NIFTY50
+[NIFTY50:PAPER] [NIFTY50] Daily folder: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/postmortem/2026-03-12/NIFTY50
+[NIFTY50:PAPER]   - Journal:  decision_journal.csv
+[NIFTY50:SIG]   - Journal:  decision_journal.csv[NIFTY50:OPP]   - Journal:  decision_journal.csv
+
+[NIFTY50:SIG]   - Signals:  signals.csv
+[NIFTY50:PAPER]   - Signals:  signals.csv
+[NIFTY50:OPP]   - Signals:  signals.csv
+[NIFTY50:SIG]   - Trades:   paper_trades.csv
+[NIFTY50:PAPER]   - Trades:   paper_trades.csv
+[NIFTY50:OPP]   - Trades:   paper_trades.csv
+[NIFTY50:SIG]   - Equity:   paper_equity.csv
+[NIFTY50:OPP]   - Equity:   paper_equity.csv[NIFTY50:PAPER]   - Equity:   paper_equity.csv
+
+[NIFTY50:SIG]   - Events:   opportunity_events.csv
+[NIFTY50:OPP]   - Events:   opportunity_events.csv
+[NIFTY50:SIG]   - States:   .signal_state.json, .opportunity_engine_state.json, .paper_trade_state.json[NIFTY50:OPP]   - States:   .signal_state.json, .opportunity_engine_state.json, .paper_trade_state.json
+
+[NIFTY50:OPP]   - Market:   OPEN (9:00-15:45 IST)
+[NIFTY50:SIG]   - Market:   OPEN (9:00-15:45 IST)
+[NIFTY50:PAPER]   - Events:   opportunity_events.csv
+[NIFTY50:PAPER]   - States:   .signal_state.json, .opportunity_engine_state.json, .paper_trade_state.json
+[NIFTY50:PAPER]   - Market:   OPEN (9:00-15:45 IST)
+[NIFTY50:SIG] Starting continuous signal loop
+[NIFTY50:SIG] Interval: 15s | Profile: expiry | Ladder: 5
+[NIFTY50:SIG] Filters: min_conf=88 min_score=95 min_delta=0.10 min_vote_diff=2 confirm=2 cooldown=45s max_select=3 max_spread=2.5%
+[NIFTY50:SIG] Adaptive: enable=1 model=.adaptive_model.json min_prob=0.55 min_samples=20 hard_gate_samples=100 lock_streak=8 relax_sec=300
+[NIFTY50:SIG] AutoTrain: enable=1 every=30s labels>=20
+[NIFTY50:SIG] Press Ctrl+C to stop.
+[NIFTY50:SIG] 
+[NIFTY50:SIG] [2026-03-12 13:54:33] Auto-training adaptive model...
+[NIFTY50:SIG] Not enough labeled rows: 9 (need >= 20). Fill 'outcome' column with Win/Loss first.
+[NIFTY50:SIG] 
+[NIFTY50:SIG] [2026-03-12 13:54:33] Pulling signals...
+[NIFTY50:OPP] Starting opportunity engine
+[NIFTY50:OPP] Interval: 15s | EntryScore>=74 Conf>=84 VoteDiff>=5 Spread<=2.2%
+[NIFTY50:OPP] Exit: SL/T1/T2 + flip=Y + time=180s
+[NIFTY50:OPP] Reversal: Y drop>=55.0% delta_drop>=0.12 iv_drop>=8.0 flow_req=N ctx_req=N exit_on_reversal=Y
+[NIFTY50:OPP] Press Ctrl+C to stop.
+[NIFTY50:OPP] 
+[NIFTY50:OPP] [2026-03-12 13:54:33] Scan cycle...
+[NIFTY50:PAPER] Starting paper trade loop
+[NIFTY50:PAPER] Interval: 15s | Capital: 5000.00 | Lot: 10 | Fees: 40+40
+[NIFTY50:PAPER] Exit: T1 | MaxHold: 180s | SideFlipExit: Y
+[NIFTY50:PAPER] Press Ctrl+C to stop.
+[NIFTY50:PAPER] 
+[NIFTY50:PAPER] [2026-03-12 13:54:34] Pulling + simulating...
+[NIFTY50:PAPER] PaperSummary | Cash: 1744.00 | Open: 0 | Realized: -3256.00 | Unrealized: 0.00 | Equity: 1744.00 | Fees: 2080.00 | W/L: 1/25 | Side: -
+[NIFTY50:SIG] RefreshAt: 2026-03-12 13:54:34
+[NIFTY50:SIG] Table 1/3
+[NIFTY50:SIG] Time     | Side | Strike | StrPCR | Level | Entry  | SL     | T1     | T2     | Conf | Status    | Score   | Action | Stable | CooldownS | EntryReady | Selected
+[NIFTY50:SIG] ---------+------+--------+--------+-------+--------+--------+--------+--------+------+-----------+---------+--------+--------+-----------+------------+---------
+[NIFTY50:SIG] 13:54:34 | CE   | 23800  | 1.01   | NEUT  | 247.55 | 225.27 | 274.78 | 302.01 | 95   | APPROVED  | 100/100 | Take   | Y      | 0         | Y          | Y       
+[NIFTY50:SIG] 13:54:34 | CE   | 23850  | 0.70   | RES   | 221.15 | 201.25 | 245.48 | 269.80 | 92   | APPROVED  | 100/100 | Take   | Y      | 0         | Y          | Y       
+[NIFTY50:SIG] 13:54:34 | CE   | 23900  | 0.69   | RES   | 195.95 | 178.31 | 217.50 | 239.06 | 89   | APPROVED  | 100/100 | Take   | Y      | 0         | Y          | Y       
+[NIFTY50:SIG] 13:54:34 | CE   | 23950  | 0.69   | RES   | 173.50 | 157.89 | 192.59 | 211.67 | 86   | PREFILTER | 100/100 | Skip   | Y      | 0         | N          | N       
+[NIFTY50:SIG] 13:54:34 | CE   | 24000  | 0.47   | RES+  | 152.70 | 138.96 | 169.50 | 186.29 | 83   | PREFILTER | 97/100  | Skip   | Y      | 0         | N          | N       
+[NIFTY50:SIG] 
+[NIFTY50:SIG] Table 2/3
+[NIFTY50:SIG] Time     | Side | Strike | Bid    | Ask    | Spr% | IV%   | Delta | Gamma   | ThetaD  | Decay% | VoteCE | VotePE | VoteSide | VoteDiff | LearnP | LearnGate
+[NIFTY50:SIG] ---------+------+--------+--------+--------+------+-------+-------+---------+---------+--------+--------+--------+----------+----------+--------+----------
+[NIFTY50:SIG] 13:54:34 | CE   | 23800  | 247.35 | 247.85 | 0.20 | 22.38 | 0.502 | 0.00064 | -26.607 | 10.75  | 4      | 2      | CE       | 2        | 0.01   | MATURITY 
+[NIFTY50:SIG] 13:54:34 | CE   | 23850  | 220.95 | 221.20 | 0.11 | 22.15 | 0.470 | 0.00064 | -26.155 | 11.83  | 4      | 2      | CE       | 2        | 0.01   | MATURITY 
+[NIFTY50:SIG] 13:54:34 | CE   | 23900  | 196.30 | 196.60 | 0.15 | 21.87 | 0.437 | 0.00064 | -25.497 | 13.01  | 4      | 2      | CE       | 2        | 0.01   | MATURITY 
+[NIFTY50:SIG] 13:54:34 | CE   | 23950  | 173.55 | 173.90 | 0.20 | 21.70 | 0.405 | 0.00064 | -24.791 | 14.29  | 4      | 2      | CE       | 2        | 0.01   | MATURITY 
+[NIFTY50:SIG] 13:54:34 | CE   | 24000  | 152.80 | 153.05 | 0.16 | 21.52 | 0.372 | 0.00063 | -23.934 | 15.67  | 4      | 2      | CE       | 2        | 0.02   | MATURITY 
+[NIFTY50:SIG] 
+[NIFTY50:SIG] Table 3/3
+[NIFTY50:SIG] Time     | Side | Strike | VolDom  | VolSwitch | Note         
+[NIFTY50:SIG] ---------+------+--------+---------+-----------+--------------
+[NIFTY50:SIG] 13:54:34 | CE   | 23800  | NEUTRAL | N         |              
+[NIFTY50:SIG] 13:54:34 | CE   | 23850  | NEUTRAL | N         |              
+[NIFTY50:SIG] 13:54:34 | CE   | 23900  | NEUTRAL | N         |              
+[NIFTY50:SIG] 13:54:34 | CE   | 23950  | NEUTRAL | N         | rank,low_conf
+[NIFTY50:SIG] 13:54:34 | CE   | 24000  | NEUTRAL | N         | rank,low_conf
+[NIFTY50:SIG] 
+[NIFTY50:SIG] Opp: Open=0 | Spot=23774.95 | VIX=21.14 | PCR=1.353 | MaxPain=23800(-25) | Basis=0.339% | Vol=NEUTRAL | Vote=CE(2)

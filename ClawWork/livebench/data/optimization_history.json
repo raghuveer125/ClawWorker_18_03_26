@@ -1,0 +1,116 @@
+[
+  {
+    "total_signals": 24,
+    "blocked_signals": 58,
+    "executed_trades": 0,
+    "rejection_reasons": {
+      "choppy_market": 33,
+      "mtf_filter": 0,
+      "capital_preservation": 25,
+      "insufficient_bots": 0
+    },
+    "bot_performance": {
+      "TrendFollower": {
+        "avg_confidence": 78.0
+      },
+      "OIAnalyst": {
+        "avg_confidence": 40.0
+      },
+      "VolatilityTrader": {
+        "avg_confidence": 56.666666666666664
+      },
+      "ReversalHunter": {
+        "avg_confidence": 65.0
+      }
+    },
+    "suggestions": [
+      {
+        "parameter": "review_all_thresholds",
+        "current_value": "current",
+        "suggested_value": "lower by 5-10%",
+        "reason": "Many signals generated but no trades - thresholds may be too strict",
+        "confidence": 80,
+        "impact": "HIGH"
+      }
+    ],
+    "timestamp": "2026-03-02T12:40:51.625028"
+  },
+  {
+    "total_signals": 0,
+    "blocked_signals": 0,
+    "executed_trades": 0,
+    "rejection_reasons": {
+      "choppy_market": 0,
+      "mtf_filter": 0,
+      "capital_preservation": 0,
+      "insufficient_bots": 0
+    },
+    "bot_performance": {},
+    "suggestions": [
+      {
+        "parameter": "min_signal_strength",
+        "current_value": "50%",
+        "suggested_value": "40%",
+        "reason": "Lowering the minimum signal strength allows more signals to be generated, potentially increasing trading opportunities without significantly compromising quality.",
+        "confidence": 80,
+        "impact": "HIGH"
+      },
+      {
+        "parameter": "min_confidence",
+        "current_value": "65%",
+        "suggested_value": "60%",
+        "reason": "Reducing the minimum weighted consensus confidence can help in generating more signals, which is crucial given the current lack of activity.",
+        "confidence": 75,
+        "impact": "HIGH"
+      },
+      {
+        "parameter": "min_bots_required",
+        "current_value": 2,
+        "suggested_value": 1,
+        "reason": "Lowering the minimum number of agreeing bots can facilitate trade execution, especially in a low-signal environment, while still maintaining a level of consensus.",
+        "confidence": 70,
+        "impact": "MEDIUM"
+      }
+    ],
+    "timestamp": "2026-03-02T12:45:20.889106"
+  },
+  {
+    "total_signals": 0,
+    "blocked_signals": 0,
+    "executed_trades": 0,
+    "rejection_reasons": {
+      "choppy_market": 0,
+      "mtf_filter": 0,
+      "capital_preservation": 0,
+      "insufficient_bots": 0
+    },
+    "bot_performance": {},
+    "suggestions": [
+      {
+        "parameter": "min_signal_strength",
+        "current_value": "50%",
+        "suggested_value": "40%",
+        "reason": "Lowering the minimum signal strength allows more signals to be generated, potentially increasing the number of trades executed. This can help identify profitable opportunities that are currently being missed due to overly strict confidence requirements.",
+        "confidence": 75,
+        "impact": "HIGH"
+      },
+      {
+        "parameter": "min_confidence",
+        "current_value": "65%",
+        "suggested_value": "60%",
+        "reason": "Reducing the minimum weighted consensus confidence can facilitate more signals being accepted, which may lead to increased trading activity. This adjustment aligns with the principle of prioritizing quantity of actionable signals while maintaining a reasonable level of confidence.",
+        "confidence": 70,
+        "impact": "MEDIUM"
+      },
+      {
+        "parameter": "min_bots_required",
+        "current_value": 2,
+        "suggested_value": 1,
+        "reason": "Lowering the minimum number of agreeing bots can help in generating signals even when fewer bots are available or when they have varying levels of confidence. This change can help in capturing trades that would otherwise be missed.",
+        "confidence": 80,
+        "impact": "HIGH"
+      }
+    ],
+    "timestamp": "2026-03-02T12:47:17.235106"
+  }
+]

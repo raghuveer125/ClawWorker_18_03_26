@@ -1,0 +1,1557 @@
+{
+  "run_tag": "phase1_20day_pipeline",
+  "input_file": "reports/phase1_20day_realdata_input.csv",
+  "record_count": 102,
+  "summary": {
+    "total_decisions": 102,
+    "action_counts": {
+      "BUY_CALL": 26,
+      "BUY_PUT": 26,
+      "NO_TRADE": 50
+    },
+    "action_distribution_pct": {
+      "BUY_CALL": 25.49,
+      "BUY_PUT": 25.49,
+      "NO_TRADE": 49.02
+    },
+    "confidence_counts": {
+      "HIGH": 25,
+      "MEDIUM": 27,
+      "LOW": 50
+    },
+    "risk_veto_count": 0,
+    "risk_veto_pct": 0.0
+  },
+  "decisions": [
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.10%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.06%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.08%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "NIFTY50",
+      "preferred_strike": 26400,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.70%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 60300,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.74%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "SENSEX",
+      "preferred_strike": 85900,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.67%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.30%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.18%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.38%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.27%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.12%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "MEDIUM",
+      "underlying": "SENSEX",
+      "preferred_strike": 85000,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.44%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.14%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.21%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.12%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25850,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-1.01%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "MEDIUM",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 59600,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.51%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "SENSEX",
+      "preferred_strike": 84100,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.92%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "MEDIUM",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25650,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.75%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "MEDIUM",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 59200,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.73%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "MEDIUM",
+      "underlying": "SENSEX",
+      "preferred_strike": 83500,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.72%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25850,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.42%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.34%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.36%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.22%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.22%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.30%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.26%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.00%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.29%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.11%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "HIGH",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 60200,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.86%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.23%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "MEDIUM",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25550,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.42%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.34%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.39%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25200,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-1.38%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 59300,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.81%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "SENSEX",
+      "preferred_strike": 82100,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-1.28%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.30%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 58700,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-1.02%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.33%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25350,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.53%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 59300,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.68%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "SENSEX",
+      "preferred_strike": 82400,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.49%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25000,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.95%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 58400,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-1.23%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "SENSEX",
+      "preferred_strike": 81400,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.94%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25250,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.51%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "HIGH",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 59300,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (1.25%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.39%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25400,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.66%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 59700,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.66%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "SENSEX",
+      "preferred_strike": 82400,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.60%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.30%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 60100,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.60%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.27%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.39%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "MEDIUM",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 59500,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.58%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.36%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "NIFTY50",
+      "preferred_strike": 24800,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-1.96%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 58300,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-2.00%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "SENSEX",
+      "preferred_strike": 80600,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-1.88%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "HIGH",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25150,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (1.06%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.35%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "HIGH",
+      "underlying": "SENSEX",
+      "preferred_strike": 81800,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (1.17%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "HIGH",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25800,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (2.55%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "HIGH",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 60100,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (2.43%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "HIGH",
+      "underlying": "SENSEX",
+      "preferred_strike": 83800,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (2.54%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.19%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.33%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.09%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "MEDIUM",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25600,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.52%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.29%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "MEDIUM",
+      "underlying": "SENSEX",
+      "preferred_strike": 83200,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.60%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.20%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.09%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.32%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25900,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.68%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "HIGH",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 60800,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.91%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "SENSEX",
+      "preferred_strike": 84200,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.58%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.26%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.07%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.25%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.07%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.20%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.05%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "MEDIUM",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25750,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.57%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (-0.01%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "MEDIUM",
+      "underlying": "SENSEX",
+      "preferred_strike": 83600,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.66%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25400,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-1.30%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 60100,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-0.91%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_PUT",
+      "confidence": "HIGH",
+      "underlying": "SENSEX",
+      "preferred_strike": 82500,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bearish momentum detected (-1.25%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "HIGH",
+      "underlying": "NIFTY50",
+      "preferred_strike": 25750,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.83%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "HIGH",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 61000,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (1.27%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "SENSEX",
+      "preferred_strike": 83400,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.79%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.17%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.37%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.21%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "NIFTY50",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.37%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "BUY_CALL",
+      "confidence": "MEDIUM",
+      "underlying": "BANKNIFTY",
+      "preferred_strike": 61700,
+      "stop_loss_pct": 12.0,
+      "target_pct": 24.0,
+      "rationale": "Bullish momentum detected (0.62%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    },
+    {
+      "action": "NO_TRADE",
+      "confidence": "LOW",
+      "underlying": "SENSEX",
+      "preferred_strike": null,
+      "stop_loss_pct": null,
+      "target_pct": null,
+      "rationale": "No clear momentum edge (0.34%).",
+      "risk_checks": {
+        "daily_loss_guard": "PASS",
+        "spread_guard": "PASS",
+        "data_quality_guard": "PASS"
+      },
+      "model_version": "phase1_baseline_v1"
+    }
+  ]
+}

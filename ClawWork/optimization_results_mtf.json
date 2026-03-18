@@ -1,0 +1,137 @@
+{
+  "permissive_50": {
+    "config": {
+      "mtf_mode": "permissive",
+      "confidence_threshold": 50
+    },
+    "by_index": {
+      "BANKNIFTY": {
+        "total_trades": 192,
+        "wins": 102,
+        "losses": 90,
+        "win_rate": 53.12,
+        "total_pnl": 10345.79,
+        "avg_win": 386.01,
+        "avg_loss": -322.52,
+        "profit_factor": 1.36
+      },
+      "NIFTY50": {
+        "total_trades": 194,
+        "wins": 94,
+        "losses": 100,
+        "win_rate": 48.45,
+        "total_pnl": 1810.3,
+        "avg_win": 188.92,
+        "avg_loss": -159.49,
+        "profit_factor": 1.11
+      },
+      "FINNIFTY": {
+        "total_trades": 190,
+        "wins": 99,
+        "losses": 91,
+        "win_rate": 52.11,
+        "total_pnl": 5385.06,
+        "avg_win": 178.54,
+        "avg_loss": -135.06,
+        "profit_factor": 1.44
+      }
+    },
+    "aggregate": {
+      "total_trades": 576,
+      "wins": 295,
+      "losses": 281,
+      "win_rate": 51.21527777777778,
+      "total_pnl": 17541.15
+    }
+  },
+  "balanced_50": {
+    "config": {
+      "mtf_mode": "balanced",
+      "confidence_threshold": 50
+    },
+    "by_index": {
+      "BANKNIFTY": {
+        "total_trades": 200,
+        "wins": 109,
+        "losses": 91,
+        "win_rate": 54.5,
+        "total_pnl": 11877.06,
+        "avg_win": 336.97,
+        "avg_loss": -273.11,
+        "profit_factor": 1.48
+      },
+      "NIFTY50": {
+        "total_trades": 192,
+        "wins": 92,
+        "losses": 100,
+        "win_rate": 47.92,
+        "total_pnl": 3978.34,
+        "avg_win": 225.78,
+        "avg_loss": -167.94,
+        "profit_factor": 1.24
+      },
+      "FINNIFTY": {
+        "total_trades": 187,
+        "wins": 89,
+        "losses": 98,
+        "win_rate": 47.59,
+        "total_pnl": 907.0,
+        "avg_win": 170.87,
+        "avg_loss": -145.92,
+        "profit_factor": 1.06
+      }
+    },
+    "aggregate": {
+      "total_trades": 579,
+      "wins": 290,
+      "losses": 289,
+      "win_rate": 50.086355785837654,
+      "total_pnl": 16762.4
+    }
+  },
+  "strict_50": {
+    "config": {
+      "mtf_mode": "strict",
+      "confidence_threshold": 50
+    },
+    "by_index": {
+      "BANKNIFTY": {
+        "total_trades": 53,
+        "wins": 17,
+        "losses": 36,
+        "win_rate": 32.08,
+        "total_pnl": -10404.97,
+        "avg_win": 287.87,
+        "avg_loss": -424.97,
+        "profit_factor": 0.32
+      },
+      "NIFTY50": {
+        "total_trades": 47,
+        "wins": 18,
+        "losses": 29,
+        "win_rate": 38.3,
+        "total_pnl": -4580.27,
+        "avg_win": 116.53,
+        "avg_loss": -230.27,
+        "profit_factor": 0.31
+      },
+      "FINNIFTY": {
+        "total_trades": 85,
+        "wins": 44,
+        "losses": 41,
+        "win_rate": 51.76,
+        "total_pnl": 2157.44,
+        "avg_win": 181.43,
+        "avg_loss": -142.09,
+        "profit_factor": 1.37
+      }
+    },
+    "aggregate": {
+      "total_trades": 185,
+      "wins": 79,
+      "losses": 106,
+      "win_rate": 42.7027027027027,
+      "total_pnl": -12827.8
+    }
+  }
+}

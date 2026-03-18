@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-02-18 22:15:19Z",
+  "passed": true,
+  "checks": {
+    "rollback_within_sla": true,
+    "adapter_disabled": true,
+    "shadow_mode_safe": true,
+    "dry_run_enabled": true,
+    "live_orders_blocked": true,
+    "post_rollback_health_ok": true
+  },
+  "reasons": [],
+  "metrics": {
+    "elapsed_seconds": 120,
+    "sla_seconds": 300,
+    "post_adapter_enabled": false,
+    "post_shadow_mode": true,
+    "post_dry_run": true,
+    "post_allow_live_orders": false,
+    "post_health_ok": true
+  },
+  "stage": "stage1_5pct"
+}

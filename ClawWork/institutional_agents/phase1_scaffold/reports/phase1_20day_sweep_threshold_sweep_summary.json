@@ -1,0 +1,217 @@
+{
+  "run_tag": "phase1_20day_sweep",
+  "input_file": "reports/phase1_20day_realdata_input.csv",
+  "record_count": 102,
+  "evaluated_at": "2026-02-18T21:38:13.204146Z",
+  "selection_policy": {
+    "objective": "maximize score with veto guard",
+    "max_veto_pct": 30.0
+  },
+  "total_configs": 32,
+  "best_config": {
+    "config": {
+      "bullish_threshold": 0.3,
+      "bearish_threshold": -0.3,
+      "strong_move_threshold": 0.8
+    },
+    "summary": {
+      "total_decisions": 102,
+      "action_counts": {
+        "BUY_CALL": 36,
+        "BUY_PUT": 32,
+        "NO_TRADE": 34
+      },
+      "action_distribution_pct": {
+        "BUY_CALL": 35.29,
+        "BUY_PUT": 31.37,
+        "NO_TRADE": 33.33
+      },
+      "confidence_counts": {
+        "HIGH": 25,
+        "MEDIUM": 43,
+        "LOW": 34
+      },
+      "risk_veto_count": 0,
+      "risk_veto_pct": 0.0
+    },
+    "derived": {
+      "active_count": 68,
+      "veto_count": 0,
+      "veto_pct": 0.0,
+      "high_medium_confidence_count": 68,
+      "score": 74.8
+    }
+  },
+  "top_results": [
+    {
+      "config": {
+        "bullish_threshold": 0.3,
+        "bearish_threshold": -0.3,
+        "strong_move_threshold": 0.8
+      },
+      "summary": {
+        "total_decisions": 102,
+        "action_counts": {
+          "BUY_CALL": 36,
+          "BUY_PUT": 32,
+          "NO_TRADE": 34
+        },
+        "action_distribution_pct": {
+          "BUY_CALL": 35.29,
+          "BUY_PUT": 31.37,
+          "NO_TRADE": 33.33
+        },
+        "confidence_counts": {
+          "HIGH": 25,
+          "MEDIUM": 43,
+          "LOW": 34
+        },
+        "risk_veto_count": 0,
+        "risk_veto_pct": 0.0
+      },
+      "derived": {
+        "active_count": 68,
+        "veto_count": 0,
+        "veto_pct": 0.0,
+        "high_medium_confidence_count": 68,
+        "score": 74.8
+      }
+    },
+    {
+      "config": {
+        "bullish_threshold": 0.3,
+        "bearish_threshold": -0.3,
+        "strong_move_threshold": 1.0
+      },
+      "summary": {
+        "total_decisions": 102,
+        "action_counts": {
+          "BUY_CALL": 36,
+          "BUY_PUT": 32,
+          "NO_TRADE": 34
+        },
+        "action_distribution_pct": {
+          "BUY_CALL": 35.29,
+          "BUY_PUT": 31.37,
+          "NO_TRADE": 33.33
+        },
+        "confidence_counts": {
+          "HIGH": 17,
+          "MEDIUM": 51,
+          "LOW": 34
+        },
+        "risk_veto_count": 0,
+        "risk_veto_pct": 0.0
+      },
+      "derived": {
+        "active_count": 68,
+        "veto_count": 0,
+        "veto_pct": 0.0,
+        "high_medium_confidence_count": 68,
+        "score": 74.8
+      }
+    },
+    {
+      "config": {
+        "bullish_threshold": 0.3,
+        "bearish_threshold": -0.4,
+        "strong_move_threshold": 0.8
+      },
+      "summary": {
+        "total_decisions": 102,
+        "action_counts": {
+          "BUY_CALL": 36,
+          "BUY_PUT": 26,
+          "NO_TRADE": 40
+        },
+        "action_distribution_pct": {
+          "BUY_CALL": 35.29,
+          "BUY_PUT": 25.49,
+          "NO_TRADE": 39.22
+        },
+        "confidence_counts": {
+          "HIGH": 25,
+          "MEDIUM": 43,
+          "LOW": 34
+        },
+        "risk_veto_count": 0,
+        "risk_veto_pct": 0.0
+      },
+      "derived": {
+        "active_count": 62,
+        "veto_count": 0,
+        "veto_pct": 0.0,
+        "high_medium_confidence_count": 68,
+        "score": 68.8
+      }
+    },
+    {
+      "config": {
+        "bullish_threshold": 0.3,
+        "bearish_threshold": -0.4,
+        "strong_move_threshold": 1.0
+      },
+      "summary": {
+        "total_decisions": 102,
+        "action_counts": {
+          "BUY_CALL": 36,
+          "BUY_PUT": 26,
+          "NO_TRADE": 40
+        },
+        "action_distribution_pct": {
+          "BUY_CALL": 35.29,
+          "BUY_PUT": 25.49,
+          "NO_TRADE": 39.22
+        },
+        "confidence_counts": {
+          "HIGH": 17,
+          "MEDIUM": 51,
+          "LOW": 34
+        },
+        "risk_veto_count": 0,
+        "risk_veto_pct": 0.0
+      },
+      "derived": {
+        "active_count": 62,
+        "veto_count": 0,
+        "veto_pct": 0.0,
+        "high_medium_confidence_count": 68,
+        "score": 68.8
+      }
+    },
+    {
+      "config": {
+        "bullish_threshold": 0.3,
+        "bearish_threshold": -0.5,
+        "strong_move_threshold": 0.8
+      },
+      "summary": {
+        "total_decisions": 102,
+        "action_counts": {
+          "BUY_CALL": 36,
+          "BUY_PUT": 24,
+          "NO_TRADE": 42
+        },
+        "action_distribution_pct": {
+          "BUY_CALL": 35.29,
+          "BUY_PUT": 23.53,
+          "NO_TRADE": 41.18
+        },
+        "confidence_counts": {
+          "HIGH": 25,
+          "MEDIUM": 43,
+          "LOW": 34
+        },
+        "risk_veto_count": 0,
+        "risk_veto_pct": 0.0
+      },
+      "derived": {
+        "active_count": 60,
+        "veto_count": 0,
+        "veto_pct": 0.0,
+        "high_medium_confidence_count": 68,
+        "score": 66.8
+      }
+    }
+  ]
+}

@@ -1,0 +1,316 @@
+{
+  "saved_at": "2026-03-17T10:48:36.650259",
+  "agents": [
+    {
+      "agent_id": 0,
+      "name": "KillSwitch",
+      "layer": "safety",
+      "status": "idle",
+      "last_run": "2026-03-17T10:48:36.648552",
+      "last_output": {
+        "kill_switch_active": false,
+        "checks_passed": [
+          "latency",
+          "loss_cluster",
+          "api_health",
+          "volatility",
+          "daily_limit"
+        ],
+        "consecutive_losses": 0,
+        "api_failures": 0
+      },
+      "metrics": {
+        "latency_ok": true,
+        "loss_cluster_ok": true,
+        "api_health_ok": true,
+        "volatility_ok": true
+      },
+      "run_count": 2,
+      "diagnostics": {
+        "last_transition_at": "2026-03-17T10:48:36.648552",
+        "last_ui_status": "idle",
+        "last_started_at": "2026-03-17T10:48:36.646941",
+        "last_finished_at": "2026-03-17T10:48:36.648552",
+        "last_output_keys": [
+          "api_failures",
+          "checks_passed",
+          "consecutive_losses",
+          "kill_switch_active"
+        ],
+        "last_metric_keys": [
+          "api_health_ok",
+          "latency_ok",
+          "loss_cluster_ok",
+          "volatility_ok"
+        ],
+        "last_bot_status": "success",
+        "last_success_at": "2026-03-17T10:48:36.648552"
+      }
+    },
+    {
+      "agent_id": 1,
+      "name": "DataFeed",
+      "layer": "data",
+      "status": "running",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 2,
+      "diagnostics": {
+        "last_transition_at": "2026-03-17T10:48:36.650216",
+        "last_ui_status": "running",
+        "last_started_at": "2026-03-17T10:48:36.650216"
+      }
+    },
+    {
+      "agent_id": 2,
+      "name": "OptionChain",
+      "layer": "data",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 3,
+      "name": "Futures",
+      "layer": "data",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 4,
+      "name": "LatencyGuardian",
+      "layer": "data",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 5,
+      "name": "MarketRegime",
+      "layer": "analysis",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 6,
+      "name": "Structure",
+      "layer": "analysis",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 7,
+      "name": "Momentum",
+      "layer": "analysis",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 8,
+      "name": "TrapDetector",
+      "layer": "analysis",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 9,
+      "name": "VolatilitySurface",
+      "layer": "analysis",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 10,
+      "name": "DealerPressure",
+      "layer": "analysis",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 11,
+      "name": "StrikeSelector",
+      "layer": "analysis",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 12,
+      "name": "SignalQuality",
+      "layer": "quality",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 13,
+      "name": "LiquidityMonitor",
+      "layer": "risk",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 14,
+      "name": "RiskGuardian",
+      "layer": "risk",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 15,
+      "name": "CorrelationGuard",
+      "layer": "risk",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 16,
+      "name": "MetaAllocator",
+      "layer": "execution",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 17,
+      "name": "Entry",
+      "layer": "execution",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 18,
+      "name": "Exit",
+      "layer": "execution",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 19,
+      "name": "PositionManager",
+      "layer": "execution",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 20,
+      "name": "QuantLearner",
+      "layer": "learning",
+      "status": "idle",
+      "last_run": "2026-03-17T10:18:13.224406",
+      "last_output": {
+        "message": "Need 50 trades, have 0"
+      },
+      "metrics": {
+        "total_insights": 0
+      },
+      "run_count": 1,
+      "diagnostics": {
+        "last_transition_at": "2026-03-17T10:18:13.224406",
+        "last_ui_status": "idle",
+        "last_started_at": "2026-03-17T10:18:13.223401",
+        "last_finished_at": "2026-03-17T10:18:13.224406",
+        "last_output_keys": [
+          "message"
+        ],
+        "last_note": "Need 50 trades, have 0",
+        "last_metric_keys": [
+          "total_insights"
+        ],
+        "last_bot_status": "success",
+        "last_success_at": "2026-03-17T10:18:13.224406",
+        "last_message": "quant complete"
+      }
+    },
+    {
+      "agent_id": 21,
+      "name": "StrategyOptimizer",
+      "layer": "learning",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    },
+    {
+      "agent_id": 22,
+      "name": "ExitOptimizer",
+      "layer": "learning",
+      "status": "idle",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0,
+      "diagnostics": {}
+    }
+  ]
+}

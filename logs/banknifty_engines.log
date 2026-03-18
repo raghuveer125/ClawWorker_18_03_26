@@ -1,0 +1,64 @@
+[BANKNIFTY] Daily folder: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/postmortem/2026-03-12/BANKNIFTY
+  - Journal:  decision_journal.csv
+  - Signals:  signals.csv
+  - Trades:   paper_trades.csv
+  - Equity:   paper_equity.csv
+  - Events:   opportunity_events.csv
+  - States:   .signal_state.json, .opportunity_engine_state.json, .paper_trade_state.json
+  - Market:   OPEN (9:00-15:45 IST)
+Starting engines for BANKNIFTY
+1) Signal engine     : interval=15s train_every=30s
+2) Opportunity engine: interval=15s (NO_PULL=1, table/output only)
+3) Paper trading     : interval=15s capital=5000 lot=10
+Market: OPEN - signals will be fetched
+Press Ctrl+C to stop all.
+
+[BANKNIFTY:SIG] [BANKNIFTY] Daily folder: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/postmortem/2026-03-12/BANKNIFTY[BANKNIFTY:PAPER] [BANKNIFTY] Daily folder: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/postmortem/2026-03-12/BANKNIFTY
+
+[BANKNIFTY:OPP] [BANKNIFTY] Daily folder: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/postmortem/2026-03-12/BANKNIFTY
+[BANKNIFTY:OPP]   - Journal:  decision_journal.csv
+[BANKNIFTY:PAPER]   - Journal:  decision_journal.csv[BANKNIFTY:SIG]   - Journal:  decision_journal.csv
+
+[BANKNIFTY:SIG]   - Signals:  signals.csv
+[BANKNIFTY:OPP]   - Signals:  signals.csv
+[BANKNIFTY:PAPER]   - Signals:  signals.csv
+[BANKNIFTY:OPP]   - Trades:   paper_trades.csv
+[BANKNIFTY:SIG]   - Trades:   paper_trades.csv
+[BANKNIFTY:PAPER]   - Trades:   paper_trades.csv
+[BANKNIFTY:OPP]   - Equity:   paper_equity.csv
+[BANKNIFTY:SIG]   - Equity:   paper_equity.csv
+[BANKNIFTY:PAPER]   - Equity:   paper_equity.csv
+[BANKNIFTY:PAPER]   - Events:   opportunity_events.csv
+[BANKNIFTY:PAPER]   - States:   .signal_state.json, .opportunity_engine_state.json, .paper_trade_state.json
+[BANKNIFTY:PAPER]   - Market:   OPEN (9:00-15:45 IST)
+[BANKNIFTY:SIG]   - Events:   opportunity_events.csv
+[BANKNIFTY:SIG]   - States:   .signal_state.json, .opportunity_engine_state.json, .paper_trade_state.json
+[BANKNIFTY:OPP]   - Events:   opportunity_events.csv[BANKNIFTY:SIG]   - Market:   OPEN (9:00-15:45 IST)
+
+[BANKNIFTY:OPP]   - States:   .signal_state.json, .opportunity_engine_state.json, .paper_trade_state.json
+[BANKNIFTY:OPP]   - Market:   OPEN (9:00-15:45 IST)
+[BANKNIFTY:SIG] Starting continuous signal loop
+[BANKNIFTY:SIG] Interval: 15s | Profile: expiry | Ladder: 5
+[BANKNIFTY:SIG] Filters: min_conf=88 min_score=95 min_delta=0.10 min_vote_diff=2 confirm=2 cooldown=45s max_select=3 max_spread=2.5%
+[BANKNIFTY:SIG] Adaptive: enable=1 model=.adaptive_model.json min_prob=0.55 min_samples=20 hard_gate_samples=100 lock_streak=8 relax_sec=300
+[BANKNIFTY:SIG] AutoTrain: enable=1 every=30s labels>=20
+[BANKNIFTY:SIG] Press Ctrl+C to stop.
+[BANKNIFTY:SIG] 
+[BANKNIFTY:SIG] [2026-03-12 13:54:34] Auto-training adaptive model...
+[BANKNIFTY:SIG] Not enough labeled rows: 0 (need >= 20). Fill 'outcome' column with Win/Loss first.
+[BANKNIFTY:SIG] 
+[BANKNIFTY:SIG] [2026-03-12 13:54:35] Pulling signals...
+[BANKNIFTY:OPP] Starting opportunity engine
+[BANKNIFTY:OPP] Interval: 15s | EntryScore>=74 Conf>=84 VoteDiff>=5 Spread<=2.2%
+[BANKNIFTY:OPP] Exit: SL/T1/T2 + flip=Y + time=180s
+[BANKNIFTY:OPP] Reversal: Y drop>=55.0% delta_drop>=0.12 iv_drop>=8.0 flow_req=N ctx_req=N exit_on_reversal=Y
+[BANKNIFTY:OPP] Press Ctrl+C to stop.
+[BANKNIFTY:OPP] 
+[BANKNIFTY:OPP] [2026-03-12 13:54:35] Scan cycle...
+[BANKNIFTY:PAPER] Starting paper trade loop
+[BANKNIFTY:PAPER] Interval: 15s | Capital: 5000.00 | Lot: 10 | Fees: 40+40
+[BANKNIFTY:PAPER] Exit: T1 | MaxHold: 180s | SideFlipExit: Y
+[BANKNIFTY:PAPER] Press Ctrl+C to stop.
+[BANKNIFTY:PAPER] 
+[BANKNIFTY:PAPER] [2026-03-12 13:54:35] Pulling + simulating...
+[BANKNIFTY:PAPER] PaperSummary | Cash: 5000.00 | Open: 0 | Realized: 0.00 | Unrealized: 0.00 | Equity: 5000.00 | Fees: 0.00 | W/L: 0/0 | Side: -

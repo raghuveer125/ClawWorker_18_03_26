@@ -1,0 +1,46 @@
+# Trade Cycle Pipeline
+# Runs trading analysis and execution
+
+id: trade_cycle
+name: Trading Analysis & Execution
+description: Analyzes market, runs backtest, checks risk, executes orders
+
+trigger: schedule
+trigger_config:
+  cron: "*/15 9-15 * * 1-5"  # Every 15 min during market hours
+
+enabled: true
+
+steps:
+  # Step 1: Detect market regime
+  - bot: regime
+    config:
+      symbol: "NSE:NIFTY50-INDEX"
+      lookback_days: 20
+    timeout: 60
+
+  # Step 2: Run backtest with current regime
+  - bot: backtest
+    config:
+      symbol: "NSE:NIFTY50-INDEX"
+      resolution: "5m"
+      days: 30
+    on_failure: skip
+    timeout: 300
+
+  # Step 3: Check risk limits
+  - bot: risk_sentinel
+    config:
+      max_drawdown_pct: 5.0
+      max_daily_loss_pct: 2.0
+      max_position_pct: 20.0
+    on_failure: stop  # Critical - stop if risk breach
+    timeout: 30
+
+  # Step 4: Execute orders (if risk check passed)
+  - bot: execution
+    config:
+      dry_run: true  # Start with dry run
+      max_slippage_pct: 0.1
+    condition: "not context.has_failures()"
+    timeout: 60

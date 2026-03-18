@@ -1,0 +1,190 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="2180" viewBox="0 0 1600 2180">
+  <defs>
+    <style>
+      .title { font: 700 34px Arial, sans-serif; fill: #132a13; }
+      .subtitle { font: 500 18px Arial, sans-serif; fill: #31572c; }
+      .section { font: 700 22px Arial, sans-serif; fill: #1b4332; }
+      .text { font: 15px Arial, sans-serif; fill: #102a1f; }
+      .small { font: 13px Arial, sans-serif; fill: #274c3a; }
+      .box { fill: #f8fff8; stroke: #2d6a4f; stroke-width: 2; rx: 14; ry: 14; }
+      .decision { fill: #fff8e8; stroke: #bc6c25; stroke-width: 2; }
+      .danger { fill: #fff1f0; stroke: #b42318; stroke-width: 2; rx: 14; ry: 14; }
+      .data { fill: #eef7ff; stroke: #1d4ed8; stroke-width: 2; rx: 14; ry: 14; }
+      .good { fill: #eefbf3; stroke: #15803d; stroke-width: 2; rx: 14; ry: 14; }
+      .muted { fill: #f4f4f5; stroke: #52525b; stroke-width: 2; rx: 14; ry: 14; }
+      .arrow { stroke: #334155; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .dashed { stroke-dasharray: 10 8; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1600" height="2180" fill="#fcfffc"/>
+
+  <text x="800" y="60" text-anchor="middle" class="title">Scalping Engine Workflow Diagram</text>
+  <text x="800" y="92" text-anchor="middle" class="subtitle">Live paper trading, replay testing, and gated execution pipeline</text>
+
+  <rect x="580" y="120" width="440" height="70" class="box"/>
+  <text x="800" y="150" text-anchor="middle" class="section">Cycle Start</text>
+  <text x="800" y="174" text-anchor="middle" class="text">API-embedded engine wakes on each loop</text>
+
+  <polygon points="800,230 930,320 800,410 670,320" class="decision"/>
+  <text x="800" y="305" text-anchor="middle" class="section">Replay Job</text>
+  <text x="800" y="329" text-anchor="middle" class="section">Active?</text>
+
+  <rect x="180" y="470" width="300" height="100" class="data"/>
+  <text x="330" y="500" text-anchor="middle" class="section">REPLAY Mode</text>
+  <text x="330" y="528" text-anchor="middle" class="text">decision_journal.csv</text>
+  <text x="330" y="550" text-anchor="middle" class="small">Replay adapter + market simulator</text>
+
+  <polygon points="1100,230 1230,320 1100,410 970,320" class="decision"/>
+  <text x="1100" y="305" text-anchor="middle" class="section">Market Hours</text>
+  <text x="1100" y="329" text-anchor="middle" class="section">09:15-15:30?</text>
+
+  <rect x="1210" y="470" width="260" height="100" class="muted"/>
+  <text x="1340" y="505" text-anchor="middle" class="section">IDLE</text>
+  <text x="1340" y="533" text-anchor="middle" class="text">No trading cycle</text>
+  <text x="1340" y="555" text-anchor="middle" class="small">Wait for market open or replay</text>
+
+  <rect x="820" y="470" width="300" height="100" class="good"/>
+  <text x="970" y="500" text-anchor="middle" class="section">LIVE_PAPER Mode</text>
+  <text x="970" y="528" text-anchor="middle" class="text">Live market adapters</text>
+  <text x="970" y="550" text-anchor="middle" class="small">Broker routing disabled, fills simulated</text>
+
+  <line x1="800" y1="190" x2="800" y2="228" class="arrow"/>
+  <line x1="730" y1="362" x2="390" y2="470" class="arrow"/>
+  <line x1="892" y1="320" x2="970" y2="320" class="arrow"/>
+  <line x1="1100" y1="410" x2="1100" y2="470" class="arrow"/>
+  <line x1="1035" y1="360" x2="985" y2="470" class="arrow"/>
+  <line x1="1165" y1="360" x2="1290" y2="470" class="arrow"/>
+
+  <rect x="190" y="640" width="1220" height="160" class="data"/>
+  <text x="800" y="675" text-anchor="middle" class="section">Phase 1: Data Collection</text>
+  <text x="800" y="708" text-anchor="middle" class="text">Spot data, option chain, futures data, futures momentum, synthetic 1-minute candles</text>
+  <text x="800" y="734" text-anchor="middle" class="small">Live fetch order: shared adapter -> legacy FYERS -> sample fallback</text>
+  <text x="800" y="758" text-anchor="middle" class="small">Replay emits identical event types: market_tick, option_update, futures_update</text>
+  <text x="800" y="782" text-anchor="middle" class="small">Live interval ~5s | Replay interval ~200ms</text>
+
+  <line x1="330" y1="570" x2="330" y2="620" class="arrow"/>
+  <line x1="970" y1="570" x2="970" y2="620" class="arrow"/>
+  <line x1="330" y1="620" x2="800" y2="620" class="arrow"/>
+  <line x1="970" y1="620" x2="800" y2="620" class="arrow"/>
+
+  <polygon points="800,850 940,940 800,1030 660,940" class="decision"/>
+  <text x="800" y="930" text-anchor="middle" class="section">Spot Data</text>
+  <text x="800" y="954" text-anchor="middle" class="section">Available?</text>
+
+  <rect x="180" y="900" width="280" height="90" class="danger"/>
+  <text x="320" y="935" text-anchor="middle" class="section">Skip Cycle</text>
+  <text x="320" y="963" text-anchor="middle" class="text">Reason: missing_spot_data</text>
+
+  <polygon points="1180,850 1320,940 1180,1030 1040,940" class="decision"/>
+  <text x="1180" y="930" text-anchor="middle" class="section">Replay Mode?</text>
+
+  <rect x="1040" y="1090" width="280" height="90" class="muted"/>
+  <text x="1180" y="1125" text-anchor="middle" class="section">Skip LatencyGuardian</text>
+  <text x="1180" y="1153" text-anchor="middle" class="text">Replay bypasses stale-data guard</text>
+
+  <rect x="1320" y="1090" width="240" height="90" class="box"/>
+  <text x="1440" y="1125" text-anchor="middle" class="section">LatencyGuardian</text>
+  <text x="1440" y="1153" text-anchor="middle" class="text">Stale/heartbeat block if &gt;5s</text>
+
+  <polygon points="1440,1230 1540,1300 1440,1370 1340,1300" class="decision"/>
+  <text x="1440" y="1293" text-anchor="middle" class="section">Blocked?</text>
+
+  <rect x="1320" y="1410" width="240" height="90" class="danger"/>
+  <text x="1440" y="1445" text-anchor="middle" class="section">Skip Cycle</text>
+  <text x="1440" y="1473" text-anchor="middle" class="text">Reason: latency_blocked</text>
+
+  <line x1="800" y1="800" x2="800" y2="848" class="arrow"/>
+  <line x1="660" y1="940" x2="460" y2="940" class="arrow"/>
+  <line x1="940" y1="940" x2="1040" y2="940" class="arrow"/>
+  <line x1="1180" y1="1030" x2="1180" y2="1090" class="arrow"/>
+  <line x1="1240" y1="980" x2="1390" y2="1090" class="arrow"/>
+  <line x1="1440" y1="1180" x2="1440" y2="1230" class="arrow"/>
+  <line x1="1440" y1="1370" x2="1440" y2="1410" class="arrow"/>
+
+  <rect x="190" y="1090" width="760" height="150" class="box"/>
+  <text x="570" y="1125" text-anchor="middle" class="section">Phase 2-4: Analysis Pipeline</text>
+  <text x="570" y="1155" text-anchor="middle" class="text">Context guard -> MarketRegime -> Structure + Momentum + TrapDetector -> VolSurface -> DealerPressure</text>
+  <text x="570" y="1183" text-anchor="middle" class="small">Structure uses 1m candles for BOS / MSS / VWAP bias</text>
+  <text x="570" y="1207" text-anchor="middle" class="small">Then StrikeSelector -> SignalQuality using volatility surface + dealer gamma regime</text>
+
+  <polygon points="570,1290 700,1380 570,1470 440,1380" class="decision"/>
+  <text x="570" y="1368" text-anchor="middle" class="section">Strike</text>
+  <text x="570" y="1392" text-anchor="middle" class="section">Candidates?</text>
+
+  <rect x="180" y="1338" width="180" height="84" class="danger"/>
+  <text x="270" y="1370" text-anchor="middle" class="section">No Trade</text>
+  <text x="270" y="1396" text-anchor="middle" class="text">No strike selections</text>
+
+  <polygon points="860,1290 990,1380 860,1470 730,1380" class="decision"/>
+  <text x="860" y="1368" text-anchor="middle" class="section">Quality</text>
+  <text x="860" y="1392" text-anchor="middle" class="section">Passed?</text>
+
+  <rect x="980" y="1338" width="220" height="84" class="danger"/>
+  <text x="1090" y="1370" text-anchor="middle" class="section">Rejected</text>
+  <text x="1090" y="1396" text-anchor="middle" class="text">Stored in rejected_signals</text>
+
+  <line x1="1180" y1="1180" x2="1180" y2="1240" class="arrow dashed"/>
+  <line x1="1180" y1="1240" x2="950" y2="1240" class="arrow dashed"/>
+  <line x1="950" y1="1240" x2="950" y2="1165" class="arrow dashed"/>
+  <line x1="570" y1="1240" x2="570" y2="1290" class="arrow"/>
+  <line x1="440" y1="1380" x2="360" y2="1380" class="arrow"/>
+  <line x1="700" y1="1380" x2="730" y2="1380" class="arrow"/>
+  <line x1="990" y1="1380" x2="980" y2="1380" class="arrow"/>
+
+  <rect x="340" y="1540" width="920" height="140" class="box"/>
+  <text x="800" y="1575" text-anchor="middle" class="section">Phase 5: Liquidity and Risk</text>
+  <text x="800" y="1605" text-anchor="middle" class="text">LiquidityMonitor -> RiskGuardian -> CorrelationGuard -> Publish Execution Snapshot</text>
+  <text x="800" y="1633" text-anchor="middle" class="small">Liquidity checks spread, bid depth, ask depth, volume, OI</text>
+  <text x="800" y="1657" text-anchor="middle" class="small">Failed signals append reason into rejected_signals, blocked keys, or trade_disabled</text>
+
+  <polygon points="620,1720 760,1810 620,1900 480,1810" class="decision"/>
+  <text x="620" y="1800" text-anchor="middle" class="section">Liquid?</text>
+
+  <rect x="280" y="1768" width="150" height="84" class="danger"/>
+  <text x="355" y="1800" text-anchor="middle" class="section">Reject</text>
+  <text x="355" y="1826" text-anchor="middle" class="text">wide spread / low depth</text>
+
+  <polygon points="980,1720 1120,1810 980,1900 840,1810" class="decision"/>
+  <text x="980" y="1800" text-anchor="middle" class="section">Risk / Corr</text>
+  <text x="980" y="1824" text-anchor="middle" class="section">Blocked?</text>
+
+  <rect x="1150" y="1768" width="170" height="84" class="danger"/>
+  <text x="1235" y="1800" text-anchor="middle" class="section">Skip Exec</text>
+  <text x="1235" y="1826" text-anchor="middle" class="text">risk_blocked</text>
+
+  <line x1="860" y1="1470" x2="860" y2="1520" class="arrow"/>
+  <line x1="860" y1="1520" x2="800" y2="1520" class="arrow"/>
+  <line x1="800" y1="1520" x2="800" y2="1540" class="arrow"/>
+  <line x1="620" y1="1680" x2="620" y2="1720" class="arrow"/>
+  <line x1="480" y1="1810" x2="430" y2="1810" class="arrow"/>
+  <line x1="760" y1="1810" x2="840" y2="1810" class="arrow"/>
+  <line x1="1120" y1="1810" x2="1150" y2="1810" class="arrow"/>
+
+  <rect x="380" y="1940" width="840" height="170" class="good"/>
+  <text x="800" y="1975" text-anchor="middle" class="section">Phase 6: Execution and Dashboard Sync</text>
+  <text x="800" y="2005" text-anchor="middle" class="text">MetaAllocator -> Micro Loop -> EntryAgent -> ExitAgent -> PositionManager -> ScalpingState</text>
+  <text x="800" y="2033" text-anchor="middle" class="small">Snapshot -> confirmation window -> liquidity vacuum -> queue risk -> volatility burst</text>
+  <text x="800" y="2057" text-anchor="middle" class="small">Entry prefers execution_candidates, falls back to liquidity_filtered_selections</text>
+
+  <line x1="980" y1="1900" x2="980" y2="1940" class="arrow"/>
+  <line x1="980" y1="1940" x2="980" y2="1940" class="arrow"/>
+
+  <rect x="60" y="1940" width="260" height="120" class="box"/>
+  <text x="190" y="1972" text-anchor="middle" class="section">Micro Entry Gate</text>
+  <text x="190" y="2000" text-anchor="middle" class="small">Strong momentum -> immediate</text>
+  <text x="190" y="2022" text-anchor="middle" class="small">Medium -> 300-700ms confirm window</text>
+  <text x="190" y="2044" text-anchor="middle" class="small">Weak / reverse / widen -> cancel</text>
+
+  <rect x="1280" y="1940" width="260" height="120" class="box"/>
+  <text x="1410" y="1972" text-anchor="middle" class="section">Sizing Rules</text>
+  <text x="1410" y="2000" text-anchor="middle" class="small">Multiplier shrinks if spread/VIX/learn_prob weak</text>
+  <text x="1410" y="2022" text-anchor="middle" class="small">Queue risk can reduce size or block entry</text>
+  <text x="1410" y="2044" text-anchor="middle" class="small">Burst mode tightens stops, reject if multiplier &lt; 0.2</text>
+
+  <line x1="320" y1="2000" x2="380" y2="2000" class="arrow dashed"/>
+  <line x1="1220" y1="2000" x2="1280" y2="2000" class="arrow dashed"/>
+</svg>

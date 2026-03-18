@@ -1,0 +1,36 @@
+{
+  "strategy": "FyersN7 Point-Based",
+  "version": "1.0",
+  "optimized_date": "2026-03-15",
+
+  "entry": {
+    "min_score": 50,
+    "min_confidence": 70,
+    "min_vote_diff": 3.0,
+    "max_spread_pct": 2.5,
+    "min_delta": 0.03,
+    "min_gamma": 0.0003
+  },
+
+  "exit": {
+    "target_points": 25,
+    "stop_loss_points": 15,
+    "reverse_exit": true
+  },
+
+  "risk": {
+    "position_size_pct": 0.10,
+    "max_positions": 3,
+    "min_signal_gap_seconds": 30,
+    "max_trades_per_hour": 10
+  },
+
+  "backtest_results": {
+    "win_rate": 69.7,
+    "total_pnl": 3143764,
+    "total_trades": 99,
+    "indices": ["SENSEX", "NIFTY50"],
+    "period": "1 week",
+    "key_filter": "REQUIRE_TREND_ALIGNMENT"
+  }
+}

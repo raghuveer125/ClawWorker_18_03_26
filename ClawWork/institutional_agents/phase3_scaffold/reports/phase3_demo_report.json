@@ -1,0 +1,176 @@
+{
+  "run_tag": "phase3_demo",
+  "input_file": "sample_batch_input.json",
+  "record_count": 3,
+  "summary": {
+    "total_records": 3,
+    "consensus_counts": {
+      "BUY_CALL": 1,
+      "BUY_PUT": 1,
+      "NO_TRADE": 1
+    },
+    "veto_count": 1,
+    "veto_pct": 33.33
+  },
+  "results": [
+    {
+      "market_regime": {
+        "agent": "market_regime",
+        "action": "BUY_CALL",
+        "confidence": "HIGH",
+        "score": 80.0,
+        "rationale": "Trend and price momentum both bullish.",
+        "veto": false
+      },
+      "options_structure": {
+        "agent": "options_structure",
+        "action": "BUY_CALL",
+        "confidence": "HIGH",
+        "score": 78.0,
+        "rationale": "Options structure supports bullish continuation.",
+        "veto": false
+      },
+      "risk_officer": {
+        "agent": "risk_officer",
+        "action": "NO_TRADE",
+        "confidence": "LOW",
+        "score": 20.0,
+        "rationale": "No hard risk veto.",
+        "veto": false
+      },
+      "consensus": {
+        "action": "BUY_CALL",
+        "confidence": "HIGH",
+        "weighted_score": 78.9,
+        "vote_breakdown": {
+          "market_signed": 80.0,
+          "options_signed": 78.0,
+          "weighted_signed": 78.9
+        },
+        "rationale": "Consensus formed from weighted market/options votes.",
+        "veto_applied": false
+      },
+      "execution_plan": {
+        "action": "BUY_CALL",
+        "confidence": "HIGH",
+        "strike_zone": "OTM_1",
+        "urgency": "HIGH",
+        "rationale": "Execution plan prepared with HIGH urgency."
+      },
+      "memory_snapshot": {
+        "trend_strength_avg": 0.74,
+        "underlying_change_pct_avg": 0.62,
+        "window_size": 1,
+        "retention_policy": "rolling_window_20"
+      },
+      "underlying": "NIFTY50",
+      "timestamp": "2026-02-18T10:05:00+05:30"
+    },
+    {
+      "market_regime": {
+        "agent": "market_regime",
+        "action": "BUY_PUT",
+        "confidence": "HIGH",
+        "score": 80.0,
+        "rationale": "Trend and price momentum both bearish.",
+        "veto": false
+      },
+      "options_structure": {
+        "agent": "options_structure",
+        "action": "BUY_PUT",
+        "confidence": "HIGH",
+        "score": 78.0,
+        "rationale": "Options structure supports bearish continuation.",
+        "veto": false
+      },
+      "risk_officer": {
+        "agent": "risk_officer",
+        "action": "NO_TRADE",
+        "confidence": "LOW",
+        "score": 20.0,
+        "rationale": "No hard risk veto.",
+        "veto": false
+      },
+      "consensus": {
+        "action": "BUY_PUT",
+        "confidence": "HIGH",
+        "weighted_score": 78.9,
+        "vote_breakdown": {
+          "market_signed": -80.0,
+          "options_signed": -78.0,
+          "weighted_signed": -78.9
+        },
+        "rationale": "Consensus formed from weighted market/options votes.",
+        "veto_applied": false
+      },
+      "execution_plan": {
+        "action": "BUY_PUT",
+        "confidence": "HIGH",
+        "strike_zone": "OTM_1",
+        "urgency": "HIGH",
+        "rationale": "Execution plan prepared with HIGH urgency."
+      },
+      "memory_snapshot": {
+        "trend_strength_avg": -0.7,
+        "underlying_change_pct_avg": -0.65,
+        "window_size": 1,
+        "retention_policy": "rolling_window_20"
+      },
+      "underlying": "BANKNIFTY",
+      "timestamp": "2026-02-18T10:20:00+05:30"
+    },
+    {
+      "market_regime": {
+        "agent": "market_regime",
+        "action": "NO_TRADE",
+        "confidence": "LOW",
+        "score": 40.0,
+        "rationale": "No clear regime edge.",
+        "veto": false
+      },
+      "options_structure": {
+        "agent": "options_structure",
+        "action": "NO_TRADE",
+        "confidence": "LOW",
+        "score": 30.0,
+        "rationale": "Options structure weak: liquidity/spread filter failed.",
+        "veto": false
+      },
+      "risk_officer": {
+        "agent": "risk_officer",
+        "action": "NO_TRADE",
+        "confidence": "HIGH",
+        "score": 100.0,
+        "rationale": "Daily loss limit breached.",
+        "veto": true
+      },
+      "consensus": {
+        "action": "NO_TRADE",
+        "confidence": "HIGH",
+        "weighted_score": 0.0,
+        "vote_breakdown": {
+          "market": 40.0,
+          "options": 30.0,
+          "risk_veto": 1.0
+        },
+        "rationale": "Risk veto applied: Daily loss limit breached.",
+        "veto_applied": true
+      },
+      "execution_plan": {
+        "action": "NO_TRADE",
+        "confidence": "LOW",
+        "strike_zone": "NONE",
+        "urgency": "LOW",
+        "rationale": "No execution plan because consensus is NO_TRADE."
+      },
+      "memory_snapshot": {
+        "trend_strength_avg": 0.08,
+        "underlying_change_pct_avg": 0.1,
+        "window_size": 1,
+        "retention_policy": "rolling_window_20"
+      },
+      "underlying": "SENSEX",
+      "timestamp": "2026-02-18T11:10:00+05:30"
+    }
+  ]
+}

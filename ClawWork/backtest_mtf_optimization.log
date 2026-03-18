@@ -1,0 +1,172 @@
+
+======================================================================
+ICT SNIPER MULTI-TIMEFRAME STRATEGY - AGGRESSIVE BACKTEST
+======================================================================
+Date: 2026-03-03 23:36:18 IST
+Testing Period: 90 days of historical data
+======================================================================
+
+[MTF] Mode set to: permissive
+
+──────────────────────────────────────────────────────────────────────
+Testing on BANKNIFTY
+──────────────────────────────────────────────────────────────────────
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/195 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_233619.json
+
+📊 BACKTEST RESULTS FOR BANKNIFTY:
+  Period: 2025-12-03 to 2026-03-03
+  Total Candles: 4,864
+  Total Signals: 1594
+  Total Trades: 195
+  ✓ Wins: 97
+  ✗ Losses: 98
+  ≈ Breakeven: 0
+  Win Rate: 49.7%
+  Total P&L: ₹5,870
+  Avg Win: ₹368
+  Avg Loss: ₹-304
+  Profit Factor: 1.20
+  Max Drawdown: 487180.0%
+  Sharpe Ratio: 0.07
+
+──────────────────────────────────────────────────────────────────────
+Testing on NIFTY50
+──────────────────────────────────────────────────────────────────────
+
+============================================================
+BACKTESTING NIFTY50 - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for NIFTY50
+[Backtest] Generated 4864 simulated candles for NIFTY50
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for NIFTY50
+[Backtest] Generated 24064 simulated candles for NIFTY50
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/388 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_NIFTY50_20260303_233620.json
+
+📊 BACKTEST RESULTS FOR NIFTY50:
+  Period: 2025-12-03 to 2026-03-03
+  Total Candles: 4,864
+  Total Signals: 3589
+  Total Trades: 193
+  ✓ Wins: 91
+  ✗ Losses: 102
+  ≈ Breakeven: 0
+  Win Rate: 47.1%
+  Total P&L: ₹3,179
+  Avg Win: ₹204
+  Avg Loss: ₹-151
+  Profit Factor: 1.21
+  Max Drawdown: 194889.0%
+  Sharpe Ratio: 0.07
+
+──────────────────────────────────────────────────────────────────────
+Testing on FINNIFTY
+──────────────────────────────────────────────────────────────────────
+
+============================================================
+BACKTESTING FINNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for FINNIFTY
+[Backtest] Generated 4864 simulated candles for FINNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for FINNIFTY
+[Backtest] Generated 24064 simulated candles for FINNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/579 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_FINNIFTY_20260303_233620.json
+
+📊 BACKTEST RESULTS FOR FINNIFTY:
+  Period: 2025-12-03 to 2026-03-03
+  Total Candles: 4,864
+  Total Signals: 5679
+  Total Trades: 191
+  ✓ Wins: 105
+  ✗ Losses: 86
+  ≈ Breakeven: 0
+  Win Rate: 55.0%
+  Total P&L: ₹7,672
+  Avg Win: ₹192
+  Avg Loss: ₹-146
+  Profit Factor: 1.61
+  Max Drawdown: 98310.0%
+  Sharpe Ratio: 0.18
+
+
+======================================================================
+AGGREGATE RESULTS ACROSS ALL INDICES
+======================================================================
+
+Total Trades: 579
+Total Wins: 293
+Total Losses: 286
+Overall Win Rate: 50.6%
+Total P&L: ₹16,720
+
+======================================================================
+PHASE 1 PARAMETER TUNING RECOMMENDATIONS
+======================================================================
+
+⚠️ Confidence Threshold Too Low
+   Current: min_confidence = 50%
+   Recommendation: min_confidence = 60-65%
+   Rationale: Win rate of 50.6% indicates too many marginal signals. Higher threshold reduces false signals.
+   Expected Impact: +5-10% win rate improvement
+
+🔄 Swing Detection Sensitivity
+   Current: swing_lookback = 10 bars
+   Recommendation: swing_lookback = 8-10 bars (test 8, 9, 10)
+   Rationale: Shorter lookback = more frequent signals but potentially lower quality. Test to find optimal balance.
+   Expected Impact: +Frequency or +Accuracy depending on market regime
+
+📊 Volume Confirmation Strictness
+   Current: vol_multiplier = 1.3x
+   Recommendation: vol_multiplier = 1.2-1.3x
+   Rationale: Current setting may be too strict. Lower slightly to capture high-probability low-volume setups.
+   Expected Impact: +10-15% signal frequency with maintained quality
+
+📌 Displacement Candle Threshold
+   Current: displacement_multiplier = 1.5x
+   Recommendation: displacement_multiplier = 1.3-1.5x
+   Rationale: Current threshold may be filtering out valid setups. Test lower values for aggressive trading.
+   Expected Impact: +Capture more momentum entries
+
+📈 Market Structure Shift Confirmation
+   Current: mss_swing_len = 3 bars
+   Recommendation: mss_swing_len = 2-3 bars (test both)
+   Rationale: Shorter MSS allows earlier entry. Test if it maintains profitability while entering sooner.
+   Expected Impact: +Earlier entries, -Risk of premature signals
+
+📄 Detailed results saved to: backtest_results_ict_agressive.json
+
+======================================================================
+✓ Backtest complete. Results saved to backtest_results.json
+======================================================================
+

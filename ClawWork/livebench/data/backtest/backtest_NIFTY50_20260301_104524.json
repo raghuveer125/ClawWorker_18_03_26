@@ -1,0 +1,74 @@
+{
+  "index": "NIFTY50",
+  "period_start": "2026-02-19",
+  "period_end": "2026-03-01",
+  "total_candles": 532,
+  "total_signals": 507,
+  "total_trades": 0,
+  "wins": 0,
+  "losses": 0,
+  "breakeven": 0,
+  "win_rate": 0,
+  "total_pnl": 0,
+  "avg_win": 0,
+  "avg_loss": 0,
+  "profit_factor": 0.0,
+  "max_drawdown": 0,
+  "sharpe_ratio": 0,
+  "trades": [],
+  "bot_performance": {
+    "TrendFollower": {
+      "signals": 73,
+      "trades": 0,
+      "wins": 0,
+      "win_rate": 0,
+      "total_pnl": 0,
+      "avg_confidence": 0
+    },
+    "ReversalHunter": {
+      "signals": 0,
+      "trades": 0,
+      "wins": 0,
+      "win_rate": 0,
+      "total_pnl": 0,
+      "avg_confidence": 0
+    },
+    "MomentumScalper": {
+      "signals": 1,
+      "trades": 0,
+      "wins": 0,
+      "win_rate": 0,
+      "total_pnl": 0,
+      "avg_confidence": 0
+    },
+    "OIAnalyst": {
+      "signals": 433,
+      "trades": 0,
+      "wins": 0,
+      "win_rate": 0,
+      "total_pnl": 0,
+      "avg_confidence": 0
+    },
+    "VolatilityTrader": {
+      "signals": 0,
+      "trades": 0,
+      "wins": 0,
+      "win_rate": 0,
+      "total_pnl": 0,
+      "avg_confidence": 0
+    }
+  },
+  "parameter_suggestions": {
+    "confidence_threshold": {
+      "min_confidence": 70
+    },
+    "bot_weights": {},
+    "risk_management": {
+      "tighter_stops": true
+    },
+    "general": [
+      "Win rate below 50% - consider increasing minimum confidence threshold",
+      "Profit factor < 1 - system is losing money. Review entry/exit logic"
+    ]
+  }
+}

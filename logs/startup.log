@@ -1,0 +1,87 @@
+[0;36m
+╔═══════════════════════════════════════════════════════════════╗
+║     ClawWork + fyersN7 Unified Launcher                       ║
+║     Shared Project Engine v1.0                                ║
+╚═══════════════════════════════════════════════════════════════╝
+[0m
+[0;34mVerifying authentication...[0m
+[1;33mToken expired. Starting login...[0m
+[0;34mStarting FYERS login...[0m
+/Users/bhoomidakshpc/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+Opening browser for FYERS login...
+Waiting for callback (timeout: 180s)...
+Token saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/.env
+
+Authentication successful!
+Token: eyJhbGciOiJIUzI1NiIs...j2egi0j2gw
+[0;32mStarting ALL Systems (Full Stack + Scalping + LLM Debate)...[0m
+
+[1;33mStopping all processes...[0m
+  Stopping market_adapter (PID: 34996)...
+  Stopping llm_debate (PID: 35016)...
+  Stopping fyersn7-wrapper (PID: 35026)...
+  Stopping api (PID: 35060)...
+  Stopping frontend (PID: 35136)...
+  Stopping paper_trading (PID: 35343)...
+  Stopping scalping (PID: 35389)...
+  Stopping fyersN7 BANKNIFTY opportunity_engine (PID: 35444)...
+  Stopping fyersN7 BANKNIFTY paper_trade_loop (PID: 35446)...
+  Stopping fyersN7 BANKNIFTY signal_loop (PID: 35441)...
+  Stopping fyersN7 FINNIFTY opportunity_engine (PID: 35593)...
+  Stopping fyersN7 FINNIFTY paper_trade_loop (PID: 35596)...
+  Stopping fyersN7 FINNIFTY signal_loop (PID: 35590)...
+  Stopping fyersN7 NIFTY50 opportunity_engine (PID: 35271)...
+  Stopping fyersN7 NIFTY50 paper_trade_loop (PID: 35275)...
+  Stopping fyersN7 NIFTY50 signal_loop (PID: 35268)...
+  Stopping fyersN7 SENSEX opportunity_engine (PID: 35115)...
+  Stopping fyersN7 SENSEX paper_trade_loop (PID: 35118)...
+  Stopping fyersN7 SENSEX signal_loop (PID: 35112)...
+[0;32mAll processes stopped.[0m
+[0;32mWeekday bot-rules-update cron already set at 45 15 * * 1-5; skipping.[0m
+[0;32mWeekday scalping cron already set at 58 8 * * 1-5; skipping.[0m
+[0;34m[1/9] Starting shared Market Adapter...[0m
+[0;32mMarket adapter started at http://127.0.0.1:8765 (PID: 39327).[0m
+[0;34m[2/9] Starting LLM Debate Backend on port 8080...[0m
+[0;36m  Synced LLM API keys to debate backend[0m
+[0;32m  LLM Debate Backend started (PID: 39358)[0m
+[0;34m[3/9] Starting fyersN7 Signal Engines...[0m
+[0;32m  fyersN7 started (PID: 39368)[0m
+[0;34m[4/9] Starting Backend API on port 8001...[0m
+[0;32m  API Server started (PID: 39411)[0m
+  Waiting for API.... [0;32mready[0m
+[0;34m[5/9] Starting Frontend on port 3001...[0m
+[0;32m  Frontend started (PID: 39571)[0m
+  Waiting for Frontend.... [0;32mready[0m
+[0;34m[6/9] Starting Paper Trading Runner...[0m
+[0;32m  Paper Trading Runner started (PID: 39731)[0m
+[0;34m[7/9] Starting Scalping Dashboard API on port 8002...[0m
+[0;32m  Scalping API started on port 8002 (PID: 39739)[0m
+[0;34m[8/9] Starting 18-Agent Scalping System...[0m
+[0;32m  Scalping Engine started (PID: 39747)[0m
+[0;34m[9/9] Starting FyersN7 Paper Trading (69.7% WR strategy)...[0m
+[0;32m  FyersN7 Paper Trading started (PID: 39754)[0m
+
+[0;32m╔═══════════════════════════════════════════════════════════════╗[0m
+[0;32m║   ALL Systems Running (Full Stack)                            ║[0m
+[0;32m╠═══════════════════════════════════════════════════════════════╣[0m
+[0;32m║   Dashboard:     http://localhost:3001                         ║[0m
+[0;32m║   FyersN7 Web:   http://localhost:8787                          ║[0m
+[0;32m║   Scalping:      http://localhost:3001/scalping                ║[0m
+[0;32m║   API Server:    http://localhost:8001/api                       ║[0m
+[0;32m║   Scalping API:  http://localhost:8002/api/scalping             ║[0m
+[0;32m║   LLM Debate:    http://localhost:8080                          ║[0m
+[0;32m║   Adapter:       http://127.0.0.1:8765                  ║[0m
+[0;32m╠═══════════════════════════════════════════════════════════════╣[0m
+[0;32m║   Engines:                                                     ║[0m
+[0;32m║     - fyersN7 Signal Engine                                   ║[0m
+[0;32m║     - fyersN7 Paper Trading (25/15pt, 69.7% WR)               ║[0m
+[0;32m║     - Paper Trading Runner                                    ║[0m
+[0;32m║     - 18-Agent Scalping (8:58 AM - 3:40 PM)                   ║[0m
+[0;32m║     - LLM Debate Backend                                      ║[0m
+[0;32m╠═══════════════════════════════════════════════════════════════╣[0m
+[0;32m║   Logs:          /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/logs/               ║[0m
+[0;32m║   Stop:          ./start.sh stop                              ║[0m
+[0;32m╚═══════════════════════════════════════════════════════════════╝[0m
+
+[1;33mDetached startup complete. Use './start.sh logs' to inspect logs and './start.sh stop' to stop services.[0m

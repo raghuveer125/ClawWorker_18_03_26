@@ -1,0 +1,110 @@
+{
+  "livebench": {
+    "date_range": {
+      "init_date": "2026-02-23",
+      "end_date": "2026-03-06"
+    },
+    "economic": {
+      "initial_balance": 100.0,
+      "token_pricing": {
+        "input_per_1m": 0.15,
+        "output_per_1m": 0.60
+      }
+    },
+    "agents": [
+      {
+        "signature": "budget-learner",
+        "basemodel": "gpt-4o-mini",
+        "enabled": true,
+        "tasks_per_day": 1,
+        "supports_multimodal": false
+      }
+    ],
+    "agent_params": {
+      "max_steps": 7,
+      "max_retries": 1,
+      "base_delay": 0.3,
+      "tasks_per_day": 1
+    },
+    "evaluation": {
+      "use_llm_evaluation": true,
+      "meta_prompts_dir": "./eval/meta_prompts"
+    },
+    "task_source": {
+      "type": "inline",
+      "tasks": [
+        {
+          "task_id": "day1-writing",
+          "sector": "publishing",
+          "occupation": "Editors",
+          "prompt": "Edit this paragraph for clarity and conciseness: 'The company has been working on developing new products that will help customers save money and time when they are shopping online for various items.'",
+          "reference_files": []
+        },
+        {
+          "task_id": "day2-finance",
+          "sector": "finance",
+          "occupation": "Financial_and_Investment_Analysts",
+          "prompt": "Explain 3 key factors to consider when evaluating a company's financial health. Keep it brief and practical.",
+          "reference_files": []
+        },
+        {
+          "task_id": "day3-customer",
+          "sector": "services",
+          "occupation": "Customer_Service_Representatives",
+          "prompt": "Draft a professional response to a customer complaint: 'I ordered a product 2 weeks ago and it still hasn't arrived. This is unacceptable!'",
+          "reference_files": []
+        },
+        {
+          "task_id": "day4-management",
+          "sector": "business",
+          "occupation": "Administrative_Services_Managers",
+          "prompt": "Create a simple checklist for onboarding a new employee in their first week. Include 5-7 essential items.",
+          "reference_files": []
+        },
+        {
+          "task_id": "day5-compliance",
+          "sector": "legal",
+          "occupation": "Compliance_Officers",
+          "prompt": "List 4 common compliance risks in a small business and one mitigation strategy for each.",
+          "reference_files": []
+        },
+        {
+          "task_id": "day6-accounting",
+          "sector": "finance",
+          "occupation": "Accountants_and_Auditors",
+          "prompt": "Explain the difference between cash accounting and accrual accounting. When should a small business use each?",
+          "reference_files": []
+        },
+        {
+          "task_id": "day7-social",
+          "sector": "social_services",
+          "occupation": "Child_Family_and_School_Social_Workers",
+          "prompt": "Describe 3 warning signs that a child may be experiencing difficulties at home, and appropriate initial steps to take.",
+          "reference_files": []
+        },
+        {
+          "task_id": "day8-it",
+          "sector": "technology",
+          "occupation": "Computer_and_Information_Systems_Managers",
+          "prompt": "Outline a basic cybersecurity policy for a 10-person company. Focus on the 3 most critical areas.",
+          "reference_files": []
+        },
+        {
+          "task_id": "day9-hospitality",
+          "sector": "hospitality",
+          "occupation": "Concierges",
+          "prompt": "A guest asks for restaurant recommendations for a romantic anniversary dinner. Describe what questions you would ask and how you would personalize your suggestions.",
+          "reference_files": []
+        },
+        {
+          "task_id": "day10-purchasing",
+          "sector": "business",
+          "occupation": "Buyers_and_Purchasing_Agents",
+          "prompt": "What are 4 key factors to evaluate when choosing between two suppliers for office supplies? Explain briefly.",
+          "reference_files": []
+        }
+      ]
+    },
+    "data_path": "./livebench/data/agent_data"
+  }
+}

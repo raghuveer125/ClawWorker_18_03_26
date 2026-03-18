@@ -1,0 +1,95 @@
+{
+  "run_tag": "phase4_demo",
+  "input_file": "sample_batch_input.json",
+  "record_count": 3,
+  "summary": {
+    "total_records": 3,
+    "action_counts": {
+      "BUY_CALL": 1,
+      "BUY_PUT": 1,
+      "NO_TRADE": 1
+    },
+    "event_block_count": 1,
+    "event_block_pct": 33.33
+  },
+  "results": [
+    {
+      "input": {
+        "underlying": "NIFTY50",
+        "timestamp": "2026-02-18T09:20:00+05:30",
+        "session_slot": "OPEN",
+        "underlying_change_pct": 0.38,
+        "trend_strength": 0.66,
+        "iv_percentile": 52.0,
+        "options_bias": "BULLISH",
+        "event_name": "NONE",
+        "event_window_active": false
+      },
+      "decision": {
+        "action": "BUY_CALL",
+        "confidence": "MEDIUM",
+        "confidence_score": 62.0,
+        "position_size_multiplier": 0.7,
+        "rationale": "Strong trend and directional move detected. | No elevated event-risk window. | Opening volatility: lower conviction and smaller size. | Base action=BUY_CALL, score=62.00",
+        "policy_tags": {
+          "regime": "TREND",
+          "event_risk": "LOW",
+          "time_slot": "OPEN",
+          "gate": "PASS"
+        }
+      }
+    },
+    {
+      "input": {
+        "underlying": "BANKNIFTY",
+        "timestamp": "2026-02-18T11:45:00+05:30",
+        "session_slot": "MIDDAY",
+        "underlying_change_pct": -0.51,
+        "trend_strength": -0.71,
+        "iv_percentile": 61.0,
+        "options_bias": "BEARISH",
+        "event_name": "NONE",
+        "event_window_active": false
+      },
+      "decision": {
+        "action": "BUY_PUT",
+        "confidence": "HIGH",
+        "confidence_score": 72.0,
+        "position_size_multiplier": 1.0,
+        "rationale": "Strong trend and directional move detected. | No elevated event-risk window. | Midday stability: neutral bias and normal sizing. | Base action=BUY_PUT, score=72.00",
+        "policy_tags": {
+          "regime": "TREND",
+          "event_risk": "LOW",
+          "time_slot": "MIDDAY",
+          "gate": "PASS"
+        }
+      }
+    },
+    {
+      "input": {
+        "underlying": "SENSEX",
+        "timestamp": "2026-02-18T14:35:00+05:30",
+        "session_slot": "CLOSE",
+        "underlying_change_pct": 0.12,
+        "trend_strength": 0.12,
+        "iv_percentile": 44.0,
+        "options_bias": "NEUTRAL",
+        "event_name": "RBI",
+        "event_window_active": true
+      },
+      "decision": {
+        "action": "NO_TRADE",
+        "confidence": "HIGH",
+        "confidence_score": 0.0,
+        "position_size_multiplier": 0.0,
+        "rationale": "Blocked by event filter. Event-risk block active for RBI window.",
+        "policy_tags": {
+          "regime": "MEAN_REVERSION",
+          "event_risk": "HIGH",
+          "time_slot": "CLOSE",
+          "gate": "EVENT_BLOCK"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "tag": "phase2_demo",
+  "phase1_report": "/workspaces/fyers/ClawWork/institutional_agents/phase1_scaffold/reports/phase1_demo_pipeline_report.json",
+  "phase2_report": "/workspaces/fyers/ClawWork/institutional_agents/phase2_scaffold/reports/phase2_demo_report.json",
+  "phase1_outcomes": "phase1_outcomes_template.json",
+  "phase2_outcomes": "phase2_outcomes_template.json",
+  "phase1": {
+    "total_records": 6,
+    "actionable_signals": 2,
+    "no_trade_signals": 4,
+    "actionable_rate_pct": 33.33,
+    "false_signal_rate_pct": 50.0,
+    "risk_adjusted_return": 0.2222,
+    "average_trade_return_pct": 0.1,
+    "evaluation_rows": 2,
+    "evaluation_status": "ok",
+    "evaluation_note": "Evaluation computed from paired outcome rows. (rows used: 2)"
+  },
+  "phase2": {
+    "total_records": 3,
+    "actionable_signals": 2,
+    "no_trade_signals": 1,
+    "actionable_rate_pct": 66.67,
+    "false_signal_rate_pct": 0.0,
+    "risk_adjusted_return": 6.0,
+    "average_trade_return_pct": 0.6,
+    "evaluation_rows": 2,
+    "evaluation_status": "ok",
+    "evaluation_note": "Evaluation computed from paired outcome rows. (rows used: 2)"
+  },
+  "comparison": {
+    "false_signal_reduction_met": true,
+    "risk_adjusted_improvement_met": true,
+    "false_signal_delta_pct_points": 50.0,
+    "risk_adjusted_delta": 5.7778,
+    "status": "ok",
+    "note": "Computed from supplied outcomes files."
+  }
+}

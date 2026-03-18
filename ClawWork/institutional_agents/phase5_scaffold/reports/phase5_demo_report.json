@@ -1,0 +1,52 @@
+{
+  "run_tag": "phase5_demo",
+  "feature_flags": {
+    "institutional_agent_enabled": false,
+    "shadow_mode_enabled": true
+  },
+  "shadow_comparison": {
+    "total_rows": 3,
+    "agreement_count": 2,
+    "disagreement_count": 1,
+    "agreement_pct": 66.67,
+    "institutional_better_count": 1,
+    "baseline_better_count": 0
+  },
+  "go_live_gate": {
+    "passed": true,
+    "checks": {
+      "performance_threshold_met": true,
+      "risk_threshold_met": true,
+      "monitoring_active": true,
+      "rollback_tested": true,
+      "shadow_mode_min_days_met": true
+    },
+    "reasons": []
+  },
+  "rollout_plan": [
+    {
+      "stage": "stage_5pct",
+      "allocation_pct": 5,
+      "allowed": true,
+      "requires_pass": true
+    },
+    {
+      "stage": "stage_25pct",
+      "allocation_pct": 25,
+      "allowed": true,
+      "requires_pass": true
+    },
+    {
+      "stage": "stage_50pct",
+      "allocation_pct": 50,
+      "allowed": true,
+      "requires_pass": true
+    },
+    {
+      "stage": "stage_100pct",
+      "allocation_pct": 100,
+      "allowed": true,
+      "requires_pass": true
+    }
+  ]
+}

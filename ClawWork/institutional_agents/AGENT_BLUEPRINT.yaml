@@ -1,0 +1,90 @@
+version: 1
+name: institutional-agent-blueprint
+objective: >
+  Produce high-quality options/index decisions with risk-first controls,
+  while remaining explainable and auditable.
+
+modes:
+  - design
+  - simulation
+  - shadow
+  - live
+
+agents:
+  market_regime_agent:
+    role: Detect day regime and directional context
+    inputs:
+      - index_ltp
+      - change_pct
+      - intraday_range
+      - volatility_regime
+    outputs:
+      - regime_label
+      - directional_bias
+      - confidence
+
+  options_structure_agent:
+    role: Evaluate options structure quality
+    inputs:
+      - option_chain
+      - greeks
+      - implied_volatility
+      - straddle_price
+    outputs:
+      - structure_signal
+      - preferred_strike_zone
+      - confidence
+
+  risk_officer_agent:
+    role: Enforce hard risk constraints
+    inputs:
+      - account_limits
+      - open_positions
+      - volatility_regime
+      - liquidity_checks
+    outputs:
+      - risk_status
+      - max_position_size
+      - veto
+
+  execution_planner_agent:
+    role: Build executable plan if allowed
+    inputs:
+      - directional_bias
+      - preferred_strike_zone
+      - risk_status
+      - veto
+    outputs:
+      - action
+      - stop_loss
+      - target
+      - rationale
+
+consensus:
+  policy: weighted_with_risk_veto
+  weights:
+    market_regime: 0.30
+    options_structure: 0.35
+    risk_officer: 0.35
+  rules:
+    - if risk_officer.veto == true then action = NO_TRADE
+    - require minimum confidence threshold before action
+
+outputs_schema:
+  action: [BUY_CALL, BUY_PUT, NO_TRADE]
+  confidence: [LOW, MEDIUM, HIGH]
+  preferred_strike: integer
+  stop_loss_pct: number
+  target_pct: number
+  rationale: string
+
+risk_policy:
+  max_daily_loss_pct: 2.0
+  max_trade_risk_pct: 0.5
+  max_spread_bps: 50
+  halt_on_missing_critical_data: true
+
+integration:
+  feature_flag: INSTITUTIONAL_AGENT_ENABLED
+  default: false
+  rollout: [shadow, 5_percent, 25_percent, 50_percent, 100_percent]

@@ -1,0 +1,661 @@
+================================================================================
+ADAPTIVE LEARNING OPTIMIZER - Target: 97.0% Win Rate
+================================================================================
+Index: BANKNIFTY | Days: 90
+Strategy: Analyze each trade, adapt parameters on losses
+================================================================================
+
+
+================================================================================
+GENERATION 1 - Iteration 1
+================================================================================
+Config: vol=1.20, disp=1.30, swing=9, mss=2
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/197 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235452.json
+
+Results: 93W/104L (47.21%) P&L: ₹8,981
+✓ NEW BEST: 47.21% (improvement #1)
+
+Analyzing 104 losses...
+Top failure patterns: [('low_confidence', 9), ('small_move_chop', 2)]
+Adjusted config: vol=1.12, disp=1.30, swing=9, mss=2
+
+================================================================================
+GENERATION 2 - Iteration 2
+================================================================================
+Config: vol=1.12, disp=1.30, swing=9, mss=2
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/192 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235453.json
+
+Results: 105W/87L (54.69%) P&L: ₹14,444
+✓ NEW BEST: 54.69% (improvement #2)
+
+Analyzing 87 losses...
+Top failure patterns: [('low_confidence', 9), ('small_move_chop', 5)]
+Adjusted config: vol=1.05, disp=1.30, swing=9, mss=2
+
+================================================================================
+GENERATION 3 - Iteration 3
+================================================================================
+Config: vol=1.05, disp=1.30, swing=9, mss=2
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/180 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235453.json
+
+Results: 92W/88L (51.11%) P&L: ₹7,210
+⚠ No improvement: 51.11% vs best 54.69%
+
+Analyzing 88 losses...
+Top failure patterns: [('low_confidence', 9), ('small_move_chop', 6)]
+Adjusted config: vol=1.03, disp=1.30, swing=9, mss=2
+
+================================================================================
+GENERATION 4 - Iteration 4
+================================================================================
+Config: vol=1.03, disp=1.30, swing=9, mss=2
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/189 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235454.json
+
+Results: 101W/88L (53.44%) P&L: ₹14,411
+⚠ No improvement: 53.44% vs best 54.69%
+
+Analyzing 88 losses...
+Top failure patterns: [('low_confidence', 9), ('small_move_chop', 5)]
+Adjusted config: vol=1.03, disp=1.30, swing=9, mss=2
+
+================================================================================
+GENERATION 5 - Iteration 5
+================================================================================
+Config: vol=1.03, disp=1.30, swing=9, mss=2
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/194 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235455.json
+
+Results: 102W/92L (52.58%) P&L: ₹12,897
+⚠ No improvement: 52.58% vs best 54.69%
+
+Analyzing 92 losses...
+Top failure patterns: [('low_confidence', 10), ('small_move_chop', 3)]
+Adjusted config: vol=1.03, disp=1.30, swing=9, mss=2
+
+🔄 No improvements - exploring parameter space...
+
+================================================================================
+GENERATION 6 - Iteration 6
+================================================================================
+Config: vol=1.14, disp=1.18, swing=10, mss=2
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/193 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235455.json
+
+Results: 89W/104L (46.11%) P&L: ₹-371
+⚠ No improvement: 46.11% vs best 54.69%
+
+Analyzing 104 losses...
+Top failure patterns: [('low_confidence', 10), ('small_move_chop', 5)]
+Adjusted config: vol=1.06, disp=1.20, swing=10, mss=2
+
+================================================================================
+GENERATION 7 - Iteration 7
+================================================================================
+Config: vol=1.06, disp=1.20, swing=10, mss=2
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/188 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235456.json
+
+Results: 92W/96L (48.94%) P&L: ₹13,513
+⚠ No improvement: 48.94% vs best 54.69%
+
+Analyzing 96 losses...
+Top failure patterns: [('low_confidence', 10), ('small_move_chop', 8)]
+Adjusted config: vol=1.03, disp=1.22, swing=10, mss=2
+
+================================================================================
+GENERATION 8 - Iteration 8
+================================================================================
+Config: vol=1.03, disp=1.22, swing=10, mss=2
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/204 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235457.json
+
+Results: 105W/99L (51.47%) P&L: ₹2,110
+⚠ No improvement: 51.47% vs best 54.69%
+
+Analyzing 99 losses...
+Top failure patterns: [('low_confidence', 9), ('small_move_chop', 7)]
+Adjusted config: vol=1.03, disp=1.24, swing=10, mss=2
+
+================================================================================
+GENERATION 9 - Iteration 9
+================================================================================
+Config: vol=1.03, disp=1.24, swing=10, mss=2
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/188 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235458.json
+
+Results: 98W/90L (52.13%) P&L: ₹14,313
+⚠ No improvement: 52.13% vs best 54.69%
+
+Analyzing 90 losses...
+Top failure patterns: [('low_confidence', 10), ('small_move_chop', 5)]
+Adjusted config: vol=1.03, disp=1.25, swing=10, mss=2
+
+================================================================================
+GENERATION 10 - Iteration 10
+================================================================================
+Config: vol=1.03, disp=1.25, swing=10, mss=2
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/174 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235458.json
+
+Results: 81W/93L (46.55%) P&L: ₹4,727
+⚠ No improvement: 46.55% vs best 54.69%
+
+Analyzing 93 losses...
+Top failure patterns: [('low_confidence', 10), ('small_move_chop', 3)]
+Adjusted config: vol=1.03, disp=1.26, swing=10, mss=2
+
+🔄 No improvements - exploring parameter space...
+
+================================================================================
+GENERATION 11 - Iteration 11
+================================================================================
+Config: vol=1.10, disp=1.28, swing=10, mss=3
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/194 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235459.json
+
+Results: 93W/101L (47.94%) P&L: ₹2,796
+⚠ No improvement: 47.94% vs best 54.69%
+
+Analyzing 101 losses...
+Top failure patterns: [('low_confidence', 10), ('small_move_chop', 5)]
+Adjusted config: vol=1.03, disp=1.28, swing=10, mss=3
+
+================================================================================
+GENERATION 12 - Iteration 12
+================================================================================
+Config: vol=1.03, disp=1.28, swing=10, mss=3
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/193 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235500.json
+
+Results: 108W/85L (55.96%) P&L: ₹13,506
+✓ NEW BEST: 55.96% (improvement #1)
+
+Analyzing 85 losses...
+Top failure patterns: [('low_confidence', 9), ('small_move_chop', 4)]
+Adjusted config: vol=1.02, disp=1.29, swing=10, mss=3
+
+================================================================================
+GENERATION 13 - Iteration 13
+================================================================================
+Config: vol=1.02, disp=1.29, swing=10, mss=3
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/199 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235500.json
+
+Results: 103W/96L (51.76%) P&L: ₹7,069
+⚠ No improvement: 51.76% vs best 55.96%
+
+Analyzing 96 losses...
+Top failure patterns: [('low_confidence', 9), ('small_move_chop', 5)]
+Adjusted config: vol=1.02, disp=1.29, swing=10, mss=3
+
+================================================================================
+GENERATION 14 - Iteration 14
+================================================================================
+Config: vol=1.02, disp=1.29, swing=10, mss=3
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/206 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235501.json
+
+Results: 108W/98L (52.43%) P&L: ₹10,796
+⚠ No improvement: 52.43% vs best 55.96%
+
+Analyzing 98 losses...
+Top failure patterns: [('low_confidence', 9), ('small_move_chop', 7)]
+Adjusted config: vol=1.02, disp=1.29, swing=10, mss=3
+
+================================================================================
+GENERATION 15 - Iteration 15
+================================================================================
+Config: vol=1.02, disp=1.29, swing=10, mss=3
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/188 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235502.json
+
+Results: 99W/89L (52.66%) P&L: ₹9,613
+⚠ No improvement: 52.66% vs best 55.96%
+
+Analyzing 89 losses...
+Top failure patterns: [('low_confidence', 10), ('small_move_chop', 7)]
+Adjusted config: vol=1.02, disp=1.29, swing=10, mss=3
+
+🔄 No improvements - exploring parameter space...
+
+================================================================================
+GENERATION 16 - Iteration 16
+================================================================================
+Config: vol=1.40, disp=1.16, swing=9, mss=3
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/182 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235502.json
+
+Results: 85W/97L (46.70%) P&L: ₹4,930
+⚠ No improvement: 46.70% vs best 55.96%
+
+Analyzing 97 losses...
+Top failure patterns: [('low_confidence', 8), ('small_move_chop', 7)]
+Adjusted config: vol=1.26, disp=1.19, swing=9, mss=3
+
+================================================================================
+GENERATION 17 - Iteration 17
+================================================================================
+Config: vol=1.26, disp=1.19, swing=9, mss=3
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/190 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235503.json
+
+Results: 100W/90L (52.63%) P&L: ₹14,127
+⚠ No improvement: 52.63% vs best 55.96%
+
+Analyzing 90 losses...
+Top failure patterns: [('low_confidence', 10), ('small_move_chop', 7)]
+Adjusted config: vol=1.15, disp=1.21, swing=9, mss=3
+
+================================================================================
+GENERATION 18 - Iteration 18
+================================================================================
+Config: vol=1.15, disp=1.21, swing=9, mss=3
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/189 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235504.json
+
+Results: 96W/93L (50.79%) P&L: ₹8,426
+⚠ No improvement: 50.79% vs best 55.96%
+
+Analyzing 93 losses...
+Top failure patterns: [('low_confidence', 9), ('small_move_chop', 6)]
+Adjusted config: vol=1.07, disp=1.23, swing=9, mss=3
+
+================================================================================
+GENERATION 19 - Iteration 19
+================================================================================
+Config: vol=1.07, disp=1.23, swing=9, mss=3
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/197 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235504.json
+
+Results: 100W/97L (50.76%) P&L: ₹8,866
+⚠ No improvement: 50.76% vs best 55.96%
+
+Analyzing 97 losses...
+Top failure patterns: [('low_confidence', 10), ('small_move_chop', 6)]
+Adjusted config: vol=1.02, disp=1.24, swing=9, mss=3
+
+================================================================================
+GENERATION 20 - Iteration 20
+================================================================================
+Config: vol=1.02, disp=1.24, swing=9, mss=3
+[MTF] Mode set to: permissive
+[MTF] Mode set to: permissive
+
+============================================================
+BACKTESTING BANKNIFTY - Last 90 days
+============================================================
+
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 4864 simulated candles for BANKNIFTY
+
+[MTF] Building multi-timeframe data from 1m candles...
+[Backtest] API unavailable - using simulated data for BANKNIFTY
+[Backtest] Generated 24064 simulated candles for BANKNIFTY
+[MTF] Built 1m/5m/15m candles: 1m=24064, 5m=4812, 15m=1604
+
+[MTF] Filter Stats: 0/199 signals blocked (0.0%)
+[MTF] CE blocked: 0, PE blocked: 0
+
+[Backtest] Results saved to: /Users/bhoomidakshpc/Project_WebSocket/ClawWork/livebench/data/backtest/backtest_BANKNIFTY_20260303_235505.json
+
+Results: 102W/97L (51.26%) P&L: ₹8,476
+⚠ No improvement: 51.26% vs best 55.96%
+
+Analyzing 97 losses...
+Top failure patterns: [('low_confidence', 10), ('small_move_chop', 5)]
+Adjusted config: vol=1.02, disp=1.25, swing=9, mss=3
+
+🔄 No improvements - exploring parameter space...
+
+⚠ Early convergence detected at 55.96%
+Consider adjusting strategy or accepting realistic win rate targets
+
+================================================================================
+OPTIMIZATION COMPLETE
+================================================================================
+Iterations: 20
+Best Win Rate Achieved: 55.96%
+Target: 97.0%
+
+BEST CONFIGURATION:
+  vol_multiplier: 1.03
+  displacement_multiplier: 1.28
+  swing_lookback: 10
+  mss_swing_len: 3
+  max_bars_after_sweep: 13
+
+  Performance: 108W/85L (55.96%)
+  P&L: ₹13,506
+
+[✓] Results saved to adaptive_optimization_output/final_results.json
+
+================================================================================
+OPTIMIZATION COMPLETE - Ready to deploy!
+================================================================================

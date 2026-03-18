@@ -1,0 +1,223 @@
+{
+  "timestamp": "2026-03-03T23:36:20.822795",
+  "test_type": "Aggressive Historical Backtest - ICT Sniper Multi-TF",
+  "period_days": 90,
+  "results_by_index": {
+    "BANKNIFTY": {
+      "period": "2025-12-03 to 2026-03-03",
+      "total_candles": 4864,
+      "total_signals": 1594,
+      "total_trades": 195,
+      "wins": 97,
+      "losses": 98,
+      "breakeven": 0,
+      "win_rate": "49.7%",
+      "total_pnl": "\u20b95,870",
+      "avg_win": "\u20b9368",
+      "avg_loss": "\u20b9-304",
+      "profit_factor": "1.20",
+      "max_drawdown": "487180.0%",
+      "sharpe_ratio": "0.07",
+      "bot_performance": {
+        "TrendFollower": {
+          "signals": 286,
+          "trades": 149,
+          "wins": 76,
+          "win_rate": 51.006711409395976,
+          "total_pnl": 13450.273999999998,
+          "avg_confidence": 44.57551667416922
+        },
+        "ReversalHunter": {
+          "signals": 214,
+          "trades": 32,
+          "wins": 11,
+          "win_rate": 34.375,
+          "total_pnl": -8877.509999999995,
+          "avg_confidence": 58.59375
+        },
+        "MomentumScalper": {
+          "signals": 1,
+          "trades": 1,
+          "wins": 1,
+          "win_rate": 100.0,
+          "total_pnl": 220.34000000000378,
+          "avg_confidence": 45.0
+        },
+        "OIAnalyst": {
+          "signals": 860,
+          "trades": 162,
+          "wins": 86,
+          "win_rate": 53.086419753086425,
+          "total_pnl": 15022.714000000007,
+          "avg_confidence": 44.3873579287112
+        },
+        "VolatilityTrader": {
+          "signals": 233,
+          "trades": 3,
+          "wins": 2,
+          "win_rate": 66.66666666666666,
+          "total_pnl": -312.3500000000058,
+          "avg_confidence": 42.26329501726665
+        }
+      }
+    },
+    "NIFTY50": {
+      "period": "2025-12-03 to 2026-03-03",
+      "total_candles": 4864,
+      "total_signals": 3589,
+      "total_trades": 193,
+      "wins": 91,
+      "losses": 102,
+      "breakeven": 0,
+      "win_rate": "47.1%",
+      "total_pnl": "\u20b93,179",
+      "avg_win": "\u20b9204",
+      "avg_loss": "\u20b9-151",
+      "profit_factor": "1.21",
+      "max_drawdown": "194889.0%",
+      "sharpe_ratio": "0.07",
+      "bot_performance": {
+        "TrendFollower": {
+          "signals": 515,
+          "trades": 281,
+          "wins": 146,
+          "win_rate": 51.95729537366548,
+          "total_pnl": 22706.617800000018,
+          "avg_confidence": 44.29541352759498
+        },
+        "ReversalHunter": {
+          "signals": 624,
+          "trades": 73,
+          "wins": 21,
+          "win_rate": 28.767123287671232,
+          "total_pnl": -15639.3688,
+          "avg_confidence": 58.42465753424658
+        },
+        "MomentumScalper": {
+          "signals": 2,
+          "trades": 2,
+          "wins": 1,
+          "win_rate": 50.0,
+          "total_pnl": 124.4800000000032,
+          "avg_confidence": 47.41663441500339
+        },
+        "OIAnalyst": {
+          "signals": 1795,
+          "trades": 313,
+          "wins": 166,
+          "win_rate": 53.03514376996805,
+          "total_pnl": 24873.40780000002,
+          "avg_confidence": 44.070323326690705
+        },
+        "VolatilityTrader": {
+          "signals": 653,
+          "trades": 8,
+          "wins": 4,
+          "win_rate": 50.0,
+          "total_pnl": -456.2700000000041,
+          "avg_confidence": 43.03477209062901
+        }
+      }
+    },
+    "FINNIFTY": {
+      "period": "2025-12-03 to 2026-03-03",
+      "total_candles": 4864,
+      "total_signals": 5679,
+      "total_trades": 191,
+      "wins": 105,
+      "losses": 86,
+      "breakeven": 0,
+      "win_rate": "55.0%",
+      "total_pnl": "\u20b97,672",
+      "avg_win": "\u20b9192",
+      "avg_loss": "\u20b9-146",
+      "profit_factor": "1.61",
+      "max_drawdown": "98310.0%",
+      "sharpe_ratio": "0.18",
+      "bot_performance": {
+        "TrendFollower": {
+          "signals": 738,
+          "trades": 409,
+          "wins": 223,
+          "win_rate": 54.52322738386308,
+          "total_pnl": 34433.4562,
+          "avg_confidence": 44.376778231170526
+        },
+        "ReversalHunter": {
+          "signals": 1072,
+          "trades": 119,
+          "wins": 39,
+          "win_rate": 32.773109243697476,
+          "total_pnl": -20685.112799999995,
+          "avg_confidence": 58.445378151260506
+        },
+        "MomentumScalper": {
+          "signals": 3,
+          "trades": 3,
+          "wins": 2,
+          "win_rate": 66.66666666666666,
+          "total_pnl": 569.1816000000035,
+          "avg_confidence": 48.17659222614207
+        },
+        "OIAnalyst": {
+          "signals": 2752,
+          "trades": 457,
+          "wins": 252,
+          "win_rate": 55.14223194748359,
+          "total_pnl": 37481.04620000002,
+          "avg_confidence": 44.13370305590535
+        },
+        "VolatilityTrader": {
+          "signals": 1114,
+          "trades": 11,
+          "wins": 5,
+          "win_rate": 45.45454545454545,
+          "total_pnl": -165.23600000000442,
+          "avg_confidence": 43.707802861326485
+        }
+      }
+    }
+  },
+  "phase1_recommendations": [
+    {
+      "emoji": "\u26a0\ufe0f",
+      "title": "Confidence Threshold Too Low",
+      "current": "min_confidence = 50%",
+      "recommended": "min_confidence = 60-65%",
+      "rationale": "Win rate of 50.6% indicates too many marginal signals. Higher threshold reduces false signals.",
+      "impact": "+5-10% win rate improvement"
+    },
+    {
+      "emoji": "\ud83d\udd04",
+      "title": "Swing Detection Sensitivity",
+      "current": "swing_lookback = 10 bars",
+      "recommended": "swing_lookback = 8-10 bars (test 8, 9, 10)",
+      "rationale": "Shorter lookback = more frequent signals but potentially lower quality. Test to find optimal balance.",
+      "impact": "+Frequency or +Accuracy depending on market regime"
+    },
+    {
+      "emoji": "\ud83d\udcca",
+      "title": "Volume Confirmation Strictness",
+      "current": "vol_multiplier = 1.3x",
+      "recommended": "vol_multiplier = 1.2-1.3x",
+      "rationale": "Current setting may be too strict. Lower slightly to capture high-probability low-volume setups.",
+      "impact": "+10-15% signal frequency with maintained quality"
+    },
+    {
+      "emoji": "\ud83d\udccc",
+      "title": "Displacement Candle Threshold",
+      "current": "displacement_multiplier = 1.5x",
+      "recommended": "displacement_multiplier = 1.3-1.5x",
+      "rationale": "Current threshold may be filtering out valid setups. Test lower values for aggressive trading.",
+      "impact": "+Capture more momentum entries"
+    },
+    {
+      "emoji": "\ud83d\udcc8",
+      "title": "Market Structure Shift Confirmation",
+      "current": "mss_swing_len = 3 bars",
+      "recommended": "mss_swing_len = 2-3 bars (test both)",
+      "rationale": "Shorter MSS allows earlier entry. Test if it maintains profitability while entering sooner.",
+      "impact": "+Earlier entries, -Risk of premature signals"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+nohup: ignoring input
+🚀 Starting LiveBench Dashboard...
+
+[0;34m🔨 Building frontend...[0m
+
+> livebench-frontend@1.0.0 build
+> vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 2860 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                         0.51 kB │ gzip:   0.33 kB
+dist/assets/index-CjB5MHCQ.css         38.52 kB │ gzip:   7.19 kB
+dist/assets/docx-preview-BTh-K7E8.js  173.72 kB │ gzip:  50.95 kB
+dist/assets/xlsx-D_0l8YDs.js          429.03 kB │ gzip: 143.08 kB
+dist/assets/index-BFqon_r-.js         777.53 kB │ gzip: 223.87 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 9.29s
+[0;32m✓ Frontend built[0m
+
+[0;34m🔍 Checking for existing services...[0m
+[0;32m✓ No existing Backend API on port 8000[0m
+[0;32m✓ No existing Frontend on port 3000[0m
+
+[0;34m🔧 Starting Backend API...[0m
+[0;32m✓ Backend API started (PID: 2522)[0m
+[0;34m🎨 Starting Frontend Dashboard...[0m
+[0;32m✓ Frontend started (PID: 2566)[0m
+
+[0;32m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[0;32m🎉 LiveBench Dashboard is running![0m
+[0;32m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+
+  [0;34m📊 Dashboard:[0m  http://localhost:3000
+  [0;34m🔧 Backend API:[0m http://localhost:8000
+  [0;34m📚 API Docs:[0m    http://localhost:8000/docs
+
+[0;34m📝 Logs:[0m
+  API:      tail -f logs/api.log
+  Frontend: tail -f logs/frontend.log
+
+[0;31mPress Ctrl+C to stop all services[0m
+
