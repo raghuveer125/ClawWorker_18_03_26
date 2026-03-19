@@ -35,4 +35,3 @@ Warning: live web server failed to start; continuing without it.
   - Events:   opportunity_events.csv
   - States:   .signal_state.json, .opportunity_engine_state.json, .paper_trade_state.json
   - Market:   OPEN (9:00-15:45 IST)
-./scripts/start_all.sh: line 1006: 78940 Terminated: 15          INDEX="${INDEX:-SENSEX}" INTERVAL_SEC="${INTERVAL_SEC:-15}" CAPITAL="${CAPITAL:-5000}" LOT_SIZE="${LOT_SIZE:-10}" ENTRY_FEE="${ENTRY_FEE:-40}" EXIT_FEE="${EXIT_FEE:-40}" EXIT_TARGET="${EXIT_TARGET:-t1}" MAX_HOLD_SEC="${MAX_HOLD_SEC:-180}" ADAPTIVE_ENABLE="${ADAPTIVE_ENABLE:-1}" MIN_LEARN_PROB="${MIN_LEARN_PROB:-0.55}" MIN_MODEL_SAMPLES="${MIN_MODEL_SAMPLES:-20}" TRAIN_MIN_LABELS="${TRAIN_MIN_LABELS:-${MIN_MODEL_SAMPLES:-20}}" TRAIN_LR="${TRAIN_LR:-0.15}" TRAIN_EPOCHS="${TRAIN_EPOCHS:-600}" AUTO_TRAIN_ON_BACKFILL="${AUTO_TRAIN_ON_BACKFILL:-1}" "${PAPER_SCRIPT}"

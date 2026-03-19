@@ -1,17 +1,33 @@
+import path from 'node:path'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
-  // Load env file based on `mode` in the current working directory.
-  const env = loadEnv(mode, process.cwd(), '')
+  const frontendRoot = process.cwd()
+  const repoRoot = path.resolve(frontendRoot, '../..')
+  const repoEnv = loadEnv(mode, repoRoot, '')
+  const frontendEnv = loadEnv(mode, frontendRoot, '')
+  const env = {
+    ...repoEnv,
+    ...frontendEnv,
+    ...process.env,
+  }
 
   // Port configuration (from env or defaults)
-  const API_PORT = env.API_PORT || process.env.API_PORT || '8001'
-  const FRONTEND_PORT = env.FRONTEND_PORT || process.env.FRONTEND_PORT || '3001'
+  const API_PORT = env.VITE_API_PORT || env.API_PORT || '8001'
+  const FRONTEND_PORT = env.VITE_FRONTEND_PORT || env.FRONTEND_PORT || '3001'
+
+  const frontendEnvDefines = Object.fromEntries(
+    Object.entries(frontendEnv)
+      .filter(([key]) => key.startsWith('VITE_'))
+      .map(([key, value]) => [`import.meta.env.${key}`, JSON.stringify(value)])
+  )
 
   return {
+    envDir: repoRoot,
     plugins: [react()],
+    define: frontendEnvDefines,
     optimizeDeps: {
       esbuildOptions: {
         // Firefox sometimes reports noisy "No sources are declared" warnings

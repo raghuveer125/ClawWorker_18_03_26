@@ -1,11 +1,10 @@
-INFO:     Started server process [93958]
+INFO:     Started server process [30849]
 INFO:     Waiting for application startup.
-Latest screener snapshot is stale: screener_20260319_105207.json (460s old)
+Latest screener snapshot is stale: screener_20260319_113425.json (4327s old)
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-[LLMTrader] Warning: OpenAI not available, bot disabled
-[LLMVeto] Warning: OpenAI not available, veto layer disabled
+[Ensemble] LLM Trading Bot enabled - TRUE AI reasoning active
+[Ensemble] LLM Veto Layer enabled - capital protection active
 [MTF] Mode set to: balanced
 [Ensemble] Multi-Timeframe Filter enabled (BALANCED mode) - Confidence-gated, ≥80% preserved
 [AdaptiveRisk] State loaded - Risk: NORMAL
@@ -29,80 +28,358 @@ AutoTrader screener refresh error: market adapter service unavailable and local 
 [AdaptiveRisk] Daily reset complete
 [Ensemble] Running daily parameter optimization...
 [Optimizer] No optimizations needed (insufficient data or no improvements found)
-INFO:     127.0.0.1:50525 - "GET /api/ HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50581 - "GET /api/ HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50582 - "WebSocket /ws" [accepted]
+INFO:     127.0.0.1:62780 - "GET /api/ HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=88%, change=-2.19%
+[AutoTrader]   NIFTY50: PE signal, conf=90%, change=-2.25%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.32%
+[AutoTrader] Loop 1: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=88%, change=-2.19%
+[AutoTrader]   NIFTY50: PE signal, conf=90%, change=-2.25%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.32%
+[AutoTrader] Loop 2: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+INFO:     127.0.0.1:62958 - "GET /api/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62961 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62962 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62963 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62966 - "WebSocket /ws" [accepted]
 INFO:     connection open
-INFO:     127.0.0.1:50585 - "GET /api/agents HTTP/1.1" 200 OK
-Latest screener snapshot is stale: screener_20260319_105207.json (470s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (480s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (490s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-Latest screener snapshot is stale: screener_20260319_105207.json (500s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (510s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (520s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-Latest screener snapshot is stale: screener_20260319_105207.json (530s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (540s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (550s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-Latest screener snapshot is stale: screener_20260319_105207.json (560s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (570s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (580s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-Latest screener snapshot is stale: screener_20260319_105207.json (590s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (600s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (610s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-Latest screener snapshot is stale: screener_20260319_105207.json (621s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (631s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (641s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-Latest screener snapshot is stale: screener_20260319_105207.json (651s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (661s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (671s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-Latest screener snapshot is stale: screener_20260319_105207.json (681s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (691s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (701s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-Latest screener snapshot is stale: screener_20260319_105207.json (711s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (721s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (731s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-Latest screener snapshot is stale: screener_20260319_105207.json (741s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (751s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (761s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-Latest screener snapshot is stale: screener_20260319_105207.json (771s old)
+INFO:     127.0.0.1:62968 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62971 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62972 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62976 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62983 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62985 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62988 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62991 - "GET /api/leaderboard HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=89%, change=-2.24%
+[AutoTrader]   NIFTY50: PE signal, conf=90%, change=-2.26%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.34%
+[AutoTrader] Loop 3: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+INFO:     127.0.0.1:63011 - "GET /api/bots/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63015 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63017 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63018 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63019 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63020 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63024 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63026 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63029 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63032 - "GET /api/bots/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63036 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63038 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63041 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63044 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63047 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63050 - "GET /api/agents/qwen3-max-10dollar-1/learning/roi HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63053 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63056 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63059 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+INFO:     127.0.0.1:63069 - "GET /api/indices/expiry-schedule HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63070 - "GET /api/hybrid-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63071 - "GET /api/market/live HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63084 - "GET /api/indices/expiry-schedule HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63087 - "GET /api/hybrid-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63094 - "GET /api/market/live HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63107 - "GET /api/agents/qwen3-max-10dollar-1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63108 - "GET /api/agents/qwen3-max-10dollar-1/economic HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63111 - "GET /api/agents/qwen3-max-10dollar-1/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63112 - "GET /api/agents/qwen3-max-10dollar-1/dashboard-supplemental HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63126 - "GET /api/agents/qwen3-max-10dollar-1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63127 - "GET /api/agents/qwen3-max-10dollar-1/economic HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63130 - "GET /api/agents/qwen3-max-10dollar-1/dashboard-supplemental HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63133 - "GET /api/agents/qwen3-max-10dollar-1/tasks HTTP/1.1" 200 OK
 INFO:     connection closed
-[AutoTrader] Loop 6: No market data available
-[AutoTrader] Loop 12: No market data available
-[AutoTrader] Loop 18: No market data available
-[AutoTrader] Loop 24: No market data available
-[AutoTrader] Loop 30: No market data available
-INFO:     127.0.0.1:51563 - "GET /api/ HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51564 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51565 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51566 - "GET /api/agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51567 - "WebSocket /ws" [accepted]
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=89%, change=-2.24%
+[AutoTrader]   NIFTY50: PE signal, conf=90%, change=-2.26%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.34%
+[AutoTrader] Loop 4: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+INFO:     127.0.0.1:63200 - "GET /api/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63203 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63205 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63206 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63208 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63212 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63214 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63215 - "WebSocket /ws" [accepted]
 INFO:     connection open
-INFO:     127.0.0.1:51572 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51574 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51576 - "GET /api/agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51578 - "GET /api/agents HTTP/1.1" 200 OK
-Latest screener snapshot is stale: screener_20260319_105207.json (781s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (791s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-Latest screener snapshot is stale: screener_20260319_105207.json (801s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (811s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (821s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-Latest screener snapshot is stale: screener_20260319_105207.json (831s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (841s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (851s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
-Latest screener snapshot is stale: screener_20260319_105207.json (861s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (871s old)
-Latest screener snapshot is stale: screener_20260319_105207.json (881s old)
-AutoTrader screener refresh error: market adapter service unavailable and local fallback disabled
+INFO:     127.0.0.1:63219 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63228 - "GET /api/agents/qwen3-max-10dollar-1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63230 - "GET /api/agents/qwen3-max-10dollar-1/economic HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63232 - "GET /api/agents/qwen3-max-10dollar-1/dashboard-supplemental HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63233 - "GET /api/agents/qwen3-max-10dollar-1/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63235 - "GET /api/agents/qwen3-max-10dollar-1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63237 - "GET /api/agents/qwen3-max-10dollar-1/economic HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63240 - "GET /api/agents/qwen3-max-10dollar-1/dashboard-supplemental HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63243 - "GET /api/agents/qwen3-max-10dollar-1/tasks HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=89%, change=-2.24%
+[AutoTrader]   NIFTY50: PE signal, conf=90%, change=-2.26%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.35%
+[AutoTrader] Loop 5: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+INFO:     127.0.0.1:63330 - "GET /api/agents/qwen3-max-10dollar-1/dashboard-supplemental HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63362 - "GET /api/indices/config HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63363 - "GET /api/fyersn7/dates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63365 - "GET /api/indices/config HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63367 - "GET /api/fyersn7/dates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63370 - "GET /api/fyersn7/snapshot/2026-03-19?latest_only=true HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=89%, change=-2.23%
+[AutoTrader]   NIFTY50: PE signal, conf=90%, change=-2.26%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.34%
+[AutoTrader] Loop 6: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[AutoTrader] Skip SENSEX: No signal from ensemble
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[AutoTrader] Skip NIFTY50: No signal from ensemble
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[AutoTrader] Skip BANKNIFTY: No signal from ensemble
+INFO:     127.0.0.1:63419 - "GET /api/indices/config HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63420 - "GET /api/fyersn7/dates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63422 - "GET /api/indices/config HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63425 - "GET /api/fyersn7/dates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63427 - "GET /api/fyersn7/snapshot/2026-03-19?latest_only=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63436 - "GET /api/agents/qwen3-max-10dollar-1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63439 - "GET /api/agents/qwen3-max-10dollar-1/economic HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63442 - "GET /api/agents/qwen3-max-10dollar-1/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63443 - "GET /api/agents/qwen3-max-10dollar-1/dashboard-supplemental HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63446 - "GET /api/agents/qwen3-max-10dollar-1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63448 - "GET /api/agents/qwen3-max-10dollar-1/economic HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63451 - "GET /api/agents/qwen3-max-10dollar-1/dashboard-supplemental HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63459 - "GET /api/agents/qwen3-max-10dollar-1/tasks HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=89%, change=-2.23%
+[AutoTrader]   NIFTY50: PE signal, conf=90%, change=-2.26%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.34%
+[AutoTrader] Loop 7: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+INFO:     127.0.0.1:63537 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63539 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63541 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63544 - "GET /api/leaderboard HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=89%, change=-2.23%
+[AutoTrader]   NIFTY50: PE signal, conf=90%, change=-2.26%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.34%
+[AutoTrader] Loop 8: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=88%, change=-2.19%
+[AutoTrader]   NIFTY50: PE signal, conf=89%, change=-2.24%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.35%
+[AutoTrader] Loop 9: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+INFO:     127.0.0.1:63658 - "GET /api/agents/stock-agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63661 - "GET /api/agents/stock-agent/economic HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63662 - "GET /api/agents/stock-agent/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63663 - "GET /api/agents/stock-agent/dashboard-supplemental HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63668 - "GET /api/agents/stock-agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63671 - "GET /api/agents/stock-agent/economic HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63672 - "GET /api/agents/stock-agent/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63675 - "GET /api/agents/stock-agent/dashboard-supplemental HTTP/1.1" 200 OK
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=88%, change=-2.19%
+[AutoTrader]   NIFTY50: PE signal, conf=89%, change=-2.24%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.35%
+[AutoTrader] Loop 10: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=89%, change=-2.20%
+[AutoTrader]   NIFTY50: PE signal, conf=89%, change=-2.22%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.34%
+[AutoTrader] Loop 11: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: SELL @ 40%
+  ✓ VolatilityTrader: SELL @ 58%
+[Capital Preservation] No high-conviction signal (>=70%) found
+INFO:     127.0.0.1:63867 - "GET /api/agents/stock-agent/dashboard-supplemental HTTP/1.1" 200 OK
