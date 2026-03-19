@@ -1395,7 +1395,7 @@ cmd_dashboard() {
   FRONTEND_PORT="${FRONTEND_PORT:-3001}"
 
   # Start Backend API Server
-  echo -e "${BLUE}[1/2] Starting Backend API on port ${API_PORT}...${NC}"
+  echo -e "${BLUE}[1/3] Starting Backend API on port ${API_PORT}...${NC}"
   local livebench_python
   livebench_python="$(livebench_python_bin)"
   local auto_trader_strategy_id="${AUTO_TRADER_STRATEGY_ID:-clawwork-autotrader}"
@@ -1416,7 +1416,7 @@ cmd_dashboard() {
   done
 
   # Start Frontend Dashboard
-  echo -e "${BLUE}[2/2] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
+  echo -e "${BLUE}[2/3] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
   if ! ensure_frontend_dependencies; then
     stop_all
     exit 1
@@ -1437,13 +1437,37 @@ cmd_dashboard() {
     echo -n "."
   done
 
+  # Start Scalping Dashboard API so /scalping works in dashboard mode too.
+  SCALPING_API_PORT="${SCALPING_API_PORT:-8002}"
+  export SCALPING_ENGINE_ENABLED="${SCALPING_ENGINE_ENABLED:-1}"
+  export SCALPING_LIVE="${SCALPING_LIVE:-0}"
+  export SCALPING_INTERVAL="${SCALPING_INTERVAL:-5}"
+  echo -e "${BLUE}[3/3] Starting Scalping Dashboard API on port ${SCALPING_API_PORT}...${NC}"
+  if [[ -d "${BOT_ARMY_DIR}/scalping" ]]; then
+    cmd_scalping_api_background
+    echo -n "  Waiting for Scalping API..."
+    for i in {1..30}; do
+      if curl -s "http://localhost:${SCALPING_API_PORT}/api/scalping/status" > /dev/null 2>&1; then
+        echo -e " ${GREEN}ready${NC}"
+        break
+      fi
+      sleep 1
+      echo -n "."
+    done
+    echo -e "${GREEN}    Engine embedded in API (SCALPING_ENGINE_ENABLED=${SCALPING_ENGINE_ENABLED})${NC}"
+  else
+    echo -e "${YELLOW}  Scalping API not found, skipping...${NC}"
+  fi
+
   echo ""
   echo -e "${GREEN}Dashboard is running!${NC}"
   echo -e "  Dashboard: http://localhost:${FRONTEND_PORT}"
+  echo -e "  Scalping: http://localhost:${FRONTEND_PORT}/scalping"
   echo -e "  API: http://localhost:${API_PORT}/api"
+  echo -e "  Scalping API: http://localhost:${SCALPING_API_PORT}/api/scalping"
   echo -e "  Docs: http://localhost:${API_PORT}/docs"
   echo ""
-  echo -e "${YELLOW}Note: Signal engines not started. Use './start.sh both' for full system.${NC}"
+  echo -e "${YELLOW}Note: fyersN7 signal engines are not started in dashboard mode. Use './start.sh both' or './start.sh all' for the full stack.${NC}"
   echo ""
 
   if should_detach; then

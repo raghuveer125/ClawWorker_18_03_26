@@ -12,6 +12,13 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [react()],
+    optimizeDeps: {
+      esbuildOptions: {
+        // Firefox sometimes reports noisy "No sources are declared" warnings
+        // for Vite's prebundled dependency sourcemaps in dev.
+        sourcemap: false,
+      },
+    },
     base: command === 'build' ? '/ClawWork/' : '/',
     build: {
       rollupOptions: {
