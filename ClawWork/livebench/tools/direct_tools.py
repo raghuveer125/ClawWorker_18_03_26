@@ -679,7 +679,9 @@ def fyers_run_screener(watchlist: Union[str, list, None] = None) -> Dict[str, An
 
     Args:
         watchlist: Optional comma-separated symbols or JSON list.
-                  If omitted, uses FYERS_WATCHLIST from .env.
+                  If omitted, uses the default SENSEX, NIFTY50, and BANKNIFTY
+                  watchlists from shared index config, with optional
+                  FYERS_WATCHLIST_<INDEX> env overrides.
                   Example: "NSE:RELIANCE-EQ,NSE:TCS-EQ,NSE:HDFCBANK-EQ"
     """
     client = MarketDataClient(fallback_to_local=bool(os.getenv("FYERS_ACCESS_TOKEN")))

@@ -49,9 +49,30 @@ MARKET_ADAPTER_PID_FILE="${PROJECT_ROOT}/logs/market_adapter.pid"
 MARKET_ADAPTER_HELPER="${SHARED_ENGINE}/launcher/market_adapter.sh"
 AUTH_ENV_FILE="${PROJECT_ROOT}/.env"
 
-# Python - use system python3 to avoid venv conflicts
-# The shared_project_engine needs to be on PYTHONPATH, not in a venv
-PYTHON_BIN="${PYTHON_BIN:-/usr/bin/python3}"
+# Python - prefer an explicit override, then repo-managed virtualenvs, then PATH.
+resolve_python_bin() {
+  local candidates=(
+    "${PROJECT_ROOT}/.venv/bin/python"
+    "${CLAWWORK_DIR}/livebench/venv/bin/python"
+  )
+  local candidate
+
+  for candidate in "${candidates[@]}"; do
+    if [[ -x "${candidate}" ]]; then
+      printf '%s\n' "${candidate}"
+      return 0
+    fi
+  done
+
+  if command -v python3 >/dev/null 2>&1; then
+    command -v python3
+    return 0
+  fi
+
+  printf '%s\n' "/usr/bin/python3"
+}
+
+PYTHON_BIN="${PYTHON_BIN:-$(resolve_python_bin)}"
 
 # Set PYTHONPATH so shared_project_engine can be found
 export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH:-}"
@@ -321,9 +342,118 @@ print_menu() {
 }
 
 check_python() {
-  if ! command -v "${PYTHON_BIN}" &>/dev/null; then
-    echo -e "${RED}Error: ${PYTHON_BIN} not found${NC}" >&2
-    exit 1
+  if [[ "${PYTHON_BIN}" == */* ]]; then
+    if [[ -x "${PYTHON_BIN}" ]]; then
+      return 0
+    fi
+  elif command -v "${PYTHON_BIN}" &>/dev/null; then
+    return 0
+  fi
+
+  echo -e "${RED}Error: ${PYTHON_BIN} not found${NC}" >&2
+  exit 1
+}
+
+check_auth_python_deps() {
+  local missing=()
+  local module
+
+  for module in requests urllib3; do
+    if ! "${PYTHON_BIN}" -c "import ${module}" >/dev/null 2>&1; then
+      missing+=("${module}")
+    fi
+  done
+
+  if [[ "${#missing[@]}" -eq 0 ]]; then
+    return 0
+  fi
+
+  echo -e "${RED}Error: missing Python packages for authentication: ${missing[*]}${NC}" >&2
+  echo -e "${YELLOW}Create a repo-local venv and install them with:${NC}" >&2
+  echo "  python3 -m venv .venv" >&2
+  echo "  .venv/bin/pip install requests urllib3" >&2
+  exit 1
+}
+
+check_auth_ready() {
+  check_python
+  check_auth_python_deps
+}
+
+is_truthy() {
+  case "${1:-}" in
+    1|true|TRUE|True|yes|YES|Yes|on|ON|On)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+run_auth_cli() {
+  local subcommand="$1"
+  shift || true
+
+  local insecure_enabled=0
+  if is_truthy "${FYERS_INSECURE:-${FYERS_AUTH_INSECURE:-}}"; then
+    insecure_enabled=1
+  fi
+
+  local ca_bundle="${FYERS_CA_BUNDLE:-${REQUESTS_CA_BUNDLE:-${SSL_CERT_FILE:-}}}"
+
+  if [[ "${insecure_enabled}" == "1" && -n "${ca_bundle}" ]]; then
+    "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" "${subcommand}" --insecure --ca-bundle "${ca_bundle}" "$@"
+  elif [[ "${insecure_enabled}" == "1" ]]; then
+    "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" "${subcommand}" --insecure "$@"
+  elif [[ -n "${ca_bundle}" ]]; then
+    "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" "${subcommand}" --ca-bundle "${ca_bundle}" "$@"
+  else
+    "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" "${subcommand}" "$@"
+  fi
+}
+
+run_auth_status() {
+  run_auth_cli status
+}
+
+print_auth_tls_hint() {
+  echo -e "${YELLOW}Hint: if your network uses a self-signed or corporate TLS certificate, set FYERS_INSECURE=1 or FYERS_CA_BUNDLE=/path/to/corp-ca.pem in .env and retry.${NC}"
+}
+
+check_frontend_runtime() {
+  if ! command -v node >/dev/null 2>&1; then
+    echo -e "${RED}Error: node is not installed or not on PATH.${NC}" >&2
+    return 1
+  fi
+
+  if ! command -v npm >/dev/null 2>&1; then
+    echo -e "${RED}Error: npm is not installed or not on PATH.${NC}" >&2
+    return 1
+  fi
+
+  local node_output
+  if ! node_output="$(node --version 2>&1)"; then
+    echo -e "${RED}Error: Node.js runtime is not healthy.${NC}" >&2
+    if echo "${node_output}" | grep -qi "libsimdjson"; then
+      echo -e "${YELLOW}Homebrew node is linked against a missing simdjson library. Repair it with:${NC}" >&2
+      echo "  brew reinstall simdjson node" >&2
+    else
+      printf '%s\n' "${node_output}" >&2
+    fi
+    return 1
+  fi
+
+  local npm_output
+  if ! npm_output="$(npm --version 2>&1)"; then
+    echo -e "${RED}Error: npm is not healthy.${NC}" >&2
+    if echo "${npm_output}" | grep -qi "libsimdjson"; then
+      echo -e "${YELLOW}Homebrew node/npm is linked against a missing simdjson library. Repair it with:${NC}" >&2
+      echo "  brew reinstall simdjson node" >&2
+    else
+      printf '%s\n' "${npm_output}" >&2
+    fi
+    return 1
   fi
 }
 
@@ -345,7 +475,10 @@ ensure_auth() {
   # Check if we have credentials
   if [[ -z "${FYERS_ACCESS_TOKEN:-}" ]] || [[ -z "${FYERS_CLIENT_ID:-}" ]]; then
     echo -e "${YELLOW}No valid credentials found. Starting login...${NC}"
-    cmd_login
+    if ! cmd_login; then
+      print_auth_tls_hint
+      return 1
+    fi
     # Reload env after login
     load_env || true
   fi
@@ -353,18 +486,34 @@ ensure_auth() {
   # Verify token is valid
   echo -e "${BLUE}Verifying authentication...${NC}"
   local status_output
-  status_output=$("${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" status 2>&1) || true
+  status_output="$(run_auth_status 2>&1)" || true
 
   if echo "${status_output}" | grep -q "Token is VALID"; then
     echo -e "${GREEN}Authentication valid.${NC}"
     return 0
   elif echo "${status_output}" | grep -q "expired\|INVALID"; then
     echo -e "${YELLOW}Token expired. Starting login...${NC}"
-    cmd_login
+    if ! cmd_login; then
+      print_auth_tls_hint
+      return 1
+    fi
     load_env || true
-    return 0
+    echo -e "${BLUE}Re-verifying authentication...${NC}"
+    status_output="$(run_auth_status 2>&1)" || true
+    if echo "${status_output}" | grep -q "Token is VALID"; then
+      echo -e "${GREEN}Authentication valid.${NC}"
+      return 0
+    fi
+    echo -e "${RED}Authentication refresh failed. Please run: ./start.sh login${NC}"
+    if echo "${status_output}" | grep -qi "CERTIFICATE_VERIFY_FAILED\|self-signed certificate"; then
+      print_auth_tls_hint
+    fi
+    return 1
   else
     echo -e "${RED}Authentication check failed. Please run: ./start.sh login${NC}"
+    if echo "${status_output}" | grep -qi "CERTIFICATE_VERIFY_FAILED\|self-signed certificate"; then
+      print_auth_tls_hint
+    fi
     return 1
   fi
 }
@@ -435,6 +584,8 @@ stop_fyersn7_workers() {
 ensure_frontend_dependencies() {
   local frontend_dir="${CLAWWORK_DIR}/frontend"
 
+  check_frontend_runtime || return 1
+
   if [[ -x "${frontend_dir}/node_modules/.bin/vite" ]]; then
     return 0
   fi
@@ -446,13 +597,45 @@ ensure_frontend_dependencies() {
   )
 }
 
+resolve_service_python() {
+  local candidate
+
+  for candidate in "$@"; do
+    [[ -n "${candidate}" ]] || continue
+
+    if [[ "${candidate}" == */* ]]; then
+      if [[ -x "${candidate}" ]]; then
+        printf '%s\n' "${candidate}"
+        return 0
+      fi
+      continue
+    fi
+
+    if command -v "${candidate}" >/dev/null 2>&1; then
+      command -v "${candidate}"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
 livebench_python_bin() {
-  local candidate="${CLAWWORK_DIR}/livebench/venv/bin/python"
-  if [[ -x "${candidate}" ]]; then
-    printf '%s\n' "${candidate}"
-    return 0
-  fi
-  printf '%s\n' "python3"
+  resolve_service_python \
+    "${CLAWWORK_DIR}/livebench/venv/bin/python" \
+    "${PYTHON_BIN}" \
+    "${PROJECT_ROOT}/.venv/bin/python" \
+    "python3" \
+    "/usr/bin/python3"
+}
+
+llm_debate_python_bin() {
+  resolve_service_python \
+    "${LLM_DEBATE_DIR}/backend/venv/bin/python" \
+    "${PYTHON_BIN}" \
+    "${PROJECT_ROOT}/.venv/bin/python" \
+    "python3" \
+    "/usr/bin/python3"
 }
 
 start_fyers_screener_loop() {
@@ -557,22 +740,25 @@ stop_all() {
 # ============================================================================
 
 cmd_login() {
-  check_python
+  check_auth_ready
+  load_env || true
   cd "${PROJECT_ROOT}"
   echo -e "${BLUE}Starting FYERS login...${NC}"
-  "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" login "$@"
+  run_auth_cli login "$@"
 }
 
 cmd_status() {
-  check_python
+  check_auth_ready
+  load_env || true
   cd "${PROJECT_ROOT}"
-  "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" status
+  run_auth_cli status "$@"
 }
 
 cmd_test() {
-  check_python
+  check_auth_ready
+  load_env || true
   cd "${PROJECT_ROOT}"
-  "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" test
+  run_auth_cli test "$@"
 }
 
 # ============================================================================
@@ -642,7 +828,7 @@ EOF
   # Use existing start script
   if [[ -x "./scripts/start_all.sh" ]]; then
     ensure_market_adapter
-    INDEX="${index}" MARKET_ADAPTER_URL="${MARKET_ADAPTER_URL}" exec ./scripts/start_all.sh run
+    PYTHON_BIN="${PYTHON_BIN}" INDEX="${index}" MARKET_ADAPTER_URL="${MARKET_ADAPTER_URL}" exec ./scripts/start_all.sh run
   else
     echo -e "${RED}Error: scripts/start_all.sh not found${NC}" >&2
     exit 1
@@ -678,7 +864,7 @@ EOF
 
   cd "${FYERSN7_DIR}"
   ensure_market_adapter
-  INDEX="${index}" MARKET_ADAPTER_URL="${MARKET_ADAPTER_URL}" exec ./scripts/start_all.sh paper
+  PYTHON_BIN="${PYTHON_BIN}" INDEX="${index}" MARKET_ADAPTER_URL="${MARKET_ADAPTER_URL}" exec ./scripts/start_all.sh paper
 }
 
 cmd_fyersn7_live() {
@@ -702,7 +888,7 @@ cmd_fyersn7_live() {
   echo ""
 
   cd "${PROJECT_ROOT}"
-  exec python live_fyersn7_trading.py \
+  exec "${PYTHON_BIN}" live_fyersn7_trading.py \
     --indices ${indices} \
     --capital "${capital}" \
     --poll-interval "${poll_interval}"
@@ -714,7 +900,7 @@ cmd_fyersn7_live_background() {
   local capital="${CAPITAL:-100000}"
   local poll_interval="${POLL_INTERVAL:-5}"
 
-  nohup bash -lc "cd '${PROJECT_ROOT}' && exec python live_fyersn7_trading.py --indices ${indices} --capital '${capital}' --poll-interval '${poll_interval}'" > "${PROJECT_ROOT}/logs/fyersn7_live.log" 2>&1 &
+  nohup bash -lc "cd '${PROJECT_ROOT}' && exec '${PYTHON_BIN}' live_fyersn7_trading.py --indices ${indices} --capital '${capital}' --poll-interval '${poll_interval}'" > "${PROJECT_ROOT}/logs/fyersn7_live.log" 2>&1 &
   local live_pid=$!
   save_pid "fyersn7_live" "${live_pid}"
   echo -e "${GREEN}  FyersN7 Live Trading started (PID: ${live_pid})${NC}"
@@ -731,7 +917,7 @@ cmd_fyersn7_paper_background() {
     return 0
   fi
 
-  nohup bash -lc "cd '${FYERSN7_DIR}' && exec env MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' CAPITAL='${capital}' ./scripts/start_all.sh paper" > "${PROJECT_ROOT}/logs/fyersn7_paper.log" 2>&1 &
+  nohup bash -lc "cd '${FYERSN7_DIR}' && exec env PYTHON_BIN='${PYTHON_BIN}' MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' CAPITAL='${capital}' ./scripts/start_all.sh paper" > "${PROJECT_ROOT}/logs/fyersn7_paper.log" 2>&1 &
   local paper_pid=$!
   save_pid "fyersn7_paper" "${paper_pid}"
   echo -e "${GREEN}  FyersN7 Paper Trading started (PID: ${paper_pid})${NC}"
@@ -1004,19 +1190,15 @@ cmd_llm_debate() {
   fi
 
   local port="${LLM_DEBATE_PORT:-8080}"
+  local debate_python
+  debate_python="$(llm_debate_python_bin)"
 
   echo -e "${GREEN}Starting LLM Debate Backend...${NC}"
   echo -e "  Port: ${port}"
   echo ""
 
   cd "${LLM_DEBATE_DIR}/backend"
-
-  # Activate venv if exists
-  if [[ -f "venv/bin/activate" ]]; then
-    source venv/bin/activate
-  fi
-
-  exec python main.py --port "${port}" "$@"
+  exec "${debate_python}" -m uvicorn main:app --host 0.0.0.0 --port "${port}" "$@"
 }
 
 cmd_llm_debate_background() {
@@ -1028,6 +1210,8 @@ cmd_llm_debate_background() {
   fi
 
   local port="${LLM_DEBATE_PORT:-8080}"
+  local debate_python
+  debate_python="$(llm_debate_python_bin)"
 
   mkdir -p "${PROJECT_ROOT}/logs"
 
@@ -1053,7 +1237,7 @@ cmd_llm_debate_background() {
     fi
   fi
 
-  nohup bash -lc "cd '${LLM_DEBATE_DIR}/backend' && source venv/bin/activate 2>/dev/null || true && exec python main.py --port '${port}'" > "${PROJECT_ROOT}/logs/llm_debate.log" 2>&1 &
+  nohup bash -lc "cd '${LLM_DEBATE_DIR}/backend' && exec '${debate_python}' -m uvicorn main:app --host 0.0.0.0 --port '${port}'" > "${PROJECT_ROOT}/logs/llm_debate.log" 2>&1 &
   local debate_pid=$!
   save_pid "llm_debate" "${debate_pid}"
   echo -e "${GREEN}  LLM Debate Backend started (PID: ${debate_pid})${NC}"
@@ -1105,7 +1289,7 @@ FYERS_ACCESS_TOKEN=${FYERS_ACCESS_TOKEN:-}
 EOF
     fi
 
-    nohup bash -lc "cd '${FYERSN7_DIR}' && exec env ENABLE_WEB_VIEW=1 MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' ./scripts/start_all.sh run" > "${PROJECT_ROOT}/logs/fyersn7.log" 2>&1 &
+    nohup bash -lc "cd '${FYERSN7_DIR}' && exec env PYTHON_BIN='${PYTHON_BIN}' ENABLE_WEB_VIEW=1 MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' ./scripts/start_all.sh run" > "${PROJECT_ROOT}/logs/fyersn7.log" 2>&1 &
     local fyersn7_wrapper_pid=$!
     save_pid "fyersn7-wrapper" "${fyersn7_wrapper_pid}"
     sleep 2
@@ -1140,7 +1324,10 @@ EOF
   # 4. Start Frontend Dashboard
   # ============================================
   echo -e "${BLUE}[4/5] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
-  ensure_frontend_dependencies
+  if ! ensure_frontend_dependencies; then
+    stop_all
+    exit 1
+  fi
   nohup bash -lc "cd '${CLAWWORK_DIR}/frontend' && exec npm run dev -- --host 0.0.0.0 --port '${FRONTEND_PORT}'" > "${CLAWWORK_DIR}/logs/frontend.log" 2>&1 &
   FRONTEND_PID=$!
   save_pid "frontend" ${FRONTEND_PID}
@@ -1230,7 +1417,10 @@ cmd_dashboard() {
 
   # Start Frontend Dashboard
   echo -e "${BLUE}[2/2] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
-  ensure_frontend_dependencies
+  if ! ensure_frontend_dependencies; then
+    stop_all
+    exit 1
+  fi
   nohup bash -lc "cd '${CLAWWORK_DIR}/frontend' && exec npm run dev -- --host 0.0.0.0 --port '${FRONTEND_PORT}'" > "${CLAWWORK_DIR}/logs/frontend.log" 2>&1 &
   FRONTEND_PID=$!
   save_pid "frontend" ${FRONTEND_PID}
@@ -1328,7 +1518,7 @@ EOF
     fi
 
     # Disable paper trading in signal engines - step 8 handles paper trading separately
-    nohup bash -lc "cd '${FYERSN7_DIR}' && exec env ENABLE_PAPER_TRADING=0 ENABLE_WEB_VIEW=1 MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' ./scripts/start_all.sh run" > "${PROJECT_ROOT}/logs/fyersn7.log" 2>&1 &
+    nohup bash -lc "cd '${FYERSN7_DIR}' && exec env PYTHON_BIN='${PYTHON_BIN}' ENABLE_PAPER_TRADING=0 ENABLE_WEB_VIEW=1 MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' ./scripts/start_all.sh run" > "${PROJECT_ROOT}/logs/fyersn7.log" 2>&1 &
     local fyersn7_wrapper_pid=$!
     save_pid "fyersn7-wrapper" "${fyersn7_wrapper_pid}"
     sleep 2
@@ -1363,7 +1553,10 @@ EOF
   # 5. Start Frontend Dashboard
   # ============================================
   echo -e "${BLUE}[5/9] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
-  ensure_frontend_dependencies
+  if ! ensure_frontend_dependencies; then
+    stop_all
+    exit 1
+  fi
   nohup bash -lc "cd '${CLAWWORK_DIR}/frontend' && exec npm run dev -- --host 0.0.0.0 --port '${FRONTEND_PORT}'" > "${CLAWWORK_DIR}/logs/frontend.log" 2>&1 &
   FRONTEND_PID=$!
   save_pid "frontend" ${FRONTEND_PID}
@@ -1479,11 +1672,11 @@ main() {
       ;;
     status)
       print_banner
-      cmd_status
+      cmd_status "$@"
       ;;
     test)
       print_banner
-      cmd_test
+      cmd_test "$@"
       ;;
     forensics-check|forensics|validate)
       print_banner

@@ -1,7 +1,35 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
-const SCALPING_API = 'http://localhost:8002/api/scalping';
-const WS_URL = 'ws://localhost:8002/ws/scalping';
+const FRONTEND_PORT = import.meta.env.VITE_FRONTEND_PORT || '3001';
+const SCALPING_API_PORT = import.meta.env.VITE_SCALPING_API_PORT || '8002';
+const SCALPING_API_ORIGIN = import.meta.env.VITE_SCALPING_API_ORIGIN || '';
+const SCALPING_WS_ORIGIN = import.meta.env.VITE_SCALPING_WS_ORIGIN || '';
+
+function trimTrailingSlash(value) {
+  return value.replace(/\/$/, '');
+}
+
+function resolveScalpingHttpOrigin() {
+  if (SCALPING_API_ORIGIN) return trimTrailingSlash(SCALPING_API_ORIGIN);
+  if (typeof window === 'undefined') return `http://localhost:${SCALPING_API_PORT}`;
+
+  const { protocol, hostname, origin, port } = window.location;
+  if (port === FRONTEND_PORT) {
+    return `${protocol}//${hostname}:${SCALPING_API_PORT}`;
+  }
+
+  return origin;
+}
+
+function resolveScalpingWebSocketUrl() {
+  if (SCALPING_WS_ORIGIN) return `${trimTrailingSlash(SCALPING_WS_ORIGIN)}/ws/scalping`;
+  if (typeof window === 'undefined') return `ws://localhost:${SCALPING_API_PORT}/ws/scalping`;
+
+  return `${resolveScalpingHttpOrigin().replace(/^http/, 'ws')}/ws/scalping`;
+}
+
+const SCALPING_API = `${resolveScalpingHttpOrigin()}/api/scalping`;
+const WS_URL = resolveScalpingWebSocketUrl();
 
 // Agent layer colors
 const LAYER_COLORS = {
@@ -778,6 +806,7 @@ export default function ScalpingDashboard() {
   const [selectedReplayFile, setSelectedReplayFile] = useState(null);
   const [selectedMode, setSelectedMode] = useState('LIVE_PAPER');
   const [connected, setConnected] = useState(false);
+  const [apiReady, setApiReady] = useState(false);
   const [error, setError] = useState(null);
   const replayResultsRef = useRef(null);
 
@@ -811,9 +840,13 @@ export default function ScalpingDashboard() {
       setLearningMode(learningRes?.mode || 'hybrid');
       setLearningMetrics(learningRes?.metrics || null);
       setLearningLastUpdate(learningRes?.last_update || null);
+      setApiReady(true);
       setError(null);
+      return true;
     } catch (err) {
+      setApiReady(false);
       setError('Failed to fetch scalping data. Is the API running on port 8002?');
+      return false;
     }
   }, []);
 
@@ -964,18 +997,30 @@ export default function ScalpingDashboard() {
   }, [postmortemActive, replay?.active, replay?.result]);
 
   useEffect(() => {
+    if (!apiReady) {
+      setConnected(false);
+      return undefined;
+    }
+
     let ws;
     let reconnectTimeout;
+    let disposed = false;
 
     const connect = () => {
+      if (disposed) return;
       ws = new WebSocket(WS_URL);
 
       ws.onopen = () => {
+        if (disposed) {
+          ws?.close();
+          return;
+        }
         setConnected(true);
         console.log('WebSocket connected');
       };
 
       ws.onmessage = (event) => {
+        if (disposed) return;
         const msg = JSON.parse(event.data);
         if (msg.type === 'update') {
           fetchData();
@@ -1000,11 +1045,13 @@ export default function ScalpingDashboard() {
       };
 
       ws.onclose = () => {
+        if (disposed) return;
         setConnected(false);
         reconnectTimeout = setTimeout(connect, 5000);
       };
 
       ws.onerror = () => {
+        if (disposed) return;
         setConnected(false);
       };
     };
@@ -1012,10 +1059,11 @@ export default function ScalpingDashboard() {
     connect();
 
     return () => {
+      disposed = true;
       ws?.close();
       clearTimeout(reconnectTimeout);
     };
-  }, [fetchData]);
+  }, [apiReady, fetchData]);
 
   return (
     <div className="scalping-dashboard">

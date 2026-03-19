@@ -12,6 +12,7 @@ import os
 from typing import Any, Dict, List, Optional
 
 import requests
+import urllib3
 
 from .config import FYERS_API_BASE_URL, DEFAULT_REQUEST_TIMEOUT_SEC, ENV_VARS
 from .env_manager import EnvManager
@@ -22,6 +23,11 @@ try:
     HAS_FYERS_SDK = True
 except ImportError:
     HAS_FYERS_SDK = False
+
+
+def _env_flag(name: str) -> bool:
+    """Parse common truthy environment variable values."""
+    return os.getenv(name, "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 class FyersClient:
@@ -43,6 +49,8 @@ class FyersClient:
         api_base_url: Optional[str] = None,
         timeout_seconds: Optional[float] = None,
         env_file: Optional[str] = None,
+        insecure: Optional[bool] = None,
+        ca_bundle: Optional[str] = None,
     ):
         """
         Initialize FyersClient.
@@ -82,6 +90,20 @@ class FyersClient:
         self.timeout_seconds = timeout_seconds or float(
             os.getenv("FYERS_TIMEOUT_SECONDS", str(DEFAULT_REQUEST_TIMEOUT_SEC))
         )
+        self.insecure = _env_flag(ENV_VARS["insecure"]) if insecure is None else insecure
+        self.ca_bundle = (
+            ca_bundle
+            or os.getenv(ENV_VARS["ca_bundle"])
+            or os.getenv("REQUESTS_CA_BUNDLE")
+            or os.getenv("SSL_CERT_FILE")
+        )
+
+        if self.ca_bundle:
+            os.environ["REQUESTS_CA_BUNDLE"] = self.ca_bundle
+            os.environ["SSL_CERT_FILE"] = self.ca_bundle
+
+        if self.insecure:
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     @staticmethod
     def _derive_api_root(base_url: str) -> str:
@@ -110,6 +132,14 @@ class FyersClient:
                 headers["Authorization"] = token
 
         return headers
+
+    def _get_verify(self):
+        """Resolve TLS verification mode for requests."""
+        if self.insecure:
+            return False
+        if self.ca_bundle:
+            return self.ca_bundle
+        return True
 
     def _request(
         self,
@@ -140,6 +170,7 @@ class FyersClient:
                 json=payload,
                 params=params,
                 timeout=self.timeout_seconds,
+                verify=self._get_verify(),
             )
         except requests.RequestException as e:
             return {
@@ -388,7 +419,7 @@ class FyersClient:
 
         # Fetch NSE F&O symbols
         try:
-            resp = requests.get(NSE_FO_URL, timeout=30)
+            resp = requests.get(NSE_FO_URL, timeout=30, verify=self._get_verify())
             if resp.status_code == 200:
                 reader = csv.reader(io.StringIO(resp.text))
                 for row in reader:
@@ -414,7 +445,7 @@ class FyersClient:
 
         # Fetch BSE F&O for SENSEX
         try:
-            resp = requests.get(BSE_FO_URL, timeout=30)
+            resp = requests.get(BSE_FO_URL, timeout=30, verify=self._get_verify())
             if resp.status_code == 200:
                 reader = csv.reader(io.StringIO(resp.text))
                 for row in reader:

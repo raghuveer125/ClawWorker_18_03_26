@@ -23,6 +23,8 @@ ENV_VARS = {
     "secret_key": "FYERS_SECRET_KEY",
     "redirect_uri": "FYERS_REDIRECT_URI",
     "access_token": "FYERS_ACCESS_TOKEN",
+    "insecure": "FYERS_INSECURE",
+    "ca_bundle": "FYERS_CA_BUNDLE",
     "app_id": "FYERS_APP_ID",  # Alias for client_id (ClawWork uses this)
     "secret_id": "FYERS_SECRET_ID",  # Alias for secret_key (ClawWork uses this)
 }

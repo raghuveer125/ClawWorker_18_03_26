@@ -17,9 +17,22 @@ try:
     _PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
     if str(_PROJECT_ROOT) not in sys.path:
         sys.path.insert(0, str(_PROJECT_ROOT))
-    from shared_project_engine.indices import ACTIVE_INDICES as _SHARED_INDICES
+    from shared_project_engine.indices import (
+        ACTIVE_INDICES as _SHARED_INDICES,
+        canonicalize_index_name as _canonicalize_shared_index_name,
+        get_watchlist as _get_shared_watchlist,
+    )
 except ImportError:
     _SHARED_INDICES = ["SENSEX", "NIFTY50", "BANKNIFTY", "FINNIFTY"]
+
+    def _canonicalize_shared_index_name(index_name: str) -> str:
+        return str(index_name or "").strip().upper()
+
+    def _get_shared_watchlist(index_name: str) -> List[str]:
+        return []
+
+
+DEFAULT_SCREENER_BASKETS = ["SENSEX", "NIFTY50", "BANKNIFTY"]
 
 
 @dataclass
@@ -315,26 +328,31 @@ def normalize_quote_rows(quote_response: Dict[str, Any]) -> List[Dict[str, Any]]
 
 
 def _build_watchlist_baskets(watchlist: str | List[str] | None = None) -> Dict[str, List[str]]:
-    sensex_raw = os.getenv("FYERS_WATCHLIST_SENSEX")
-    sensex_symbols = parse_watchlist(watchlist if watchlist is not None else sensex_raw)
+    if watchlist is not None:
+        custom_symbols = parse_watchlist(watchlist)
+        return {"CUSTOM": custom_symbols} if custom_symbols else {}
+
+    preferred_baskets = [basket for basket in DEFAULT_SCREENER_BASKETS if basket in _SHARED_INDICES]
+    if not preferred_baskets:
+        preferred_baskets = list(DEFAULT_SCREENER_BASKETS)
 
     baskets: Dict[str, List[str]] = {}
-    if sensex_symbols:
-        baskets["SENSEX"] = sensex_symbols
+    for basket_name in preferred_baskets:
+        canonical_basket = _canonicalize_shared_index_name(basket_name)
+        raw_override = os.getenv(f"FYERS_WATCHLIST_{canonical_basket}", "")
+        if raw_override.strip():
+            basket_symbols = parse_watchlist(raw_override)
+        else:
+            basket_symbols = parse_watchlist(_get_shared_watchlist(canonical_basket))
 
-    nifty50_raw = os.getenv("FYERS_WATCHLIST_NIFTY50", "")
-    if nifty50_raw.strip():
-        nifty50_symbols = parse_watchlist(nifty50_raw)
-        if nifty50_symbols:
-            baskets["NIFTY50"] = nifty50_symbols
+        if basket_symbols:
+            baskets[canonical_basket] = basket_symbols
 
-    banknifty_raw = os.getenv("FYERS_WATCHLIST_BANKNIFTY", "")
-    if banknifty_raw.strip():
-        banknifty_symbols = parse_watchlist(banknifty_raw)
-        if banknifty_symbols:
-            baskets["BANKNIFTY"] = banknifty_symbols
+    if baskets:
+        return baskets
 
-    return baskets
+    fallback_symbols = parse_watchlist()
+    return {"CUSTOM": fallback_symbols} if fallback_symbols else {}
 
 
 def _build_basket_summaries(
@@ -936,7 +954,10 @@ def run_screener(client: Optional[Any] = None, watchlist: str | List[str] | None
         return {
             "success": False,
             "error": "No watchlist symbols provided",
-            "message": "Set FYERS_WATCHLIST in .env or pass watchlist argument",
+            "message": (
+                "Configure shared screener baskets (SENSEX/NIFTY50/BANKNIFTY), "
+                "set FYERS_WATCHLIST_<INDEX> env overrides, or pass watchlist argument"
+            ),
         }
 
     symbols_csv = ",".join(symbols)

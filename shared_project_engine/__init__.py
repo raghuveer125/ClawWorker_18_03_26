@@ -16,10 +16,16 @@ Usage:
     from shared_project_engine.services import API_PORT, FRONTEND_PORT, get_api_url
 """
 
-from . import auth
-from . import indices
-from . import market
-from . import services
-
 __all__ = ["auth", "indices", "market", "services"]
 __version__ = "1.0.0"
+
+
+def __getattr__(name):
+    """Import subpackages lazily so optional dependencies stay optional."""
+    if name in __all__:
+        import importlib
+
+        module = importlib.import_module(f"{__name__}.{name}")
+        globals()[name] = module
+        return module
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

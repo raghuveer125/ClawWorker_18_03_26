@@ -42,6 +42,7 @@ app.add_middleware(
 DATA_PATH = Path(__file__).parent.parent / "data" / "agent_data"
 HIDDEN_AGENTS_PATH = Path(__file__).parent.parent / "data" / "hidden_agents.json"
 FYERS_DATA_PATH = Path(__file__).parent.parent / "data" / "fyers"
+FYERS_SCREENER_LOG_PATH = Path(__file__).parent.parent.parent / "logs" / "fyers_screener_loop.log"
 # fyersN7 signal data path (relative to ClawWork_FyersN7 project root)
 FYERSN7_DATA_PATH = Path(__file__).parent.parent.parent.parent / "fyersN7" / "fyers-2026-03-05" / "postmortem"
 
@@ -70,6 +71,49 @@ def _load_task_values() -> dict:
 
 
 TASK_VALUES = _load_task_values()
+
+
+def _latest_fyers_screener_failure() -> Optional[Dict[str, str]]:
+    if not FYERS_SCREENER_LOG_PATH.exists():
+        return None
+
+    try:
+        lines = FYERS_SCREENER_LOG_PATH.read_text(encoding="utf-8", errors="ignore").splitlines()
+    except OSError:
+        return None
+
+    message = None
+    hint = None
+    exited = None
+
+    for line in reversed(lines[-80:]):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if message is None and stripped.startswith("❌"):
+            message = stripped.lstrip("❌").strip()
+            continue
+        if hint is None and stripped.startswith("FYERS_WATCHLIST="):
+            hint = stripped
+            continue
+        if exited is None and "FYERS screener exited with status" in stripped:
+            exited = stripped
+            continue
+        if message and hint and exited:
+            break
+
+    if message is None and exited is None:
+        return None
+
+    payload = {
+        "message": message or "Latest FYERS screener run failed",
+        "updated_at": datetime.fromtimestamp(FYERS_SCREENER_LOG_PATH.stat().st_mtime).isoformat(),
+    }
+    if hint:
+        payload["hint"] = hint
+    if exited:
+        payload["detail"] = exited
+    return payload
 
 
 def _extract_sim_date_from_system(messages: list) -> Optional[str]:
@@ -765,6 +809,9 @@ async def get_leaderboard():
 async def get_latest_fyers_screener():
     """Get the most recent FYERS screener output JSON."""
     if not FYERS_DATA_PATH.exists():
+        failure = _latest_fyers_screener_failure()
+        if failure:
+            return {"available": False, **failure}
         return {"available": False, "message": "No FYERS screener data directory found"}
 
     screener_files = sorted(
@@ -774,6 +821,9 @@ async def get_latest_fyers_screener():
     )
 
     if not screener_files:
+        failure = _latest_fyers_screener_failure()
+        if failure:
+            return {"available": False, **failure}
         return {"available": False, "message": "No screener runs found"}
 
     latest_file = screener_files[0]

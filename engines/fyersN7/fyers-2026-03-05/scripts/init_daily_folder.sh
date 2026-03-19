@@ -21,15 +21,44 @@
 # Index name (SENSEX, BANKNIFTY, NIFTY, etc.)
 INDEX="${INDEX:-SENSEX}"
 
+if [[ -z "${PROJECT_ROOT:-}" ]]; then
+  _resolve_project_root() {
+    local current="${ROOT_DIR}"
+
+    while [[ "${current}" != "/" ]]; do
+      if [[ -d "${current}/shared_project_engine" ]]; then
+        printf '%s\n' "${current}"
+        return 0
+      fi
+      current="$(dirname "${current}")"
+    done
+
+    return 1
+  }
+
+  PROJECT_ROOT="$(_resolve_project_root || true)"
+  export PROJECT_ROOT
+fi
+
 # =============================================================================
 # MARKET HOURS CHECK (IST)
 # =============================================================================
 # Load market hours from shared_project_engine.market (single source of truth)
 _load_market_hours() {
   local config
-  config=$("${ROOT_DIR}/.venv/bin/python" -c "
+  local market_hours_python="${PYTHON_BIN:-${ROOT_DIR}/.venv/bin/python}"
+
+  if [[ "${market_hours_python}" != */* ]]; then
+    market_hours_python="$(command -v "${market_hours_python}" 2>/dev/null || true)"
+  fi
+
+  if [[ -z "${market_hours_python}" ]] || [[ ! -x "${market_hours_python}" ]]; then
+    market_hours_python="/usr/bin/python3"
+  fi
+
+  config=$("${market_hours_python}" -c "
 import sys
-sys.path.insert(0, '${ROOT_DIR}/../..')
+sys.path.insert(0, '${PROJECT_ROOT}')
 try:
     from shared_project_engine.market import print_market_hours_for_shell
     print_market_hours_for_shell()

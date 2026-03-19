@@ -3,34 +3,36 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+WORKSPACE_ROOT="$(cd "${ROOT_DIR}/.." && pwd)"
 cd "$ROOT_DIR"
 
-if [[ -f ".env" ]]; then
+if [[ -f "${ROOT_DIR}/.env" ]]; then
   set -a
-  source .env
+  source "${ROOT_DIR}/.env"
+  set +a
+elif [[ -f "${WORKSPACE_ROOT}/.env" ]]; then
+  set -a
+  source "${WORKSPACE_ROOT}/.env"
   set +a
 fi
 
 MARKET_ADAPTER_HOST="${MARKET_ADAPTER_HOST:-127.0.0.1}"
 MARKET_ADAPTER_PORT="${MARKET_ADAPTER_PORT:-8765}"
 MARKET_ADAPTER_URL="${MARKET_ADAPTER_URL:-http://${MARKET_ADAPTER_HOST}:${MARKET_ADAPTER_PORT}}"
-MARKET_ADAPTER_STRICT="${MARKET_ADAPTER_STRICT:-1}"
+MARKET_ADAPTER_STRICT="${MARKET_ADAPTER_STRICT:-0}"
 export MARKET_ADAPTER_HOST MARKET_ADAPTER_PORT MARKET_ADAPTER_URL MARKET_ADAPTER_STRICT
 
-if [[ -z "${FYERS_WATCHLIST:-}" ]]; then
-  echo "❌ FYERS_WATCHLIST is empty."
-  echo "   Add this in .env, e.g.:"
-  echo "   FYERS_WATCHLIST=NSE:RELIANCE-EQ,NSE:TCS-EQ,NSE:HDFCBANK-EQ"
-  exit 1
+echo "📈 Running FYERS screener (multi-index dry-run strategy)"
+
+PYTHON_BIN="${WORKSPACE_ROOT}/.venv/bin/python"
+if [[ ! -x "${PYTHON_BIN}" ]]; then
+  PYTHON_BIN="${ROOT_DIR}/livebench/venv/bin/python"
+fi
+if [[ ! -x "${PYTHON_BIN}" ]]; then
+  PYTHON_BIN="python3"
 fi
 
-echo "📈 Running FYERS screener (dry-run strategy)"
-echo "   Watchlist: ${FYERS_WATCHLIST}"
-
-# Activate virtual environment
-source "$ROOT_DIR/livebench/venv/bin/activate" 2>/dev/null || true
-
-python3 - <<'PY'
+"${PYTHON_BIN}" - <<'PY'
 import json
 import os
 from datetime import datetime
@@ -40,7 +42,7 @@ from livebench.trading.fyers_client import MarketDataClient
 from livebench.trading.screener import run_screener
 
 client = MarketDataClient(fallback_to_local=bool(os.getenv("FYERS_ACCESS_TOKEN")))
-result = run_screener(client=client, watchlist=os.getenv("FYERS_WATCHLIST"))
+result = run_screener(client=client)
 
 if not result.get("success"):
     print("❌ Screener failed")
@@ -57,13 +59,33 @@ if not result.get("success"):
     raise SystemExit(1)
 
 summary = result.get("summary", {})
+baskets = result.get("watchlist_baskets") or {}
 print("✅ Screener completed")
+print(f"   Unique symbols screened: {len(result.get('watchlist', []))}")
 print(f"   Total: {summary.get('total', 0)}")
 print(f"   Buy candidates: {summary.get('buy_candidates', 0)}")
 print(f"   Sell candidates: {summary.get('sell_candidates', 0)}")
 print(f"   Watch: {summary.get('watch', 0)}")
 print(f"   Overbought: {summary.get('overbought', 0)}")
 print(f"   Oversold: {summary.get('oversold', 0)}")
+if baskets:
+    print("   Baskets:")
+    for basket_name, basket_symbols in baskets.items():
+        print(f"    - {basket_name}: {len(basket_symbols)} symbols")
+
+basket_summaries = result.get("basket_summaries") or []
+if basket_summaries:
+    print("\nBasket summary:")
+    for row in basket_summaries:
+        print(
+            f" - {row.get('basket')}: Total={row.get('total', 0)} | "
+            f"Buy={row.get('buy_candidates', 0)} | "
+            f"Sell={row.get('sell_candidates', 0)} | "
+            f"Watch={row.get('watch', 0)} | "
+            f"OB={row.get('overbought', 0)} | "
+            f"OS={row.get('oversold', 0)} | "
+            f"Missing={row.get('missing_quotes', 0)}"
+        )
 
 warnings = result.get("warnings") or []
 missing_symbols = result.get("missing_quote_symbols") or []

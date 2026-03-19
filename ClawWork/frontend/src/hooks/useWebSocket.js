@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { IS_STATIC } from '../api'
+import { IS_STATIC, resolveWebSocketUrl } from '../api'
 
 export const useWebSocket = () => {
   const [lastMessage, setLastMessage]       = useState(null)
@@ -16,8 +16,8 @@ export const useWebSocket = () => {
     const connectWebSocket = () => {
       if (disposed) return
 
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-      const wsUrl = `${protocol}//${window.location.hostname}:${window.location.port}/ws`
+      const wsUrl = resolveWebSocketUrl('/ws')
+      setConnectionStatus('connecting')
 
       ws.current = new WebSocket(wsUrl)
 

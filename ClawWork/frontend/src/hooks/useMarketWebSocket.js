@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { IS_STATIC } from '../api'
+import { IS_STATIC, resolveWebSocketUrl } from '../api'
 
 export const useMarketWebSocket = (enabled = false) => {
   const [lastMessage, setLastMessage] = useState(null)
@@ -29,8 +29,7 @@ export const useMarketWebSocket = (enabled = false) => {
     const connectWebSocket = () => {
       if (disposed) return
 
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-      const wsUrl = `${protocol}//${window.location.hostname}:${window.location.port}/ws/market`
+      const wsUrl = resolveWebSocketUrl('/ws/market')
       setConnectionStatus('connecting')
       ws.current = new WebSocket(wsUrl)
 

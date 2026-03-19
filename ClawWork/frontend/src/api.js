@@ -8,11 +8,39 @@
 
 const STATIC = import.meta.env.VITE_STATIC_DATA === 'true'
 const BASE_URL = import.meta.env.BASE_URL || '/'          // e.g. /-Live-Bench/
+const FRONTEND_PORT = import.meta.env.VITE_FRONTEND_PORT || '3001'
+const API_PORT = import.meta.env.VITE_API_PORT || '8001'
+const API_ORIGIN = import.meta.env.VITE_API_ORIGIN || ''
+const WS_ORIGIN = import.meta.env.VITE_WS_ORIGIN || ''
 
 const staticUrl = (path) => `${BASE_URL}data/${path}`
 const liveUrl = (path) => `/api/${path}`
 
 const get = (url) => fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.json() })
+
+const trimTrailingSlash = (value) => value.replace(/\/$/, '')
+
+const resolveBackendHttpOrigin = () => {
+  if (API_ORIGIN) return trimTrailingSlash(API_ORIGIN)
+  if (typeof window === 'undefined') return ''
+
+  const { protocol, hostname, origin, port } = window.location
+  if (port === FRONTEND_PORT) {
+    return `${protocol}//${hostname}:${API_PORT}`
+  }
+
+  return origin
+}
+
+export const resolveWebSocketUrl = (path) => {
+  if (typeof window === 'undefined') return path
+
+  const baseOrigin = WS_ORIGIN
+    ? trimTrailingSlash(WS_ORIGIN)
+    : resolveBackendHttpOrigin().replace(/^http/, 'ws')
+
+  return `${baseOrigin}${path}`
+}
 
 // ── Endpoints ─────────────────────────────────────────────────────────────────
 

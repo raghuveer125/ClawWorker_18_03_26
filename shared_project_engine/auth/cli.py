@@ -37,6 +37,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from shared_project_engine.auth import FyersAuth, FyersClient, EnvManager
 
 
+def add_tls_args(parser: argparse.ArgumentParser) -> None:
+    """Add shared TLS-related CLI options."""
+    parser.add_argument("--insecure", action="store_true", help="Disable SSL verification")
+    parser.add_argument("--ca-bundle", default="", help="Custom CA bundle path")
+
+
 def cmd_login(args) -> int:
     """Handle login command."""
     auth = FyersAuth(
@@ -86,6 +92,8 @@ def cmd_status(args) -> int:
         client = FyersClient(
             access_token=creds['access_token'],
             client_id=creds['client_id'],
+            insecure=args.insecure,
+            ca_bundle=args.ca_bundle,
         )
         result = client.profile()
         if result.get("success"):
@@ -110,6 +118,8 @@ def cmd_url(args) -> int:
         secret_key=args.secret_key,
         redirect_uri=args.redirect_uri,
         env_file=args.env_file,
+        insecure=args.insecure,
+        ca_bundle=args.ca_bundle,
     )
 
     try:
@@ -123,7 +133,11 @@ def cmd_url(args) -> int:
 
 def cmd_test(args) -> int:
     """Test API connection with a simple quote request."""
-    client = FyersClient(env_file=args.env_file)
+    client = FyersClient(
+        env_file=args.env_file,
+        insecure=args.insecure,
+        ca_bundle=args.ca_bundle,
+    )
 
     symbol = args.symbol or "NSE:NIFTY50-INDEX"
     print(f"Testing quote for: {symbol}")
@@ -160,23 +174,25 @@ def main() -> int:
     login_parser.add_argument("--redirect-uri", default="", help="OAuth Redirect URI")
     login_parser.add_argument("--redirected-url", default="", help="Full redirected URL with auth_code")
     login_parser.add_argument("--auth-code", default="", help="Auth code directly")
-    login_parser.add_argument("--insecure", action="store_true", help="Disable SSL verification")
-    login_parser.add_argument("--ca-bundle", default="", help="Custom CA bundle path")
+    add_tls_args(login_parser)
     login_parser.add_argument("--no-browser", action="store_true", help="Don't open browser")
     login_parser.add_argument("--timeout", type=int, default=180, help="Callback timeout (seconds)")
 
     # Status command
-    subparsers.add_parser("status", help="Check authentication status")
+    status_parser = subparsers.add_parser("status", help="Check authentication status")
+    add_tls_args(status_parser)
 
     # URL command
     url_parser = subparsers.add_parser("url", help="Print login URL")
     url_parser.add_argument("--client-id", default="", help="FYERS Client/App ID")
     url_parser.add_argument("--secret-key", default="", help="FYERS Secret Key")
     url_parser.add_argument("--redirect-uri", default="", help="OAuth Redirect URI")
+    add_tls_args(url_parser)
 
     # Test command
     test_parser = subparsers.add_parser("test", help="Test API connection")
     test_parser.add_argument("--symbol", default="", help="Symbol to test (default: NSE:NIFTY50-INDEX)")
+    add_tls_args(test_parser)
 
     args = parser.parse_args()
 

@@ -27,8 +27,14 @@ from .config import (
     DEFAULT_REDIRECT_PORT,
     DEFAULT_AUTH_TIMEOUT_SEC,
     DEFAULT_REQUEST_TIMEOUT_SEC,
+    ENV_VARS,
 )
 from .env_manager import EnvManager
+
+
+def _env_flag(name: str) -> bool:
+    """Parse common truthy environment variable values."""
+    return os.getenv(name, "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 class FyersAuth:
@@ -68,8 +74,13 @@ class FyersAuth:
         self.secret_key = secret_key or creds["secret_key"] or os.getenv("FYERS_SECRET_KEY", "")
         self.redirect_uri = redirect_uri or creds["redirect_uri"] or f"http://{DEFAULT_REDIRECT_HOST}:{DEFAULT_REDIRECT_PORT}/"
 
-        self.insecure = insecure
-        self.ca_bundle = ca_bundle
+        self.insecure = insecure or _env_flag(ENV_VARS["insecure"])
+        self.ca_bundle = (
+            ca_bundle
+            or os.getenv(ENV_VARS["ca_bundle"])
+            or os.getenv("REQUESTS_CA_BUNDLE")
+            or os.getenv("SSL_CERT_FILE")
+        )
         self._configure_ssl()
 
         # State for CSRF protection

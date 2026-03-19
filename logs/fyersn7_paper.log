@@ -1,36 +1,37 @@
 Starting live web view at http://127.0.0.1:8787
 Starting live signal web server...
 - URL: http://127.0.0.1:8787
-- Date: 2026-03-18
+- Date: 2026-03-19
 - Indices: SENSEX
 - Events source: opportunity_events.csv (limit=20)
 - Rebuild interval: 15s
 - Browser poll interval: 2s
-- Base dir: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/postmortem
-- Output cache file: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/postmortem/2026-03-18/live_signal_view.html
-Updated: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/postmortem/2026-03-18/live_signal_view.html
-- SENSEX: latest rows=1, signal rows=10
+- Base dir: /Users/raghuveersingh.choudhari/ClawWorker_18_03_26/fyersN7/fyers-2026-03-05/postmortem
+- Output cache file: /Users/raghuveersingh.choudhari/ClawWorker_18_03_26/fyersN7/fyers-2026-03-05/postmortem/2026-03-19/live_signal_view.html
+Updated: /Users/raghuveersingh.choudhari/ClawWorker_18_03_26/fyersN7/fyers-2026-03-05/postmortem/2026-03-19/live_signal_view.html
+- SENSEX: latest rows=5, signal rows=5
 Traceback (most recent call last):
-  File "/Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/scripts/run_live_signal_server.py", line 204, in <module>
+  File "/Users/raghuveersingh.choudhari/ClawWorker_18_03_26/fyersN7/fyers-2026-03-05/scripts/run_live_signal_server.py", line 204, in <module>
     raise SystemExit(main())
                      ~~~~^^
-  File "/Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/scripts/run_live_signal_server.py", line 181, in main
+  File "/Users/raghuveersingh.choudhari/ClawWorker_18_03_26/fyersN7/fyers-2026-03-05/scripts/run_live_signal_server.py", line 181, in main
     server = ThreadingHTTPServer((args.host, int(args.port)), LiveHandler)
-  File "/usr/local/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socketserver.py", line 457, in __init__
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socketserver.py", line 457, in __init__
     self.server_bind()
     ~~~~~~~~~~~~~~~~^^
-  File "/usr/local/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/server.py", line 148, in server_bind
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/server.py", line 148, in server_bind
     socketserver.TCPServer.server_bind(self)
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
-  File "/usr/local/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socketserver.py", line 478, in server_bind
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socketserver.py", line 478, in server_bind
     self.socket.bind(self.server_address)
     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
 OSError: [Errno 48] Address already in use
-[SENSEX] Daily folder: /Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/fyersN7/fyers-2026-03-05/postmortem/2026-03-18/SENSEX
+Warning: live web server failed to start; continuing without it.
+[SENSEX] Daily folder: /Users/raghuveersingh.choudhari/ClawWorker_18_03_26/fyersN7/fyers-2026-03-05/postmortem/2026-03-19/SENSEX
   - Journal:  decision_journal.csv
   - Signals:  signals.csv
   - Trades:   paper_trades.csv
   - Equity:   paper_equity.csv
   - Events:   opportunity_events.csv
   - States:   .signal_state.json, .opportunity_engine_state.json, .paper_trade_state.json
-  - Market:   CLOSED (outside 9:00-15:45 IST or weekend)
+  - Market:   OPEN (9:00-15:45 IST)

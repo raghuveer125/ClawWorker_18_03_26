@@ -3,6 +3,25 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+if [[ -z "${PROJECT_ROOT:-}" ]]; then
+  _resolve_project_root() {
+    local current="${ROOT_DIR}"
+
+    while [[ "${current}" != "/" ]]; do
+      if [[ -d "${current}/shared_project_engine" ]]; then
+        printf '%s\n' "${current}"
+        return 0
+      fi
+      current="$(dirname "${current}")"
+    done
+
+    return 1
+  }
+
+  PROJECT_ROOT="$(_resolve_project_root || true)"
+  export PROJECT_ROOT
+fi
+
 PYTHON_BIN="${PYTHON_BIN:-$ROOT_DIR/.venv/bin/python}"
 
 DATE="${1:-$(TZ=Asia/Kolkata date +%F)}"
@@ -13,7 +32,7 @@ POLL_INTERVAL="${POLL_INTERVAL:-2}"
 # Get indices from shared config if not set
 if [[ -z "${INDICES:-}" ]]; then
   INDICES=$("$PYTHON_BIN" -c "
-import sys; sys.path.insert(0, '$ROOT_DIR/../..')
+import sys; sys.path.insert(0, '$PROJECT_ROOT')
 try:
     from shared_project_engine.indices import ACTIVE_INDICES
     print(','.join(ACTIVE_INDICES))
