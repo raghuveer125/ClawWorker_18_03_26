@@ -2227,43 +2227,55 @@ def get_hybrid_pipeline():
 @app.get("/api/indices/expiry-schedule")
 async def get_index_expiry_schedule():
     """
-    Get expiry schedule for all indices from shared_project_engine.
+    Get exchange-backed expiry schedule for all indices from shared_project_engine.
 
     Returns: {indices: {...}, expirySchedule: {...}, todaysExpiry: [...]}
     """
     try:
         from shared_project_engine.indices import (
-            get_expiry_schedule,
-            get_todays_expiring_indices,
+            get_expiry_snapshot,
             INDEX_CONFIG,
             ACTIVE_INDICES,
         )
 
-        schedule = get_expiry_schedule()
-        todays_expiry = get_todays_expiring_indices()
+        expiry_snapshot = get_expiry_snapshot()
 
         return {
-            "expirySchedule": schedule,
-            "todaysExpiry": todays_expiry,
+            "expirySchedule": expiry_snapshot["expirySchedule"],
+            "todaysExpiry": expiry_snapshot["todaysExpiry"],
+            "sourceStatus": expiry_snapshot["sourceStatus"],
+            "fetchedAt": expiry_snapshot["fetchedAt"],
             "activeIndices": ACTIVE_INDICES,
             "indices": list(INDEX_CONFIG.keys()),
             "timestamp": datetime.now().isoformat(),
         }
     except ImportError as e:
         logger.warning(f"Could not import shared_project_engine: {e}")
-        # Fallback to hardcoded values
-        from datetime import date
-        weekday = date.today().weekday()
+        fallback_indices = ["SENSEX", "NIFTY50", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY"]
+        fallback_exchanges = {
+            "SENSEX": "BSE",
+            "NIFTY50": "NSE",
+            "BANKNIFTY": "NSE",
+            "FINNIFTY": "NSE",
+            "MIDCPNIFTY": "NSE",
+        }
         fallback_schedule = {
-            "NIFTY50": {"weekday": 3, "weekday_name": "Thursday", "weekday_short": "Thu", "is_expiry_today": weekday == 3},
-            "BANKNIFTY": {"weekday": 2, "weekday_name": "Wednesday", "weekday_short": "Wed", "is_expiry_today": weekday == 2},
-            "FINNIFTY": {"weekday": 1, "weekday_name": "Tuesday", "weekday_short": "Tue", "is_expiry_today": weekday == 1},
-            "MIDCPNIFTY": {"weekday": 0, "weekday_name": "Monday", "weekday_short": "Mon", "is_expiry_today": weekday == 0},
-            "SENSEX": {"weekday": 4, "weekday_name": "Friday", "weekday_short": "Fri", "is_expiry_today": weekday == 4},
+            name: {
+                "exchange": fallback_exchanges.get(name),
+                "source": "unavailable",
+                "next_expiry": None,
+                "weekday": None,
+                "weekday_name": None,
+                "weekday_short": None,
+                "is_expiry_today": False,
+            }
+            for name in fallback_indices
         }
         return {
             "expirySchedule": fallback_schedule,
-            "todaysExpiry": [k for k, v in fallback_schedule.items() if v["is_expiry_today"]],
+            "todaysExpiry": [],
+            "sourceStatus": "unavailable",
+            "fetchedAt": None,
             "activeIndices": ["SENSEX", "NIFTY50", "BANKNIFTY", "FINNIFTY"],
             "indices": list(fallback_schedule.keys()),
             "timestamp": datetime.now().isoformat(),

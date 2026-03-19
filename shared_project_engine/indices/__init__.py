@@ -15,9 +15,11 @@ from .config import (
     get_all_watchlists,
     get_expiry_info,
     is_expiry_today,
+    get_expiry_snapshot,
     get_expiry_schedule,
     get_todays_expiring_indices,
     export_for_frontend,
+    clear_expiry_cache,
 )
 
 __all__ = [
@@ -32,7 +34,9 @@ __all__ = [
     "get_all_watchlists",
     "get_expiry_info",
     "is_expiry_today",
+    "get_expiry_snapshot",
     "get_expiry_schedule",
     "get_todays_expiring_indices",
     "export_for_frontend",
+    "clear_expiry_cache",
 ]
