@@ -73,6 +73,62 @@ def _load_task_values() -> dict:
 TASK_VALUES = _load_task_values()
 
 
+def _has_nonempty_jsonl(path: Path) -> bool:
+    if not path.exists() or not path.is_file():
+        return False
+
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            return any(line.strip() for line in handle)
+    except OSError:
+        return False
+
+
+def _subtree_has_files(path: Path) -> bool:
+    if not path.exists() or not path.is_dir():
+        return False
+
+    try:
+        return any(child.is_file() for child in path.rglob("*"))
+    except OSError:
+        return False
+
+
+def _is_real_agent_dir(agent_dir: Path) -> bool:
+    if not agent_dir.exists() or not agent_dir.is_dir():
+        return False
+
+    if not _has_nonempty_jsonl(agent_dir / "economic" / "balance.jsonl"):
+        return False
+
+    runtime_evidence = (
+        _subtree_has_files(agent_dir / "activity_logs"),
+        _subtree_has_files(agent_dir / "terminal_logs"),
+        _has_nonempty_jsonl(agent_dir / "work" / "tasks.jsonl"),
+        _has_nonempty_jsonl(agent_dir / "work" / "evaluations.jsonl"),
+        _has_nonempty_jsonl(agent_dir / "decisions" / "decisions.jsonl"),
+        _has_nonempty_jsonl(agent_dir / "memory" / "memory.jsonl"),
+        _subtree_has_files(agent_dir / "learning"),
+    )
+    return any(runtime_evidence)
+
+
+def _iter_real_agent_dirs():
+    if not DATA_PATH.exists():
+        return
+
+    for agent_dir in DATA_PATH.iterdir():
+        if agent_dir.is_dir() and _is_real_agent_dir(agent_dir):
+            yield agent_dir
+
+
+def _require_real_agent_dir(signature: str) -> Path:
+    agent_dir = DATA_PATH / signature
+    if not _is_real_agent_dir(agent_dir):
+        raise HTTPException(status_code=404, detail="Agent not found")
+    return agent_dir
+
+
 def _latest_fyers_screener_failure() -> Optional[Dict[str, str]]:
     if not FYERS_SCREENER_LOG_PATH.exists():
         return None
@@ -402,41 +458,40 @@ async def get_agents():
     if not DATA_PATH.exists():
         return {"agents": []}
 
-    for agent_dir in DATA_PATH.iterdir():
-        if agent_dir.is_dir():
-            signature = agent_dir.name
+    for agent_dir in _iter_real_agent_dirs():
+        signature = agent_dir.name
 
-            # Get latest balance
-            balance_file = agent_dir / "economic" / "balance.jsonl"
-            balance_data = None
-            if balance_file.exists():
-                with open(balance_file, 'r') as f:
-                    lines = f.readlines()
-                    if lines:
-                        balance_data = json.loads(lines[-1])
+        # Get latest balance
+        balance_file = agent_dir / "economic" / "balance.jsonl"
+        balance_data = None
+        if balance_file.exists():
+            with open(balance_file, 'r') as f:
+                lines = [line for line in f.readlines() if line.strip()]
+                if lines:
+                    balance_data = json.loads(lines[-1])
 
-            # Get latest decision
-            decision_file = agent_dir / "decisions" / "decisions.jsonl"
-            current_activity = None
-            current_date = None
-            if decision_file.exists():
-                with open(decision_file, 'r') as f:
-                    lines = f.readlines()
-                    if lines:
-                        decision = json.loads(lines[-1])
-                        current_activity = decision.get("activity")
-                        current_date = decision.get("date")
+        # Get latest decision
+        decision_file = agent_dir / "decisions" / "decisions.jsonl"
+        current_activity = None
+        current_date = None
+        if decision_file.exists():
+            with open(decision_file, 'r') as f:
+                lines = [line for line in f.readlines() if line.strip()]
+                if lines:
+                    decision = json.loads(lines[-1])
+                    current_activity = decision.get("activity")
+                    current_date = decision.get("date")
 
-            if balance_data:
-                agents.append({
-                    "signature": signature,
-                    "balance": balance_data.get("balance", 0),
-                    "net_worth": balance_data.get("net_worth", 0),
-                    "survival_status": balance_data.get("survival_status", "unknown"),
-                    "current_activity": current_activity,
-                    "current_date": current_date,
-                    "total_token_cost": balance_data.get("total_token_cost", 0)
-                })
+        if balance_data:
+            agents.append({
+                "signature": signature,
+                "balance": balance_data.get("balance", 0),
+                "net_worth": balance_data.get("net_worth", 0),
+                "survival_status": balance_data.get("survival_status", "unknown"),
+                "current_activity": current_activity,
+                "current_date": current_date,
+                "total_token_cost": balance_data.get("total_token_cost", 0)
+            })
 
     return {"agents": agents}
 
@@ -444,10 +499,7 @@ async def get_agents():
 @app.get("/api/agents/{signature}")
 async def get_agent_details(signature: str):
     """Get detailed information about a specific agent"""
-    agent_dir = DATA_PATH / signature
-
-    if not agent_dir.exists():
-        raise HTTPException(status_code=404, detail="Agent not found")
+    agent_dir = _require_real_agent_dir(signature)
 
     # Get balance history
     balance_file = agent_dir / "economic" / "balance.jsonl"
@@ -509,10 +561,7 @@ async def get_agent_details(signature: str):
 @app.get("/api/agents/{signature}/tasks")
 async def get_agent_tasks(signature: str):
     """Get all tasks assigned to an agent"""
-    agent_dir = DATA_PATH / signature
-
-    if not agent_dir.exists():
-        raise HTTPException(status_code=404, detail="Agent not found")
+    agent_dir = _require_real_agent_dir(signature)
 
     tasks_file = agent_dir / "work" / "tasks.jsonl"
     evaluations_file = agent_dir / "work" / "evaluations.jsonl"
@@ -561,9 +610,7 @@ async def get_agent_tasks(signature: str):
 @app.get("/api/agents/{signature}/terminal-log/{date}")
 async def get_terminal_log(signature: str, date: str):
     """Get terminal log for an agent on a specific date"""
-    agent_dir = DATA_PATH / signature
-    if not agent_dir.exists():
-        raise HTTPException(status_code=404, detail="Agent not found")
+    agent_dir = _require_real_agent_dir(signature)
     log_file = agent_dir / "terminal_logs" / f"{date}.log"
     if not log_file.exists():
         raise HTTPException(status_code=404, detail="Log not found")
@@ -574,10 +621,7 @@ async def get_terminal_log(signature: str, date: str):
 @app.get("/api/agents/{signature}/learning")
 async def get_agent_learning(signature: str):
     """Get agent's learning memory"""
-    agent_dir = DATA_PATH / signature
-
-    if not agent_dir.exists():
-        raise HTTPException(status_code=404, detail="Agent not found")
+    agent_dir = _require_real_agent_dir(signature)
 
     memory_file = agent_dir / "memory" / "memory.jsonl"
 
@@ -612,10 +656,7 @@ async def get_agent_learning(signature: str):
 @app.get("/api/agents/{signature}/economic")
 async def get_agent_economic(signature: str):
     """Get economic metrics for an agent"""
-    agent_dir = DATA_PATH / signature
-
-    if not agent_dir.exists():
-        raise HTTPException(status_code=404, detail="Agent not found")
+    agent_dir = _require_real_agent_dir(signature)
 
     balance_file = agent_dir / "economic" / "balance.jsonl"
 
@@ -627,15 +668,17 @@ async def get_agent_economic(signature: str):
     token_costs = []
     work_income = []
 
+    latest = {}
     with open(balance_file, 'r') as f:
         for line in f:
+            if not line.strip():
+                continue
             data = json.loads(line)
+            latest = data
             dates.append(data.get("date", ""))
             balance_history.append(data.get("balance", 0))
             token_costs.append(data.get("daily_token_cost", 0))
             work_income.append(data.get("work_income_delta", 0))
-
-    latest = json.loads(line) if line else {}
 
     return {
         "balance": latest.get("balance", 0),
@@ -656,10 +699,7 @@ async def get_learning_roi(signature: str):
     
     Shows which knowledge topics contribute most to task success and earnings.
     """
-    agent_dir = DATA_PATH / signature
-
-    if not agent_dir.exists():
-        raise HTTPException(status_code=404, detail="Agent not found")
+    agent_dir = _require_real_agent_dir(signature)
 
     # Load effectiveness index
     effectiveness_dir = agent_dir / "knowledge_effectiveness"
@@ -737,10 +777,7 @@ async def get_leaderboard():
 
     agents = []
 
-    for agent_dir in DATA_PATH.iterdir():
-        if not agent_dir.is_dir():
-            continue
-
+    for agent_dir in _iter_real_agent_dirs():
         signature = agent_dir.name
 
         # Load balance history
@@ -2021,9 +2058,7 @@ async def train_ml_model(model_type: str = "random_forest"):
 @app.get("/api/agents/{signature}/institutional-shadow/latest")
 async def get_latest_institutional_shadow(signature: str):
     """Get latest institutional shadow summary from agent trading screener audit log."""
-    agent_dir = DATA_PATH / signature
-    if not agent_dir.exists():
-        raise HTTPException(status_code=404, detail="Agent not found")
+    agent_dir = _require_real_agent_dir(signature)
 
     screener_log = agent_dir / "trading" / "fyers_screener.jsonl"
     if not screener_log.exists():
@@ -2065,6 +2100,7 @@ async def get_latest_institutional_shadow(signature: str):
 @app.get("/api/agents/{signature}/dashboard-supplemental")
 async def get_agent_dashboard_supplemental(signature: str):
     """Get the supplemental dashboard payload in a single request."""
+    _require_real_agent_dir(signature)
     screener = await get_latest_fyers_screener()
     shadow = await get_latest_institutional_shadow(signature)
     market_session = await get_market_session()

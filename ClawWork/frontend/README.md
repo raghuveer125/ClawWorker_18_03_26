@@ -101,6 +101,17 @@ frontend/
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
+- `npm run test` - Run frontend regression tests once
+- `npm run test:watch` - Run frontend regression tests in watch mode
+
+### Testing
+
+```bash
+npm run test
+npm run test:watch
+```
+
+The current frontend coverage is intentionally lightweight and focused on dashboard/route regressions such as invalid worker URLs.
 
 ## Features Overview
 

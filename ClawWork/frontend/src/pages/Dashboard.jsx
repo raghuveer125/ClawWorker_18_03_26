@@ -8,6 +8,11 @@ import { useDisplayName } from '../DisplayNamesContext'
 const formatINR = (value, digits = 2) =>
   `₹${Number(value || 0).toLocaleString('en-IN', { minimumFractionDigits: digits, maximumFractionDigits: digits })}`
 
+const isNotFoundError = (error) => {
+  const status = error?.status ?? Number(error?.message)
+  return status === 404
+}
+
 // Bias change detection helper
 const shouldNotifyBiasChange = (prevBias, newBias) => {
   if (!prevBias || !newBias) return false
@@ -55,6 +60,7 @@ const Dashboard = ({ agents, selectedAgent }) => {
   const [institutionalShadow, setInstitutionalShadow] = useState(null)
   const [marketSession, setMarketSession] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
   const [resultsView, setResultsView] = useState('few')
   const [basketFilter, setBasketFilter] = useState('ALL')
   const [signalFilter, setSignalFilter] = useState('ALL')
@@ -293,6 +299,8 @@ const Dashboard = ({ agents, selectedAgent }) => {
       setTasksData(null)
       setFyersScreener(null)
       setInstitutionalShadow(null)
+      setMarketSession(null)
+      setNotFound(false)
       setLoading(false)
       return () => { cancelled = true }
     }
@@ -300,6 +308,7 @@ const Dashboard = ({ agents, selectedAgent }) => {
     const loadSelectedAgent = async () => {
       try {
         setLoading(true)
+        setNotFound(false)
         setAgentDetails(null)
         setEconomicData(null)
         setTasksData(null)
@@ -314,12 +323,25 @@ const Dashboard = ({ agents, selectedAgent }) => {
 
         if (cancelled) return
 
+        if (details.status === 'rejected' && isNotFoundError(details.reason)) {
+          setNotFound(true)
+          setAgentDetails(null)
+          setEconomicData(null)
+          setTasksData(null)
+          applyDashboardSupplemental(null)
+          return
+        }
+
         setAgentDetails(details.status === 'fulfilled' ? details.value : null)
         setEconomicData(economic.status === 'fulfilled' ? economic.value : null)
         setTasksData(tasks.status === 'fulfilled' ? tasks.value : null)
         applyDashboardSupplemental(supplemental.status === 'fulfilled' ? supplemental.value : null)
       } catch (error) {
         if (!cancelled) {
+          if (isNotFoundError(error)) {
+            setNotFound(true)
+            applyDashboardSupplemental(null)
+          }
           console.error('Error loading selected agent:', error)
         }
       } finally {
@@ -337,14 +359,14 @@ const Dashboard = ({ agents, selectedAgent }) => {
   }, [applyDashboardSupplemental, selectedAgent])
 
   useEffect(() => {
-    if (!selectedAgent || !isDocumentVisible) return
+    if (!selectedAgent || !isDocumentVisible || notFound) return
 
     const id = setInterval(() => {
       refreshDashboardSupplemental(selectedAgent)
     }, 15000)
 
     return () => clearInterval(id)
-  }, [isDocumentVisible, refreshDashboardSupplemental, selectedAgent])
+  }, [isDocumentVisible, notFound, refreshDashboardSupplemental, selectedAgent])
 
   if (!selectedAgent) {
     return (
@@ -358,7 +380,29 @@ const Dashboard = ({ agents, selectedAgent }) => {
     )
   }
 
-  if (loading || !agentDetails) {
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      </div>
+    )
+  }
+
+  if (notFound) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center max-w-md px-6">
+          <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-700">Worker Unavailable</h2>
+          <p className="text-gray-500 mt-2">
+            {dn(selectedAgent)} is not an active worker in this dashboard. Select a valid agent from the sidebar.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!agentDetails) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>

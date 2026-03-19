@@ -52,6 +52,11 @@ export default defineConfig(({ command, mode }) => {
         },
       },
     },
+    test: {
+      environment: 'jsdom',
+      globals: true,
+      setupFiles: './src/test/setup.js',
+    },
     server: {
       port: parseInt(FRONTEND_PORT),
       allowedHosts: ['trading.bhoomidaksh.xyz', 'trading.bhoomidaksh.ai', '.ngrok-free.app', '.ngrok.io'],
