@@ -1,5 +1,6 @@
 import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -11,9 +12,34 @@ if str(LIVEBENCH_ROOT) not in sys.path:
 
 from shared_project_engine.indices import get_watchlist
 from trading.screener import _build_watchlist_baskets
+from trading.fyers_client import market_data_client_kwargs
 
 
 class ScreenerWatchlistTests(unittest.TestCase):
+    def test_market_data_client_kwargs_enable_local_fallback_from_env_file(self):
+        temp_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(temp_dir.cleanup)
+        env_path = Path(temp_dir.name) / ".env"
+        env_path.write_text("FYERS_ACCESS_TOKEN=test-token\n", encoding="utf-8")
+
+        kwargs = market_data_client_kwargs(str(env_path))
+
+        self.assertEqual(kwargs["env_file"], str(env_path))
+        self.assertTrue(kwargs["fallback_to_local"])
+        self.assertFalse(kwargs["strict_mode"])
+
+    def test_market_data_client_kwargs_disable_local_fallback_without_token(self):
+        temp_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(temp_dir.cleanup)
+        env_path = Path(temp_dir.name) / ".env"
+        env_path.write_text("OPENAI_API_KEY=test\n", encoding="utf-8")
+
+        kwargs = market_data_client_kwargs(str(env_path))
+
+        self.assertEqual(kwargs["env_file"], str(env_path))
+        self.assertFalse(kwargs["fallback_to_local"])
+        self.assertFalse(kwargs["strict_mode"])
+
     def test_default_baskets_use_shared_index_watchlists(self):
         with patch.dict(os.environ, {}, clear=False):
             for key in (

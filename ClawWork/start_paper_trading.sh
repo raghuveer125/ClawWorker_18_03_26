@@ -22,10 +22,34 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+resolve_python_bin() {
+  local candidates=(
+    "${WORKSPACE_ROOT}/.venv/bin/python"
+    "${PROJECT_ROOT}/livebench/venv/bin/python"
+  )
+  local candidate
+
+  for candidate in "${candidates[@]}"; do
+    if [[ -x "${candidate}" ]]; then
+      printf '%s\n' "${candidate}"
+      return 0
+    fi
+  done
+
+  if command -v python3 >/dev/null 2>&1; then
+    command -v python3
+    return 0
+  fi
+
+  printf '%s\n' "/usr/bin/python3"
+}
+
+PYTHON_BIN="${PYTHON_BIN:-$(resolve_python_bin)}"
+
 # Load port configuration from shared_project_engine if available
 _load_ports() {
   local config
-  config=$(python3 -c "
+  config=$("${PYTHON_BIN}" -c "
 import sys
 sys.path.insert(0, '${WORKSPACE_ROOT}')
 try:
@@ -43,7 +67,7 @@ _load_ports
 if [[ -f "${MARKET_ADAPTER_HELPER}" ]]; then
   # shellcheck source=/dev/null
   source "${MARKET_ADAPTER_HELPER}"
-  load_market_adapter_config "${WORKSPACE_ROOT}" "python3"
+  load_market_adapter_config "${WORKSPACE_ROOT}" "${PYTHON_BIN}"
 else
   MARKET_ADAPTER_HOST="${MARKET_ADAPTER_HOST:-127.0.0.1}"
   MARKET_ADAPTER_PORT="${MARKET_ADAPTER_PORT:-8765}"
@@ -126,7 +150,7 @@ check_port $API_PORT || exit 1
 check_port $FRONTEND_PORT || exit 1
 
 echo -e "${BLUE}Starting shared market adapter on $MARKET_ADAPTER_URL...${NC}"
-if ! ensure_market_adapter_running "${WORKSPACE_ROOT}" "python3" "${MARKET_ADAPTER_LOG}" "${MARKET_ADAPTER_PID_FILE}" "${WORKSPACE_ROOT}/.env" "${WORKSPACE_ROOT}"; then
+if ! ensure_market_adapter_running "${WORKSPACE_ROOT}" "${PYTHON_BIN}" "${MARKET_ADAPTER_LOG}" "${MARKET_ADAPTER_PID_FILE}" "${WORKSPACE_ROOT}/.env" "${WORKSPACE_ROOT}"; then
   exit 1
 fi
 if [[ "${MARKET_ADAPTER_STARTED}" == "1" ]]; then
@@ -141,7 +165,7 @@ cd "$PROJECT_ROOT/livebench"
 export AUTO_TRADER_STRATEGY_ID="${AUTO_TRADER_STRATEGY_ID:-clawwork-autotrader}"
 
 # Create a Python script to start the server
-python3 << 'EOF' > "$API_LOG" 2>&1 &
+"${PYTHON_BIN}" << 'EOF' > "$API_LOG" 2>&1 &
 import os
 import sys
 sys.path.insert(0, os.getcwd())

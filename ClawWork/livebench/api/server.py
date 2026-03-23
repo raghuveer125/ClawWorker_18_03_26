@@ -2353,12 +2353,9 @@ def _market_env_file() -> Optional[str]:
 
 
 def _build_market_client():
-    from trading.fyers_client import MarketDataClient
+    from trading.fyers_client import build_market_data_client
 
-    return MarketDataClient(
-        env_file=_market_env_file(),
-        fallback_to_local=bool(os.getenv("FYERS_ACCESS_TOKEN")),
-    )
+    return build_market_data_client(_market_env_file())
 
 
 def _load_market_index_symbols() -> Tuple[List[str], Dict[str, str], List[str]]:

@@ -38,10 +38,10 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-from livebench.trading.fyers_client import MarketDataClient
+from livebench.trading.fyers_client import build_market_data_client
 from livebench.trading.screener import run_screener
 
-client = MarketDataClient(fallback_to_local=bool(os.getenv("FYERS_ACCESS_TOKEN")))
+client = build_market_data_client()
 result = run_screener(client=client)
 
 if not result.get("success"):

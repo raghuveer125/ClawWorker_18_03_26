@@ -25,6 +25,7 @@ import shutil
 import time
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Callable
 from enum import Enum
@@ -293,6 +294,54 @@ class TradeLog:
     spread_at_exit: Optional[float] = None     # Bid-ask spread when exited
 
 
+def _build_fyers_option_symbol(index: str, strike: int, option_type: str) -> Optional[str]:
+    """Build a Fyers-format option symbol using IST time for expiry calculation.
+
+    Pure module-level function — no instance state required.
+    Returns None if the index is not recognised, strike is missing, or the
+    index has no active weekly expiry contract.
+    Callers must check for None before using the symbol.
+    """
+    # All recognised indices and their Fyers symbol prefix.
+    _index_prefix_map = {
+        "NIFTY50": "NSE:NIFTY",
+        "BANKNIFTY": "NSE:BANKNIFTY",
+        "FINNIFTY": "NSE:FINNIFTY",
+        "MIDCPNIFTY": "NSE:MIDCPNIFTY",
+        "SENSEX": "BSE:SENSEX",
+    }
+    # Indices with an active weekly expiry contract and the weekday they expire
+    # (Monday=0 … Sunday=6).  BANKNIFTY, FINNIFTY, and MIDCPNIFTY are intentionally
+    # absent: SEBI's October 2024 circular restricted weekly options to one contract
+    # per exchange, leaving only NIFTY50 (NSE, Thursday) and SENSEX (BSE, Friday).
+    _weekly_expiry_weekday = {
+        "NIFTY50": 3,  # Thursday
+        "SENSEX": 4,   # Friday
+    }
+
+    prefix = _index_prefix_map.get(index, "")
+    if not prefix:
+        logger.error("_build_fyers_option_symbol: unknown index '%s' — skipping", index)
+        return None
+    if not strike:
+        logger.error("_build_fyers_option_symbol: strike is 0 or None for %s — skipping", index)
+        return None
+    expiry_weekday = _weekly_expiry_weekday.get(index)
+    if expiry_weekday is None:
+        logger.error(
+            "_build_fyers_option_symbol: %s has no active weekly expiry — skipping (unsupported)",
+            index,
+        )
+        return None
+
+    now_ist = datetime.now(ZoneInfo("Asia/Kolkata"))
+    days = (expiry_weekday - now_ist.weekday()) % 7
+    if days == 0 and now_ist.hour >= 15:
+        days = 7
+    expiry_str = (now_ist + timedelta(days=days)).strftime("%d%b%y").upper()
+    return f"{prefix}{expiry_str}{strike}{option_type}"
+
+
 class AutoTrader:
     """
     Autonomous Trading System
@@ -425,6 +474,19 @@ class AutoTrader:
             self.data_dir,
         )
 
+    def _get_market_data_client(self):
+        """Return the cached market data client, initializing it on first call.
+
+        Returns the client instance, or None if initialization failed.
+        """
+        if not hasattr(self, '_market_data_client'):
+            try:
+                from .fyers_client import build_market_data_client
+                self._market_data_client = build_market_data_client()
+            except Exception:
+                self._market_data_client = None
+        return self._market_data_client
+
     def _load_state(self):
         """Load persisted state"""
         if self.positions_file.exists():
@@ -454,15 +516,19 @@ class AutoTrader:
                 pass
 
     def _save_state(self):
-        """Save state to disk"""
+        """Save state to disk atomically (write-then-rename)."""
         data = {
             "positions": [asdict(p) for p in self.positions.values()],
             "daily_pnl": self.daily_pnl,  # Dict with paper/live keys
             "daily_trades": self.daily_trades,  # Dict with paper/live keys
             "last_updated": datetime.now().isoformat(),
         }
-        with open(self.positions_file, "w") as f:
+        tmp_file = Path(str(self.positions_file) + ".tmp")
+        with open(tmp_file, "w") as f:
             json.dump(data, f, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_file, self.positions_file)
 
     def _get_current_daily_pnl(self) -> float:
         """Get daily P&L for current mode"""
@@ -1147,6 +1213,16 @@ class AutoTrader:
         else:
             return None
 
+        # ── Duplicate guard (re-check at execution time, not just signal time) ──
+        # Snapshot positions to avoid mutation during iteration in concurrent calls.
+        if any(p.index == index and p.status == "open"
+               for p in list(self.positions.values())):
+            logger.warning(
+                "[execute_trade] Duplicate blocked: open position already exists for %s — skipping",
+                index,
+            )
+            return None
+
         # ═══════════════════════════════════════════════════════════════════════
         # CAPITAL & AFFORDABILITY CHECK (₹5,000 capital limit)
         # ═══════════════════════════════════════════════════════════════════════
@@ -1200,20 +1276,36 @@ class AutoTrader:
         # ATM option premium is typically 0.3-0.5% of index for NIFTY, 0.8-1.2% for BANKNIFTY
         index_ltp = market_data.get("ltp", 0)
 
-        # Estimate ATM option premium if not provided by decision
+        # Step 1: Use decision.entry if it already looks like a valid option premium
         if decision.entry and decision.entry < index_ltp * 0.05:
-            # Entry looks like an option premium (< 5% of index)
             entry_price = decision.entry
         else:
-            # Calculate realistic ATM option premium
-            premium_pct = {
-                "NIFTY50": 0.003,      # ~0.3% of index (NIFTY 24700 → ~75)
-                "BANKNIFTY": 0.01,     # ~1% of index (BANKNIFTY 59600 → ~596)
-                "SENSEX": 0.003,       # ~0.3% of index
-                "FINNIFTY": 0.004,     # ~0.4% of index
-                "MIDCPNIFTY": 0.005,   # ~0.5% of index
-            }.get(index, 0.004)
-            entry_price = round(index_ltp * premium_pct, 2)
+            entry_price = None
+
+            # Step 2: Fetch real option LTP from Fyers API
+            strike = getattr(decision, 'strike', 0) or 0
+            if strike and index_ltp > 0:
+                if self._get_market_data_client():
+                    fyers_sym = _build_fyers_option_symbol(index, strike, option_type)
+                    if fyers_sym:
+                        try:
+                            ltp = self._market_data_client.get_quote_ltp(fyers_sym, ttl_seconds=5)
+                            if ltp > 0:
+                                entry_price = ltp
+                                logger.info("Real entry price from Fyers: %s = %s", fyers_sym, ltp)
+                        except Exception as e:
+                            logger.debug("Fyers entry price fetch failed for %s: %s", fyers_sym, e)
+
+            # Step 3: Heuristic fallback if API unavailable or returned no data
+            if not entry_price:
+                premium_pct = {
+                    "NIFTY50": 0.003,      # ~0.3% of index (NIFTY 24700 → ~75)
+                    "BANKNIFTY": 0.01,     # ~1% of index (BANKNIFTY 59600 → ~596)
+                    "SENSEX": 0.003,       # ~0.3% of index
+                    "FINNIFTY": 0.004,     # ~0.4% of index
+                    "MIDCPNIFTY": 0.005,   # ~0.5% of index
+                }.get(index, 0.004)
+                entry_price = round(index_ltp * premium_pct, 2)
 
         stop_loss = decision.stop_loss or entry_price * (1 - self.risk.stop_loss_pct / 100)
         target = decision.target or entry_price * (1 + self.risk.target_pct / 100)
@@ -1334,30 +1426,11 @@ class AutoTrader:
     def _place_fyers_order(self, position: Position) -> Dict:
         """Place order via FYERS API for LIVE trading"""
         try:
-            # Build Fyers symbol format
-            # Example: NSE:NIFTY25MAR24700CE for NIFTY50 24700 CE expiring March 2025
-            today = datetime.now()
-
-            # Determine expiry (usually weekly Thursday for NIFTY/BANKNIFTY)
-            # Use current week's Thursday
-            days_until_thursday = (3 - today.weekday()) % 7
-            if days_until_thursday == 0 and today.hour >= 15:  # After 3:30 PM, use next Thursday
-                days_until_thursday = 7
-            expiry_date = today + timedelta(days=days_until_thursday)
-            expiry_str = expiry_date.strftime("%d%b%y").upper()  # e.g., "06MAR25"
-
-            # Map index to Fyers symbol prefix
-            index_map = {
-                "NIFTY50": "NSE:NIFTY",
-                "BANKNIFTY": "NSE:BANKNIFTY",
-                "FINNIFTY": "NSE:FINNIFTY",
-                "MIDCPNIFTY": "NSE:MIDCPNIFTY",
-                "SENSEX": "BSE:SENSEX",
-            }
-            prefix = index_map.get(position.index, "NSE:NIFTY")
-
-            # Build full symbol: NSE:NIFTY2530624700CE
-            fyers_symbol = f"{prefix}{expiry_str}{position.strike}{position.option_type}"
+            fyers_symbol = _build_fyers_option_symbol(
+                position.index, position.strike, position.option_type
+            )
+            if not fyers_symbol:
+                return {"success": False, "error": f"Unknown index: {position.index}"}
 
             # Fyers order payload
             order_data = {
@@ -1412,25 +1485,11 @@ class AutoTrader:
     def _place_fyers_sell_order(self, position: Position) -> Dict:
         """Place SELL order via FYERS API to close position"""
         try:
-            today = datetime.now()
-
-            # Determine expiry (usually weekly Thursday for NIFTY/BANKNIFTY)
-            days_until_thursday = (3 - today.weekday()) % 7
-            if days_until_thursday == 0 and today.hour >= 15:
-                days_until_thursday = 7
-            expiry_date = today + timedelta(days=days_until_thursday)
-            expiry_str = expiry_date.strftime("%d%b%y").upper()
-
-            # Map index to Fyers symbol prefix
-            index_map = {
-                "NIFTY50": "NSE:NIFTY",
-                "BANKNIFTY": "NSE:BANKNIFTY",
-                "FINNIFTY": "NSE:FINNIFTY",
-                "MIDCPNIFTY": "NSE:MIDCPNIFTY",
-                "SENSEX": "BSE:SENSEX",
-            }
-            prefix = index_map.get(position.index, "NSE:NIFTY")
-            fyers_symbol = f"{prefix}{expiry_str}{position.strike}{position.option_type}"
+            fyers_symbol = _build_fyers_option_symbol(
+                position.index, position.strike, position.option_type
+            )
+            if not fyers_symbol:
+                return {"success": False, "error": f"Unknown index: {position.index}"}
 
             # Fyers SELL order payload
             order_data = {
@@ -1510,8 +1569,12 @@ class AutoTrader:
         if self.mode == TradingMode.LIVE:
             sell_result = self._place_fyers_sell_order(position)
             if not sell_result.get("success"):
-                logger.error(f"[LIVE] Failed to close position: {sell_result.get('error')}")
-                # Continue anyway to update local state
+                logger.error(
+                    "[LIVE] Sell order failed for %s (%s): %s — position kept open, will retry next cycle",
+                    position.symbol, exit_reason, sell_result.get("error"),
+                )
+                position.exit_reason = f"PENDING_EXIT:{exit_reason}"
+                return  # do NOT close locally — retry on next monitor cycle
 
         # Calculate P&L - same for CE and PE when BUYING options
         # Profit = (sell price - buy price) * quantity
@@ -1999,6 +2062,9 @@ class AutoTrader:
         """Get current prices for open positions from market data"""
         prices = {}
 
+        # Lazily initialise market data client for live option quote fetching
+        self._get_market_data_client()
+
         for pos in self.positions.values():
             if pos.status != "open":
                 continue
@@ -2006,13 +2072,25 @@ class AutoTrader:
             # Try to find price in market data
             index_data = market_data.get(pos.index, {})
 
-            # First, try to get option price from stocks list
+            # Step 1: try to get option price from stocks list
             for stock in index_data.get("stocks", []):
                 if stock.get("symbol") == pos.symbol:
                     prices[pos.symbol] = stock.get("ltp", pos.entry_price)
                     break
 
-            # Fallback for paper trading: use index change to simulate option P&L
+            # Step 2: fetch real option LTP via Fyers API
+            if pos.symbol not in prices and self._market_data_client and pos.strike:
+                fyers_sym = _build_fyers_option_symbol(pos.index, pos.strike, pos.option_type)
+                if fyers_sym:
+                    try:
+                        ltp = self._market_data_client.get_quote_ltp(fyers_sym, ttl_seconds=5)
+                        if ltp > 0:
+                            prices[pos.symbol] = ltp
+                            logger.debug("Option LTP from Fyers: %s = %s", fyers_sym, ltp)
+                    except Exception as e:
+                        logger.debug("Fyers quote fetch failed for %s: %s", fyers_sym, e)
+
+            # Step 3: final fallback for paper trading — simulate via index change
             if pos.symbol not in prices and self.mode == TradingMode.PAPER and index_data:
                 index_change_pct = index_data.get("change_pct", 0)
                 # Options typically move 2-3x the underlying for ATM

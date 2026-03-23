@@ -10,7 +10,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .fyers_client import MarketDataClient
+from .fyers_client import MarketDataClient, build_market_data_client
 
 # Import index config from shared engine
 try:
@@ -881,7 +881,7 @@ def _build_strike_suggestions(
 def _resolve_market_client(client: Optional[Any] = None) -> Any:
     if client is not None:
         return client
-    return MarketDataClient(fallback_to_local=bool(os.getenv("FYERS_ACCESS_TOKEN")))
+    return build_market_data_client()
 
 
 def build_index_recommendations(client: Optional[Any], config: ScreenerConfig) -> Dict[str, Any]:

@@ -31,6 +31,7 @@ This pipeline is instantiated separately from the AutoTrader and has:
 
 import json
 import logging
+import os
 import time
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
@@ -39,6 +40,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from bots.base import SharedMemory, SignalType, OptionType
 from bots.regime_hunter import RegimeHunterBot
+from trading.auto_trader import _build_fyers_option_symbol
 
 # Import lot sizes
 try:
@@ -419,17 +421,9 @@ class RegimeHunterPipeline:
         if not self.fyers:
             return False
         try:
-            today = datetime.now()
-            days_thu = (3 - today.weekday()) % 7
-            if days_thu == 0 and today.hour >= 15:
-                days_thu = 7
-            expiry = (today + timedelta(days=days_thu)).strftime("%d%b%y").upper()
-            prefix = {
-                "NIFTY50": "NSE:NIFTY", "BANKNIFTY": "NSE:BANKNIFTY",
-                "SENSEX": "BSE:SENSEX", "FINNIFTY": "NSE:FINNIFTY",
-                "MIDCPNIFTY": "NSE:MIDCPNIFTY",
-            }.get(pos.index, "NSE:NIFTY")
-            fyers_sym = f"{prefix}{expiry}{pos.strike}{pos.option_type}"
+            fyers_sym = _build_fyers_option_symbol(pos.index, pos.strike, pos.option_type)
+            if not fyers_sym:
+                return False
 
             order = {
                 "symbol": fyers_sym,
@@ -488,8 +482,12 @@ class RegimeHunterPipeline:
             "bot_regime": self.bot._current_regime,
             "last_updated": datetime.now().isoformat(),
         }
-        with open(self._state_file, "w") as f:
+        tmp_file = Path(str(self._state_file) + ".tmp")
+        with open(tmp_file, "w") as f:
             json.dump(data, f, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_file, self._state_file)
 
     def _load_state(self):
         if not self._state_file.exists():
