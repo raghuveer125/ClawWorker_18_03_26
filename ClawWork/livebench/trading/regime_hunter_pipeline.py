@@ -476,19 +476,25 @@ class RegimeHunterPipeline:
     # ── persistence ──
 
     def _save_state(self):
-        data = {
-            "positions": [asdict(p) for p in self.positions.values()],
-            "daily_pnl": self.daily_pnl,
-            "daily_trades": self.daily_trades,
-            "bot_regime": self.bot._current_regime,
-            "last_updated": datetime.now().isoformat(),
-        }
-        tmp_file = Path(str(self._state_file) + ".tmp")
-        with open(tmp_file, "w") as f:
-            json.dump(data, f, indent=2)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(tmp_file, self._state_file)
+        try:
+            data = {
+                "positions": [asdict(p) for p in self.positions.values()],
+                "daily_pnl": self.daily_pnl,
+                "daily_trades": self.daily_trades,
+                "bot_regime": self.bot._current_regime,
+                "last_updated": datetime.now().isoformat(),
+            }
+            tmp_file = Path(str(self._state_file) + ".tmp")
+            with open(tmp_file, "w") as f:
+                json.dump(data, f, indent=2)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp_file, self._state_file)
+        except Exception as e:
+            logger.critical(
+                "[RH-Pipeline][_save_state] Failed to persist state to %s: %s — in-memory state intact, restart may lose recent changes",
+                self._state_file, e,
+            )
 
     def _load_state(self):
         if not self._state_file.exists():

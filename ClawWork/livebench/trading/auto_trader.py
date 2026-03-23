@@ -232,6 +232,7 @@ class Position:
     bot_signals: Dict = None
     mode: str = "paper"  # paper or live
     strategy_id: str = ""
+    exit_blocked: Optional[str] = None  # set to "AUTH" when token expiry blocks exit
 
 
 @dataclass
@@ -520,18 +521,24 @@ class AutoTrader:
 
     def _save_state(self):
         """Save state to disk atomically (write-then-rename)."""
-        data = {
-            "positions": [asdict(p) for p in self.positions.values()],
-            "daily_pnl": self.daily_pnl,  # Dict with paper/live keys
-            "daily_trades": self.daily_trades,  # Dict with paper/live keys
-            "last_updated": datetime.now().isoformat(),
-        }
-        tmp_file = Path(str(self.positions_file) + ".tmp")
-        with open(tmp_file, "w") as f:
-            json.dump(data, f, indent=2)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(tmp_file, self.positions_file)
+        try:
+            data = {
+                "positions": [asdict(p) for p in self.positions.values()],
+                "daily_pnl": self.daily_pnl,  # Dict with paper/live keys
+                "daily_trades": self.daily_trades,  # Dict with paper/live keys
+                "last_updated": datetime.now().isoformat(),
+            }
+            tmp_file = Path(str(self.positions_file) + ".tmp")
+            with open(tmp_file, "w") as f:
+                json.dump(data, f, indent=2)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp_file, self.positions_file)
+        except Exception as e:
+            logger.critical(
+                "[_save_state] Failed to persist state to %s: %s — in-memory state intact, restart may lose recent changes",
+                self.positions_file, e,
+            )
 
     def _get_current_daily_pnl(self) -> float:
         """Get daily P&L for current mode"""
@@ -1577,7 +1584,31 @@ class AutoTrader:
             if position.status != "open":
                 continue
 
+            # ── Auth-blocked positions: skip all retries until operator clears flag ──
+            if position.exit_blocked:
+                logger.warning(
+                    "[monitor_positions] Position %s is exit_blocked=%s — no retry attempted, operator must refresh token and clear flag",
+                    position.symbol, position.exit_blocked,
+                )
+                continue
+
             current_price = current_prices.get(position.symbol)
+
+            # ── EOD check FIRST — must run regardless of price availability ──
+            # IST enforced; cannot be skipped by a missing price quote.
+            now = datetime.now(ZoneInfo("Asia/Kolkata"))
+            if now.hour >= 15 and now.minute >= 15:
+                # Best available price: fresh quote → last cached → entry price
+                eod_price = current_price or position.current_price or position.entry_price
+                if current_price is None:
+                    logger.warning(
+                        "[monitor_positions] EOD square-off for %s: price unavailable, using fallback price %.2f",
+                        position.symbol, eod_price,
+                    )
+                self.close_position(position, eod_price, "EOD_SQUARE_OFF")
+                continue  # position is closing — skip SL/Target for this cycle
+
+            # SL/Target evaluation requires a live price — skip if unavailable
             if current_price is None:
                 continue
 
@@ -1594,11 +1625,6 @@ class AutoTrader:
             elif current_price >= position.target:
                 exit_reason = "TARGET"
 
-            # Time-based exit (EOD) — IST enforced
-            now = datetime.now(ZoneInfo("Asia/Kolkata"))
-            if now.hour >= 15 and now.minute >= 15:
-                exit_reason = "EOD_SQUARE_OFF"
-
             if exit_reason:
                 self.close_position(position, current_price, exit_reason)
 
@@ -1608,12 +1634,19 @@ class AutoTrader:
         if self.mode == TradingMode.LIVE:
             sell_result = self._place_fyers_sell_order(position)
             if not sell_result.get("success"):
+                error_msg = sell_result.get("error", "")
                 logger.error(
                     "[LIVE] Sell order failed for %s (%s): %s — position kept open, will retry next cycle",
-                    position.symbol, exit_reason, sell_result.get("error"),
+                    position.symbol, exit_reason, error_msg,
                 )
                 position.exit_reason = f"PENDING_EXIT:{exit_reason}"
-                return  # do NOT close locally — retry on next monitor cycle
+                if any(kw in error_msg.lower() for kw in self._AUTH_ERROR_KEYWORDS):
+                    position.exit_blocked = "AUTH"
+                    logger.critical(
+                        "[LIVE] Position %s marked exit_blocked=AUTH — all retries suppressed until token is refreshed and flag is cleared",
+                        position.symbol,
+                    )
+                return  # do NOT close locally — retry on next monitor cycle (if not blocked)
 
         # Calculate P&L - same for CE and PE when BUYING options
         # Profit = (sell price - buy price) * quantity
@@ -1683,7 +1716,13 @@ class AutoTrader:
         self._log_trade(trade_log)
 
         # Learn from trade
-        self._learn_from_trade(trade_log)
+        try:
+            self._learn_from_trade(trade_log)
+        except Exception as e:
+            logger.error(
+                "[close_position] _learn_from_trade failed for %s: %s — learning skipped, position cleanup will continue",
+                position.id, e,
+            )
 
         # Record trade outcome for execution quality tracking
         if self.execution_tracker:
