@@ -175,22 +175,22 @@ class PositionStatus(Enum):
 
 @dataclass
 class RiskConfig:
-    """Risk management configuration - LIVE TRADING with ₹5,000 capital"""
+    """Risk management configuration - PAPER TRADING with ₹1,00,000 capital"""
     # Capital
-    total_capital: float = 5000.0        # Total trading capital
+    total_capital: float = 100000.0      # Total trading capital (paper: 1 lakh per engine)
 
-    # Daily limits (conservative for small capital)
-    max_daily_loss: float = 500.0        # Stop trading if daily loss exceeds 10% of capital
+    # Daily limits (10% / 20% of capital)
+    max_daily_loss: float = 10000.0      # Stop trading if daily loss exceeds 10% of capital
     max_daily_trades: int = 5            # Limited trades to reduce brokerage impact
-    max_daily_profit: float = 1000.0     # Take profit for the day (20% of capital)
+    max_daily_profit: float = 20000.0    # Take profit for the day (20% of capital)
 
     # Position limits
-    max_position_size: float = 4000.0    # Maximum capital per trade (80% of capital)
-    max_concurrent_positions: int = 1    # Only 1 position at a time (small capital)
+    max_position_size: float = 80000.0   # Maximum capital per trade (80% of capital)
+    max_concurrent_positions: int = 1    # Only 1 position at a time
     position_size_pct: float = 80.0      # % of capital per trade
 
     # Risk per trade
-    max_loss_per_trade: float = 250.0    # Maximum loss per single trade (5% of capital)
+    max_loss_per_trade: float = 5000.0   # Maximum loss per single trade (5% of capital)
     stop_loss_pct: float = 20.0          # Stop loss 20% of premium (options are volatile)
     target_pct: float = 30.0             # Target 30% of premium (1:1.5 R:R)
 
@@ -1278,8 +1278,8 @@ class AutoTrader:
         total_brokerage = (self.risk.brokerage_per_order * 2) + self.risk.other_charges  # Buy + Sell
         total_cost = estimated_cost + total_brokerage
 
-        if self.mode == TradingMode.LIVE and total_cost > self.risk.max_position_size:
-            logger.warning(f"[LIVE] Trade too expensive: ₹{total_cost:.0f} > max ₹{self.risk.max_position_size:.0f}")
+        if total_cost > self.risk.max_position_size:
+            logger.warning(f"[{self.mode.name}] Trade too expensive: ₹{total_cost:.0f} > max ₹{self.risk.max_position_size:.0f}")
             print(f"[AutoTrader] ❌ SKIPPED: Trade cost ₹{total_cost:.0f} exceeds limit ₹{self.risk.max_position_size:.0f}")
             return None
 
@@ -1287,8 +1287,8 @@ class AutoTrader:
         open_positions_value = sum(p.entry_price * p.quantity for p in self.positions.values() if p.status == "open")
         available_capital = self.risk.total_capital - open_positions_value - abs(self._get_current_daily_pnl())
 
-        if self.mode == TradingMode.LIVE and total_cost > available_capital:
-            logger.warning(f"[LIVE] Insufficient capital: need ₹{total_cost:.0f}, have ₹{available_capital:.0f}")
+        if total_cost > available_capital:
+            logger.warning(f"[{self.mode.name}] Insufficient capital: need ₹{total_cost:.0f}, have ₹{available_capital:.0f}")
             print(f"[AutoTrader] ❌ SKIPPED: Insufficient capital (need ₹{total_cost:.0f}, available ₹{available_capital:.0f})")
             return None
 
@@ -1713,7 +1713,7 @@ class AutoTrader:
             was_overbought=False,
             was_oversold=False,
             mode=pos_mode,  # Track paper or live
-            strategy_id=getattr(position, "strategy_id", self.strategy_id),
+            strategy_id=getattr(position, "strategy_id", None) or self.strategy_id or "clawwork-autotrader",
         )
         self._log_trade(trade_log)
 
@@ -2033,8 +2033,12 @@ class AutoTrader:
                 "candidate_strikes": rec.get("candidate_strikes", []),
             }
 
-        index_symbols = data.get("index_symbols", {})
+        # watchlist_baskets is a dict of lists {index: [stock_symbols]}
+        # index_symbols is a dict of strings {index: "NSE:INDEX-INDEX"} — not a stock list
+        index_symbols = data.get("watchlist_baskets") or data.get("index_symbols", {})
         for index, symbols in index_symbols.items():
+            if not isinstance(symbols, list):
+                continue
             if index in market_data:
                 market_data[index]["stocks"] = []
                 for stock in data.get("results", []):

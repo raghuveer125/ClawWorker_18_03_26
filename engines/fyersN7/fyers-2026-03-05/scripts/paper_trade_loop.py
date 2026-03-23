@@ -435,6 +435,8 @@ def close_position(
         "result": result,
         "capital_before": f"{capital_before:.2f}",
         "capital_after": f"{to_float(state.get('cash', 0.0)):.2f}",
+        "engine_id": "fyersn7",
+        "index": os.environ.get("INDEX", "UNKNOWN"),
     }
 
     append_csv(
@@ -462,10 +464,27 @@ def close_position(
             "result",
             "capital_before",
             "capital_after",
+            "engine_id",
+            "index",
         ],
         trade_row,
     )
     return trade_row
+
+
+def _candidate_ems(c: Dict[str, Any]) -> float:
+    """Expected Move Score for a candidate trade row.
+
+    Formula: (confidence/100) * (|delta| * 100) / premium
+    Higher score = better risk/reward per rupee of premium paid.
+    Falls back to 0.0 if premium <= 0 or delta unavailable.
+    """
+    premium = c.get("entry", 0.0)
+    if premium <= 0:
+        return 0.0
+    confidence = c.get("confidence", 0) / 100.0
+    delta = abs(to_float(c.get("row", {}).get("delta", "0"), 0.0))
+    return confidence * delta * 100.0 / premium
 
 
 def process_new_rows(
@@ -582,7 +601,7 @@ def process_new_rows(
     state["open_positions"] = still_open
 
     open_keys = {(str(p.get("side", "")), str(p.get("strike", ""))) for p in state.get("open_positions", [])}
-    candidates.sort(key=lambda x: (x["score"], x["confidence"], x["entry"]), reverse=True)
+    candidates.sort(key=_candidate_ems, reverse=True)
 
     opened: List[Dict[str, Any]] = []
     for c in candidates:

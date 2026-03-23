@@ -917,10 +917,10 @@ cmd_fyersn7_paper_background() {
     return 0
   fi
 
-  nohup bash -lc "cd '${FYERSN7_DIR}' && exec env PYTHON_BIN='${PYTHON_BIN}' MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' CAPITAL='${capital}' ./scripts/start_all.sh paper" > "${PROJECT_ROOT}/logs/fyersn7_paper.log" 2>&1 &
+  nohup bash -lc "cd '${FYERSN7_DIR}' && exec env PYTHON_BIN='${PYTHON_BIN}' MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' CAPITAL='${capital}' INDEX='${index}' ENABLE_WEB_VIEW=0 ./scripts/start_all.sh paper" > "${PROJECT_ROOT}/logs/fyersn7_paper_${index}.log" 2>&1 &
   local paper_pid=$!
-  save_pid "fyersn7_paper" "${paper_pid}"
-  echo -e "${GREEN}  FyersN7 Paper Trading started (PID: ${paper_pid})${NC}"
+  save_pid "fyersn7_paper_${index}" "${paper_pid}"
+  echo -e "${GREEN}  FyersN7 Paper Trading started for ${index} (PID: ${paper_pid})${NC}"
 }
 
 cmd_forensics_check() {
@@ -1629,8 +1629,10 @@ EOF
   # ============================================
   # 9. Start FyersN7 Paper Trading (Optimized)
   # ============================================
-  echo -e "${BLUE}[9/9] Starting FyersN7 Paper Trading (69.7% WR strategy)...${NC}"
-  cmd_fyersn7_paper_background
+  echo -e "${BLUE}[9/9] Starting FyersN7 Paper Trading (69.7% WR strategy) for all indices...${NC}"
+  for _paper_idx in SENSEX BANKNIFTY NIFTY50 FINNIFTY; do
+    INDEX="${_paper_idx}" cmd_fyersn7_paper_background
+  done
 
   echo ""
   echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════╗${NC}"

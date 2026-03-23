@@ -1261,6 +1261,8 @@ def _load_fyersn7_trades(date_dir: Path, indices: List[str]) -> Dict[str, List[D
                 "net_pnl": _to_float(row.get("net_pnl")),
                 "hold_sec": _to_int(row.get("hold_sec")),
                 "result": row.get("result", ""),
+                "engine": row.get("engine_id") or f"fyersn7_{idx}",
+                "index": row.get("index") or idx,
             })
         result[idx] = trades
 

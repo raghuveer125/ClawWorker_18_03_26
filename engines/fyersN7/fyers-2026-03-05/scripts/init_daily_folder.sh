@@ -192,8 +192,11 @@ export TRADES_CSV="${TRADES_CSV:-${INDEX_DIR}/paper_trades.csv}"
 export EQUITY_CSV="${EQUITY_CSV:-${INDEX_DIR}/paper_equity.csv}"
 export EVENTS_CSV="${EVENTS_CSV:-${INDEX_DIR}/opportunity_events.csv}"
 
-# Keep the expected daily CSV files present even before the first signal/trade row is written.
-touch "${JOURNAL_CSV}" "${SIGNALS_CSV}" "${TRADES_CSV}" "${EQUITY_CSV}" "${EVENTS_CSV}"
+# Keep non-header CSVs present so signal/equity readers don't fail on missing file.
+# Do NOT touch paper_trades.csv or opportunity_events.csv — they require a header row
+# written by the process on first use; touching them creates an empty file that makes
+# csv.DictReader treat the first data row as column names.
+touch "${JOURNAL_CSV}" "${SIGNALS_CSV}" "${EQUITY_CSV}"
 
 # Export per-index state file paths (now in daily folder)
 export SIGNAL_STATE_FILE="${SIGNAL_STATE_FILE:-${SIGNAL_STATE}}"
