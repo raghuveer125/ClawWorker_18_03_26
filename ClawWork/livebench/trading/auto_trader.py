@@ -522,8 +522,10 @@ class AutoTrader:
     def _save_state(self):
         """Save state to disk atomically (write-then-rename)."""
         try:
+            with self._positions_lock:
+                positions_snapshot = list(self.positions.values())
             data = {
-                "positions": [asdict(p) for p in self.positions.values()],
+                "positions": [asdict(p) for p in positions_snapshot],
                 "daily_pnl": self.daily_pnl,  # Dict with paper/live keys
                 "daily_trades": self.daily_trades,  # Dict with paper/live keys
                 "last_updated": datetime.now().isoformat(),
@@ -1726,24 +1728,36 @@ class AutoTrader:
 
         # Record trade outcome for execution quality tracking
         if self.execution_tracker:
-            self.execution_tracker.record_trade_outcome(
-                trade_id=position.id,
-                pnl=pnl,
-                pnl_pct=pnl_pct,
-                outcome=outcome
-            )
-            # Clean up pending execution
-            if position.id in self._pending_executions:
-                del self._pending_executions[position.id]
+            try:
+                self.execution_tracker.record_trade_outcome(
+                    trade_id=position.id,
+                    pnl=pnl,
+                    pnl_pct=pnl_pct,
+                    outcome=outcome
+                )
+                # Clean up pending execution
+                if position.id in self._pending_executions:
+                    del self._pending_executions[position.id]
+            except Exception as e:
+                logger.error(
+                    "[close_position] execution_tracker.record_trade_outcome failed for %s: %s — position cleanup will continue",
+                    position.id, e,
+                )
 
         # Report to ensemble
-        self.ensemble.close_trade(
-            index=position.index,
-            exit_price=exit_price,
-            outcome=outcome,
-            pnl=pnl,
-            exit_reason=exit_reason
-        )
+        try:
+            self.ensemble.close_trade(
+                index=position.index,
+                exit_price=exit_price,
+                outcome=outcome,
+                pnl=pnl,
+                exit_reason=exit_reason
+            )
+        except Exception as e:
+            logger.error(
+                "[close_position] ensemble.close_trade failed for %s: %s — position cleanup will continue",
+                position.id, e,
+            )
 
         # Remove from active positions (lock ensures no concurrent add/iterate races)
         with self._positions_lock:
