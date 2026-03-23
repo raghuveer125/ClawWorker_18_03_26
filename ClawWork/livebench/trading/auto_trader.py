@@ -376,6 +376,9 @@ class AutoTrader:
             component="auto_trader",
         )
 
+        # Lock protecting self.positions from concurrent add/delete/iterate
+        self._positions_lock = threading.Lock()
+
         # State - separate P&L tracking for paper and live modes
         self.positions: Dict[str, Position] = {}
         self.daily_pnl: Dict[str, float] = {"paper": 0.0, "live": 0.0}
@@ -540,8 +543,14 @@ class AutoTrader:
 
     def _log_trade(self, trade: TradeLog):
         """Log trade for learning"""
-        with open(self.trades_log_file, "a") as f:
-            f.write(json.dumps(asdict(trade)) + "\n")
+        try:
+            with open(self.trades_log_file, "a") as f:
+                f.write(json.dumps(asdict(trade)) + "\n")
+        except Exception as e:
+            logger.error(
+                "[_log_trade] Failed to write trade log for %s: %s — trade occurred but record is missing",
+                trade.trade_id, e,
+            )
 
     def _load_recent_exit_times(self):
         """Load the latest exit timestamp per symbol for cooldown enforcement."""
@@ -1084,8 +1093,8 @@ class AutoTrader:
         if open_positions >= self.risk.max_concurrent_positions:
             return False, f"Max positions open ({open_positions})"
 
-        # Time filters
-        now = datetime.now()
+        # Time filters (IST enforced — server timezone must not influence market hours)
+        now = datetime.now(ZoneInfo("Asia/Kolkata"))
         market_open = now.replace(hour=9, minute=15, second=0)
         market_close = now.replace(hour=15, minute=30, second=0)
 
@@ -1214,9 +1223,13 @@ class AutoTrader:
             return None
 
         # ── Duplicate guard (re-check at execution time, not just signal time) ──
-        # Snapshot positions to avoid mutation during iteration in concurrent calls.
-        if any(p.index == index and p.status == "open"
-               for p in list(self.positions.values())):
+        # Hold the lock only for the read — keeps scope minimal.
+        with self._positions_lock:
+            _has_open = any(
+                p.index == index and p.status == "open"
+                for p in self.positions.values()
+            )
+        if _has_open:
             logger.warning(
                 "[execute_trade] Duplicate blocked: open position already exists for %s — skipping",
                 index,
@@ -1276,6 +1289,8 @@ class AutoTrader:
         # ATM option premium is typically 0.3-0.5% of index for NIFTY, 0.8-1.2% for BANKNIFTY
         index_ltp = market_data.get("ltp", 0)
 
+        heuristic_entry = False  # tracks whether Step 3 fallback was used
+
         # Step 1: Use decision.entry if it already looks like a valid option premium
         if decision.entry and decision.entry < index_ltp * 0.05:
             entry_price = decision.entry
@@ -1294,7 +1309,7 @@ class AutoTrader:
                                 entry_price = ltp
                                 logger.info("Real entry price from Fyers: %s = %s", fyers_sym, ltp)
                         except Exception as e:
-                            logger.debug("Fyers entry price fetch failed for %s: %s", fyers_sym, e)
+                            logger.warning("Fyers entry price fetch failed for %s: %s — falling back to heuristic", fyers_sym, e)
 
             # Step 3: Heuristic fallback if API unavailable or returned no data
             if not entry_price:
@@ -1306,6 +1321,11 @@ class AutoTrader:
                     "MIDCPNIFTY": 0.005,   # ~0.5% of index
                 }.get(index, 0.004)
                 entry_price = round(index_ltp * premium_pct, 2)
+                heuristic_entry = True
+                logger.warning(
+                    "[execute_trade] Heuristic entry price used for %s: index_ltp=%.2f, premium_pct=%.3f, entry_price=%.2f — SL/Target derived from estimated premium",
+                    index, index_ltp, premium_pct, entry_price,
+                )
 
         stop_loss = decision.stop_loss or entry_price * (1 - self.risk.stop_loss_pct / 100)
         target = decision.target or entry_price * (1 + self.risk.target_pct / 100)
@@ -1331,6 +1351,7 @@ class AutoTrader:
                 "consensus": decision.consensus_level,
                 "contributing_bots": decision.contributing_bots,
                 "reasoning": decision.reasoning,
+                "heuristic_entry": heuristic_entry,
             },
             mode=self.mode.value,  # paper or live
             strategy_id=self.strategy_id,
@@ -1404,8 +1425,9 @@ class AutoTrader:
             position.entry_price = actual_fill_price
             logger.info(f"Fill price adjusted: expected {entry_price} -> actual {actual_fill_price}")
 
-        # Record position
-        self.positions[position.id] = position
+        # Record position (lock ensures no concurrent delete/iterate races)
+        with self._positions_lock:
+            self.positions[position.id] = position
         # Increment daily trades for current mode
         mode_key = self.mode.value
         self.daily_trades[mode_key] = self.daily_trades.get(mode_key, 0) + 1
@@ -1422,6 +1444,9 @@ class AutoTrader:
         logger.info(f"Trade executed: {position.symbol} | Entry: {entry_price} | SL: {stop_loss} | Target: {target}")
 
         return position
+
+    # Keywords that indicate a Fyers token/auth failure in API error messages.
+    _AUTH_ERROR_KEYWORDS = ("token", "auth", "expired", "session", "unauthorized", "invalid_token")
 
     def _place_fyers_order(self, position: Position) -> Dict:
         """Place order via FYERS API for LIVE trading"""
@@ -1460,6 +1485,8 @@ class AutoTrader:
                 else:
                     error = response.get("error", "Unknown error")
                     logger.error(f"[LIVE] Order failed: {error}")
+                    if any(kw in error.lower() for kw in self._AUTH_ERROR_KEYWORDS):
+                        logger.critical("[LIVE] AUTH FAILURE on BUY order for %s: %s — Fyers token may have expired, manual session refresh required", position.symbol, error)
                     return {"success": False, "error": error, "fyers_response": response}
             else:
                 # Fallback to creating FyersClient
@@ -1473,14 +1500,19 @@ class AutoTrader:
                     else:
                         error = response.get("error", "Unknown error")
                         logger.error(f"[LIVE] Order failed: {error}")
+                        if any(kw in error.lower() for kw in self._AUTH_ERROR_KEYWORDS):
+                            logger.critical("[LIVE] AUTH FAILURE on BUY order for %s: %s — Fyers token may have expired, manual session refresh required", position.symbol, error)
                         return {"success": False, "error": error, "fyers_response": response}
                 else:
                     logger.error("[LIVE] FyersClient not available")
                     return {"success": False, "error": "FyersClient not imported"}
 
         except Exception as e:
-            logger.error(f"[LIVE] Order exception: {e}")
-            return {"success": False, "error": str(e)}
+            error_str = str(e)
+            logger.error(f"[LIVE] Order exception: {error_str}")
+            if any(kw in error_str.lower() for kw in self._AUTH_ERROR_KEYWORDS):
+                logger.critical("[LIVE] AUTH FAILURE on BUY order for %s: %s — Fyers token may have expired, manual session refresh required", position.symbol, error_str)
+            return {"success": False, "error": error_str}
 
     def _place_fyers_sell_order(self, position: Position) -> Dict:
         """Place SELL order via FYERS API to close position"""
@@ -1522,11 +1554,16 @@ class AutoTrader:
             else:
                 error = response.get("error", "Unknown error")
                 logger.error(f"[LIVE] SELL order failed: {error}")
+                if any(kw in error.lower() for kw in self._AUTH_ERROR_KEYWORDS):
+                    logger.critical("[LIVE] AUTH FAILURE on SELL order for %s: %s — Fyers token may have expired, position will be retried but manual session refresh required", position.symbol, error)
                 return {"success": False, "error": error}
 
         except Exception as e:
-            logger.error(f"[LIVE] SELL order exception: {e}")
-            return {"success": False, "error": str(e)}
+            error_str = str(e)
+            logger.error(f"[LIVE] SELL order exception: {error_str}")
+            if any(kw in error_str.lower() for kw in self._AUTH_ERROR_KEYWORDS):
+                logger.critical("[LIVE] AUTH FAILURE on SELL order for %s: %s — Fyers token may have expired, position will be retried but manual session refresh required", position.symbol, error_str)
+            return {"success": False, "error": error_str}
 
     # ═══════════════════════════════════════════════════════════════════════
     # POSITION MONITORING & EXIT
@@ -1534,7 +1571,9 @@ class AutoTrader:
 
     def monitor_positions(self, current_prices: Dict[str, float]):
         """Monitor open positions and exit if needed"""
-        for pos_id, position in list(self.positions.items()):
+        with self._positions_lock:
+            positions_snapshot = list(self.positions.items())
+        for pos_id, position in positions_snapshot:
             if position.status != "open":
                 continue
 
@@ -1555,8 +1594,8 @@ class AutoTrader:
             elif current_price >= position.target:
                 exit_reason = "TARGET"
 
-            # Time-based exit (EOD)
-            now = datetime.now()
+            # Time-based exit (EOD) — IST enforced
+            now = datetime.now(ZoneInfo("Asia/Kolkata"))
             if now.hour >= 15 and now.minute >= 15:
                 exit_reason = "EOD_SQUARE_OFF"
 
@@ -1667,8 +1706,9 @@ class AutoTrader:
             exit_reason=exit_reason
         )
 
-        # Remove from active positions
-        del self.positions[position.id]
+        # Remove from active positions (lock ensures no concurrent add/iterate races)
+        with self._positions_lock:
+            del self.positions[position.id]
         self._save_state()
 
         # Callback
@@ -1779,7 +1819,7 @@ class AutoTrader:
                 # ═══════════════════════════════════════════════════════════════
                 # AUTO-DAILY RESET: Trigger optimization at market open (9:15 AM)
                 # ═══════════════════════════════════════════════════════════════
-                now = datetime.now()
+                now = datetime.now(ZoneInfo("Asia/Kolkata"))
                 today = now.date()
                 market_open_time = now.replace(hour=9, minute=15, second=0, microsecond=0)
 
@@ -2088,7 +2128,7 @@ class AutoTrader:
                             prices[pos.symbol] = ltp
                             logger.debug("Option LTP from Fyers: %s = %s", fyers_sym, ltp)
                     except Exception as e:
-                        logger.debug("Fyers quote fetch failed for %s: %s", fyers_sym, e)
+                        logger.warning("Fyers quote fetch failed for %s: %s — SL/target check skipped this cycle", fyers_sym, e)
 
             # Step 3: final fallback for paper trading — simulate via index change
             if pos.symbol not in prices and self.mode == TradingMode.PAPER and index_data:

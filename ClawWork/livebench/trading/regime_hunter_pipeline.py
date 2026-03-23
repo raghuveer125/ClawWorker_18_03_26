@@ -36,6 +36,7 @@ import time
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
 from typing import Any, Callable, Dict, List, Optional
 
 from bots.base import SharedMemory, SignalType, OptionType
@@ -462,7 +463,7 @@ class RegimeHunterPipeline:
         if open_ct >= self.risk.max_concurrent_positions:
             return False, f"Max positions open ({open_ct})"
 
-        now = datetime.now()
+        now = datetime.now(ZoneInfo("Asia/Kolkata"))  # IST enforced
         mkt_open = now.replace(hour=9, minute=15, second=0)
         mkt_close = now.replace(hour=15, minute=30, second=0)
         if now < mkt_open + timedelta(minutes=self.risk.no_trade_first_minutes):
@@ -505,8 +506,14 @@ class RegimeHunterPipeline:
             pass
 
     def _log_trade(self, pos: RHPosition):
-        with open(self._trades_log, "a") as f:
-            f.write(json.dumps(asdict(pos)) + "\n")
+        try:
+            with open(self._trades_log, "a") as f:
+                f.write(json.dumps(asdict(pos)) + "\n")
+        except Exception as e:
+            logger.error(
+                "[RH-Pipeline][_log_trade] Failed to write trade log for %s: %s — trade occurred but record is missing",
+                pos.id, e,
+            )
 
     # ── status ──
 
