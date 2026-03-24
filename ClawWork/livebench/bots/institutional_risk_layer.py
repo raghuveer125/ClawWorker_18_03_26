@@ -1112,11 +1112,18 @@ class InstitutionalRiskLayer:
         elif regime.trading_condition == TradingCondition.CAUTION:
             modifications["position_size_mult"] = 0.6
 
-        # Check if contributing bots are suited for regime
+        # Check if contributing bots are suited for regime.
+        # Hard-block only when condition is NO_TRADE (choppy/untradeable).
+        # For CAUTION/POOR the regime already cleared STEP 0; penalise size instead
+        # of contradicting that decision with a hard block here.
         bots = proposed_trade.get("contributing_bots", [])
         for bot in bots:
             if bot in regime.avoid_strategies:
-                return False, f"Bot {bot} not suited for {regime.regime.value} regime", modifications
+                if regime.trading_condition == TradingCondition.NO_TRADE:
+                    return False, f"Bot {bot} not suited for {regime.regime.value} regime", modifications
+                else:
+                    # CAUTION or POOR: additional 30% size penalty, no hard block
+                    modifications["position_size_mult"] *= 0.7
 
         # ═══════════════════════════════════════════════════════════════════
         # CHECK 2: EXPOSURE LIMITS - Would this exceed risk budget?
