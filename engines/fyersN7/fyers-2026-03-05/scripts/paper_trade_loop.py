@@ -600,6 +600,11 @@ def process_new_rows(
 
     state["open_positions"] = still_open
 
+    # Collect keys closed in this same call so they cannot reopen immediately.
+    just_closed_keys = {
+        (str(t.get("side", "")), str(t.get("strike", ""))) for t in closed
+    }
+
     # Deduplicate candidates by (side, strike) before sorting.
     # new_rows spans multiple ticks; each tick writes the same strikes again.
     # _candidate_ems uses entry price (LTP at that tick) as denominator, so a
@@ -621,6 +626,8 @@ def process_new_rows(
         key = (c["side"], c["strike"])
         if key in open_keys:
             continue
+        if key in just_closed_keys:
+            continue  # Prevent same-cycle close→reopen.
         if c["entry"] <= 0:
             continue
 
