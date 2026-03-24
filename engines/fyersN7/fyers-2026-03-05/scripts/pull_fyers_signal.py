@@ -1970,7 +1970,7 @@ def main() -> int:
             "stable": "Y" if stable_side else "N",
             "cooldown_sec": str(cooldown_left),
             "entry_ready": "Y" if entry_ready else "N",
-            "selected": "Y" if (selected_strike and conf_val >= int(args.min_confidence)) else "N",
+            "selected": "Y" if (selected_strike and entry_ready) else "N",
             "spread_pct": f"{spread_pct:.4f}",
             "bid": f"{bid:.4f}",
             "ask": f"{ask:.4f}",
