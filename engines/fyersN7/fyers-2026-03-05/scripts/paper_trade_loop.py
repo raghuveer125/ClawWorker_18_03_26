@@ -600,6 +600,19 @@ def process_new_rows(
 
     state["open_positions"] = still_open
 
+    # Deduplicate candidates by (side, strike) before sorting.
+    # new_rows spans multiple ticks; each tick writes the same strikes again.
+    # _candidate_ems uses entry price (LTP at that tick) as denominator, so a
+    # stale row where 73800 was ATM (low premium, high delta, no conf penalty)
+    # can score higher than the current-tick 73900 row, causing wrong execution.
+    # Fix: keep only the most recent row per (side, strike).
+    _deduped: Dict[Tuple[str, str], Dict[str, Any]] = {}
+    for _c in candidates:
+        _key = (_c["side"], _c["strike"])
+        if _key not in _deduped or _c["ts"] >= _deduped[_key]["ts"]:
+            _deduped[_key] = _c
+    candidates = list(_deduped.values())
+
     open_keys = {(str(p.get("side", "")), str(p.get("strike", ""))) for p in state.get("open_positions", [])}
     candidates.sort(key=_candidate_ems, reverse=True)
 
