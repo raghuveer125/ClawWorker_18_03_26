@@ -778,7 +778,8 @@ class EnsembleCoordinator:
             # Get current capital (simplified)
             capital = self.config.total_capital
 
-            # Run comprehensive pre-trade check
+            # Run comprehensive pre-trade check — pass STEP 0 regime to avoid
+            # double detect_regime() call and ensure consistent regime analysis.
             allowed, reason, modifications = self.institutional_layer.pre_trade_check(
                 index=index,
                 proposed_trade=proposed_trade,
@@ -786,6 +787,7 @@ class EnsembleCoordinator:
                 capital=capital,
                 market_data=market_data,
                 signals=signals_for_quality,
+                regime=self._current_inst_analysis,
             )
 
             if not allowed:

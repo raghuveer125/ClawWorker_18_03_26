@@ -1081,7 +1081,8 @@ class InstitutionalRiskLayer:
         current_positions: List[Dict],
         capital: float,
         market_data: Dict,
-        signals: List[Dict]
+        signals: List[Dict],
+        regime: Optional["RegimeAnalysis"] = None,
     ) -> Tuple[bool, str, Dict]:
         """
         MAIN PRE-TRADE INTELLIGENCE CHECK
@@ -1097,8 +1098,11 @@ class InstitutionalRiskLayer:
 
         # ═══════════════════════════════════════════════════════════════════
         # CHECK 1: REGIME GATE - Is the market tradeable?
+        # Reuse STEP 0 regime if provided — avoids double-computation and
+        # ensures both steps use the identical RegimeAnalysis object.
         # ═══════════════════════════════════════════════════════════════════
-        regime = self.detect_regime(index, market_data)
+        if regime is None:
+            regime = self.detect_regime(index, market_data)
 
         if regime.trading_condition == TradingCondition.NO_TRADE:
             return False, f"Market regime blocked: {regime.regime.value} (choppy/untradeable)", modifications
