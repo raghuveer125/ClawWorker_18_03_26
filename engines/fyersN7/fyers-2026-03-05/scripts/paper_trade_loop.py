@@ -624,7 +624,8 @@ def process_new_rows(
     open_keys = {(str(p.get("side", "")), str(p.get("strike", ""))) for p in state.get("open_positions", [])}
     candidates.sort(key=_candidate_ems, reverse=True)
 
-    opened: List[Dict[str, Any]] = []
+    # Collect all candidates that pass every gate; then select the single best by EMS.
+    valid_candidates: List[Dict[str, Any]] = []
     for c in candidates:
         key = (c["side"], c["strike"])
         if key in open_keys:
@@ -637,12 +638,17 @@ def process_new_rows(
             continue  # Reentry cooldown still active.
         if c["entry"] <= 0:
             continue
-
         qty = int(args.lot_size)
         required_cash = (c["entry"] * qty) + float(args.entry_fee)
         if to_float(state.get("cash", 0.0)) < required_cash:
             continue
+        valid_candidates.append(c)
 
+    opened: List[Dict[str, Any]] = []
+    if valid_candidates:
+        best = max(valid_candidates, key=_candidate_ems)
+        qty = int(args.lot_size)
+        required_cash = (best["entry"] * qty) + float(args.entry_fee)
         capital_before = to_float(state.get("cash", 0.0))
         state["cash"] = capital_before - required_cash
         state["total_fees"] = to_float(state.get("total_fees", 0.0)) + float(args.entry_fee)
@@ -650,42 +656,38 @@ def process_new_rows(
         trade_id = int(state.get("next_trade_id", 1))
         state["next_trade_id"] = trade_id + 1
 
-        entry_ts = c["ts"]
+        entry_ts = best["ts"]
         pos = {
             "trade_id": trade_id,
-            "symbol": c["row"].get("symbol", "SENSEX"),
-            "side": c["side"],
-            "strike": c["strike"],
+            "symbol": best["row"].get("symbol", "SENSEX"),
+            "side": best["side"],
+            "strike": best["strike"],
             "qty": qty,
-            "entry_price": c["entry"],
+            "entry_price": best["entry"],
             "entry_fee": float(args.entry_fee),
             "entry_date": entry_ts.strftime("%Y-%m-%d"),
             "entry_time": entry_ts.strftime("%H:%M:%S"),
-            "last_price": c["entry"],
+            "last_price": best["entry"],
             "last_date": entry_ts.strftime("%Y-%m-%d"),
             "last_time": entry_ts.strftime("%H:%M:%S"),
-            "sl": c["sl"],
-            "t1": c["t1"],
-            "t2": c["t2"],
-            "confidence": c["confidence"],
-            "score": c["score"],
+            "sl": best["sl"],
+            "t1": best["t1"],
+            "t2": best["t2"],
+            "confidence": best["confidence"],
+            "score": best["score"],
         }
         state["open_positions"].append(pos)
-        open_keys.add(key)
         opened.append(
             {
                 "trade_id": trade_id,
-                "side": c["side"],
-                "strike": c["strike"],
+                "side": best["side"],
+                "strike": best["strike"],
                 "qty": qty,
-                "entry_price": c["entry"],
+                "entry_price": best["entry"],
                 "capital_before": capital_before,
                 "capital_after": to_float(state.get("cash", 0.0)),
             }
         )
-        break  # Execute only the top-EMS candidate per cycle.
-               # Without this, all selected=Y strikes open in sorted order and
-               # paper_trades.csv shows the last-appended (lowest EMS) as "traded".
 
     return opened, closed, latest_side
 
