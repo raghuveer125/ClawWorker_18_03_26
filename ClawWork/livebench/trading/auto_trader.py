@@ -195,7 +195,7 @@ class RiskConfig:
     target_pct: float = 30.0             # Target 30% of premium (1:1.5 R:R)
 
     # Filters (AI-optimized based on log analysis)
-    min_probability: int = 45            # Minimum weighted confidence (lowered from 55: ensemble min_confidence=40 already gates at STEP7; live decisions arrive at 48-49% after regime/MTF/DL discounts; 45 clears observed values with buffer)
+    min_probability: int = 48            # Minimum weighted confidence (lowered from 55: ensemble min_confidence=40 already gates at STEP7; live decisions arrive at 48-49% after regime/MTF/DL discounts)
     min_conviction: str = "HIGH"         # Minimum conviction level
     min_consensus: float = 0.33          # Minimum bot consensus
 
