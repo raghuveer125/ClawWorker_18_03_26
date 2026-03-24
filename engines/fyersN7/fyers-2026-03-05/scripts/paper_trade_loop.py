@@ -669,6 +669,9 @@ def process_new_rows(
                 "capital_after": to_float(state.get("cash", 0.0)),
             }
         )
+        break  # Execute only the top-EMS candidate per cycle.
+               # Without this, all selected=Y strikes open in sorted order and
+               # paper_trades.csv shows the last-appended (lowest EMS) as "traded".
 
     return opened, closed, latest_side
 
