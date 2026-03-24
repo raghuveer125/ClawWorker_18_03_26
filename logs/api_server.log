@@ -2904,3 +2904,961 @@ INFO:     127.0.0.1:60466 - "GET /api/agents/gpt-4o-inline-test/dashboard-supple
 [Validation] FAILED: Confidence 50% < 55%
 [Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
 INFO:     127.0.0.1:60608 - "GET /api/agents/gpt-4o-inline-test/dashboard-supplemental HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=62%, change=0.89%
+[AutoTrader]   NIFTY50: CE signal, conf=62%, change=0.87%
+[AutoTrader]   BANKNIFTY: CE signal, conf=69%, change=1.22%
+[AutoTrader] Loop 74: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1025.0 avg_bar_range=866.5 ratio=1.18 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 72%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 61.7), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=318.1 avg_bar_range=263.8 ratio=1.21 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 61.3), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=824.5 avg_bar_range=695.6 ratio=1.19 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 78%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=49.7 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 50%
+[Validation] FAILED: Confidence 50% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:60748 - "GET /api/agents/gpt-4o-inline-test/dashboard-supplemental HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=63%, change=0.94%
+[AutoTrader]   NIFTY50: CE signal, conf=63%, change=0.93%
+[AutoTrader]   BANKNIFTY: CE signal, conf=70%, change=1.28%
+[AutoTrader] Loop 75: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1077.4 avg_bar_range=872.9 ratio=1.23 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 73%
+  ✓ OIAnalyst: BUY @ 40%
+[Ensemble] SENSEX: Capital preservation OK - 2 quality signals, high-conviction present
+[Ensemble] SENSEX: STEP 6 - Calculating consensus from 2 signals
+[STEP6] SENSEX: total_bots=6 bullish=2/6=0.33 bearish=0/6=0.00 need>=0.33 bull_score=34.1 bear_score=0.0
+[Ensemble] SENSEX: STEP 6 OK - Decision: BUY_CE @ 34%
+[Validation] FAILED: Confidence 34% < 55%
+[Ensemble] SENSEX: STEP 7 FAILED - Validation failed
+[CI] Synthetic/static data guard: hl_range=335.5 avg_bar_range=266.1 ratio=1.26 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 72%
+  ✓ OIAnalyst: BUY @ 40%
+[Ensemble] NIFTY50: Capital preservation OK - 2 quality signals, high-conviction present
+[Ensemble] NIFTY50: STEP 6 - Calculating consensus from 2 signals
+[STEP6] NIFTY50: total_bots=6 bullish=2/6=0.33 bearish=0/6=0.00 need>=0.33 bull_score=34.0 bear_score=0.0
+[Ensemble] NIFTY50: STEP 6 OK - Decision: BUY_CE @ 34%
+[Validation] FAILED: Confidence 34% < 55%
+[Ensemble] NIFTY50: STEP 7 FAILED - Validation failed
+[CI] Synthetic/static data guard: hl_range=862.6 avg_bar_range=701.0 ratio=1.23 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 78%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 54%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=49.7 bear_score=34.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 50%
+[Validation] FAILED: Confidence 50% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=63%, change=0.94%
+[AutoTrader]   NIFTY50: CE signal, conf=62%, change=0.89%
+[AutoTrader]   BANKNIFTY: CE signal, conf=70%, change=1.26%
+[AutoTrader] Loop 76: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1070.4 avg_bar_range=879.6 ratio=1.22 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 73%
+  ✓ OIAnalyst: BUY @ 40%
+[Ensemble] SENSEX: Capital preservation OK - 2 quality signals, high-conviction present
+[Ensemble] SENSEX: STEP 6 - Calculating consensus from 2 signals
+[STEP6] SENSEX: total_bots=6 bullish=2/6=0.33 bearish=0/6=0.00 need>=0.33 bull_score=34.1 bear_score=0.0
+[Ensemble] SENSEX: STEP 6 OK - Decision: BUY_CE @ 34%
+[Validation] FAILED: Confidence 34% < 55%
+[Ensemble] SENSEX: STEP 7 FAILED - Validation failed
+[CI] Synthetic/static data guard: hl_range=335.5 avg_bar_range=268.0 ratio=1.25 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 72%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 61.7), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=861.4 avg_bar_range=705.9 ratio=1.22 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 78%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 54%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=49.7 bear_score=34.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 50%
+[Validation] FAILED: Confidence 50% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:60894 - "GET /api/agents/gpt-4o-inline-test/dashboard-supplemental HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=63%, change=0.94%
+[AutoTrader]   NIFTY50: CE signal, conf=62%, change=0.89%
+[AutoTrader]   BANKNIFTY: CE signal, conf=70%, change=1.26%
+[AutoTrader] Loop 77: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1070.4 avg_bar_range=885.8 ratio=1.21 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 73%
+  ✓ OIAnalyst: BUY @ 40%
+[Ensemble] SENSEX: Capital preservation OK - 2 quality signals, high-conviction present
+[Ensemble] SENSEX: STEP 6 - Calculating consensus from 2 signals
+[STEP6] SENSEX: total_bots=6 bullish=2/6=0.33 bearish=0/6=0.00 need>=0.33 bull_score=34.1 bear_score=0.0
+[Ensemble] SENSEX: STEP 6 OK - Decision: BUY_CE @ 34%
+[Validation] FAILED: Confidence 34% < 55%
+[Ensemble] SENSEX: STEP 7 FAILED - Validation failed
+[CI] Synthetic/static data guard: hl_range=335.5 avg_bar_range=269.8 ratio=1.24 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 72%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 61.7), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=861.4 avg_bar_range=710.8 ratio=1.21 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 78%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 54%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=49.7 bear_score=34.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 50%
+[Validation] FAILED: Confidence 50% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:61027 - "GET /api/agents/gpt-4o-inline-test/dashboard-supplemental HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
+[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.81%
+[AutoTrader]   BANKNIFTY: CE signal, conf=68%, change=1.17%
+[AutoTrader] Loop 78: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1063.9 avg_bar_range=889.0 ratio=1.20 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 1 signals, 1 quality (>=40%)
+  ✓ OIAnalyst: BUY @ 40%
+[Ensemble] SENSEX: Need 2 bots, only have 1
+[AutoTrader] Skip SENSEX: No signal from ensemble
+[CI] Synthetic/static data guard: hl_range=335.5 avg_bar_range=271.0 ratio=1.24 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 70%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 60.2), ('OIAnalyst', 20.0)]
+[AutoTrader] Skip NIFTY50: No signal from ensemble
+[CI] Synthetic/static data guard: hl_range=857.1 avg_bar_range=714.1 ratio=1.20 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 77%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=35.5 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 36%
+[Validation] FAILED: Confidence 36% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+[AutoTrader] Skip BANKNIFTY: No signal from ensemble
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.80%
+[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.80%
+[AutoTrader]   BANKNIFTY: CE signal, conf=68%, change=1.17%
+[AutoTrader] Loop 79: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1045.8 avg_bar_range=891.1 ratio=1.17 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 70%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: STRONG_BUY @ 60%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 60.0), ('OIAnalyst', 20.0), ('VolatilityTrader', 40)]
+[CI] Synthetic/static data guard: hl_range=327.3 avg_bar_range=272.2 ratio=1.20 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 70%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: STRONG_BUY @ 60%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 60.0), ('OIAnalyst', 20.0), ('VolatilityTrader', 40)]
+[CI] Synthetic/static data guard: hl_range=844.2 avg_bar_range=716.9 ratio=1.18 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 77%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=35.5 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 36%
+[Validation] FAILED: Confidence 36% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:61166 - "GET /api/agents/gpt-4o-inline-test/dashboard-supplemental HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.80%
+[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.80%
+[AutoTrader]   BANKNIFTY: CE signal, conf=68%, change=1.17%
+[AutoTrader] Loop 80: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1045.8 avg_bar_range=892.0 ratio=1.17 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 70%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: STRONG_BUY @ 60%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 60.0), ('OIAnalyst', 20.0), ('VolatilityTrader', 40)]
+[CI] Synthetic/static data guard: hl_range=327.3 avg_bar_range=272.9 ratio=1.20 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 70%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: STRONG_BUY @ 60%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 60.0), ('OIAnalyst', 20.0), ('VolatilityTrader', 40)]
+[CI] Synthetic/static data guard: hl_range=844.2 avg_bar_range=718.5 ratio=1.18 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 77%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=35.5 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 36%
+[Validation] FAILED: Confidence 36% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:61306 - "GET /api/agents/gpt-4o-inline-test/dashboard-supplemental HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.81%
+[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.80%
+[AutoTrader]   BANKNIFTY: CE signal, conf=68%, change=1.15%
+[AutoTrader] Loop 81: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1045.8 avg_bar_range=893.3 ratio=1.17 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 70%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 60.2), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=327.3 avg_bar_range=273.6 ratio=1.20 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 70%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: STRONG_BUY @ 60%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 60.0), ('OIAnalyst', 20.0), ('VolatilityTrader', 40)]
+[CI] Synthetic/static data guard: hl_range=844.2 avg_bar_range=720.0 ratio=1.17 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 77%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=35.4 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 35%
+[Validation] FAILED: Confidence 35% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:61441 - "GET /api/fyersn7/live-signals/NIFTY50 HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=62%, change=0.89%
+[AutoTrader]   NIFTY50: CE signal, conf=62%, change=0.85%
+[AutoTrader]   BANKNIFTY: CE signal, conf=68%, change=1.18%
+[AutoTrader] Loop 82: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1045.8 avg_bar_range=896.8 ratio=1.17 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 72%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 61.7), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=327.3 avg_bar_range=274.6 ratio=1.19 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 60.9), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=844.2 avg_bar_range=722.1 ratio=1.17 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 77%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=35.6 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 36%
+[Validation] FAILED: Confidence 36% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:61513 - "GET /api/agents/gpt-4o-inline-test/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61514 - "GET /api/agents/gpt-4o-inline-test/tasks HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.84%
+[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.84%
+[AutoTrader]   BANKNIFTY: CE signal, conf=68%, change=1.17%
+[AutoTrader] Loop 83: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1045.8 avg_bar_range=898.7 ratio=1.16 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 60.8), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=325.2 avg_bar_range=275.8 ratio=1.18 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 60.8), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=844.2 avg_bar_range=724.2 ratio=1.17 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 77%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=35.5 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 36%
+[Validation] FAILED: Confidence 36% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:61582 - "GET /api/agents/gpt-4o-inline-test/learning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61584 - "GET /api/agents/gpt-4o-inline-test/learning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61586 - "GET /api/agents/gpt-4o-inline-test/learning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61588 - "GET /api/agents/gpt-4o-inline-test/learning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61637 - "GET /api/agents/gpt-4o-inline-test/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61638 - "GET /api/agents/gpt-4o-inline-test/tasks HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61642 - "GET /api/agents/gpt-4o-inline-test/learning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61643 - "GET /api/agents/gpt-4o-inline-test/learning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61644 - "GET /api/agents/gpt-4o-inline-test/learning HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61646 - "GET /api/agents/gpt-4o-inline-test/learning HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.84%
+[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.84%
+[AutoTrader]   BANKNIFTY: CE signal, conf=68%, change=1.17%
+[AutoTrader] Loop 84: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1045.8 avg_bar_range=901.1 ratio=1.16 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 60.8), ('OIAnalyst', 20.0)]
+[AutoTrader] Skip SENSEX: No signal from ensemble
+[CI] Synthetic/static data guard: hl_range=325.2 avg_bar_range=276.8 ratio=1.17 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 60.8), ('OIAnalyst', 20.0)]
+[AutoTrader] Skip NIFTY50: No signal from ensemble
+[CI] Synthetic/static data guard: hl_range=844.2 avg_bar_range=726.5 ratio=1.16 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+INFO:     127.0.0.1:61665 - "GET /api/artifacts?count=30&sort=recent HTTP/1.1" 200 OK
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 77%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=35.5 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 36%
+[Validation] FAILED: Confidence 36% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+[AutoTrader] Skip BANKNIFTY: No signal from ensemble
+INFO:     127.0.0.1:61669 - "GET /api/artifacts?count=30&sort=recent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61794 - "GET /api/indices/config HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61795 - "GET /api/fyersn7/dates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61798 - "GET /api/indices/config HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61799 - "GET /api/fyersn7/dates HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=62%, change=0.86%
+[AutoTrader]   NIFTY50: CE signal, conf=62%, change=0.86%
+[AutoTrader]   BANKNIFTY: CE signal, conf=68%, change=1.17%
+[AutoTrader] Loop 85: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1013.6 avg_bar_range=904.0 ratio=1.12 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+INFO:     127.0.0.1:61801 - "GET /api/fyersn7/snapshot/2026-03-24?latest_only=true HTTP/1.1" 200 OK
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 61.1), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=311.6 avg_bar_range=278.0 ratio=1.12 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 61.1), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=803.1 avg_bar_range=728.8 ratio=1.10 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 77%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=35.5 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 36%
+[Validation] FAILED: Confidence 36% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=62%, change=0.86%
+[AutoTrader]   NIFTY50: CE signal, conf=62%, change=0.86%
+[AutoTrader]   BANKNIFTY: CE signal, conf=68%, change=1.17%
+[AutoTrader] Loop 86: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1013.6 avg_bar_range=904.3 ratio=1.12 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 61.1), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=311.6 avg_bar_range=278.2 ratio=1.12 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 61.1), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=803.1 avg_bar_range=728.0 ratio=1.10 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 77%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=35.5 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 36%
+[Validation] FAILED: Confidence 36% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:61944 - "GET /api/fyersn7/snapshot/2026-03-24?latest_only=true HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=62%, change=0.89%
+[AutoTrader]   NIFTY50: CE signal, conf=62%, change=0.86%
+[AutoTrader]   BANKNIFTY: CE signal, conf=69%, change=1.21%
+[AutoTrader] Loop 87: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1013.6 avg_bar_range=904.3 ratio=1.12 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 72%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 61.7), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=311.6 avg_bar_range=278.1 ratio=1.12 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 61.1), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=803.1 avg_bar_range=727.8 ratio=1.10 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 78%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=49.7 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 50%
+[Validation] FAILED: Confidence 50% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:62082 - "GET /api/fyersn7/snapshot/2026-03-24?latest_only=true HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=62%, change=0.88%
+[AutoTrader]   NIFTY50: CE signal, conf=62%, change=0.85%
+[AutoTrader]   BANKNIFTY: CE signal, conf=69%, change=1.20%
+[AutoTrader] Loop 88: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1013.6 avg_bar_range=904.0 ratio=1.12 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 72%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 61.5), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=311.6 avg_bar_range=278.0 ratio=1.12 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 60.9), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=803.1 avg_bar_range=727.4 ratio=1.10 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 78%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=49.7 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 50%
+[Validation] FAILED: Confidence 50% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=62%, change=0.85%
+[AutoTrader]   NIFTY50: CE signal, conf=60%, change=0.79%
+[AutoTrader]   BANKNIFTY: CE signal, conf=67%, change=1.11%
+[AutoTrader] Loop 89: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1011.9 avg_bar_range=901.6 ratio=1.12 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 60.9), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=302.0 avg_bar_range=276.8 ratio=1.09 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: BUY @ 70%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: STRONG_BUY @ 60%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 49.8), ('OIAnalyst', 20.0), ('VolatilityTrader', 40)]
+[CI] Synthetic/static data guard: hl_range=805.2 avg_bar_range=724.2 ratio=1.11 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ POOR conditions - Size reduced to 30%
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 76%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=35.2 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 35%
+[Validation] FAILED: Confidence 35% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:62221 - "GET /api/fyersn7/snapshot/2026-03-24?latest_only=true HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=62%, change=0.85%
+[AutoTrader]   NIFTY50: CE signal, conf=60%, change=0.79%
+[AutoTrader]   BANKNIFTY: CE signal, conf=67%, change=1.11%
+[AutoTrader] Loop 90: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1011.9 avg_bar_range=899.2 ratio=1.13 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 60.9), ('OIAnalyst', 20.0)]
+[AutoTrader] Skip SENSEX: No signal from ensemble
+[CI] Synthetic/static data guard: hl_range=302.0 avg_bar_range=276.0 ratio=1.09 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: BUY @ 70%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: STRONG_BUY @ 60%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 49.8), ('OIAnalyst', 20.0), ('VolatilityTrader', 40)]
+[AutoTrader] Skip NIFTY50: No signal from ensemble
+[CI] Synthetic/static data guard: hl_range=805.2 avg_bar_range=721.3 ratio=1.12 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 76%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=35.2 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 35%
+[Validation] FAILED: Confidence 35% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+[AutoTrader] Skip BANKNIFTY: No signal from ensemble
+INFO:     127.0.0.1:62354 - "GET /api/fyersn7/snapshot/2026-03-24?latest_only=true HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
+[AutoTrader]   NIFTY50: CE signal, conf=60%, change=0.78%
+[AutoTrader]   BANKNIFTY: CE signal, conf=67%, change=1.11%
+[AutoTrader] Loop 91: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=962.7 avg_bar_range=896.2 ratio=1.07 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 71%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 60.6), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=293.1 avg_bar_range=275.0 ratio=1.07 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: BUY @ 70%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: STRONG_BUY @ 60%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 49.6), ('OIAnalyst', 20.0), ('VolatilityTrader', 40)]
+[CI] Synthetic/static data guard: hl_range=770.4 avg_bar_range=718.5 ratio=1.07 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 76%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=35.2 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 35%
+[Validation] FAILED: Confidence 35% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:62492 - "GET /api/fyersn7/snapshot/2026-03-24?latest_only=true HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=59%, change=0.72%
+[AutoTrader]   NIFTY50: CE signal, conf=59%, change=0.70%
+[AutoTrader]   BANKNIFTY: CE signal, conf=65%, change=1.02%
+[AutoTrader] Loop 92: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1014.3 avg_bar_range=893.3 ratio=1.14 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: STRONG_BUY @ 60%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('OIAnalyst', 20.0), ('VolatilityTrader', 40)]
+[CI] Synthetic/static data guard: hl_range=308.4 avg_bar_range=274.1 ratio=1.12 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: BUY @ 68%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 48.1), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=808.9 avg_bar_range=715.6 ratio=1.13 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 74%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=34.6 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 35%
+[Validation] FAILED: Confidence 35% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=59%, change=0.72%
+[AutoTrader]   NIFTY50: CE signal, conf=59%, change=0.70%
+[AutoTrader]   BANKNIFTY: CE signal, conf=65%, change=1.02%
+[AutoTrader] Loop 93: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1014.3 avg_bar_range=891.1 ratio=1.14 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: BUY @ 68%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: STRONG_BUY @ 60%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 48.5), ('OIAnalyst', 20.0), ('VolatilityTrader', 40)]
+[CI] Synthetic/static data guard: hl_range=308.4 avg_bar_range=273.3 ratio=1.13 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: BUY @ 68%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 48.1), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=808.9 avg_bar_range=712.7 ratio=1.13 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 74%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=34.6 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 35%
+[Validation] FAILED: Confidence 35% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:62638 - "GET /api/fyersn7/snapshot/2026-03-24?latest_only=true HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=59%, change=0.72%
+[AutoTrader]   NIFTY50: CE signal, conf=58%, change=0.68%
+[AutoTrader]   BANKNIFTY: CE signal, conf=64%, change=0.98%
+[AutoTrader] Loop 94: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1014.3 avg_bar_range=889.0 ratio=1.14 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: BUY @ 68%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: STRONG_BUY @ 60%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 48.5), ('OIAnalyst', 20.0), ('VolatilityTrader', 40)]
+[CI] Synthetic/static data guard: hl_range=310.7 avg_bar_range=272.3 ratio=1.14 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: BUY @ 68%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 47.8), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=820.7 avg_bar_range=709.1 ratio=1.16 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 73%
+  ✓ OIAnalyst: BUY @ 40%
+[Ensemble] BANKNIFTY: Capital preservation OK - 2 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 2 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=0/6=0.00 need>=0.33 bull_score=34.4 bear_score=0.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 34%
+[Validation] FAILED: Confidence 34% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:62728 - "GET /api/fyersn7/snapshot/2026-03-24?latest_only=true HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=58%, change=0.69%
+[AutoTrader]   NIFTY50: CE signal, conf=58%, change=0.67%
+[AutoTrader]   BANKNIFTY: CE signal, conf=64%, change=0.97%
+[AutoTrader] Loop 95: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1028.6 avg_bar_range=885.8 ratio=1.16 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: BUY @ 68%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 47.9), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=312.3 avg_bar_range=271.2 ratio=1.15 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: BUY @ 68%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 47.6), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=825.4 avg_bar_range=705.7 ratio=1.17 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 73%
+  ✓ OIAnalyst: BUY @ 40%
+[Ensemble] BANKNIFTY: Capital preservation OK - 2 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 2 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=0/6=0.00 need>=0.33 bull_score=34.3 bear_score=0.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 34%
+[Validation] FAILED: Confidence 34% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=58%, change=0.69%
+[AutoTrader]   NIFTY50: CE signal, conf=58%, change=0.67%
+[AutoTrader]   BANKNIFTY: CE signal, conf=64%, change=0.97%
+[AutoTrader] Loop 96: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1025.6 avg_bar_range=880.4 ratio=1.16 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=high_volatility choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: BUY @ 68%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 47.9), ('OIAnalyst', 20.0)]
+[AutoTrader] Skip SENSEX: No signal from ensemble
+[CI] Synthetic/static data guard: hl_range=312.3 avg_bar_range=269.7 ratio=1.16 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=strong_trend_down choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: BUY @ 68%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 47.6), ('OIAnalyst', 20.0)]
+[AutoTrader] Skip NIFTY50: No signal from ensemble
+[CI] Synthetic/static data guard: hl_range=825.4 avg_bar_range=701.7 ratio=1.18 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=strong_trend_down choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 73%
+  ✓ OIAnalyst: BUY @ 40%
+[Ensemble] BANKNIFTY: Capital preservation OK - 2 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 2 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=0/6=0.00 need>=0.33 bull_score=34.3 bear_score=0.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 34%
+[Validation] FAILED: Confidence 34% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+[AutoTrader] Skip BANKNIFTY: No signal from ensemble
+INFO:     127.0.0.1:62861 - "GET /api/fyersn7/snapshot/2026-03-24?latest_only=true HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=58%, change=0.67%
+[AutoTrader]   NIFTY50: CE signal, conf=58%, change=0.65%
+[AutoTrader]   BANKNIFTY: CE signal, conf=64%, change=0.97%
+[AutoTrader] Loop 97: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1037.3 avg_bar_range=875.9 ratio=1.18 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=strong_trend_down choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: BUY @ 68%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 47.6), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=317.7 avg_bar_range=268.2 ratio=1.18 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=strong_trend_down choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: BUY @ 67%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 47.2), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=826.9 avg_bar_range=697.9 ratio=1.18 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ✅ strong_trend_down | Condition: good | choppiness=50.0 [STEP0 PASSED]
+[INSTITUTIONAL] Suitable: ['TrendFollower', 'MomentumScalper'] | Avoid: ['ReversalHunter', 'VolatilityTrader']
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 73%
+  ✓ OIAnalyst: BUY @ 40%
+[Ensemble] BANKNIFTY: Capital preservation OK - 2 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 2 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=0/6=0.00 need>=0.33 bull_score=34.3 bear_score=0.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 34%
+[Validation] FAILED: Confidence 34% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:62998 - "GET /api/fyersn7/snapshot/2026-03-24?latest_only=true HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
+[AutoTrader]   SENSEX: CE signal, conf=59%, change=0.70%
+[AutoTrader]   NIFTY50: CE signal, conf=58%, change=0.68%
+[AutoTrader]   BANKNIFTY: CE signal, conf=65%, change=1.02%
+[AutoTrader] Loop 98: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+[CI] Synthetic/static data guard: hl_range=1037.3 avg_bar_range=872.1 ratio=1.19 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=weak_trend_down choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] SENSEX: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] SENSEX: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: BUY @ 68%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] SENSEX: BLOCKED — need >=62% | actual=[('TrendFollower', 48.1), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=317.7 avg_bar_range=266.8 ratio=1.19 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | regime=strong_trend_down choppiness=50.0 [STEP0 PASSED]
+[STEP1-GATE] NIFTY50: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] NIFTY50: 2 signals, 2 quality (>=40%)
+  ✓ TrendFollower: BUY @ 68%
+  ✓ OIAnalyst: BUY @ 40%
+[CapPres] NIFTY50: BLOCKED — need >=62% | actual=[('TrendFollower', 47.8), ('OIAnalyst', 20.0)]
+[CI] Synthetic/static data guard: hl_range=826.9 avg_bar_range=695.0 ratio=1.19 (< 1.5) → CI=50 (neutral)
+[INSTITUTIONAL] ✅ unknown | Condition: good | choppiness=50.0 [STEP0 PASSED]
+[INSTITUTIONAL] Suitable: [] | Avoid: []
+[STEP1-GATE] BANKNIFTY: PASSED | session=PRIME_TIME
+[LLMTrader] Error in analysis: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************Uw4A. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[Ensemble] BANKNIFTY: 3 signals, 3 quality (>=40%)
+  ✓ TrendFollower: STRONG_BUY @ 74%
+  ✓ OIAnalyst: BUY @ 40%
+  ✓ VolatilityTrader: SELL @ 45%
+[Ensemble] BANKNIFTY: Capital preservation OK - 3 quality signals, high-conviction present
+[Ensemble] BANKNIFTY: STEP 6 - Calculating consensus from 3 signals
+[STEP6] BANKNIFTY: total_bots=6 bullish=2/6=0.33 bearish=1/6=0.17 need>=0.33 bull_score=34.6 bear_score=25.0
+[Ensemble] BANKNIFTY: STEP 6 OK - Decision: BUY_CE @ 35%
+[Validation] FAILED: Confidence 35% < 55%
+[Ensemble] BANKNIFTY: STEP 7 FAILED - Validation failed
+INFO:     127.0.0.1:63115 - "GET /api/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63116 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63118 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63119 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63120 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63121 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63123 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63124 - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:63126 - "GET /api/agents HTTP/1.1" 200 OK
