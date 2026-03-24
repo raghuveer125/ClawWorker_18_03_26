@@ -2115,6 +2115,16 @@ class AutoTrader:
             if "low" not in data or data.get("low") is None:
                 data["low"] = ltp * (1 - total_range_pct / 100 * 0.5)
 
+            # Inject open price if missing — needed for regime_detector body_pct calculation.
+            # Without open, body_pct=0 → trend_strength≈27 → always RANGING → TrendFollower
+            # gets avoid_bot weight (0.4) instead of preferred_bot weight (1.3).
+            # Back-calculate from change_pct: open = ltp / (1 + change_pct/100)
+            if "open" not in data or data.get("open") is None:
+                if ltp > 0 and change_pct != 0:
+                    data["open"] = ltp / (1 + change_pct / 100)
+                else:
+                    data["open"] = ltp
+
             # Estimate PCR from signal (heuristic)
             signal = data.get("signal", "NEUTRAL")
             if signal == "BULLISH" or data.get("option_side") == "CE":

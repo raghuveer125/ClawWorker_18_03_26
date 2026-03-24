@@ -2,3 +2,2080 @@ INFO:     Started server process [93817]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8002 (Press CTRL+C to quit)
+[API] Background engine task scheduled
+[API] Starting embedded engine (dry_run=True, interval=5.0s, live_real_enabled=False)
+
+╔══════════════════════════════════════════════════════════════════╗
+║         SCALPING ENGINE - 21 AGENT AUTONOMOUS SYSTEM             ║
+╠══════════════════════════════════════════════════════════════════╣
+║  Mode: LIVE_PAPER                                              ║
+║  Indices: NIFTY50, BANKNIFTY, SENSEX                   ║
+║  Capital: ₹100,000                                          ║
+║  Risk/Trade: 5.0%                                           ║
+║  Daily Limit: 10.0%                                          ║
+╠══════════════════════════════════════════════════════════════════╣
+║  21 Agents Initialized:                                           ║
+║    Safety Layer:   KillSwitch (1) - runs FIRST every cycle       ║
+║    Data Layer:     Feed, Chain, Futures, LatencyGuard (4)        ║
+║    Analysis Layer: Regime, Structure, Momentum, Trap, Strike (5) ║
+║    Quality Gate:   SignalQuality (1) - filters weak signals      ║
+║    Risk Layer:     Liquidity, RiskGuard, CorrelationGuard (3)    ║
+║    Execution Layer: Meta, Entry, Exit, Position (4)              ║
+║    Learning Layer: QuantLearner, StrategyOptimizer, ExitOpt (3)  ║
+╚══════════════════════════════════════════════════════════════════╝
+        
+
+[Cycle 1] Phase 1: Data Collection...
+[Cycle 1] Phase 2-4: Analysis Pipeline...
+[Cycle 1] Phase 5: Risk Layer...
+[Cycle 1] Phase 6: Execution...
+[Cycle 1] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+[Cycle 1] Phase 7: Learning...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 1 Complete (1.00s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 100% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 2] Phase 1: Data Collection...
+[Cycle 2] Phase 2-4: Analysis Pipeline...
+[Cycle 2] Phase 5: Risk Layer...
+[Cycle 2] Phase 6: Execution...
+[Cycle 2] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 2 Complete (2.07s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 3] Phase 1: Data Collection...
+[Cycle 3] Phase 2-4: Analysis Pipeline...
+[Cycle 3] Phase 5: Risk Layer...
+[Cycle 3] Phase 6: Execution...
+[Cycle 3] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 3 Complete (1.83s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 78% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 4] Phase 1: Data Collection...
+[Cycle 4] Phase 2-4: Analysis Pipeline...
+[Cycle 4] Phase 5: Risk Layer...
+[Cycle 4] Phase 6: Execution...
+[Cycle 4] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 4 Complete (2.30s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 5] Phase 1: Data Collection...
+[Cycle 5] Phase 2-4: Analysis Pipeline...
+[Cycle 5] Phase 5: Risk Layer...
+[Cycle 5] Phase 6: Execution...
+[Cycle 5] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 5 Complete (2.33s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 6] Phase 1: Data Collection...
+[Cycle 6] Phase 2-4: Analysis Pipeline...
+[Cycle 6] Phase 5: Risk Layer...
+[Cycle 6] Phase 6: Execution...
+[Cycle 6] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 6 Complete (2.04s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 7] Phase 1: Data Collection...
+[Cycle 7] Phase 2-4: Analysis Pipeline...
+[Cycle 7] Phase 5: Risk Layer...
+[Cycle 7] Phase 6: Execution...
+[Cycle 7] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 7 Complete (2.40s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 8] Phase 1: Data Collection...
+[Cycle 8] Phase 2-4: Analysis Pipeline...
+[Cycle 8] Phase 5: Risk Layer...
+[Cycle 8] Phase 6: Execution...
+[Cycle 8] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 8 Complete (1.07s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 9] Phase 1: Data Collection...
+[Cycle 9] Phase 2-4: Analysis Pipeline...
+[Cycle 9] Phase 5: Risk Layer...
+[Cycle 9] Phase 6: Execution...
+[Cycle 9] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 9 Complete (2.32s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 10] Phase 1: Data Collection...
+[Cycle 10] Phase 2-4: Analysis Pipeline...
+[Cycle 10] Phase 5: Risk Layer...
+[Cycle 10] Phase 6: Execution...
+[Cycle 10] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 10 Complete (2.06s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 11] Phase 1: Data Collection...
+[Cycle 11] Phase 2-4: Analysis Pipeline...
+[Cycle 11] Phase 5: Risk Layer...
+[Cycle 11] Phase 6: Execution...
+[Cycle 11] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 11 Complete (2.44s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 5 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 12] Phase 1: Data Collection...
+[Cycle 12] Phase 2-4: Analysis Pipeline...
+[Cycle 12] Phase 5: Risk Layer...
+[Cycle 12] Phase 6: Execution...
+[Cycle 12] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 12 Complete (1.05s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 100% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 5 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 13] Phase 1: Data Collection...
+[Cycle 13] Phase 2-4: Analysis Pipeline...
+[Cycle 13] Phase 5: Risk Layer...
+[Cycle 13] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 13 Complete (2.37s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 4 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 14] Phase 1: Data Collection...
+[Cycle 14] Phase 2-4: Analysis Pipeline...
+[Cycle 14] Phase 5: Risk Layer...
+[Cycle 14] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 14 Complete (2.18s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 4 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 15] Phase 1: Data Collection...
+[Cycle 15] Phase 2-4: Analysis Pipeline...
+[Cycle 15] Phase 5: Risk Layer...
+[Cycle 15] Phase 6: Execution...
+[Cycle 15] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 15 Complete (2.54s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 16] Phase 1: Data Collection...
+[Cycle 16] Phase 2-4: Analysis Pipeline...
+[Cycle 16] Phase 5: Risk Layer...
+[Cycle 16] Phase 6: Execution...
+[Cycle 16] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 16 Complete (2.23s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 17] Phase 1: Data Collection...
+[Cycle 17] Phase 2-4: Analysis Pipeline...
+[Cycle 17] Phase 5: Risk Layer...
+[Cycle 17] Phase 6: Execution...
+[Cycle 17] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 17 Complete (2.23s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 18] Phase 1: Data Collection...
+[Cycle 18] Phase 2-4: Analysis Pipeline...
+[Cycle 18] Phase 5: Risk Layer...
+[Cycle 18] Phase 6: Execution...
+[Cycle 18] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 18 Complete (2.31s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 19] Phase 1: Data Collection...
+[Cycle 19] Phase 2-4: Analysis Pipeline...
+[Cycle 19] Phase 5: Risk Layer...
+[Cycle 19] Phase 6: Execution...
+[Cycle 19] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 19 Complete (2.64s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 20] Phase 1: Data Collection...
+[Cycle 20] Phase 2-4: Analysis Pipeline...
+[Cycle 20] Phase 5: Risk Layer...
+[Cycle 20] Phase 6: Execution...
+[Cycle 20] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 20 Complete (2.34s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 4 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 21] Phase 1: Data Collection...
+[Cycle 21] Phase 2-4: Analysis Pipeline...
+[Cycle 21] Phase 5: Risk Layer...
+[Cycle 21] Phase 6: Execution...
+[Cycle 21] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 21 Complete (2.52s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 22] Phase 1: Data Collection...
+[Cycle 22] Phase 2-4: Analysis Pipeline...
+[Cycle 22] Phase 5: Risk Layer...
+[Cycle 22] Phase 6: Execution...
+[Cycle 22] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 22 Complete (2.25s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 23] Phase 1: Data Collection...
+[Cycle 23] Phase 2-4: Analysis Pipeline...
+[Cycle 23] Phase 5: Risk Layer...
+[Cycle 23] Phase 6: Execution...
+[Cycle 23] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 23 Complete (1.72s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 78% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 24] Phase 1: Data Collection...
+[Cycle 24] Phase 2-4: Analysis Pipeline...
+[Cycle 24] Phase 5: Risk Layer...
+[Cycle 24] Phase 6: Execution...
+[Cycle 24] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 24 Complete (2.26s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 25] Phase 1: Data Collection...
+[Cycle 25] Phase 2-4: Analysis Pipeline...
+[Cycle 25] Phase 5: Risk Layer...
+[Cycle 25] Phase 6: Execution...
+[Cycle 25] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 25 Complete (2.13s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 67% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 26] Phase 1: Data Collection...
+[Cycle 26] Phase 2-4: Analysis Pipeline...
+[Cycle 26] Phase 5: Risk Layer...
+[Cycle 26] Phase 6: Execution...
+[Cycle 26] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 26 Complete (2.24s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 27] Phase 1: Data Collection...
+[Cycle 27] Phase 2-4: Analysis Pipeline...
+[Cycle 27] Phase 5: Risk Layer...
+[Cycle 27] Phase 6: Execution...
+[Cycle 27] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 27 Complete (2.57s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 28] Phase 1: Data Collection...
+[Cycle 28] Phase 2-4: Analysis Pipeline...
+[Cycle 28] Phase 5: Risk Layer...
+[Cycle 28] Phase 6: Execution...
+[Cycle 28] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 28 Complete (2.19s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 29] Phase 1: Data Collection...
+[Cycle 29] Phase 2-4: Analysis Pipeline...
+[Cycle 29] Phase 5: Risk Layer...
+[Cycle 29] Phase 6: Execution...
+[Cycle 29] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 29 Complete (2.50s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 30] Phase 1: Data Collection...
+[Cycle 30] Phase 2-4: Analysis Pipeline...
+[Cycle 30] Phase 5: Risk Layer...
+[Cycle 30] Phase 6: Execution...
+[Cycle 30] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 30 Complete (1.13s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 31] Phase 1: Data Collection...
+[Cycle 31] Phase 2-4: Analysis Pipeline...
+[Cycle 31] Phase 5: Risk Layer...
+[Cycle 31] Phase 6: Execution...
+[Cycle 31] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 31 Complete (2.66s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 32] Phase 1: Data Collection...
+[Cycle 32] Phase 2-4: Analysis Pipeline...
+[Cycle 32] Phase 5: Risk Layer...
+[Cycle 32] Phase 6: Execution...
+[Cycle 32] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 32 Complete (2.18s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 33] Phase 1: Data Collection...
+[Cycle 33] Phase 2-4: Analysis Pipeline...
+[Cycle 33] Phase 5: Risk Layer...
+[Cycle 33] Phase 6: Execution...
+[Cycle 33] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 33 Complete (2.76s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 34] Phase 1: Data Collection...
+[Cycle 34] Phase 2-4: Analysis Pipeline...
+[Cycle 34] Phase 5: Risk Layer...
+[Cycle 34] Phase 6: Execution...
+[Cycle 34] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 34 Complete (1.69s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 89% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 35] Phase 1: Data Collection...
+[Cycle 35] Phase 2-4: Analysis Pipeline...
+[Cycle 35] Phase 5: Risk Layer...
+[Cycle 35] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 35 Complete (2.62s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 36] Phase 1: Data Collection...
+[Cycle 36] Phase 2-4: Analysis Pipeline...
+[Cycle 36] Phase 5: Risk Layer...
+[Cycle 36] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 36 Complete (1.76s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 89% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 37] Phase 1: Data Collection...
+[Cycle 37] Phase 2-4: Analysis Pipeline...
+[Cycle 37] Phase 5: Risk Layer...
+[Cycle 37] Phase 6: Execution...
+[Cycle 37] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 37 Complete (2.55s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 4 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 38] Phase 1: Data Collection...
+[Cycle 38] Phase 2-4: Analysis Pipeline...
+[Cycle 38] Phase 5: Risk Layer...
+[Cycle 38] Phase 6: Execution...
+[Cycle 38] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 38 Complete (2.12s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 39] Phase 1: Data Collection...
+[Cycle 39] Phase 2-4: Analysis Pipeline...
+[Cycle 39] Phase 5: Risk Layer...
+[Cycle 39] Phase 6: Execution...
+[Cycle 39] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 39 Complete (2.52s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 40] Phase 1: Data Collection...
+[Cycle 40] Phase 2-4: Analysis Pipeline...
+[Cycle 40] Phase 5: Risk Layer...
+[Cycle 40] Phase 6: Execution...
+[Cycle 40] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 40 Complete (2.27s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 41] Phase 1: Data Collection...
+[Cycle 41] Phase 2-4: Analysis Pipeline...
+[Cycle 41] Phase 5: Risk Layer...
+[Cycle 41] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 41 Complete (1.77s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 42] Phase 1: Data Collection...
+[Cycle 42] Phase 2-4: Analysis Pipeline...
+[Cycle 42] Phase 5: Risk Layer...
+[Cycle 42] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 42 Complete (2.27s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 43] Phase 1: Data Collection...
+[Cycle 43] Phase 2-4: Analysis Pipeline...
+[Cycle 43] Phase 5: Risk Layer...
+[Cycle 43] Phase 6: Execution...
+[Cycle 43] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 43 Complete (2.49s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 44] Phase 1: Data Collection...
+[Cycle 44] Phase 2-4: Analysis Pipeline...
+[Cycle 44] Phase 5: Risk Layer...
+[Cycle 44] Phase 6: Execution...
+[Cycle 44] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 44 Complete (2.49s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 45] Phase 1: Data Collection...
+[Cycle 45] Phase 2-4: Analysis Pipeline...
+[Cycle 45] Phase 5: Risk Layer...
+[Cycle 45] Phase 6: Execution...
+[Cycle 45] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 45 Complete (1.73s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 89% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 46] Phase 1: Data Collection...
+[Cycle 46] Phase 2-4: Analysis Pipeline...
+[Cycle 46] Phase 5: Risk Layer...
+[Cycle 46] Phase 6: Execution...
+[Cycle 46] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 46 Complete (2.32s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 47] Phase 1: Data Collection...
+[Cycle 47] Phase 2-4: Analysis Pipeline...
+[Cycle 47] Phase 5: Risk Layer...
+[Cycle 47] Phase 6: Execution...
+[Cycle 47] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 47 Complete (2.54s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 48] Phase 1: Data Collection...
+[Cycle 48] Phase 2-4: Analysis Pipeline...
+[Cycle 48] Phase 5: Risk Layer...
+[Cycle 48] Phase 6: Execution...
+[Cycle 48] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 48 Complete (2.31s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 49] Phase 1: Data Collection...
+[Cycle 49] Phase 2-4: Analysis Pipeline...
+[Cycle 49] Phase 5: Risk Layer...
+[Cycle 49] Phase 6: Execution...
+[Cycle 49] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 49 Complete (2.67s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 4 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 50] Phase 1: Data Collection...
+[Cycle 50] Phase 2-4: Analysis Pipeline...
+[Cycle 50] Phase 5: Risk Layer...
+[Cycle 50] Phase 6: Execution...
+[Cycle 50] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+[Cycle 50] Phase 7: Learning...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 50 Complete (2.37s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 5 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 51] Phase 1: Data Collection...
+[Cycle 51] Phase 2-4: Analysis Pipeline...
+[Cycle 51] Phase 5: Risk Layer...
+[Cycle 51] Phase 6: Execution...
+[Cycle 51] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 51 Complete (2.52s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 5 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 52] Phase 1: Data Collection...
+[Cycle 52] Phase 2-4: Analysis Pipeline...
+[Cycle 52] Phase 5: Risk Layer...
+[Cycle 52] Phase 6: Execution...
+[Cycle 52] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 52 Complete (2.38s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 4 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 53] Phase 1: Data Collection...
+[Cycle 53] Phase 2-4: Analysis Pipeline...
+[Cycle 53] Phase 5: Risk Layer...
+[Cycle 53] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 53 Complete (2.68s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 4 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 54] Phase 1: Data Collection...
+[Cycle 54] Phase 2-4: Analysis Pipeline...
+[Cycle 54] Phase 5: Risk Layer...
+[Cycle 54] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 54 Complete (1.55s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 4 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 55] Phase 1: Data Collection...
+[Cycle 55] Phase 2-4: Analysis Pipeline...
+[Cycle 55] Phase 5: Risk Layer...
+[Cycle 55] Phase 6: Execution...
+[Cycle 55] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 55 Complete (2.63s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 56] Phase 1: Data Collection...
+[Cycle 56] Phase 2-4: Analysis Pipeline...
+[Cycle 56] Phase 5: Risk Layer...
+[Cycle 56] Phase 6: Execution...
+[Cycle 56] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 56 Complete (1.77s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 57] Phase 1: Data Collection...
+[Cycle 57] Phase 2-4: Analysis Pipeline...
+[Cycle 57] Phase 5: Risk Layer...
+[Cycle 57] Phase 6: Execution...
+[Cycle 57] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 57 Complete (2.44s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 58] Phase 1: Data Collection...
+[Cycle 58] Phase 2-4: Analysis Pipeline...
+[Cycle 58] Phase 5: Risk Layer...
+[Cycle 58] Phase 6: Execution...
+[Cycle 58] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 58 Complete (1.44s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 89% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 59] Phase 1: Data Collection...
+[Cycle 59] Phase 2-4: Analysis Pipeline...
+[Cycle 59] Phase 5: Risk Layer...
+[Cycle 59] Phase 6: Execution...
+[Cycle 59] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 59 Complete (2.22s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 60] Phase 1: Data Collection...
+[Cycle 60] Phase 2-4: Analysis Pipeline...
+[Cycle 60] Phase 5: Risk Layer...
+[Cycle 60] Phase 6: Execution...
+[Cycle 60] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 60 Complete (2.26s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 4 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 61] Phase 1: Data Collection...
+[Cycle 61] Phase 2-4: Analysis Pipeline...
+[Cycle 61] Phase 5: Risk Layer...
+[Cycle 61] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 61 Complete (2.87s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 5 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 62] Phase 1: Data Collection...
+[Cycle 62] Phase 2-4: Analysis Pipeline...
+[Cycle 62] Phase 5: Risk Layer...
+[Cycle 62] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 62 Complete (2.58s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 5 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 63] Phase 1: Data Collection...
+[Cycle 63] Phase 2-4: Analysis Pipeline...
+[Cycle 63] Phase 5: Risk Layer...
+[Cycle 63] Phase 6: Execution...
+[Cycle 63] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 63 Complete (2.76s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 5 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 64] Phase 1: Data Collection...
+[Cycle 64] Phase 2-4: Analysis Pipeline...
+[Cycle 64] Phase 5: Risk Layer...
+[Cycle 64] Phase 6: Execution...
+[Cycle 64] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 64 Complete (2.03s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 5 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 65] Phase 1: Data Collection...
+[Cycle 65] Phase 2-4: Analysis Pipeline...
+[Cycle 65] Phase 5: Risk Layer...
+[Cycle 65] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 65 Complete (2.46s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 66] Phase 1: Data Collection...
+[Cycle 66] Phase 2-4: Analysis Pipeline...
+[Cycle 66] Phase 5: Risk Layer...
+[Cycle 66] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 66 Complete (2.33s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 4 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 67] Phase 1: Data Collection...
+[Cycle 67] Phase 2-4: Analysis Pipeline...
+[Cycle 67] Phase 5: Risk Layer...
+[Cycle 67] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 67 Complete (1.56s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 4 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 68] Phase 1: Data Collection...
+[Cycle 68] Phase 2-4: Analysis Pipeline...
+[Cycle 68] Phase 5: Risk Layer...
+[Cycle 68] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 68 Complete (2.26s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 69] Phase 1: Data Collection...
+[Cycle 69] Phase 2-4: Analysis Pipeline...
+[Cycle 69] Phase 5: Risk Layer...
+[Cycle 69] Phase 6: Execution...
+[Cycle 69] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 69 Complete (1.83s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 78% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 5 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 70] Phase 1: Data Collection...
+[Cycle 70] Phase 2-4: Analysis Pipeline...
+[Cycle 70] Phase 5: Risk Layer...
+[Cycle 70] Phase 6: Execution...
+[Cycle 70] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 70 Complete (2.27s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 71] Phase 1: Data Collection...
+[Cycle 71] Phase 2-4: Analysis Pipeline...
+[Cycle 71] Phase 5: Risk Layer...
+[Cycle 71] Phase 6: Execution...
+[Cycle 71] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 71 Complete (2.42s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 72] Phase 1: Data Collection...
+[Cycle 72] Phase 2-4: Analysis Pipeline...
+[Cycle 72] Phase 5: Risk Layer...
+[Cycle 72] Phase 6: Execution...
+[Cycle 72] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 72 Complete (2.21s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 73] Phase 1: Data Collection...
+[Cycle 73] Phase 2-4: Analysis Pipeline...
+[Cycle 73] Phase 5: Risk Layer...
+[Cycle 73] Phase 6: Execution...
+[Cycle 73] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 73 Complete (2.52s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 74] Phase 1: Data Collection...
+[Cycle 74] Phase 2-4: Analysis Pipeline...
+[Cycle 74] Phase 5: Risk Layer...
+[Cycle 74] Phase 6: Execution...
+[Cycle 74] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 74 Complete (2.24s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 75] Phase 1: Data Collection...
+[Cycle 75] Phase 2-4: Analysis Pipeline...
+[Cycle 75] Phase 5: Risk Layer...
+[Cycle 75] Phase 6: Execution...
+[Cycle 75] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 75 Complete (2.52s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 76] Phase 1: Data Collection...
+[Cycle 76] Phase 2-4: Analysis Pipeline...
+[Cycle 76] Phase 5: Risk Layer...
+[Cycle 76] Phase 6: Execution...
+[Cycle 76] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 76 Complete (2.31s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 77] Phase 1: Data Collection...
+[Cycle 77] Phase 2-4: Analysis Pipeline...
+[Cycle 77] Phase 5: Risk Layer...
+[Cycle 77] Phase 6: Execution...
+[Cycle 77] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 77 Complete (2.62s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 78] Phase 1: Data Collection...
+[Cycle 78] Phase 2-4: Analysis Pipeline...
+[Cycle 78] Phase 5: Risk Layer...
+[Cycle 78] Phase 6: Execution...
+[Cycle 78] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 78 Complete (1.95s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 5 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 79] Phase 1: Data Collection...
+[Cycle 79] Phase 2-4: Analysis Pipeline...
+[Cycle 79] Phase 5: Risk Layer...
+[Cycle 79] Phase 6: Execution...
+[Cycle 79] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 79 Complete (2.53s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 80] Phase 1: Data Collection...
+[Cycle 80] Phase 2-4: Analysis Pipeline...
+[Cycle 80] Phase 5: Risk Layer...
+[Cycle 80] Phase 6: Execution...
+[Cycle 80] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 80 Complete (1.12s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 100% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 4 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 87% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=1
+quality=1
+liquidity=1
+trades=0
+
+[Cycle 81] Phase 1: Data Collection...
+[Cycle 81] Phase 2-4: Analysis Pipeline...
+[Cycle 81] Phase 5: Risk Layer...
+[Cycle 81] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 81 Complete (2.65s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 82] Phase 1: Data Collection...
+[Cycle 82] Phase 2-4: Analysis Pipeline...
+[Cycle 82] Phase 5: Risk Layer...
+[Cycle 82] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 82 Complete (2.07s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 67% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 83] Phase 1: Data Collection...
+[Cycle 83] Phase 2-4: Analysis Pipeline...
+[Cycle 83] Phase 5: Risk Layer...
+[Cycle 83] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 83 Complete (2.66s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 84] Phase 1: Data Collection...
+[Cycle 84] Phase 2-4: Analysis Pipeline...
+[Cycle 84] Phase 5: Risk Layer...
+[Cycle 84] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 84 Complete (2.17s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 85] Phase 1: Data Collection...
+[Cycle 85] Phase 2-4: Analysis Pipeline...
+[Cycle 85] Phase 5: Risk Layer...
+[Cycle 85] Phase 6: Execution...
+[Cycle 85] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 85 Complete (2.48s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 86] Phase 1: Data Collection...
+[Cycle 86] Phase 2-4: Analysis Pipeline...
+[Cycle 86] Phase 5: Risk Layer...
+[Cycle 86] Phase 6: Execution...
+[Cycle 86] Execution disabled: NSE:NIFTYBANK-INDEX: Wide spreads detected
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 86 Complete (2.23s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Risk: ⚠️ 1 breaches                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 87] Phase 1: Data Collection...
+[Cycle 87] Phase 2-4: Analysis Pipeline...
+[Cycle 87] Phase 5: Risk Layer...
+[Cycle 87] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 87 Complete (2.76s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 88] Phase 1: Data Collection...
+[Cycle 88] Phase 2-4: Analysis Pipeline...
+[Cycle 88] Phase 5: Risk Layer...
+[Cycle 88] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 88 Complete (2.22s)                              │
+├────────────────────────────────────────────────────────────────┤
+│  Data: 3 symbols fetched                              │
+│  Latency: 33% healthy (✓ OK)                       │
+│  Regime: NSE::RANG, NSE::RANG                              │
+│  Momentum: 3 strong signals (✓ READY)                │
+│  Structure: 0 breaks detected                          │
+│  Liquidity: 86% healthy, 0 illiquid filtered    │
+│  Entries: 0 (DRY RUN)                                   │
+│  Positions: 0 open, P&L: ₹0.00                 │
+│  Risk: ✓ CLEAR                                      │
+└────────────────────────────────────────────────────────────────┘
+CYCLE SUMMARY
+strikes=2
+quality=2
+liquidity=2
+trades=0
+
+[Cycle 89] Phase 1: Data Collection...
+[Cycle 89] Phase 2-4: Analysis Pipeline...
+[Cycle 89] Phase 5: Risk Layer...
+[Cycle 89] Phase 6: Execution...
+
+┌────────────────────────────────────────────────────────────────┐
+│ Cycle 89 Complete (2.72s)                              │
+├────────────────────────────────────────────────────────────────┤
