@@ -57,7 +57,7 @@ class EnsembleConfig:
     min_confidence: float = 40          # Minimum weighted confidence (lowered from 55: regime weights + MTF CONFLICTING -10 + DL -5 reduces actual scores to 40-45%; calibrated to live output)
     min_bots_required: int = 2          # Minimum quality bots (kept at 2 for safety)
     min_signal_strength: float = 40     # Minimum individual signal (AI-optimized from 50)
-    high_conviction_threshold: float = 62  # Minimum conviction for capital preservation (lowered from 70: live data shows TrendFollower peaks at 67.5% BANKNIFTY, 62.6% NIFTY50/SENSEX)
+    high_conviction_threshold: float = 60  # Minimum conviction for capital preservation (lowered from 62: live peaks are BANKNIFTY 61.5%, SENSEX 47.6%, NIFTY50 46.4%; 60 clears BANKNIFTY while SENSEX/NIFTY50 remain blocked until scores improve)
 
     # Risk management
     max_daily_trades: int = 100         # Maximum trades per day
