@@ -1312,6 +1312,40 @@ async def get_fyersn7_trades(date: str, index: Optional[str] = None):
     return {"date": date, "indices": _load_fyersn7_trades(date_dir, indices)}
 
 
+@app.get("/api/fyersn7/trades-flat/{date}")
+async def get_fyersn7_trades_flat(date: str):
+    """FyersN7 closed trades across all indices, flattened to AutoTrader-compatible shape."""
+    date_dir = _get_fyersn7_date_dir(date)
+    indices = _get_fyersn7_indices(date_dir)
+    by_index = _load_fyersn7_trades(date_dir, indices)
+
+    trades = []
+    for idx, rows in by_index.items():
+        for t in rows:
+            entry_ts = f"{date}T{t['entry_time']}" if t.get("entry_time") else None
+            trades.append({
+                "id":           f"{idx}_{t['trade_id']}",
+                "trade_id":     t["trade_id"],
+                "index":        t.get("index") or idx,
+                "option_type":  t.get("side"),
+                "strike":       t.get("strike"),
+                "entry_price":  t.get("entry_price"),
+                "exit_price":   t.get("exit_price"),
+                "pnl":          t.get("net_pnl"),
+                "outcome":      t["result"].upper() if t.get("result") else None,
+                "exit_reason":  t.get("exit_reason"),
+                "timestamp":    entry_ts,
+                "entry_time":   entry_ts,
+                "mode":         "paper",
+                "engine":       t.get("engine", "fyersn7"),
+                "qty":          t.get("qty"),
+                "bot_signals":  None,
+            })
+
+    trades.sort(key=lambda x: x.get("timestamp") or "", reverse=True)
+    return {"trades": trades, "count": len(trades), "timestamp": datetime.now().isoformat()}
+
+
 @app.get("/api/fyersn7/events/{date}")
 async def get_fyersn7_events(date: str, index: Optional[str] = None):
     """Get opportunity events (entries/exits) for a date."""

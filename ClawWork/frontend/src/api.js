@@ -205,6 +205,9 @@ export const configureHybridNormal = () =>
 export const fetchTradeHistory = () =>
   get(liveUrl('auto-trader/trades'))
 
+export const fetchFyersn7TradeHistory = (date) =>
+  get(liveUrl(`fyersn7/trades-flat/${date}`))
+
 export const fetchAutoTraderStatus = () =>
   get(liveUrl('auto-trader/status'))
 

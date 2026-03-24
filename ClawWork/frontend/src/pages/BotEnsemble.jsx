@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { Activity, AlertCircle, AlertTriangle, ArrowDownRight, ArrowUpRight, BarChart2, Bot, Brain, Clock, DollarSign, Pause, Play, Power, RefreshCw, RotateCcw, Shield, ShieldCheck, Square, Target, TrendingDown, TrendingUp, Zap } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
-import { fetchAgentLearningRoi, fetchAgents, fetchAutoTraderStatus, fetchBotDetails, fetchBotsLeaderboard, fetchBotsStatus, fetchEnsembleStats, fetchGateStatus, fetchIctSniperStatus, fetchRHPipelineStatus, fetchTradeHistory, pauseAutoTrader, pauseRHPipeline, resetAutoTraderDaily, resetRHPipelineDaily, resumeAutoTrader, resumeRHPipeline, startAutoTrader, startRHPipeline, stopAutoTrader, stopRHPipeline, toggleTradingMode } from '../api'
+import { fetchAgentLearningRoi, fetchAgents, fetchAutoTraderStatus, fetchBotDetails, fetchBotsLeaderboard, fetchBotsStatus, fetchEnsembleStats, fetchFyersn7TradeHistory, fetchGateStatus, fetchIctSniperStatus, fetchRHPipelineStatus, pauseAutoTrader, pauseRHPipeline, resetAutoTraderDaily, resetRHPipelineDaily, resumeAutoTrader, resumeRHPipeline, startAutoTrader, startRHPipeline, stopAutoTrader, stopRHPipeline, toggleTradingMode } from '../api'
 import HybridPipelineCard from '../components/HybridPipelineCard'
 
 const formatPct = (v) => `${(v || 0).toFixed(1)}%`
@@ -1130,7 +1130,7 @@ export default function BotEnsemble() {
 
   const fetchFastData = useCallback(async () => {
     const [tradesRes, autoTraderRes, rhPipelineRes] = await Promise.all([
-      fetchTradeHistory().catch((err) => {
+      fetchFyersn7TradeHistory(new Date().toISOString().slice(0, 10)).catch((err) => {
         console.error('Error fetching trade history:', err)
         return null
       }),
