@@ -517,6 +517,22 @@ class InstitutionalRiskLayer:
         if not atrs:
             return 50
 
+        # ── UNIFORM ATR GUARD ──────────────────────────────────────────────────
+        # Fyers screener provides cumulative day H/L (not per-bar OHLC).
+        # Every price_history entry gets the same day_high/day_low, so all ATRs
+        # are nearly identical.  Percentile rank then = N/N = 100th percentile
+        # → falsely triggers HIGH_VOLATILITY → TrendFollower hard-blocked.
+        # Detect it: CV < 5% means uniform ATRs.  Fall back to the change_pct
+        # formula already used above for the <0.5% range case.
+        if len(atrs) >= 5:
+            mean_atr = sum(atrs) / len(atrs)
+            if mean_atr > 0:
+                cv = (sum((a - mean_atr) ** 2 for a in atrs) / len(atrs)) ** 0.5 / mean_atr
+                if cv < 0.05:
+                    change_pct = abs(market_data.get("change_pct", 0))
+                    return min(30 + change_pct * 20, 90)
+        # ──────────────────────────────────────────────────────────────────────
+
         current_atr = sum(atrs[-14:]) / min(14, len(atrs[-14:]))
 
         # Percentile rank
