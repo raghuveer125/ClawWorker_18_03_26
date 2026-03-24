@@ -595,6 +595,9 @@ def process_new_rows(
                 trades_csv=args.trades_csv,
             )
             closed.append(closed_trade)
+            # Persist reentry cooldown using real exit timestamp.
+            _rkey = f"{pos.get('side','')}:{pos.get('strike','')}"
+            state.setdefault("recently_closed", {})[_rkey] = current_ts.timestamp()
         else:
             still_open.append(pos)
 
@@ -628,6 +631,10 @@ def process_new_rows(
             continue
         if key in just_closed_keys:
             continue  # Prevent same-cycle close→reopen.
+        _rkey = f"{c['side']}:{c['strike']}"
+        _recently = state.get("recently_closed", {})
+        if _rkey in _recently and (time.time() - _recently[_rkey]) < args.reentry_cooldown_sec:
+            continue  # Reentry cooldown still active.
         if c["entry"] <= 0:
             continue
 
@@ -931,6 +938,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--learn-gate-relax-sec", type=int, default=300)
     p.add_argument("--confirm-pulls", type=int, default=2)
     p.add_argument("--flip-cooldown-sec", type=int, default=45)
+    p.add_argument("--reentry-cooldown-sec", type=int, default=60)
     p.add_argument("--max-select-strikes", type=int, default=3)
     p.add_argument("--max-spread-pct", type=float, default=2.5)
     p.add_argument("--signal-state-file", default=".signal_state.json")
