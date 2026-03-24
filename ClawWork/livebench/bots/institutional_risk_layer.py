@@ -456,13 +456,34 @@ class InstitutionalRiskLayer:
         lowest = min(lows)
         hl_range = highest - lowest
 
+        # ── SYNTHETIC-DATA GUARD ─────────────────────────────────────────────
+        # Mathematical signature of repeated synthetic bars:
+        #   each bar has range R (synthetic, constant); price barely drifts
+        #   → tr_sum ≈ (N-1)*R, hl_range ≈ R  → CI ≈ 100 always (false CHOPPY)
+        # Detect it: full-period HL range should grow as price drifts across bars.
+        # If hl_range < 1.5× avg single-bar range, price is effectively static
+        # and the choppiness formula is unreliable.  Return neutral (50) so
+        # downstream logic can decide based on other signals.
+        if hl_range > 0 and avg_hl_range > 0 and hl_range < avg_hl_range * 1.5:
+            print(
+                f"[CI] Synthetic/static data guard: hl_range={hl_range:.1f} "
+                f"avg_bar_range={avg_hl_range:.1f} "
+                f"ratio={hl_range/avg_hl_range:.2f} (< 1.5) → CI=50 (neutral)"
+            )
+            return 50
+        # ─────────────────────────────────────────────────────────────────────
+
         if hl_range == 0 or tr_sum == 0:
             return 50
 
         # Choppiness Index formula
         ci = 100 * math.log10(tr_sum / hl_range) / math.log10(period)
-
-        return min(max(ci, 0), 100)
+        ci_final = min(max(ci, 0), 100)
+        print(
+            f"[CI] Real OHLC: tr_sum={tr_sum:.1f} hl_range={hl_range:.1f} "
+            f"avg_bar_range={avg_hl_range:.1f} ratio={hl_range/avg_hl_range:.2f} CI={ci_final:.1f}"
+        )
+        return ci_final
 
     def _calculate_volatility_percentile(self, prices: List[Dict], market_data: Dict) -> float:
         """Calculate current volatility as percentile of historical"""

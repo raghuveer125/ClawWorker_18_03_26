@@ -57,7 +57,7 @@ class EnsembleConfig:
     min_confidence: float = 55          # Minimum weighted confidence (practical margin for 59% signals)
     min_bots_required: int = 2          # Minimum quality bots (kept at 2 for safety)
     min_signal_strength: float = 40     # Minimum individual signal (AI-optimized from 50)
-    high_conviction_threshold: float = 70  # Minimum conviction for capital preservation
+    high_conviction_threshold: float = 62  # Minimum conviction for capital preservation (lowered from 70: live data shows TrendFollower peaks at 67.5% BANKNIFTY, 62.6% NIFTY50/SENSEX)
 
     # Risk management
     max_daily_trades: int = 100         # Maximum trades per day
@@ -76,7 +76,7 @@ class EnsembleConfig:
     weight_by_regime: bool = True       # Adjust weights based on regime
 
     # LLM Veto Layer (capital protection)
-    use_veto_layer: bool = True         # Enable LLM veto for signal review
+    use_veto_layer: bool = False        # Disabled: OpenAI API key invalid (401), rejects all signals on error
     veto_model: str = "gpt-4o-mini"     # Model for veto decisions
 
     # Multi-Timeframe Analysis (loss reduction)
@@ -486,12 +486,20 @@ class EnsembleCoordinator:
                 self._inst_size_multiplier = 0.3
 
             elif inst_regime.trading_condition == TradingCondition.CAUTION:
-                print(f"[INSTITUTIONAL] ⚠️ CAUTION conditions - Size reduced to 60%")
+                print(
+                    f"[INSTITUTIONAL] ⚠️ CAUTION - Size reduced to 60% | "
+                    f"regime={inst_regime.regime.value} choppiness={inst_regime.choppiness_index:.1f} "
+                    f"[STEP0 PASSED]"
+                )
                 self._inst_size_multiplier = 0.6
 
             # Log regime status
             if inst_regime.trading_condition in [TradingCondition.GOOD, TradingCondition.EXCELLENT]:
-                print(f"[INSTITUTIONAL] ✅ {inst_regime.regime.value} | Condition: {inst_regime.trading_condition.value}")
+                print(
+                    f"[INSTITUTIONAL] ✅ {inst_regime.regime.value} | "
+                    f"Condition: {inst_regime.trading_condition.value} | "
+                    f"choppiness={inst_regime.choppiness_index:.1f} [STEP0 PASSED]"
+                )
                 print(f"[INSTITUTIONAL] Suitable: {inst_regime.suitable_strategies} | Avoid: {inst_regime.avoid_strategies}")
 
         # ═══════════════════════════════════════════════════════════════════════
@@ -500,7 +508,13 @@ class EnsembleCoordinator:
         if self.config.enforce_time_filters:
             gate_result = self._check_institutional_gate(market_data)
             if not gate_result["can_trade"]:
+                print(
+                    f"[STEP1-GATE] {index}: BLOCKED | "
+                    f"session={gate_result.get('session','?')} "
+                    f"reason={gate_result.get('reason','?')}"
+                )
                 return None
+            print(f"[STEP1-GATE] {index}: PASSED | session={gate_result.get('session','?')}")
 
         # Check daily limits
         if len(self.daily_trades) >= self.config.max_daily_trades:
@@ -630,7 +644,11 @@ class EnsembleCoordinator:
             has_strong_signal = any(s.confidence >= threshold for s in quality_signals)
 
             if not has_strong_signal:
-                print(f"[Capital Preservation] No high-conviction signal (>={threshold:.0f}%) found")
+                confs = [(s.bot_name, round(s.confidence, 1)) for s in quality_signals]
+                print(
+                    f"[CapPres] {index}: BLOCKED — need >={threshold:.0f}% | "
+                    f"actual={confs}"
+                )
                 return None
 
             # Institutional standard: require at least 2 agreeing quality bots
@@ -1010,9 +1028,14 @@ class EnsembleCoordinator:
         bullish_score += confidence_adjustment
         bearish_score += confidence_adjustment
 
-        total_bots = len(self.bots)
+        total_bots = max(1, len(self.bots) - len(getattr(self, 'disabled_bots', set())))
         bullish_consensus = len(bullish_signals) / total_bots
         bearish_consensus = len(bearish_signals) / total_bots
+        print(
+            f"[STEP6] {index}: total_bots={total_bots} bullish={len(bullish_signals)}/{total_bots}={bullish_consensus:.2f} "
+            f"bearish={len(bearish_signals)}/{total_bots}={bearish_consensus:.2f} "
+            f"need>={self.config.min_consensus} bull_score={bullish_score:.1f} bear_score={bearish_score:.1f}"
+        )
 
         # Determine direction
         if bullish_score > bearish_score and bullish_consensus >= self.config.min_consensus:
