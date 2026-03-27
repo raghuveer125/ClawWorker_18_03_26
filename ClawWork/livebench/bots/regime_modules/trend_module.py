@@ -176,9 +176,13 @@ class TrendModule(BaseModule):
         # Calculate momentum
         momentum = self._calculate_momentum(change_pct, historical_data)
 
-        # Calculate support/resistance
+        # Calculate support/resistance — prefer futures prices from market_data
+        # (futures are exchange-traded and always tick-aligned; spot index is not)
+        futures_high = market_data.get("futures_high")
+        futures_low = market_data.get("futures_low")
         support, resistance = self._calculate_sr_levels(
-            ltp, high, low, historical_data
+            ltp, high, low, historical_data,
+            futures_high=futures_high, futures_low=futures_low,
         )
 
         # Assess trend quality
@@ -350,20 +354,34 @@ class TrendModule(BaseModule):
         ltp: float,
         high: float,
         low: float,
-        historical_data: Optional[List[Dict]]
+        historical_data: Optional[List[Dict]],
+        futures_high: Optional[float] = None,
+        futures_low: Optional[float] = None,
     ) -> tuple[float, float]:
-        """Calculate support and resistance levels"""
-        # Simple: use day's high/low as immediate S/R
-        support = low
-        resistance = high
+        """Calculate support and resistance levels.
+
+        Prefers futures high/low (exchange-traded, always tick-aligned) over
+        spot index high/low (computed value, not tick-constrained).
+        """
+        # Use futures prices when available; fall back to spot index
+        effective_high = futures_high if futures_high and futures_high > 0 else high
+        effective_low = futures_low if futures_low and futures_low > 0 else low
+
+        support = effective_low
+        resistance = effective_high
 
         # If historical data, find better levels
         if historical_data and len(historical_data) >= 5:
-            highs = [d.get("high", d.get("ltp", 0)) for d in historical_data[-5:]]
-            lows = [d.get("low", d.get("ltp", 0)) for d in historical_data[-5:]]
-
-            resistance = max(highs) if highs else high
-            support = min(lows) if lows else low
+            highs = [
+                d.get("futures_high") or d.get("high", d.get("ltp", 0))
+                for d in historical_data[-5:]
+            ]
+            lows = [
+                d.get("futures_low") or d.get("low", d.get("ltp", 0))
+                for d in historical_data[-5:]
+            ]
+            resistance = max(highs) if highs else effective_high
+            support = min(lows) if lows else effective_low
 
         return support, resistance
 

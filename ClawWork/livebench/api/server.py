@@ -2656,6 +2656,19 @@ async def hybrid_pipeline_analyze(body: dict):
     else:
         pipeline.configure_for_normal()
 
+    # Enrich with futures high/low so S&R uses exchange-traded prices
+    # (futures are always tick-aligned; the spot index is a computed value and is not)
+    try:
+        _fut_client = _build_market_client()
+        _fut_symbol, _fut_ltp = _fut_client.resolve_future_quote(index)
+        if _fut_symbol and _fut_ltp > 0:
+            _fut_quote = _fut_client.get_quote(_fut_symbol)
+            if _fut_quote.get("high", 0) > 0:
+                market_data["futures_high"] = _fut_quote["high"]
+                market_data["futures_low"] = _fut_quote["low"]
+    except Exception:
+        pass
+
     decision = pipeline.analyze(index, market_data, historical_data)
 
     return {
