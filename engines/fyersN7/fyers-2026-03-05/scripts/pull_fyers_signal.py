@@ -1365,6 +1365,8 @@ def main() -> int:
         access_token=args.access_token,
         client_id=args.client_id,
         env_file=args.env_file,
+        insecure=args.insecure,
+        ca_bundle=args.ca_bundle,
     )
 
     now_local = now_ist()

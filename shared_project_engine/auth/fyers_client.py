@@ -251,7 +251,7 @@ class FyersClient:
             Quote data or error.
         """
         # Try SDK first (most reliable)
-        if HAS_FYERS_SDK and self.access_token and self.client_id:
+        if HAS_FYERS_SDK and self.access_token and self.client_id and not self.insecure and not self.ca_bundle:
             try:
                 fyers = fyersModel.FyersModel(
                     client_id=self.client_id,

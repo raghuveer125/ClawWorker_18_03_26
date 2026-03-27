@@ -1,18 +1,93 @@
-2026-03-06T07:08:11Z INF Starting tunnel tunnelID=abb0d84b-a08a-4920-bfbf-b1a5304444d4
-2026-03-06T07:08:11Z INF Version 2026.2.0 (Checksum b44235a88f29d3c98e1034566400b10a77e88cafd95569a02a429fb8dbc35ac8)
-2026-03-06T07:08:11Z INF GOOS: darwin, GOVersion: go1.25.7, GoArch: amd64
-2026-03-06T07:08:11Z INF Settings: map[cred-file:/home/nonroot/.cloudflared/n8n-tunnel.json credentials-file:/home/nonroot/.cloudflared/n8n-tunnel.json p:http2 protocol:http2 token:*****]
-2026-03-06T07:08:11Z INF cloudflared will not automatically update if installed by a package manager.
-2026-03-06T07:08:12Z INF Generated Connector ID: 3653cbeb-7dda-4163-b5be-266cf5360929
-2026-03-06T07:08:12Z INF Initial protocol http2
-2026-03-06T07:08:12Z INF ICMP proxy will use 192.168.1.4 as source for IPv4
-2026-03-06T07:08:12Z INF ICMP proxy will use fe80::182e:f019:39c9:d9b7 in zone en0 as source for IPv6
-2026-03-06T07:08:12Z INF Created ICMP proxy listening on 192.168.1.4:0
-2026-03-06T07:08:12Z INF ICMP proxy will use 192.168.1.4 as source for IPv4
-2026-03-06T07:08:12Z INF ICMP proxy will use fe80::182e:f019:39c9:d9b7 in zone en0 as source for IPv6
-2026-03-06T07:08:12Z INF Starting metrics server on 127.0.0.1:20241/metrics
-2026-03-06T07:08:12Z INF Registered tunnel connection connIndex=0 connection=377d4987-f343-4eba-b108-570b224122c4 event=0 ip=198.41.192.167 location=blr02 protocol=http2
-2026-03-06T07:08:12Z INF Updated to new configuration config="{\"ingress\":[{\"hostname\":\"trading.bhoomidaksh.xyz\",\"service\":\"http://localhost:3001\"},{\"service\":\"http_status:404\"}],\"warp-routing\":{\"enabled\":false}}" version=8
-2026-03-06T07:08:13Z INF Registered tunnel connection connIndex=1 connection=32608738-9a54-4c26-8edb-e9b20ed221f3 event=0 ip=198.41.200.193 location=bom09 protocol=http2
-2026-03-06T07:08:14Z INF Registered tunnel connection connIndex=2 connection=1ba486ed-2a10-4b88-a901-591c138b2f34 event=0 ip=198.41.200.63 location=bom08 protocol=http2
-2026-03-06T07:08:15Z INF Registered tunnel connection connIndex=3 connection=779731db-fcb6-499b-b1c2-9679f4661a57 event=0 ip=198.41.192.107 location=blr02 protocol=http2
+2026-03-25T02:16:17Z INF Starting tunnel tunnelID=abb0d84b-a08a-4920-bfbf-b1a5304444d4
+2026-03-25T02:16:17Z INF Version 2026.3.0 (Checksum 99f099a3834e0b20ec2a18ac77d3d77261b77652310d97eca18fc1797d4349d0)
+2026-03-25T02:16:17Z INF GOOS: darwin, GOVersion: go1.26.1, GoArch: arm64
+2026-03-25T02:16:17Z INF Settings: map[p:http2 protocol:http2 token:*****]
+2026-03-25T02:16:17Z INF cloudflared will not automatically update if installed by a package manager.
+2026-03-25T02:16:17Z INF Generated Connector ID: 34fd17d6-289c-4e4b-baac-331e32855985
+2026-03-25T02:16:17Z INF Initial protocol http2
+2026-03-25T02:16:17Z INF ICMP proxy will use 192.168.1.5 as source for IPv4
+2026-03-25T02:16:17Z INF ICMP proxy will use fe80::c8c:55f3:2ae0:3793 in zone en0 as source for IPv6
+2026-03-25T02:16:17Z INF Created ICMP proxy listening on 192.168.1.5:0
+2026-03-25T02:16:17Z INF ICMP proxy will use 192.168.1.5 as source for IPv4
+2026-03-25T02:16:17Z INF ICMP proxy will use fe80::c8c:55f3:2ae0:3793 in zone en0 as source for IPv6
+2026-03-25T02:16:17Z INF Starting metrics server on 127.0.0.1:20241/metrics
+2026-03-25T02:16:18Z INF Registered tunnel connection connIndex=0 connection=9b49bcb9-ab97-48af-9185-99d11a0fa45a event=0 ip=198.41.192.27 location=blr02 protocol=http2
+2026-03-25T02:16:18Z INF Updated to new configuration config="{\"ingress\":[{\"hostname\":\"trading.bhoomidaksh.xyz\",\"service\":\"http://localhost:3001\"},{\"service\":\"http_status:404\"}],\"warp-routing\":{\"enabled\":false}}" version=8
+2026-03-25T02:16:19Z INF Registered tunnel connection connIndex=1 connection=ecf980d7-a419-4d4c-be93-027500757754 event=0 ip=198.41.200.43 location=bom10 protocol=http2
+2026-03-25T02:16:20Z ERR  error="http2: stream closed" connIndex=0 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T02:16:20Z ERR failed to serve incoming request error="Failed to proxy HTTP: http2: stream closed"
+2026-03-25T02:16:20Z INF Registered tunnel connection connIndex=2 connection=209ee234-13ad-4c23-ab76-4e83d26107e5 event=0 ip=198.41.200.63 location=bom11 protocol=http2
+2026-03-25T02:16:20Z INF Registered tunnel connection connIndex=3 connection=dc509ef4-5cf1-485c-b85a-e7cc4ed691ba event=0 ip=198.41.192.167 location=blr02 protocol=http2
+2026-03-25T02:17:24Z ERR  error="Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused" connIndex=0 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T02:17:24Z ERR failed to serve incoming request error="Failed to proxy HTTP: Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused"
+2026-03-25T02:17:24Z ERR  error="Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused" connIndex=0 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T02:17:24Z ERR failed to serve incoming request error="Failed to proxy HTTP: Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused"
+2026-03-25T02:17:25Z ERR  error="Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused" connIndex=0 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T02:17:25Z ERR failed to serve incoming request error="Failed to proxy HTTP: Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused"
+2026-03-25T03:39:32Z ERR  error="Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused" connIndex=1 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T03:39:32Z ERR failed to serve incoming request error="Failed to proxy HTTP: Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused"
+2026-03-25T03:39:35Z ERR  error="Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused" connIndex=1 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T03:39:35Z ERR failed to serve incoming request error="Failed to proxy HTTP: Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused"
+2026-03-25T03:39:36Z ERR  error="Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused" connIndex=1 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T03:39:36Z ERR failed to serve incoming request error="Failed to proxy HTTP: Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused"
+2026-03-25T03:39:38Z ERR  error="Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused" connIndex=1 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T03:39:38Z ERR failed to serve incoming request error="Failed to proxy HTTP: Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused"
+2026-03-25T03:39:39Z ERR  error="Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused" connIndex=1 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T03:39:39Z ERR failed to serve incoming request error="Failed to proxy HTTP: Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused"
+2026-03-25T03:39:42Z ERR  error="Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused" connIndex=1 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T03:39:42Z ERR failed to serve incoming request error="Failed to proxy HTTP: Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused"
+2026-03-25T03:39:45Z ERR  error="Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused" connIndex=1 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T03:39:45Z ERR failed to serve incoming request error="Failed to proxy HTTP: Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused"
+2026-03-25T03:39:51Z ERR  error="Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused" connIndex=0 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T03:39:51Z ERR failed to serve incoming request error="Failed to proxy HTTP: Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused"
+2026-03-25T03:39:52Z ERR  error="Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused" connIndex=1 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T03:39:52Z ERR failed to serve incoming request error="Failed to proxy HTTP: Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp 127.0.0.1:3001: connect: connection refused"
+2026-03-25T06:13:46Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=1 event=1 ingressRule=0 originService=http://localhost:3001
+2026-03-25T06:13:46Z ERR failed to serve incoming request error="Failed to proxy HTTP: Incoming request ended abruptly: context canceled"
+2026-03-26T01:36:03Z INF Lost connection with the edge connIndex=0
+2026-03-26T01:36:03Z ERR failed to serve incoming request error="Error shutting down control stream: context canceled"
+2026-03-26T01:36:03Z WRN Serve tunnel error error="connection with edge closed" connIndex=0 event=0 ip=198.41.192.27
+2026-03-26T01:36:03Z INF Retrying connection in up to 1s connIndex=0 event=0 ip=198.41.192.27
+2026-03-26T01:36:04Z INF Lost connection with the edge connIndex=1
+2026-03-26T01:36:04Z ERR failed to serve incoming request error="Error shutting down control stream: context canceled"
+2026-03-26T01:36:04Z WRN Serve tunnel error error="connection with edge closed" connIndex=1 event=0 ip=198.41.200.43
+2026-03-26T01:36:04Z INF Retrying connection in up to 1s connIndex=1 event=0 ip=198.41.200.43
+2026-03-26T01:36:04Z ERR failed to serve incoming request error="Error shutting down control stream: client disconnected"
+2026-03-26T01:36:04Z WRN Serve tunnel error error="Error shutting down control stream: client disconnected" connIndex=2 event=0 ip=198.41.200.63
+2026-03-26T01:36:04Z INF Retrying connection in up to 1s connIndex=2 event=0 ip=198.41.200.63
+2026-03-26T01:36:04Z WRN Connection terminated error="Error shutting down control stream: client disconnected" connIndex=2
+2026-03-26T01:36:04Z WRN Connection terminated error="connection with edge closed" connIndex=0
+2026-03-26T01:36:05Z ERR failed to serve incoming request error="Error shutting down control stream: context canceled"
+2026-03-26T01:36:05Z ERR Serve tunnel error error="Error shutting down control stream: context canceled" connIndex=3 event=0 ip=198.41.192.167
+2026-03-26T01:36:05Z INF Retrying connection in up to 1s connIndex=3 event=0 ip=198.41.192.167
+2026-03-26T01:36:05Z ERR Connection terminated error="connection with edge closed" connIndex=1
+2026-03-26T01:36:06Z ERR Connection terminated error="Error shutting down control stream: context canceled" connIndex=3
+2026-03-26T01:36:14Z INF Registered tunnel connection connIndex=3 connection=84983195-b417-4f17-b77b-06517c273a48 event=0 ip=198.41.192.167 location=maa01 protocol=http2
+2026-03-26T01:36:15Z INF Registered tunnel connection connIndex=2 connection=c6e84597-fddf-4e9d-9c8c-68dc64896894 event=0 ip=198.41.200.63 location=bom12 protocol=http2
+2026-03-26T01:36:15Z INF Registered tunnel connection connIndex=1 connection=17e75d0a-c318-49bb-9065-a950254a5051 event=0 ip=198.41.200.43 location=bom10 protocol=http2
+2026-03-26T01:36:15Z INF Registered tunnel connection connIndex=0 connection=261be012-9442-4a93-9219-2b8378f148fe event=0 ip=198.41.192.27 location=maa05 protocol=http2
+2026-03-26T01:53:50Z INF Lost connection with the edge connIndex=2
+2026-03-26T01:53:50Z ERR failed to serve incoming request error="Error shutting down control stream: context canceled"
+2026-03-26T01:53:50Z WRN Serve tunnel error error="connection with edge closed" connIndex=2 event=0 ip=198.41.200.63
+2026-03-26T01:53:50Z INF Retrying connection in up to 1s connIndex=2 event=0 ip=198.41.200.63
+2026-03-26T01:53:51Z WRN Connection terminated error="connection with edge closed" connIndex=2
+2026-03-26T01:53:55Z INF Lost connection with the edge connIndex=0
+2026-03-26T01:53:55Z WRN Serve tunnel error error="connection with edge closed" connIndex=0 event=0 ip=198.41.192.27
+2026-03-26T01:53:55Z INF Retrying connection in up to 1s connIndex=0 event=0 ip=198.41.192.27
+2026-03-26T01:53:55Z ERR failed to serve incoming request error="Error shutting down control stream: context canceled"
+2026-03-26T01:53:56Z WRN Connection terminated error="connection with edge closed" connIndex=0
+2026-03-26T01:53:59Z INF Registered tunnel connection connIndex=2 connection=7514c505-d80e-438f-9e91-272737741c2a event=0 ip=198.41.200.63 location=bom10 protocol=http2
+2026-03-26T01:54:00Z INF Registered tunnel connection connIndex=0 connection=259dd37c-149b-477b-b0f9-a813042b4b1c event=0 ip=198.41.192.27 location=blr02 protocol=http2
+2026-03-26T01:54:05Z INF Lost connection with the edge connIndex=1
+2026-03-26T01:54:05Z WRN Serve tunnel error error="connection with edge closed" connIndex=1 event=0 ip=198.41.200.43
+2026-03-26T01:54:05Z INF Retrying connection in up to 1s connIndex=1 event=0 ip=198.41.200.43
+2026-03-26T01:54:05Z ERR failed to serve incoming request error="Error shutting down control stream: client disconnected"
+2026-03-26T01:54:06Z INF Lost connection with the edge connIndex=3
+2026-03-26T01:54:06Z WRN Serve tunnel error error="connection with edge closed" connIndex=3 event=0 ip=198.41.192.167
+2026-03-26T01:54:06Z INF Retrying connection in up to 1s connIndex=3 event=0 ip=198.41.192.167
+2026-03-26T01:54:06Z ERR failed to serve incoming request error="Error shutting down control stream: context canceled"
+2026-03-26T01:54:06Z WRN Connection terminated error="connection with edge closed" connIndex=3
+2026-03-26T01:54:06Z WRN Connection terminated error="connection with edge closed" connIndex=1
+2026-03-26T01:54:27Z INF Registered tunnel connection connIndex=3 connection=5a152928-f6db-4d44-886d-a136809df9b9 event=0 ip=198.41.192.167 location=blr02 protocol=http2
+2026-03-26T01:54:27Z INF Registered tunnel connection connIndex=1 connection=fc726be2-4e01-4a6e-96e1-0aa0b6fb3ed8 event=0 ip=198.41.200.43 location=bom11 protocol=http2
+2026-03-26T02:31:04Z INF Initiating graceful shutdown due to signal terminated ...

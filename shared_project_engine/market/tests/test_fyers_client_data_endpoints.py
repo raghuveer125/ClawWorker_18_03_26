@@ -19,6 +19,42 @@ from ClawWork_FyersN7.shared_project_engine.market.adapter import MarketDataAdap
 
 
 class FyersClientDataEndpointTest(unittest.TestCase):
+    def test_adapter_forwards_tls_settings_to_shared_client(self) -> None:
+        with patch("ClawWork_FyersN7.shared_project_engine.market.adapter.FyersClient") as mock_client_cls:
+            mock_client = mock_client_cls.return_value
+            mock_client.access_token = "token"
+            mock_client.client_id = "client"
+
+            adapter = MarketDataAdapter(
+                access_token="token",
+                client_id="client",
+                insecure=True,
+                ca_bundle="/tmp/corp.pem",
+            )
+
+        self.assertEqual(adapter.access_token, "token")
+        self.assertEqual(adapter.client_id, "client")
+        mock_client_cls.assert_called_once_with(
+            access_token="token",
+            client_id="client",
+            env_file=None,
+            insecure=True,
+            ca_bundle="/tmp/corp.pem",
+        )
+
+    def test_quotes_skip_sdk_when_custom_tls_is_requested(self) -> None:
+        client = FyersClient(
+            access_token="token",
+            client_id="client",
+            insecure=True,
+        )
+
+        with patch("ClawWork_FyersN7.shared_project_engine.auth.fyers_client.HAS_FYERS_SDK", True), \
+             patch.object(client, "_request", return_value={"success": True, "data": {"d": [{"n": "NSE:NIFTY50-INDEX"}]}}):
+            result = client.quotes("NSE:NIFTY50-INDEX")
+
+        self.assertTrue(result["success"])
+
     def test_history_prefers_data_endpoint_and_uses_date_format_one_for_dates(self) -> None:
         client = FyersClient(
             access_token="token",

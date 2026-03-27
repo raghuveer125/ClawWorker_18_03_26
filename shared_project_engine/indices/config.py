@@ -244,11 +244,19 @@ def _parse_exchange_date(value: Any) -> Optional[date]:
     if not raw_value:
         return None
 
-    for fmt in ("%Y-%m-%d", "%d-%b-%Y", "%d %b %Y", "%d/%m/%Y", "%Y/%m/%d"):
+    for fmt in ("%Y-%m-%d", "%d-%b-%Y", "%d %b %Y", "%d/%m/%Y", "%Y/%m/%d", "%d-%m-%Y"):
         try:
             return datetime.strptime(raw_value, fmt).date()
         except ValueError:
             continue
+
+    # Handle Unix timestamps (Fyers returns expiry as epoch seconds)
+    try:
+        ts = float(raw_value)
+        if ts > 1_000_000_000:
+            return date.fromtimestamp(ts)
+    except (ValueError, OSError, OverflowError):
+        pass
 
     return None
 
@@ -341,7 +349,7 @@ def _parse_option_symbol_expiry(symbol: str) -> Optional[date]:
             return None
 
     weekly_dd_mon_yy = re.search(
-        r"^[A-Z]+(?P<dd>\d{2})(?P<mon>JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?P<yy>\d{2})\d+(CE|PE)$",
+        r"^[A-Z]+(?P<dd>\d{2})(?P<mon>JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?P<yy>\d{2})\d{3,}(CE|PE)$",
         raw_symbol,
     )
     if weekly_dd_mon_yy:
@@ -362,9 +370,21 @@ def _extract_fyers_chain_expiry_dates(payload: Dict[str, Any], today: date) -> L
     if isinstance(data.get("data"), dict):
         data = data["data"]
 
-    options = data.get("optionsChain", data.get("options", []))
     expiry_dates = set()
 
+    # Prefer expiryData — direct list of expiry dates, avoids symbol regex entirely
+    for entry in data.get("expiryData") or []:
+        if not isinstance(entry, dict):
+            continue
+        parsed = _parse_exchange_date(entry.get("date") or entry.get("expiry"))
+        if parsed and parsed >= today:
+            expiry_dates.add(parsed.isoformat())
+
+    if expiry_dates:
+        return sorted(expiry_dates)
+
+    # Fallback: parse from individual option contract entries
+    options = data.get("optionsChain", data.get("options", []))
     for option in options or []:
         if not isinstance(option, dict):
             continue

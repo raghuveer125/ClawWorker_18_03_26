@@ -194,6 +194,8 @@ class MarketDataAdapter:
         access_token: Optional[str] = None,
         client_id: Optional[str] = None,
         env_file: Optional[str] = None,
+        insecure: Optional[bool] = None,
+        ca_bundle: Optional[str] = None,
         cache_dir: Optional[Path] = None,
         quote_ttl_seconds: Optional[float] = None,
         history_ttl_seconds: Optional[float] = None,
@@ -203,6 +205,8 @@ class MarketDataAdapter:
             access_token=access_token,
             client_id=client_id,
             env_file=env_file,
+            insecure=insecure,
+            ca_bundle=ca_bundle,
         )
         self.access_token = self.client.access_token
         self.client_id = self.client.client_id

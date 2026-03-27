@@ -250,3 +250,129 @@ Running bot rules update generation (manual)...
 [forensics_generate_bot_rules_update] validated_symbols=SENSEX,NIFTY50
 [forensics_generate_bot_rules_update] result=PASS proposals=20 auto_approved=N
 [forensics_generate_bot_rules_update] output_json=postmortem/2026-03-18/bot_rules_update_2026-03-18.json
+[0;36m
+╔═══════════════════════════════════════════════════════════════╗
+║     ClawWork + fyersN7 Unified Launcher                       ║
+║     Shared Project Engine v1.0                                ║
+╚═══════════════════════════════════════════════════════════════╝
+[0m
+[0;32mRunning bot rules update generation...[0m
+
+Running forensics timeline build (manual)...
+[forensics_reconstruct_timeline] date=2026-03-25
+[forensics_reconstruct_timeline] validated_symbols=SENSEX,NIFTY50
+[forensics_reconstruct_timeline] present_symbols=BANKNIFTY,FINNIFTY,NIFTY50,SENSEX
+[forensics_reconstruct_timeline] skipped_symbols=BANKNIFTY,FINNIFTY
+[forensics_reconstruct_timeline] overall_status=FAIL error_count=0
+[forensics_reconstruct_timeline] combined_timeline=postmortem/2026-03-25/forensics_timeline_combined_2026-03-25.csv
+[forensics_reconstruct_timeline] summary_json=postmortem/2026-03-25/forensics_timeline_summary_2026-03-25.json
+
+Running regime detection (manual)...
+[forensics_detect_regimes] date=2026-03-25
+[forensics_detect_regimes] validated_symbols=SENSEX,NIFTY50
+[forensics_detect_regimes] present_symbols=BANKNIFTY,FINNIFTY,NIFTY50,SENSEX
+[forensics_detect_regimes] skipped_symbols=BANKNIFTY,FINNIFTY
+[forensics_detect_regimes] result=PASS regime_rows=161 turning_points=260
+[forensics_detect_regimes] regime_table=postmortem/2026-03-25/regime_table_2026-03-25.csv
+[forensics_detect_regimes] turning_points=postmortem/2026-03-25/turning_points_2026-03-25.csv
+[forensics_detect_regimes] summary_json=postmortem/2026-03-25/regime_summary_2026-03-25.json
+
+Running trigger signal generation (manual)...
+[forensics_generate_triggers] date=2026-03-25
+[forensics_generate_triggers] validated_symbols=SENSEX,NIFTY50
+[forensics_generate_triggers] total_triggers=260
+[forensics_generate_triggers] actionable_triggers=253
+[forensics_generate_triggers] trigger_file=postmortem/2026-03-25/trigger_signals_2026-03-25.csv
+[forensics_generate_triggers] summary_json=postmortem/2026-03-25/trigger_summary_2026-03-25.json
+
+Running pattern template generation (manual)...
+[forensics_build_pattern_templates] date=2026-03-25
+[forensics_build_pattern_templates] validated_symbols=SENSEX,NIFTY50
+[forensics_build_pattern_templates] scan_dates=2026-03-19,2026-03-20,2026-03-23,2026-03-24,2026-03-25
+[forensics_build_pattern_templates] result=PASS patterns=70 rows_scanned=675
+[forensics_build_pattern_templates] pattern_file=postmortem/2026-03-25/pattern_templates_2026-03-25.csv
+[forensics_build_pattern_templates] summary_json=postmortem/2026-03-25/pattern_templates_summary_2026-03-25.json
+
+Running forensics run summary generation (manual)...
+[forensics_generate_run_summary] date=2026-03-25
+[forensics_generate_run_summary] validated_symbols=SENSEX,NIFTY50
+[forensics_generate_run_summary] result=FAIL
+[forensics_generate_run_summary] output_md=postmortem/2026-03-25/run_summary_2026-03-25.md
+[forensics_generate_run_summary] output_json=postmortem/2026-03-25/run_summary_2026-03-25.json
+
+Running canary metrics build (manual)...
+[forensics_build_canary_metrics] date=2026-03-25
+[forensics_build_canary_metrics] validated_symbols=SENSEX,NIFTY50
+[forensics_build_canary_metrics] present_symbols=BANKNIFTY,FINNIFTY,NIFTY50,SENSEX
+[forensics_build_canary_metrics] skipped_symbols=BANKNIFTY,FINNIFTY
+[forensics_build_canary_metrics] result=FAIL pass_symbols=0 fail_symbols=2
+[forensics_build_canary_metrics] output_json=postmortem/2026-03-25/canary_metrics_2026-03-25.json
+
+Running bot rules update generation (manual)...
+[forensics_generate_bot_rules_update] date=2026-03-25
+[forensics_generate_bot_rules_update] validated_symbols=SENSEX,NIFTY50
+[forensics_generate_bot_rules_update] result=PASS proposals=20 auto_approved=N
+[forensics_generate_bot_rules_update] output_json=postmortem/2026-03-25/bot_rules_update_2026-03-25.json
+[0;36m
+╔═══════════════════════════════════════════════════════════════╗
+║     ClawWork + fyersN7 Unified Launcher                       ║
+║     Shared Project Engine v1.0                                ║
+╚═══════════════════════════════════════════════════════════════╝
+[0m
+[0;32mRunning bot rules update generation...[0m
+
+Running forensics timeline build (manual)...
+[forensics_reconstruct_timeline] date=2026-03-26
+[forensics_reconstruct_timeline] validated_symbols=SENSEX,NIFTY50
+[forensics_reconstruct_timeline] present_symbols=BANKNIFTY,FINNIFTY,NIFTY50,SENSEX
+[forensics_reconstruct_timeline] skipped_symbols=BANKNIFTY,FINNIFTY
+[forensics_reconstruct_timeline] overall_status=FAIL error_count=4
+[forensics_reconstruct_timeline] combined_timeline=postmortem/2026-03-26/forensics_timeline_combined_2026-03-26.csv
+[forensics_reconstruct_timeline] summary_json=postmortem/2026-03-26/forensics_timeline_summary_2026-03-26.json
+
+Running regime detection (manual)...
+[forensics_detect_regimes] date=2026-03-26
+[forensics_detect_regimes] validated_symbols=SENSEX,NIFTY50
+[forensics_detect_regimes] present_symbols=BANKNIFTY,FINNIFTY,NIFTY50,SENSEX
+[forensics_detect_regimes] skipped_symbols=BANKNIFTY,FINNIFTY
+[forensics_detect_regimes] result=FAIL regime_rows=0 turning_points=0
+[forensics_detect_regimes] regime_table=postmortem/2026-03-26/regime_table_2026-03-26.csv
+[forensics_detect_regimes] turning_points=postmortem/2026-03-26/turning_points_2026-03-26.csv
+[forensics_detect_regimes] summary_json=postmortem/2026-03-26/regime_summary_2026-03-26.json
+
+Running trigger signal generation (manual)...
+[forensics_generate_triggers] date=2026-03-26
+[forensics_generate_triggers] validated_symbols=SENSEX,NIFTY50
+[forensics_generate_triggers] total_triggers=0
+[forensics_generate_triggers] actionable_triggers=0
+[forensics_generate_triggers] trigger_file=postmortem/2026-03-26/trigger_signals_2026-03-26.csv
+[forensics_generate_triggers] summary_json=postmortem/2026-03-26/trigger_summary_2026-03-26.json
+
+Running pattern template generation (manual)...
+[forensics_build_pattern_templates] date=2026-03-26
+[forensics_build_pattern_templates] validated_symbols=SENSEX,NIFTY50
+[forensics_build_pattern_templates] scan_dates=2026-03-19,2026-03-20,2026-03-23,2026-03-24,2026-03-25,2026-03-26
+[forensics_build_pattern_templates] result=PASS patterns=70 rows_scanned=675
+[forensics_build_pattern_templates] pattern_file=postmortem/2026-03-26/pattern_templates_2026-03-26.csv
+[forensics_build_pattern_templates] summary_json=postmortem/2026-03-26/pattern_templates_summary_2026-03-26.json
+
+Running forensics run summary generation (manual)...
+[forensics_generate_run_summary] date=2026-03-26
+[forensics_generate_run_summary] validated_symbols=SENSEX,NIFTY50
+[forensics_generate_run_summary] result=FAIL
+[forensics_generate_run_summary] output_md=postmortem/2026-03-26/run_summary_2026-03-26.md
+[forensics_generate_run_summary] output_json=postmortem/2026-03-26/run_summary_2026-03-26.json
+
+Running canary metrics build (manual)...
+[forensics_build_canary_metrics] date=2026-03-26
+[forensics_build_canary_metrics] validated_symbols=SENSEX,NIFTY50
+[forensics_build_canary_metrics] present_symbols=BANKNIFTY,FINNIFTY,NIFTY50,SENSEX
+[forensics_build_canary_metrics] skipped_symbols=BANKNIFTY,FINNIFTY
+[forensics_build_canary_metrics] result=FAIL pass_symbols=0 fail_symbols=2
+[forensics_build_canary_metrics] output_json=postmortem/2026-03-26/canary_metrics_2026-03-26.json
+
+Running bot rules update generation (manual)...
+[forensics_generate_bot_rules_update] date=2026-03-26
+[forensics_generate_bot_rules_update] validated_symbols=SENSEX,NIFTY50
+[forensics_generate_bot_rules_update] result=PASS proposals=20 auto_approved=N
+[forensics_generate_bot_rules_update] output_json=postmortem/2026-03-26/bot_rules_update_2026-03-26.json
