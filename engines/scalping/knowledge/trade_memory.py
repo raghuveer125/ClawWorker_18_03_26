@@ -4,11 +4,25 @@ Persistent knowledge base for trading insights.
 """
 
 import json
+import logging
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 import sqlite3
+
+_tm_log = logging.getLogger(__name__)
+
+# Import centralised PostgreSQL trade recording (Step 6)
+try:
+    from data_platform.db.trades import (
+        TradeRecord as DBTradeRecord,
+        TradesConfig,
+        sync_insert_trade,
+    )
+    _DB_TRADES_AVAILABLE = True
+except ImportError:
+    _DB_TRADES_AVAILABLE = False
 
 
 @dataclass
@@ -138,7 +152,7 @@ class TradeMemory:
         conn.close()
 
     def record_trade(self, trade: TradeRecord):
-        """Record a new trade."""
+        """Record a new trade — dual-write to SQLite + PostgreSQL."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
@@ -165,6 +179,38 @@ class TradeMemory:
 
         conn.commit()
         conn.close()
+
+        # Persist to centralised PostgreSQL trades table
+        if _DB_TRADES_AVAILABLE:
+            try:
+                outcome = "OPEN"
+                if trade.status == "closed" and trade.pnl is not None:
+                    outcome = "WIN" if trade.pnl >= 0 else "LOSS"
+                entry_time = datetime.fromisoformat(trade.entry_time) if trade.entry_time else datetime.now()
+                exit_time = datetime.fromisoformat(trade.exit_time) if trade.exit_time else None
+                db_record = DBTradeRecord(
+                    trade_id=trade.trade_id,
+                    strategy="scalping",
+                    bot_name=trade.strategy or "scalping_engine",
+                    index_name=trade.symbol.split(":")[1].split("-")[0] if ":" in trade.symbol else trade.symbol,
+                    entry_price=trade.entry_price,
+                    quantity=int(trade.quantity) if trade.quantity else 1,
+                    mode="paper",
+                    entry_time=entry_time,
+                    exit_price=trade.exit_price,
+                    exit_time=exit_time,
+                    pnl=trade.pnl,
+                    pnl_pct=trade.pnl_pct,
+                    outcome=outcome,
+                    reasoning=trade.notes or "",
+                    market_snapshot={"regime": trade.regime, "setup": trade.setup},
+                )
+                sync_insert_trade(TradesConfig.from_env(), db_record)
+            except Exception as exc:
+                _tm_log.warning(
+                    "TradeMemory.record_trade DB write failed for %s: %s — SQLite intact",
+                    trade.trade_id, exc,
+                )
 
         # Update stats if trade is closed
         if trade.status == "closed":

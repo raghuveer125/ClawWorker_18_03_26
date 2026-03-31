@@ -346,8 +346,8 @@ class ExecutionQualityTracker:
             try:
                 signal_dt = datetime.fromisoformat(signal_time)
                 metrics.signal_to_submit_ms = int((now - signal_dt).total_seconds() * 1000)
-            except:
-                pass
+            except (ValueError, TypeError):
+                pass  # intentional: skip latency calc on unparseable timestamp
 
         return metrics
 
@@ -362,8 +362,8 @@ class ExecutionQualityTracker:
                 submit_dt = datetime.fromisoformat(metrics.order_submit_time)
                 ack_dt = datetime.fromisoformat(metrics.order_ack_time)
                 metrics.submit_to_ack_ms = int((ack_dt - submit_dt).total_seconds() * 1000)
-            except:
-                pass
+            except (ValueError, TypeError):
+                pass  # intentional: skip latency calc on unparseable timestamp
 
         return metrics
 
@@ -411,8 +411,8 @@ class ExecutionQualityTracker:
                 ack_dt = datetime.fromisoformat(metrics.order_ack_time)
                 fill_dt = datetime.fromisoformat(metrics.fill_time)
                 metrics.ack_to_fill_ms = int((fill_dt - ack_dt).total_seconds() * 1000)
-            except:
-                pass
+            except (ValueError, TypeError):
+                pass  # intentional: skip latency calc on unparseable timestamp
 
         # Calculate total latency
         if metrics.order_submit_time:
@@ -420,8 +420,8 @@ class ExecutionQualityTracker:
                 submit_dt = datetime.fromisoformat(metrics.order_submit_time)
                 fill_dt = datetime.fromisoformat(metrics.fill_time)
                 metrics.total_latency_ms = int((fill_dt - submit_dt).total_seconds() * 1000)
-            except:
-                pass
+            except (ValueError, TypeError):
+                pass  # intentional: skip latency calc on unparseable timestamp
 
         # Save the metrics
         self._save_trade_metrics(metrics)
@@ -476,7 +476,7 @@ class ExecutionQualityTracker:
                             data['outcome'] = outcome
                             updated = True
                         lines.append(json.dumps(data))
-                    except:
+                    except (json.JSONDecodeError, KeyError):
                         lines.append(line.strip())
 
             if updated:
@@ -813,8 +813,8 @@ class ExecutionQualityTracker:
                             data = json.loads(line.strip())
                             if data.get('mode') == mode:
                                 all_metrics.append(ExecutionMetrics(**data))
-                        except:
-                            pass
+                        except (json.JSONDecodeError, KeyError, TypeError):
+                            pass  # intentional: skip malformed JSONL lines
             current += timedelta(days=1)
 
         return all_metrics

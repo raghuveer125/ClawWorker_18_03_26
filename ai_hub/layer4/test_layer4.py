@@ -2,7 +2,10 @@
 
 import asyncio
 import sys
-sys.path.insert(0, "/Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7")
+from pathlib import Path
+
+# Add project root to path (two levels up from ai_hub/layer4/)
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 
 async def test_layer4():

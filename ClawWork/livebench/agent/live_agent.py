@@ -798,8 +798,8 @@ class LiveAgent:
                                         # Work was submitted but didn't meet quality threshold
                                         self.logger.terminal_print(f"\n   ⚠️  Quality score {evaluation_score:.2f} below threshold - no payment")
                                         activity_completed = True
-                                except:
-                                    pass
+                                except Exception:
+                                    pass  # intentional: payment parsing failure is non-fatal
                             if 'success' in str(tool_result).lower():
                                 activity_completed = True
                         elif tool_name == 'learn' and 'success' in str(tool_result).lower():

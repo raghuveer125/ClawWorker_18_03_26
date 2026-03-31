@@ -26,6 +26,9 @@ try:
     _USING_SHARED_CONFIG = True
 except ImportError:
     # Fallback to local constants
+    _PROJECT_ROOT = Path(__file__).resolve().parents[4]
+    if str(_PROJECT_ROOT) not in sys.path:
+        sys.path.insert(0, str(_PROJECT_ROOT))
     DEFAULT_INDICES = ["SENSEX", "NIFTY50", "BANKNIFTY"]
     INDEX_EXPIRY_WEEKDAY = {
         "SENSEX": 3,      # Thursday
@@ -37,6 +40,13 @@ except ImportError:
     }
     MONTHLY_EXPIRY_DATES = {}
     _USING_SHARED_CONFIG = False
+
+from core.utils import to_float, parse_dt as _parse_dt
+
+
+def parse_dt(date_s: str, time_s: str) -> dt.datetime:
+    """Wrapper: returns datetime.min instead of None for sort compatibility."""
+    return _parse_dt(date_s, time_s) or dt.datetime.min
 
 EVENT_COLS = ["Time", "Type", "Side", "Strike", "Entry", "Exit", "Reason"]
 PAPER_TRADE_COLS = [
@@ -265,7 +275,7 @@ def extract_market_context(rows: List[Dict[str, str]], index: str) -> Dict[str, 
             score_str = row.get("score", "0/100")
             try:
                 score = int(score_str.split("/")[0])
-            except:
+            except (ValueError, IndexError):
                 score = 0
             if entry_ready and score > best_score:
                 best_score = score
@@ -291,23 +301,6 @@ def pcr_sentiment(pcr: float) -> Tuple[str, str]:
         return "Bearish", "pcr-bear"
     else:
         return "Very Bearish", "pcr-bear-strong"
-
-
-def parse_dt(date_s: str, time_s: str) -> dt.datetime:
-    raw = f"{(date_s or '').strip()} {(time_s or '').strip()}".strip()
-    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
-        try:
-            return dt.datetime.strptime(raw, fmt)
-        except ValueError:
-            continue
-    return dt.datetime.min
-
-
-def to_float(v: str, default: float = 0.0) -> float:
-    try:
-        return float(v)
-    except Exception:
-        return default
 
 
 def pcr_level_label(pcr: float) -> str:

@@ -4,8 +4,16 @@ import csv
 import json
 import math
 import os
+import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Tuple
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[4]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
+from core.utils import to_float
 
 
 FEATURES = [
@@ -21,13 +29,6 @@ FEATURES = [
     "flow_match",
     "selected",
 ]
-
-
-def to_float(v: str, default: float = 0.0) -> float:
-    try:
-        return float(v)
-    except Exception:
-        return default
 
 
 def label_from_outcome(v: str) -> int:

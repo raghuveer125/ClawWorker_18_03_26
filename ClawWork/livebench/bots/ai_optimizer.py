@@ -202,7 +202,7 @@ class AIOptimizer:
             try:
                 with open(self.history_file) as f:
                     return json.load(f)
-            except:
+            except (json.JSONDecodeError, OSError):
                 return []
         return []
 

@@ -15,6 +15,20 @@ _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(_SCRIPT_DIR)))
 sys.path.insert(0, _PROJECT_ROOT)
 
+# Import centralised PostgreSQL trade recording (Step 6)
+try:
+    from data_platform.db.trades import (
+        TradeRecord as DBTradeRecord,
+        TradesConfig,
+        sync_insert_trade,
+    )
+    _DB_TRADES_AVAILABLE = True
+except ImportError:
+    _DB_TRADES_AVAILABLE = False
+
+import logging as _logging
+_ptl_log = _logging.getLogger(__name__)
+
 # Import market hours from shared config
 try:
     from shared_project_engine.market import is_within_buffer_hours as is_market_open, IST
@@ -32,18 +46,7 @@ except ImportError:
         return (9 * 60) <= now_mins <= (15 * 60 + 45)
 
 
-def to_float(v: Any, default: float = 0.0) -> float:
-    try:
-        return float(v)
-    except Exception:
-        return default
-
-
-def to_int(v: Any, default: int = 0) -> int:
-    try:
-        return int(float(v))
-    except Exception:
-        return default
+from core.utils import to_float, to_int, parse_dt as _core_parse_dt, ensure_csv, append_csv  # noqa: E402
 
 
 def parse_score(v: str) -> int:
@@ -54,29 +57,12 @@ def parse_score(v: str) -> int:
     return to_int(s, 0)
 
 
+# parse_dt, ensure_csv, append_csv imported from core.utils above
+
+
 def parse_dt(date_s: str, time_s: str) -> Optional[dt.datetime]:
-    raw = f"{(date_s or '').strip()} {(time_s or '').strip()}".strip()
-    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
-        try:
-            return dt.datetime.strptime(raw, fmt)
-        except Exception:
-            pass
-    return None
-
-
-def ensure_csv(path: str, headers: List[str]) -> None:
-    if os.path.exists(path):
-        return
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=headers)
-        writer.writeheader()
-
-
-def append_csv(path: str, headers: List[str], row: Dict[str, Any]) -> None:
-    ensure_csv(path, headers)
-    with open(path, "a", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=headers)
-        writer.writerow({k: row.get(k, "") for k in headers})
+    """Wrapper kept for local callers — delegates to core.utils."""
+    return _core_parse_dt(date_s, time_s)
 
 
 def load_rows(path: str) -> List[Dict[str, str]]:
@@ -533,6 +519,40 @@ def close_position(
         ],
         trade_row,
     )
+
+    # Persist to centralised PostgreSQL trades table
+    if _DB_TRADES_AVAILABLE:
+        try:
+            _entry_dt_db = parse_dt(pos["entry_date"], pos["entry_time"]) or dt.datetime.now()
+            _index = os.environ.get("INDEX", "UNKNOWN")
+            _outcome = "WIN" if net >= 0 else "LOSS"
+            _side = str(pos.get("side", ""))
+            _option_type = "CE" if _side.upper() == "CE" else ("PE" if _side.upper() == "PE" else "")
+            db_record = DBTradeRecord(
+                trade_id=pos["trade_id"],
+                strategy="fyersn7",
+                bot_name="paper_trade_loop",
+                index_name=_index,
+                entry_price=entry_price,
+                quantity=qty,
+                mode="paper",
+                entry_time=_entry_dt_db,
+                option_type=_option_type,
+                strike=to_float(pos.get("strike"), None),
+                exit_price=exit_price,
+                exit_time=exit_ts,
+                pnl=net,
+                pnl_pct=(net / (entry_price * qty) * 100) if entry_price * qty else 0.0,
+                outcome=_outcome,
+                signal_source=exit_reason,
+            )
+            sync_insert_trade(TradesConfig.from_env(), db_record)
+        except Exception as _exc:
+            _ptl_log.warning(
+                "close_position DB write failed for %s: %s — CSV intact",
+                pos.get("trade_id", "?"), _exc,
+            )
+
     return trade_row
 
 

@@ -21,8 +21,24 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 import hashlib
+import logging
 
-# Import index config from shared engine
+_base_log = logging.getLogger(__name__)
+
+# Import centralised PostgreSQL trade recording (Step 6)
+try:
+    from data_platform.db.trades import (
+        TradeRecord as DBTradeRecord,
+        TradesConfig,
+        sync_insert_trade,
+    )
+    _DB_TRADES_AVAILABLE = True
+except ImportError:
+    _DB_TRADES_AVAILABLE = False
+
+# Import index config from shared engine; fallback to core/market.py constants
+from core.market import INDEX_STRIKE_GAPS as _FALLBACK_GAPS, INDEX_LOT_SIZES as _FALLBACK_LOTS
+
 try:
     _PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
     if str(_PROJECT_ROOT) not in sys.path:
@@ -31,8 +47,8 @@ try:
     _INDEX_STRIKE_GAPS = {name: cfg["strike_gap"] for name, cfg in INDEX_CONFIG.items()}
     _INDEX_LOT_SIZES = {name: cfg["lot_size"] for name, cfg in INDEX_CONFIG.items()}
 except ImportError:
-    _INDEX_STRIKE_GAPS = {"NIFTY50": 50, "BANKNIFTY": 100, "FINNIFTY": 50, "SENSEX": 100, "MIDCPNIFTY": 25}
-    _INDEX_LOT_SIZES = {"NIFTY50": 25, "BANKNIFTY": 15, "FINNIFTY": 25, "SENSEX": 10, "MIDCPNIFTY": 50}
+    _INDEX_STRIKE_GAPS = _FALLBACK_GAPS
+    _INDEX_LOT_SIZES = _FALLBACK_LOTS
     ACTIVE_INDICES = ["SENSEX", "NIFTY50", "BANKNIFTY", "FINNIFTY"]
 
 
@@ -217,9 +233,39 @@ class SharedMemory:
         return self._performance_cache.copy()
 
     def record_trade(self, trade: TradeRecord):
-        """Record a completed trade"""
+        """Record a completed trade — dual-write to JSONL + PostgreSQL."""
         with open(self.trades_file, "a") as f:
             f.write(json.dumps(asdict(trade)) + "\n")
+
+        # Persist to centralised PostgreSQL trades table
+        if _DB_TRADES_AVAILABLE:
+            try:
+                db_record = DBTradeRecord(
+                    trade_id=trade.trade_id,
+                    strategy="clawwork",
+                    bot_name=trade.bot_name,
+                    index_name=trade.index,
+                    entry_price=trade.entry_price,
+                    quantity=1,
+                    mode="paper",
+                    entry_time=datetime.fromisoformat(trade.entry_time),
+                    option_type=trade.option_type or "",
+                    strike=trade.strike,
+                    exit_price=trade.exit_price,
+                    exit_time=datetime.fromisoformat(trade.exit_time) if trade.exit_time else None,
+                    pnl=trade.pnl,
+                    pnl_pct=trade.pnl_pct,
+                    outcome=trade.outcome,
+                    reasoning=trade.bot_reasoning or "",
+                    lessons=trade.lessons_learned or [],
+                    market_snapshot=trade.market_conditions,
+                )
+                sync_insert_trade(TradesConfig.from_env(), db_record)
+            except Exception as exc:
+                _base_log.warning(
+                    "SharedMemory.record_trade DB write failed for %s: %s — JSONL intact",
+                    trade.trade_id, exc,
+                )
 
     def get_trades(self, bot_name: str = None, limit: int = 100) -> List[TradeRecord]:
         """Get trade history"""

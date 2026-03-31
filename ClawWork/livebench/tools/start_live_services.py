@@ -74,7 +74,7 @@ def start_livebench_services():
     print("\n📦 Installing fastmcp if needed...")
     try:
         subprocess.run([sys.executable, "-m", "pip", "install", "-q", "fastmcp"], check=True)
-    except:
+    except Exception:
         print("❌ Failed to install fastmcp")
         print("\nPlease install manually:")
         print("  pip install fastmcp")

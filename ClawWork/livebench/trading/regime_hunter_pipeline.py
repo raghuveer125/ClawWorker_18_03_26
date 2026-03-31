@@ -43,7 +43,9 @@ from bots.base import SharedMemory, SignalType, OptionType
 from bots.regime_hunter import RegimeHunterBot
 from trading.auto_trader import _build_fyers_option_symbol
 
-# Import lot sizes
+# Import lot sizes; fallback to core/market.py
+from core.market import INDEX_LOT_SIZES as _FALLBACK_LOTS
+
 try:
     import sys
     _PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -52,10 +54,7 @@ try:
     from shared_project_engine.indices import INDEX_CONFIG
     _INDEX_LOT_SIZES = {name: cfg["lot_size"] for name, cfg in INDEX_CONFIG.items()}
 except ImportError:
-    _INDEX_LOT_SIZES = {
-        "NIFTY50": 25, "BANKNIFTY": 15, "SENSEX": 10,
-        "FINNIFTY": 25, "MIDCPNIFTY": 50,
-    }
+    _INDEX_LOT_SIZES = _FALLBACK_LOTS
 
 try:
     from .fyers_client import FyersClient

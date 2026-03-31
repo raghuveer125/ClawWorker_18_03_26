@@ -298,8 +298,8 @@ class ConnectionManager:
         for connection in self.active_connections:
             try:
                 await connection.send_json(message)
-            except:
-                pass
+            except Exception:
+                pass  # intentional: skip disconnected WebSocket clients
 
 
 manager = ConnectionManager()
@@ -2807,6 +2807,112 @@ async def hybrid_pipeline_normal_mode():
 
 
 # =============================================================================
+# HYBRID EXECUTION BRIDGE (Lottery Options Execution Engine)
+# =============================================================================
+
+_hybrid_bridge_instance = None
+
+
+def get_hybrid_bridge():
+    """Get or create the HybridExecutionBridge singleton."""
+    global _hybrid_bridge_instance
+    if _hybrid_bridge_instance is None:
+        try:
+            from trading.hybrid_execution_bridge import HybridExecutionBridge
+            pipeline = get_hybrid_pipeline()
+            if pipeline is None:
+                logger.warning("[HybridBridge] Pipeline unavailable — bridge not created")
+                return None
+            market_client = _build_market_client()
+            _hybrid_bridge_instance = HybridExecutionBridge(
+                pipeline=pipeline,
+                market_client=market_client,
+                mode=os.getenv("HYBRID_BRIDGE_MODE", "paper"),
+                min_confidence=float(os.getenv("HYBRID_BRIDGE_MIN_CONF", "55")),
+                max_concurrent=int(os.getenv("HYBRID_BRIDGE_MAX_POS", "2")),
+                target_multiplier=float(os.getenv("HYBRID_BRIDGE_TARGET_MULT", "10.0")),
+                stop_loss_pct=float(os.getenv("HYBRID_BRIDGE_SL_PCT", "70.0")),
+                loop_interval=int(os.getenv("HYBRID_BRIDGE_INTERVAL", "60")),
+            )
+        except Exception:
+            logger.exception("Failed to create HybridExecutionBridge")
+    return _hybrid_bridge_instance
+
+
+def autostart_hybrid_bridge_on_startup() -> None:
+    """Auto-start the hybrid execution bridge when the API comes online."""
+    enabled = _env_flag("HYBRID_BRIDGE_AUTOSTART", True)
+    if not enabled:
+        logger.info("[HybridBridge] Autostart disabled by HYBRID_BRIDGE_AUTOSTART=false")
+        return
+    bridge = get_hybrid_bridge()
+    if bridge is None:
+        logger.warning("[HybridBridge] Autostart skipped — bridge unavailable")
+        return
+    bridge.start()
+    logger.info("[HybridBridge] Autostarted on server startup | mode=%s", bridge.mode)
+
+
+@app.get("/api/hybrid-bridge/status")
+async def hybrid_bridge_status():
+    """Get execution bridge status, open positions, and today's performance."""
+    bridge = get_hybrid_bridge()
+    if not bridge:
+        return {"error": "Hybrid execution bridge not available"}
+    return bridge.get_status()
+
+
+@app.post("/api/hybrid-bridge/start")
+async def hybrid_bridge_start():
+    """Start the execution bridge background loop."""
+    bridge = get_hybrid_bridge()
+    if not bridge:
+        return {"error": "Hybrid execution bridge not available"}
+    bridge.start()
+    return {"started": True, "mode": bridge.mode, "timestamp": datetime.now().isoformat()}
+
+
+@app.post("/api/hybrid-bridge/stop")
+async def hybrid_bridge_stop():
+    """Stop the execution bridge background loop (open positions remain)."""
+    bridge = get_hybrid_bridge()
+    if not bridge:
+        return {"error": "Hybrid execution bridge not available"}
+    bridge.stop()
+    return {"stopped": True, "timestamp": datetime.now().isoformat()}
+
+
+@app.get("/api/hybrid-bridge/positions")
+async def hybrid_bridge_positions():
+    """List all open lottery positions managed by the bridge."""
+    bridge = get_hybrid_bridge()
+    if not bridge:
+        return {"error": "Hybrid execution bridge not available"}
+    return {"positions": bridge.get_open_positions(), "timestamp": datetime.now().isoformat()}
+
+
+@app.get("/api/hybrid-bridge/trades")
+async def hybrid_bridge_trades(limit: int = 100):
+    """List recently closed trades (newest first)."""
+    bridge = get_hybrid_bridge()
+    if not bridge:
+        return {"error": "Hybrid execution bridge not available"}
+    return {"trades": bridge.get_trades(limit=limit), "timestamp": datetime.now().isoformat()}
+
+
+@app.post("/api/hybrid-bridge/close/{position_id}")
+async def hybrid_bridge_close_position(position_id: str):
+    """Manually close a specific open position."""
+    bridge = get_hybrid_bridge()
+    if not bridge:
+        return {"error": "Hybrid execution bridge not available"}
+    closed = bridge.close_position_manual(position_id)
+    if not closed:
+        return {"error": f"Position {position_id} not found or already closed"}
+    return {"closed": True, "position_id": position_id, "timestamp": datetime.now().isoformat()}
+
+
+# =============================================================================
 # AUTO-TRADER ENDPOINTS (Autonomous Trading System)
 # =============================================================================
 
@@ -3781,6 +3887,10 @@ async def startup_event():
         autostart_auto_trader_on_startup()
     except Exception:
         logger.exception("Auto-trader autostart failed during API startup")
+    try:
+        autostart_hybrid_bridge_on_startup()
+    except Exception:
+        logger.exception("Hybrid bridge autostart failed during API startup")
 
 
 if __name__ == "__main__":

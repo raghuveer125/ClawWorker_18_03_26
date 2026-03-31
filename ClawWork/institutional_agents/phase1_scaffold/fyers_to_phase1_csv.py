@@ -16,7 +16,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 try:
     from shared_project_engine.indices import get_market_index_config
-    from shared_project_engine.market import MarketDataClient
+    from data_platform.market_consumer import KafkaMarketDataClient as MarketDataClient
 except ImportError:
     get_market_index_config = None
     MarketDataClient = None

@@ -221,8 +221,8 @@ def generate_summary_report(output_file: Path):
         for line in f:
             try:
                 estimates.append(json.loads(line.strip()))
-            except:
-                pass
+            except json.JSONDecodeError:
+                pass  # intentional: skip malformed JSONL lines
 
     if not estimates:
         log_message("No estimates to summarize")

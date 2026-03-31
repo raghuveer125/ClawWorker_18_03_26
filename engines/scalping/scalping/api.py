@@ -803,8 +803,8 @@ async def get_dataflow():
                         conn["last_data"] = flow.data_type
                         conn["latency_ms"] = flow.latency_ms
                         break
-        except:
-            pass
+        except (ValueError, TypeError, AttributeError):
+            pass  # intentional: skip flows with unparseable timestamps
 
     return {
         "connections": connections,

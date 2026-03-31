@@ -15,7 +15,7 @@ class CodeValidator:
     """Validate code changes before applying them."""
 
     def __init__(self, project_root: Optional[Path] = None):
-        self.project_root = project_root or Path("/Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/ClawWork")
+        self.project_root = project_root or Path(__file__).resolve().parents[2] / "ClawWork"
 
     def validate_syntax(self, code: str, file_path: str) -> Dict:
         """

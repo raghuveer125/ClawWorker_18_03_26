@@ -39,7 +39,9 @@ try:
 except ImportError:
     FYERS_AVAILABLE = False
 
-# Import index config from shared engine
+# Import index config from shared engine; fallback to core/market.py
+from core.market import INDEX_LOT_SIZES as _FALLBACK_LOTS
+
 try:
     import sys
     _PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -54,7 +56,7 @@ try:
     )
     _INDEX_LOT_SIZES = {name: cfg["lot_size"] for name, cfg in INDEX_CONFIG.items()}
 except ImportError:
-    _INDEX_LOT_SIZES = {"NIFTY50": 25, "BANKNIFTY": 15, "SENSEX": 10, "FINNIFTY": 25, "MIDCPNIFTY": 50}
+    _INDEX_LOT_SIZES = _FALLBACK_LOTS
     ACTIVE_INDICES = ["SENSEX", "NIFTY50", "BANKNIFTY", "FINNIFTY"]
     DEFAULT_AUTO_TRADER_STRATEGY_ID = "clawwork-autotrader"
 
@@ -85,6 +87,18 @@ try:
     EXECUTION_TRACKING_AVAILABLE = True
 except ImportError:
     EXECUTION_TRACKING_AVAILABLE = False
+
+# Import centralised PostgreSQL trade recording (Step 6)
+try:
+    from data_platform.db.trades import (
+        TradeRecord as DBTradeRecord,
+        TradesConfig,
+        sync_insert_trade,
+        sync_update_trade_exit,
+    )
+    _DB_TRADES_AVAILABLE = True
+except ImportError:
+    _DB_TRADES_AVAILABLE = False
     ExecutionQualityTracker = None
     ExecutionMetrics = None
 
@@ -551,7 +565,7 @@ class AutoTrader:
         return self.daily_trades.get(self.mode.value, 0)
 
     def _log_trade(self, trade: TradeLog):
-        """Log trade for learning"""
+        """Log trade for learning — dual-write to JSONL + PostgreSQL."""
         try:
             with open(self.trades_log_file, "a") as f:
                 f.write(json.dumps(asdict(trade)) + "\n")
@@ -560,6 +574,42 @@ class AutoTrader:
                 "[_log_trade] Failed to write trade log for %s: %s — trade occurred but record is missing",
                 trade.trade_id, e,
             )
+
+        # Persist to centralised PostgreSQL trades table
+        if _DB_TRADES_AVAILABLE:
+            try:
+                entry_time = datetime.fromisoformat(trade.timestamp) if trade.timestamp else datetime.now()
+                db_record = DBTradeRecord(
+                    trade_id=trade.trade_id,
+                    strategy=trade.strategy_id or self.strategy_id or "clawwork",
+                    bot_name="autotrader",
+                    index_name=trade.index,
+                    entry_price=trade.entry_price,
+                    quantity=trade.quantity,
+                    mode=trade.mode or "paper",
+                    entry_time=entry_time,
+                    option_type=trade.option_type or "",
+                    strike=trade.strike,
+                    exit_price=trade.exit_price,
+                    exit_time=entry_time,  # close_position calls _log_trade at exit time
+                    pnl=trade.pnl,
+                    pnl_pct=trade.pnl_pct,
+                    outcome=trade.outcome,
+                    signal_source=trade.exit_reason or "",
+                    market_snapshot={
+                        "vix": trade.vix,
+                        "pcr": trade.pcr,
+                        "index_change_pct": trade.index_change_pct,
+                        "market_bias": trade.market_bias,
+                    },
+                    reasoning=str(trade.bot_signals) if trade.bot_signals else "",
+                )
+                sync_insert_trade(TradesConfig.from_env(), db_record)
+            except Exception as e:
+                logger.warning(
+                    "[_log_trade] DB write failed for %s: %s — JSONL record intact",
+                    trade.trade_id, e,
+                )
 
     def _load_recent_exit_times(self):
         """Load the latest exit timestamp per symbol for cooldown enforcement."""
@@ -1791,8 +1841,8 @@ class AutoTrader:
             try:
                 with open(self.learning_file) as f:
                     return json.load(f)
-            except:
-                pass
+            except (json.JSONDecodeError, OSError):
+                pass  # intentional: return empty dict on corrupt/missing file
         return {}
 
     def _save_learning_insights(self, insights: Dict):

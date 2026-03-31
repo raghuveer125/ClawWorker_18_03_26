@@ -12,15 +12,15 @@ if str(_SHARED_ROOT) not in sys.path:
     sys.path.insert(0, str(_SHARED_ROOT))
 
 from shared_project_engine.auth import FyersClient as SharedFyersClient
-from shared_project_engine.market import MarketDataClient as SharedMarketDataClient
+from data_platform.market_consumer import KafkaMarketDataClient, build_kafka_market_client
 
 
 class FyersClient(SharedFyersClient):
     """Backwards-compatible alias for the shared FYERS client."""
 
 
-class MarketDataClient(SharedMarketDataClient):
-    """Backwards-compatible alias for the shared market-data client."""
+class MarketDataClient(KafkaMarketDataClient):
+    """Market data client — Kafka-backed with HTTP fallback."""
 
 
 def resolve_market_env_file(explicit_env_file: Optional[str] = None) -> Optional[str]:
@@ -86,6 +86,5 @@ def market_data_client_kwargs(explicit_env_file: Optional[str] = None) -> Dict[s
 
 
 def build_market_data_client(explicit_env_file: Optional[str] = None, **overrides: Any) -> MarketDataClient:
-    kwargs = market_data_client_kwargs(explicit_env_file)
-    kwargs.update(overrides)
-    return MarketDataClient(**kwargs)
+    client = build_kafka_market_client()
+    return client  # type: ignore[return-value]

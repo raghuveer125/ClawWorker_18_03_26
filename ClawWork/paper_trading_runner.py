@@ -42,7 +42,7 @@ try:
         canonicalize_index_name,
         get_market_index_config,
     )
-    from shared_project_engine.market import MarketDataClient
+    from data_platform.market_consumer import KafkaMarketDataClient as MarketDataClient
     from shared_project_engine.strategy_isolation import (
         DEFAULT_LEGACY_RUNNER_STRATEGY_ID,
         StrategyRuntimeLock,
