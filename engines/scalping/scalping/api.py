@@ -1551,24 +1551,97 @@ async def _run_engine_loop():
             await _engine_instance.stop()
 
 
+_price_ticker_task = None
+
+
+async def _price_ticker_loop():
+    """Background task: fetch live position prices and broadcast via WebSocket every 1.5s."""
+    from engines.scalping.scalping.agents.execution_agents import _batch_fetch_position_ltp, _fetch_live_option_ltp
+
+    while True:
+        try:
+            await asyncio.sleep(1.5)
+            if not manager.active_connections:
+                continue
+
+            state = get_state()
+            open_positions = [p for p in state.positions if p.get("status") in ("open", "partial")]
+            if not open_positions:
+                continue
+
+            # Build Position-like objects for batch fetch
+            class _PosStub:
+                def __init__(self, d):
+                    self.position_id = d.get("trade_id", "")
+                    self.symbol = d.get("symbol", "")
+                    self.strike = int(d.get("strike", 0) or 0)
+                    self.option_type = d.get("option_type", "")
+                    self.status = d.get("status", "open")
+                    self.entry_price = float(d.get("entry_price", 0) or 0)
+
+            stubs = [_PosStub(p) for p in open_positions]
+            ctx_data: dict = {}
+            ltp_map = _batch_fetch_position_ltp(stubs, ctx_data)
+
+            # Fallback: individual fetch for any missed
+            for stub in stubs:
+                if stub.position_id not in ltp_map:
+                    ltp = _fetch_live_option_ltp(stub.symbol, stub.strike, stub.option_type)
+                    if ltp > 0:
+                        ltp_map[stub.position_id] = ltp
+
+            if not ltp_map:
+                continue
+
+            # Build price update payload
+            updates = []
+            for p in open_positions:
+                tid = p.get("trade_id", "")
+                ltp = ltp_map.get(tid, 0)
+                if ltp <= 0:
+                    continue
+                entry = float(p.get("entry_price", 0) or 0)
+                qty = int(p.get("remaining_qty", p.get("quantity", 0)) or 0)
+                pnl = round((ltp - entry) * qty, 2)
+                updates.append({
+                    "trade_id": tid,
+                    "current_price": round(ltp, 2),
+                    "unrealized_pnl": pnl,
+                })
+
+            if updates:
+                await manager.broadcast({
+                    "type": "price_tick",
+                    "timestamp": datetime.now().isoformat(),
+                    "data": updates,
+                })
+        except asyncio.CancelledError:
+            break
+        except Exception:
+            await asyncio.sleep(3)
+
+
 @app.on_event("startup")
 async def startup_event():
-    """Start background engine when API starts."""
-    global _engine_task
+    """Start background engine and price ticker when API starts."""
+    global _engine_task, _price_ticker_task
     _engine_task = asyncio.create_task(_run_engine_loop())
+    _price_ticker_task = asyncio.create_task(_price_ticker_loop())
     print("[API] Background engine task scheduled")
+    print("[API] Price ticker WebSocket task started (1.5s interval)")
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    """Stop background engine when API stops."""
-    global _engine_task
-    if _engine_task:
-        _engine_task.cancel()
-        try:
-            await _engine_task
-        except asyncio.CancelledError:
-            pass
+    """Stop background engine and price ticker when API stops."""
+    global _engine_task, _price_ticker_task
+    for task in (_engine_task, _price_ticker_task):
+        if task:
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
     print("[API] Background engine stopped")
 
 

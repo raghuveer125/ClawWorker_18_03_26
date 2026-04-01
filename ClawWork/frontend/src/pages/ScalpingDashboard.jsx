@@ -1064,6 +1064,28 @@ export default function ScalpingDashboard() {
         if (msg.type === 'update') {
           fetchData();
         }
+        if (msg.type === 'price_tick' && Array.isArray(msg.data)) {
+          // Real-time position price update — apply without waiting for poll
+          setPositions(prev => {
+            if (!prev?.positions) return prev;
+            const updates = {};
+            msg.data.forEach(u => { updates[u.trade_id] = u; });
+            const newPositions = prev.positions.map(pos => {
+              const upd = updates[pos.trade_id];
+              if (upd) {
+                return { ...pos, current_price: upd.current_price, unrealized_pnl: upd.unrealized_pnl };
+              }
+              return pos;
+            });
+            return { ...prev, positions: newPositions };
+          });
+          // Update capital P&L too
+          setCapital(prev => {
+            if (!prev) return prev;
+            const totalPnl = msg.data.reduce((sum, u) => sum + (u.unrealized_pnl || 0), 0);
+            return { ...prev, unrealized_pnl: totalPnl, total_pnl: (prev.realized_pnl || 0) + totalPnl };
+          });
+        }
         if (msg.type === 'replay_progress') {
           setReplay(prev => ({
             ...prev,
