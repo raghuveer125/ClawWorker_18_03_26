@@ -48,15 +48,46 @@ def create_health_app(
         description="Health and monitoring API for the scalping validation pipeline.",
     )
 
-    # -- / (root) ------------------------------------------------------------
+    # -- / (root) — unified dashboard ─────────────────────────────────────────
 
-    @app.get("/", tags=["Health"])
-    async def root() -> Dict[str, Any]:
-        """Root — redirects to useful info."""
+    @app.get("/", tags=["Dashboard"])
+    async def dashboard() -> Dict[str, Any]:
+        """Single-page dashboard: health + metrics + score + pipeline + alerts."""
+        # Health
+        now = time.time()
+        health_data = {
+            "status": "ok",
+            "pipeline": "scalping",
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+            "uptime_sec": round(now - _start_time, 2),
+        }
+
+        # Metrics
+        metrics_data = metrics.get_metrics()
+
+        # Score
+        score_data = scoring_engine.calculate_score()
+
+        # Pipeline status
+        pipeline_data = None
+        if pipeline_validator is not None:
+            try:
+                pipeline_data = pipeline_validator.check_pipeline_health()
+            except Exception:
+                pipeline_data = {"status": "error"}
+
+        # Alerts
+        alerts_data = {
+            "recent": alert_manager.get_active_alerts()[-10:],
+            "summary": alert_manager.get_alert_summary(),
+        }
+
         return {
-            "service": "Scalping Pipeline Validator",
-            "endpoints": ["/health", "/metrics", "/pipeline-status", "/alerts", "/score"],
-            "docs": "/docs",
+            "health": health_data,
+            "score": score_data,
+            "metrics": metrics_data,
+            "pipeline": pipeline_data,
+            "alerts": alerts_data,
         }
 
     # -- /health -------------------------------------------------------------
