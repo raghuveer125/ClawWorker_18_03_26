@@ -1449,6 +1449,11 @@ class ExitAgent(BaseBot):
         if replay_mode:
             return None
 
+        # Don't invalidate thesis when entry pipeline was skipped (risk blocked,
+        # max positions, etc.) — strike_selections will be stale/empty
+        if context.data.get("risk_blocked_new_entries") or context.data.get("trade_disabled"):
+            return None
+
         support = self._current_thesis_support(pos, context)
         if support["supported"]:
             self._thesis_support_loss_streaks[pos.position_id] = 0
@@ -1611,18 +1616,22 @@ class ExitAgent(BaseBot):
     def _check_momentum_reversal_exit(
         self, pos: Position, current_price: float, context: BotContext
     ) -> Optional[Order]:
+        # Only consider reversal exits for futures_surge signals (not gamma_zone)
+        # and only when there's a genuine directional move against the position
         momentum_signals = context.data.get("momentum_signals", [])
         symbol_momentum = [m for m in momentum_signals if getattr(m, "symbol", None) == pos.symbol]
         reversal = False
         for signal in symbol_momentum:
             signal_type = str(getattr(signal, "signal_type", "")).lower()
+            if signal_type != "futures_surge":
+                continue
             price_move = float(getattr(signal, "price_move", 0) or 0)
             strength = float(getattr(signal, "strength", 0) or 0)
-            if strength < 0.7:
+            if strength < 0.8:
                 continue
-            if pos.option_type == "CE" and signal_type == "futures_surge" and price_move < 0:
+            if pos.option_type == "CE" and price_move < -30:
                 reversal = True
-            if pos.option_type == "PE" and signal_type == "futures_surge" and price_move > 0:
+            if pos.option_type == "PE" and price_move > 30:
                 reversal = True
 
         if not reversal:
