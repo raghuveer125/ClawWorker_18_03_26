@@ -215,14 +215,15 @@ class MockDataGenerator:
     def _generate_signal(self, index: str, spot: float) -> Dict[str, Any]:
         side = random.choice(_SIGNAL_SIDES)
         atm_strike = round(spot / 100) * 100
-        entry = round(spot * random.uniform(0.005, 0.02), 2)
+        # Use spot-relative entry/SL/target so strategy_validator can evaluate
+        entry = round(spot, 2)
 
         if side == "BUY":
-            sl = round(entry * 0.7, 2)
-            target = round(entry * 1.5, 2)
+            sl = round(entry * 0.995, 2)        # 0.5% below
+            target = round(entry * 1.008, 2)     # 0.8% above
         else:
-            sl = round(entry * 1.3, 2)
-            target = round(entry * 0.6, 2)
+            sl = round(entry * 1.005, 2)         # 0.5% above
+            target = round(entry * 0.992, 2)     # 0.8% below
 
         return {
             "signal_id": str(uuid.uuid4())[:12],

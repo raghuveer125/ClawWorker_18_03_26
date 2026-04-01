@@ -53,9 +53,9 @@ class StrategyValidator:
     """Validates signal quality by comparing predictions to market reality."""
 
     # ── Tuning constants ────────────────────────────────────────────────────
-    _EVAL_AGE_SEC: float = 60.0          # minimum age before evaluation
-    _EXPIRY_SEC: float = 300.0           # mark stale signals as MISSED
-    _TARGET_PCT: float = 0.50            # 50 % move toward target = TRUE
+    _EVAL_AGE_SEC: float = 15.0          # minimum age before evaluation
+    _EXPIRY_SEC: float = 120.0           # mark stale signals as MISSED
+    _TARGET_PCT: float = 0.30            # 30 % move toward target = TRUE
     _DELAYED_ENTRY_PCT: float = 0.005    # 0.5 % past entry = delayed
     _MISSED_OPP_PCT: float = 0.01        # 1 % move with no signal = missed
     _MISSED_OPP_WINDOW_SEC: float = 60.0 # look-back for recent signals
