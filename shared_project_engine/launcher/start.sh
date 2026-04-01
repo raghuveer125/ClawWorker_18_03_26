@@ -1206,10 +1206,12 @@ cmd_scalping_api_background() {
 
   mkdir -p "${PROJECT_ROOT}/logs"
 
-  nohup bash -lc "cd '${BOT_ARMY_DIR}' && exec '${PYTHON_BIN}' -m uvicorn scalping.api:app --host 0.0.0.0 --port '${port}'" > "${PROJECT_ROOT}/logs/scalping_api.log" 2>&1 &
+  # caffeinate -i prevents idle sleep so the engine keeps running when screen locks
+  # caffeinate -w exits when the child process exits
+  nohup caffeinate -iw $$ bash -lc "cd '${BOT_ARMY_DIR}' && set -a && source '${PROJECT_ROOT}/.env' 2>/dev/null; set +a && exec '${PYTHON_BIN}' -m uvicorn scalping.api:app --host 0.0.0.0 --port '${port}'" > "${PROJECT_ROOT}/logs/scalping_api.log" 2>&1 &
   local api_pid=$!
   save_pid "scalping_api" "${api_pid}"
-  echo -e "${GREEN}  Scalping API started on port ${port} (PID: ${api_pid})${NC}"
+  echo -e "${GREEN}  Scalping API started on port ${port} (PID: ${api_pid}) [caffeinate: sleep prevented]${NC}"
 }
 
 cmd_scalping_background() {
@@ -1229,10 +1231,11 @@ cmd_scalping_background() {
 
   mkdir -p "${PROJECT_ROOT}/logs"
 
-  nohup bash -lc "cd '${BOT_ARMY_DIR}' && exec '${PYTHON_BIN}' -m scalping.launcher ${live_flag} --interval '${interval}' --respect-hours" > "${PROJECT_ROOT}/logs/scalping.log" 2>&1 &
+  # caffeinate -i prevents idle sleep so the engine keeps running when screen locks
+  nohup caffeinate -iw $$ bash -lc "cd '${BOT_ARMY_DIR}' && set -a && source '${PROJECT_ROOT}/.env' 2>/dev/null; set +a && exec '${PYTHON_BIN}' -m scalping.launcher ${live_flag} --interval '${interval}' --respect-hours" > "${PROJECT_ROOT}/logs/scalping.log" 2>&1 &
   local scalping_pid=$!
   save_pid "scalping" "${scalping_pid}"
-  echo -e "${GREEN}  Scalping Engine started (PID: ${scalping_pid})${NC}"
+  echo -e "${GREEN}  Scalping Engine started (PID: ${scalping_pid}) [caffeinate: sleep prevented]${NC}"
 }
 
 # ============================================================================

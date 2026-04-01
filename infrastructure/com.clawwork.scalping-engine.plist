@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.clawwork.scalping-engine</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/caffeinate</string>
+        <string>-i</string>
+        <string>/Users/raghuveersingh.choudhari/ClawWorker_18_03_26/.venv/bin/python</string>
+        <string>-m</string>
+        <string>uvicorn</string>
+        <string>scalping.api:app</string>
+        <string>--host</string>
+        <string>0.0.0.0</string>
+        <string>--port</string>
+        <string>8002</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/raghuveersingh.choudhari/ClawWorker_18_03_26/engines/scalping</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PYTHONPATH</key>
+        <string>/Users/raghuveersingh.choudhari/ClawWorker_18_03_26</string>
+        <key>AUTH_ENV_FILE</key>
+        <string>/Users/raghuveersingh.choudhari/ClawWorker_18_03_26/.env</string>
+    </dict>
+
+    <!-- Auto-restart on crash -->
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+
+    <!-- Throttle restarts (wait 10s between crashes) -->
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+
+    <!-- Prevent idle sleep while running -->
+    <key>PreventsSleep</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/raghuveersingh.choudhari/ClawWorker_18_03_26/logs/scalping_api.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/raghuveersingh.choudhari/ClawWorker_18_03_26/logs/scalping_api_err.log</string>
+</dict>
+</plist>
