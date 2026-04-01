@@ -306,7 +306,10 @@ def sync_engine_state(context: Any) -> None:
     capital = _serialize_item(context.data.get("capital_state") or {})
 
     state.positions = [_normalize_position(position) for position in positions]
-    state.trades = [_normalize_trade(trade) for trade in trades]
+    # Preserve simulated/backtest trades — only replace engine-sourced trades
+    simulated_trades = [t for t in state.trades if str(t.get("trade_id", "")).startswith(("BT-", "SIM-"))]
+    engine_trades = [_normalize_trade(trade) for trade in trades]
+    state.trades = engine_trades + simulated_trades
     state.capital = dict(capital)
 
     if capital:
