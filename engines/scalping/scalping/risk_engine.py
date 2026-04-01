@@ -158,10 +158,16 @@ def calculate_sl_target(
 
     Returns (sl_price, target_price).
     """
-    # ATR from 1-minute candles of the underlying
+    # H1: True ATR (not average range) — includes gap-opens
     candles = context.get("candles_1m", {}).get(symbol, [])
     if len(candles) >= 5:
-        atr = sum(c["high"] - c["low"] for c in candles[-5:]) / 5
+        true_ranges = []
+        for i in range(-5, 0):
+            h = candles[i]["high"]
+            l = candles[i]["low"]
+            prev_c = candles[i - 1]["close"] if abs(i) < len(candles) else h
+            true_ranges.append(max(h - l, abs(h - prev_c), abs(l - prev_c)))
+        atr = sum(true_ranges) / len(true_ranges)
     else:
         # Fallback: estimate from spot data
         spot = context.get("spot_data", {}).get(symbol)
@@ -559,13 +565,27 @@ def validate_exit(
     Returns ExitDecision with should_exit, reason, and urgency.
     Priority order: max_loss > sl_hit > momentum_reversal > spread > thesis > time_stop
     """
-    # CRIT-6: Price=0 means broken data, not "hold forever"
+    # CRIT-6: Price=0 means broken data — track consecutive zeros, force exit after 3
     if current_price <= 0:
+        pos_id = str(getattr(position, "position_id", ""))
+        zero_key = f"_zero_price_count:{pos_id}"
+        zero_count = int(context.get(zero_key, 0) or 0) + 1
+        context[zero_key] = zero_count
+        cycle_now = context.get("cycle_now", datetime.now())
         trade_logger.log_decision({
             "event": "exit_price_zero",
-            "position": str(getattr(position, "position_id", "")),
-            "timestamp": datetime.now().isoformat(),
+            "position": pos_id,
+            "consecutive_zeros": zero_count,
+            "timestamp": cycle_now.isoformat() if hasattr(cycle_now, "isoformat") else str(cycle_now),
         })
+        if zero_count >= 3:
+            last_known = float(getattr(position, "current_price", 0) or getattr(position, "entry_price", 0) or 0)
+            return ExitDecision(
+                should_exit=True, reason=ExitReason.KILL_SWITCH,
+                exit_qty=int(getattr(position, "quantity", 0) or 0),
+                exit_price=last_known,
+                urgency=2,
+            )
         return ExitDecision(should_exit=False)
 
     entry = float(getattr(position, "entry_price", 0) or 0)
@@ -635,6 +655,16 @@ def validate_exit(
                 should_exit=True, reason=ExitReason.MOMENTUM_REVERSAL,
                 exit_qty=qty, exit_price=current_price, urgency=1,
             )
+
+    # ── Check 3b: Spread widening exit (H5) ──
+    entry_spread_pct = float(getattr(position, "_entry_spread_pct", 0) or 0)
+    current_spread_pct = float(context.get("current_spread_pct", {}).get(
+        f"{symbol}|{getattr(position, 'strike', 0)}|{option_type}", 0) or 0)
+    if entry_spread_pct > 0 and current_spread_pct > entry_spread_pct * 2.0 and unrealized < 0:
+        return ExitDecision(
+            should_exit=True, reason=ExitReason.SPREAD_EXIT,
+            exit_qty=qty, exit_price=current_price, urgency=1,
+        )
 
     # ── Check 4: Thesis invalidation (strength-based, not fixed delay) ──
     if not context.get("risk_blocked_new_entries") and not context.get("trade_disabled"):
