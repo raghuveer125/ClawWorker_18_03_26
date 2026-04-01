@@ -13,9 +13,10 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 
-# Add project to path
+# Add project to path — livebench/ for relative imports, ClawWork/ for "from livebench.*"
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root.parent))
 
 from agent.live_agent import LiveAgent
 from dotenv import load_dotenv
