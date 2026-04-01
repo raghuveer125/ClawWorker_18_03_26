@@ -397,22 +397,24 @@ def init_agents():
         AgentStatus(6, "Structure", "analysis", "idle", bot_type="structure"),
         AgentStatus(7, "Momentum", "analysis", "idle", bot_type="momentum"),
         AgentStatus(8, "TrapDetector", "analysis", "idle", bot_type="trap_detector"),
-        AgentStatus(9, "StrikeSelector", "analysis", "idle", bot_type="strike_selector"),
+        AgentStatus(9, "VolatilitySurface", "analysis", "idle", bot_type="volatility_surface"),
+        AgentStatus(10, "DealerPressure", "analysis", "idle", bot_type="dealer_pressure"),
+        AgentStatus(11, "StrikeSelector", "analysis", "idle", bot_type="strike_selector"),
         # Quality Gate
-        AgentStatus(10, "SignalQuality", "quality", "idle", bot_type="signal_quality"),
+        AgentStatus(12, "SignalQuality", "quality", "idle", bot_type="signal_quality"),
         # Risk Layer
-        AgentStatus(11, "LiquidityMonitor", "risk", "idle", bot_type="liquidity_monitor"),
-        AgentStatus(12, "RiskGuardian", "risk", "idle", bot_type="risk_guardian"),
-        AgentStatus(13, "CorrelationGuard", "risk", "idle", bot_type="correlation_guard"),
+        AgentStatus(13, "LiquidityMonitor", "risk", "idle", bot_type="liquidity_monitor"),
+        AgentStatus(14, "RiskGuardian", "risk", "idle", bot_type="risk_guardian"),
+        AgentStatus(15, "CorrelationGuard", "risk", "idle", bot_type="correlation_guard"),
+        AgentStatus(16, "MetaAllocator", "risk", "idle", bot_type="meta_allocator"),
         # Execution Layer
-        AgentStatus(14, "MetaAllocator", "execution", "idle", bot_type="meta_allocator"),
-        AgentStatus(15, "Entry", "execution", "idle", bot_type="entry"),
-        AgentStatus(16, "Exit", "execution", "idle", bot_type="exit"),
-        AgentStatus(17, "PositionManager", "execution", "idle", bot_type="position_manager"),
+        AgentStatus(17, "Entry", "execution", "idle", bot_type="entry"),
+        AgentStatus(18, "Exit", "execution", "idle", bot_type="exit"),
+        AgentStatus(19, "PositionManager", "execution", "idle", bot_type="position_manager"),
         # Learning Layer
-        AgentStatus(18, "QuantLearner", "learning", "idle", bot_type="quant_learner"),
-        AgentStatus(19, "StrategyOptimizer", "learning", "idle", bot_type="strategy_optimizer"),
-        AgentStatus(20, "ExitOptimizer", "learning", "idle", bot_type="exit_optimizer"),
+        AgentStatus(20, "QuantLearner", "learning", "idle", bot_type="quant_learner"),
+        AgentStatus(21, "StrategyOptimizer", "learning", "idle", bot_type="strategy_optimizer"),
+        AgentStatus(22, "ExitOptimizer", "learning", "idle", bot_type="exit_optimizer"),
     ]
     _state.agents = agents
     try:
@@ -699,8 +701,10 @@ async def get_pipeline():
     """Get pipeline flow visualization data."""
     state = get_state()
 
-    # Build pipeline stages - 21 agents total
-    # Agent IDs: 0=KillSwitch, 1-4=Data, 5-9=Analysis, 10=Quality, 11-13=Risk, 14-17=Execution, 18-20=Learning
+    # Build pipeline stages - 23 agents total
+    # Agent IDs match engine._agent_map:
+    # 0=KillSwitch, 1-4=Data, 5-11=Analysis(regime,structure,momentum,trap,volsurf,dealer,strike),
+    # 12=Quality, 13-16=Risk(liquidity,risk,corr,meta), 17-19=Execution(entry,exit,posmgr), 20-22=Learning
     def get_agents_by_ids(ids):
         return [a for a in state.agents if a.agent_id in ids]
 
@@ -722,32 +726,32 @@ async def get_pipeline():
             {
                 "id": "analysis",
                 "name": "Market Analysis",
-                "agents": [5, 6, 7, 8, 9],
-                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([5, 6, 7, 8, 9])) else "idle",
+                "agents": [5, 6, 7, 8, 9, 10, 11],
+                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([5, 6, 7, 8, 9, 10, 11])) else "idle",
             },
             {
                 "id": "quality",
                 "name": "Quality Gate",
-                "agents": [10],
-                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([10])) else "idle",
+                "agents": [12],
+                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([12])) else "idle",
             },
             {
                 "id": "risk",
                 "name": "Risk Check",
-                "agents": [11, 12, 13],
-                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([11, 12, 13])) else "idle",
+                "agents": [13, 14, 15, 16],
+                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([13, 14, 15, 16])) else "idle",
             },
             {
                 "id": "execution",
                 "name": "Execution",
-                "agents": [14, 15, 16, 17],
-                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([14, 15, 16, 17])) else "idle",
+                "agents": [17, 18, 19],
+                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([17, 18, 19])) else "idle",
             },
             {
                 "id": "learning",
                 "name": "Learning",
-                "agents": [18, 19, 20],
-                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([18, 19, 20])) else "idle",
+                "agents": [20, 21, 22],
+                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([20, 21, 22])) else "idle",
                 "periodic": True,
             },
         ],
