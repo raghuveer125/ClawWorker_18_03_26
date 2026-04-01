@@ -88,19 +88,12 @@ try:
 except ImportError:
     EXECUTION_TRACKING_AVAILABLE = False
 
-# Import centralised PostgreSQL trade recording (Step 6)
-try:
-    from data_platform.db.trades import (
-        TradeRecord as DBTradeRecord,
-        TradesConfig,
-        sync_insert_trade,
-        sync_update_trade_exit,
-    )
-    _DB_TRADES_AVAILABLE = True
-except ImportError:
-    _DB_TRADES_AVAILABLE = False
-    ExecutionQualityTracker = None
-    ExecutionMetrics = None
+# DB trade recording (sync_insert_trade, etc.) is handled by
+# TradeRecorderMixin in trade_recorder.py.
+
+from .trade_recorder import TradeRecorderMixin
+from .learning_manager import LearningMixin
+from .market_data_manager import MarketDataMixin
 
 logger = logging.getLogger(__name__)
 
@@ -357,7 +350,7 @@ def _build_fyers_option_symbol(index: str, strike: int, option_type: str) -> Opt
     return f"{prefix}{expiry_str}{strike}{option_type}"
 
 
-class AutoTrader:
+class AutoTrader(TradeRecorderMixin, LearningMixin, MarketDataMixin):
     """
     Autonomous Trading System
 
@@ -564,98 +557,11 @@ class AutoTrader:
         """Get daily trades count for current mode"""
         return self.daily_trades.get(self.mode.value, 0)
 
-    def _log_trade(self, trade: TradeLog):
-        """Log trade for learning — dual-write to JSONL + PostgreSQL."""
-        try:
-            with open(self.trades_log_file, "a") as f:
-                f.write(json.dumps(asdict(trade)) + "\n")
-        except Exception as e:
-            logger.error(
-                "[_log_trade] Failed to write trade log for %s: %s — trade occurred but record is missing",
-                trade.trade_id, e,
-            )
+    # _log_trade is provided by TradeRecorderMixin
 
-        # Persist to centralised PostgreSQL trades table
-        if _DB_TRADES_AVAILABLE:
-            try:
-                entry_time = datetime.fromisoformat(trade.timestamp) if trade.timestamp else datetime.now()
-                db_record = DBTradeRecord(
-                    trade_id=trade.trade_id,
-                    strategy=trade.strategy_id or self.strategy_id or "clawwork",
-                    bot_name="autotrader",
-                    index_name=trade.index,
-                    entry_price=trade.entry_price,
-                    quantity=trade.quantity,
-                    mode=trade.mode or "paper",
-                    entry_time=entry_time,
-                    option_type=trade.option_type or "",
-                    strike=trade.strike,
-                    exit_price=trade.exit_price,
-                    exit_time=entry_time,  # close_position calls _log_trade at exit time
-                    pnl=trade.pnl,
-                    pnl_pct=trade.pnl_pct,
-                    outcome=trade.outcome,
-                    signal_source=trade.exit_reason or "",
-                    market_snapshot={
-                        "vix": trade.vix,
-                        "pcr": trade.pcr,
-                        "index_change_pct": trade.index_change_pct,
-                        "market_bias": trade.market_bias,
-                    },
-                    reasoning=str(trade.bot_signals) if trade.bot_signals else "",
-                )
-                sync_insert_trade(TradesConfig.from_env(), db_record)
-            except Exception as e:
-                logger.warning(
-                    "[_log_trade] DB write failed for %s: %s — JSONL record intact",
-                    trade.trade_id, e,
-                )
+    # _load_recent_exit_times is provided by TradeRecorderMixin
 
-    def _load_recent_exit_times(self):
-        """Load the latest exit timestamp per symbol for cooldown enforcement."""
-        latest_exit_times: Dict[str, str] = {}
-        if not self.trades_log_file.exists():
-            self.recent_exit_times = latest_exit_times
-            return
-
-        try:
-            with open(self.trades_log_file) as f:
-                for line in f:
-                    if not line.strip():
-                        continue
-                    try:
-                        row = json.loads(line)
-                    except json.JSONDecodeError:
-                        continue
-                    symbol = str(row.get("symbol", "")).strip()
-                    timestamp = row.get("timestamp")
-                    if not symbol or not timestamp:
-                        continue
-                    previous = latest_exit_times.get(symbol)
-                    if previous is None or timestamp > previous:
-                        latest_exit_times[symbol] = timestamp
-        except OSError:
-            latest_exit_times = {}
-
-        self.recent_exit_times = latest_exit_times
-
-    def _set_trade_history_status(
-        self,
-        *,
-        healthy: bool,
-        sanitized: bool,
-        valid_rows: int,
-        quarantined_rows: int,
-        message: str,
-    ):
-        self.trade_history_status = {
-            "healthy": healthy,
-            "sanitized": sanitized,
-            "valid_rows": valid_rows,
-            "quarantined_rows": quarantined_rows,
-            "message": message,
-            "quarantine_file": str(self.trades_quarantine_file),
-        }
+    # _set_trade_history_status is provided by TradeRecorderMixin
 
     def _set_execution_quality_status(
         self,
@@ -754,363 +660,29 @@ class AutoTrader:
             ),
         )
 
-    def _sanitize_trade_history(self):
-        """Quarantine legacy/corrupt trade rows and rebuild learning from trusted rows."""
-        if not self.trades_log_file.exists():
-            self._set_trade_history_status(
-                healthy=True,
-                sanitized=False,
-                valid_rows=0,
-                quarantined_rows=0,
-                message="No trade history found",
-            )
-            return
+    # _sanitize_trade_history is provided by TradeRecorderMixin
 
-        quarantined_entries: List[Dict[str, Any]] = []
-        candidate_rows: List[Dict[str, Any]] = []
+    # _make_quarantine_entry is provided by TradeRecorderMixin
 
-        try:
-            with open(self.trades_log_file) as f:
-                raw_lines = f.readlines()
-        except OSError as e:
-            self._set_trade_history_status(
-                healthy=False,
-                sanitized=False,
-                valid_rows=0,
-                quarantined_rows=0,
-                message=f"Failed to read trade history: {e}",
-            )
-            return
+    # _trade_history_sort_key is provided by TradeRecorderMixin
 
-        for idx, line in enumerate(raw_lines):
-            if not line.strip():
-                continue
-            try:
-                row = json.loads(line)
-            except json.JSONDecodeError:
-                quarantined_entries.append(self._make_quarantine_entry("invalid_json", {"raw": line.strip()}))
-                continue
+    # _validate_trade_history_row is provided by TradeRecorderMixin
 
-            valid, reason = self._validate_trade_history_row(row)
-            if not valid:
-                quarantined_entries.append(self._make_quarantine_entry(reason, row))
-                continue
+    # _rebuild_learning_insights is provided by LearningMixin
 
-            candidate_rows.append({
-                "row": row,
-                "line_index": idx,
-                "sort_key": self._trade_history_sort_key(row),
-            })
+    # _apply_trade_to_insights is provided by LearningMixin
 
-        keep_indices = set()
-        by_trade_id: Dict[str, List[Dict[str, Any]]] = {}
-        for entry in candidate_rows:
-            trade_id = str(entry["row"].get("trade_id", "")).strip()
-            by_trade_id.setdefault(trade_id, []).append(entry)
+    # get_effective_thresholds is provided by LearningMixin
 
-        for entries in by_trade_id.values():
-            if len(entries) == 1:
-                keep_indices.add(entries[0]["line_index"])
-                continue
+    # _set_market_data_status is provided by MarketDataMixin
 
-            winner = max(entries, key=lambda item: item["sort_key"])
-            keep_indices.add(winner["line_index"])
-            for entry in entries:
-                if entry["line_index"] == winner["line_index"]:
-                    continue
-                quarantined_entries.append(self._make_quarantine_entry("duplicate_trade_id", entry["row"]))
+    # _get_latest_screener_file is provided by MarketDataMixin
 
-        valid_rows = [
-            entry["row"]
-            for entry in candidate_rows
-            if entry["line_index"] in keep_indices
-        ]
+    # _read_screener_payload is provided by MarketDataMixin
 
-        valid_rows.sort(key=self._trade_history_sort_key)
+    # _write_screener_snapshot is provided by MarketDataMixin
 
-        sanitized = len(quarantined_entries) > 0 or len(valid_rows) != len(raw_lines)
-        if quarantined_entries:
-            with open(self.trades_quarantine_file, "a") as f:
-                for entry in quarantined_entries:
-                    f.write(json.dumps(entry) + "\n")
-
-        if sanitized:
-            with open(self.trades_log_file, "w") as f:
-                for row in valid_rows:
-                    f.write(json.dumps(row) + "\n")
-
-        self._rebuild_learning_insights(valid_rows)
-        self._set_trade_history_status(
-            healthy=len(quarantined_entries) == 0,
-            sanitized=sanitized,
-            valid_rows=len(valid_rows),
-            quarantined_rows=len(quarantined_entries),
-            message=(
-                f"Quarantined {len(quarantined_entries)} legacy/corrupt trade row(s)"
-                if quarantined_entries
-                else "Trade history verified"
-            ),
-        )
-
-    def _make_quarantine_entry(self, reason: str, row: Dict[str, Any]) -> Dict[str, Any]:
-        return {
-            "quarantined_at": datetime.now().isoformat(),
-            "reason": reason,
-            "row": row,
-        }
-
-    def _trade_history_sort_key(self, row: Dict[str, Any]) -> tuple:
-        timestamp = str(row.get("timestamp", "") or "")
-        duration = row.get("duration_minutes")
-        duration_value = duration if isinstance(duration, (int, float)) else -1
-        return (timestamp, duration_value)
-
-    def _validate_trade_history_row(self, row: Dict[str, Any]) -> tuple[bool, str]:
-        mode = str(row.get("mode", "") or "").strip().lower()
-        if mode not in {"paper", "live"}:
-            return False, "missing_or_invalid_mode"
-
-        required_string_fields = ["trade_id", "timestamp", "symbol", "index", "option_type", "outcome", "exit_reason"]
-        for field in required_string_fields:
-            if not str(row.get(field, "") or "").strip():
-                return False, f"missing_{field}"
-
-        option_type = str(row.get("option_type", "")).strip().upper()
-        if option_type not in {"CE", "PE"}:
-            return False, "invalid_option_type"
-
-        numeric_fields = ["strike", "entry_price", "exit_price", "quantity", "pnl", "pnl_pct", "duration_minutes", "probability"]
-        for field in numeric_fields:
-            if not isinstance(row.get(field), (int, float)):
-                return False, f"invalid_{field}"
-
-        entry_price = float(row.get("entry_price", 0))
-        exit_price = float(row.get("exit_price", 0))
-        quantity = float(row.get("quantity", 0))
-        strike = float(row.get("strike", 0))
-        if entry_price <= 0 or exit_price <= 0 or quantity <= 0 or strike <= 0:
-            return False, "non_positive_trade_values"
-
-        max_plausible_exit = max(entry_price * 25, strike * 0.25, 5000.0)
-        if exit_price > max_plausible_exit:
-            return False, "implausible_exit_price"
-
-        return True, ""
-
-    def _rebuild_learning_insights(self, trade_rows: List[Dict[str, Any]]):
-        insights: Dict[str, Any] = {
-            "total_trades": 0,
-            "wins": 0,
-            "losses": 0,
-            "total_pnl": 0.0,
-            "total_pnl_paper": 0.0,
-            "total_pnl_live": 0.0,
-            "win_rate": 0.0,
-            "win_patterns": [],
-            "loss_patterns": [],
-        }
-        for row in trade_rows:
-            try:
-                trade = TradeLog(**row)
-            except TypeError:
-                continue
-            self._apply_trade_to_insights(insights, trade)
-        self._save_learning_insights(insights)
-
-    def _apply_trade_to_insights(self, insights: Dict[str, Any], trade: "TradeLog"):
-        """Update learning insights in-memory from a single completed trade."""
-        trade_mode = getattr(trade, 'mode', 'paper')
-        consensus_value = 0.0
-        if trade.bot_signals:
-            try:
-                consensus_value = float(trade.bot_signals.get("consensus", 0) or 0)
-            except (TypeError, ValueError):
-                consensus_value = 0.0
-
-        insights["total_trades"] = insights.get("total_trades", 0) + 1
-
-        if trade.outcome == "WIN":
-            insights["wins"] = insights.get("wins", 0) + 1
-        elif trade.outcome == "LOSS":
-            insights["losses"] = insights.get("losses", 0) + 1
-
-        insights["total_pnl"] = insights.get("total_pnl", 0) + trade.pnl
-
-        pnl_key = f"total_pnl_{trade_mode}"
-        insights[pnl_key] = insights.get(pnl_key, 0) + trade.pnl
-
-        total = insights.get("wins", 0) + insights.get("losses", 0)
-        if total > 0:
-            insights["win_rate"] = insights["wins"] / total * 100
-
-        if trade.outcome == "LOSS":
-            loss_patterns = insights.get("loss_patterns", [])
-            pattern = {
-                "timestamp": trade.timestamp,
-                "pnl": trade.pnl,
-                "exit_reason": trade.exit_reason,
-                "probability": trade.probability,
-                "was_counter_trend": trade.was_counter_trend,
-                "duration_minutes": trade.duration_minutes,
-            }
-            loss_patterns.append(pattern)
-            insights["loss_patterns"] = loss_patterns[-100:]
-
-            recent_losses = loss_patterns[-20:]
-            if len(recent_losses) >= 5:
-                stop_loss_exits = sum(1 for p in recent_losses if p["exit_reason"] == "STOP_LOSS")
-                if stop_loss_exits > len(recent_losses) * 0.7:
-                    insights["learning_note"] = "Too many stop losses - consider wider stops or better entries"
-
-        if trade.outcome == "WIN":
-            win_patterns = insights.get("win_patterns", [])
-            win_patterns.append({
-                "probability": trade.probability,
-                "pnl_pct": trade.pnl_pct,
-                "duration_minutes": trade.duration_minutes,
-                "consensus": consensus_value,
-            })
-            insights["win_patterns"] = win_patterns[-100:]
-
-            if len(win_patterns) >= self.learning_adaptation_min_wins:
-                avg_winning_prob = sum(p["probability"] for p in win_patterns) / len(win_patterns)
-                insights["optimal_probability_threshold"] = int(avg_winning_prob)
-                consensus_samples = [p.get("consensus", 0) for p in win_patterns if p.get("consensus", 0) > 0]
-                if consensus_samples:
-                    insights["optimal_consensus_threshold"] = round(
-                        sum(consensus_samples) / len(consensus_samples),
-                        1,
-                    )
-
-    def get_effective_thresholds(self) -> Dict[str, Any]:
-        """Return the currently active entry thresholds, including trusted learning overrides."""
-        insights = self._load_learning_insights()
-        base_probability = int(self.risk.min_probability)
-        base_consensus_pct = round(self.risk.min_consensus * 100, 1)
-        effective_probability = base_probability
-        effective_consensus_pct = base_consensus_pct
-        adaptive_applied = False
-        reasons: List[str] = ["base"]
-
-        total_trades = int(insights.get("total_trades", 0) or 0)
-        wins = int(insights.get("wins", 0) or 0)
-
-        if total_trades >= self.learning_adaptation_min_trades and wins >= self.learning_adaptation_min_wins:
-            learned_probability = insights.get("optimal_probability_threshold")
-            if isinstance(learned_probability, (int, float)):
-                effective_probability = int(round(max(45, min(85, float(learned_probability)))))
-                adaptive_applied = adaptive_applied or effective_probability != base_probability
-                reasons.append(f"learned_probability={effective_probability}")
-
-            learned_consensus = insights.get("optimal_consensus_threshold")
-            if isinstance(learned_consensus, (int, float)):
-                effective_consensus_pct = round(max(25.0, min(90.0, float(learned_consensus))), 1)
-                adaptive_applied = adaptive_applied or effective_consensus_pct != base_consensus_pct
-                reasons.append(f"learned_consensus={effective_consensus_pct}")
-        else:
-            reasons.append(
-                f"waiting_for_{self.learning_adaptation_min_trades}_trusted_trades"
-            )
-
-        learning_note = str(insights.get("learning_note", "") or "")
-        if "Too many stop losses" in learning_note:
-            effective_probability = max(effective_probability, min(85, base_probability + 3))
-            effective_consensus_pct = max(effective_consensus_pct, min(90.0, base_consensus_pct + 5))
-            adaptive_applied = True
-            reasons.append("stop_loss_guard")
-
-        return {
-            "min_probability": effective_probability,
-            "min_consensus_pct": effective_consensus_pct,
-            "base_probability": base_probability,
-            "base_consensus_pct": base_consensus_pct,
-            "adaptive_applied": adaptive_applied,
-            "trusted_trades": total_trades,
-            "trusted_wins": wins,
-            "reason": ", ".join(reasons),
-        }
-
-    def _set_market_data_status(
-        self,
-        *,
-        healthy: bool,
-        available: bool,
-        message: str,
-        source: Optional[str] = None,
-        file_name: Optional[str] = None,
-        updated_at: Optional[str] = None,
-        age_seconds: Optional[float] = None,
-    ):
-        self.market_data_status = {
-            "healthy": healthy,
-            "available": available,
-            "message": message,
-            "source": source,
-            "file": file_name,
-            "updated_at": updated_at,
-            "age_seconds": round(age_seconds, 1) if age_seconds is not None else None,
-        }
-
-    def _get_latest_screener_file(self) -> Optional[Path]:
-        if not self.screener_dir.exists():
-            return None
-
-        screener_files = sorted(
-            self.screener_dir.glob("screener_*.json"),
-            key=lambda p: p.stat().st_mtime,
-            reverse=True,
-        )
-        return screener_files[0] if screener_files else None
-
-    def _read_screener_payload(self, file_path: Path) -> Dict[str, Any]:
-        with open(file_path) as f:
-            return json.load(f)
-
-    def _write_screener_snapshot(self, payload: Dict[str, Any]) -> Path:
-        self.screener_dir.mkdir(parents=True, exist_ok=True)
-        out_file = self.screener_dir / f"screener_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        out_file.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-        return out_file
-
-    def _refresh_screener_snapshot(self) -> Optional[tuple[Dict[str, Any], Path, datetime]]:
-        """Run the screener directly when the cached snapshot is missing or stale."""
-        self._last_screener_refresh_attempt = datetime.now()
-        try:
-            from .screener import run_screener
-
-            payload = run_screener()
-            if not payload.get("success"):
-                error = payload.get("error") or payload.get("message") or "Unknown screener failure"
-                self._set_market_data_status(
-                    healthy=False,
-                    available=False,
-                    message=f"Screener refresh failed: {error}",
-                    source="live_refresh",
-                )
-                logger.warning(f"AutoTrader screener refresh failed: {error}")
-                return None
-
-            snapshot_file = self._write_screener_snapshot(payload)
-            refreshed_at = datetime.fromtimestamp(snapshot_file.stat().st_mtime)
-            self._set_market_data_status(
-                healthy=True,
-                available=True,
-                message="Using fresh screener snapshot",
-                source="live_refresh",
-                file_name=snapshot_file.name,
-                updated_at=refreshed_at.isoformat(),
-                age_seconds=0.0,
-            )
-            return payload, snapshot_file, refreshed_at
-        except Exception as e:
-            self._set_market_data_status(
-                healthy=False,
-                available=False,
-                message=f"Screener refresh error: {e}",
-                source="live_refresh",
-            )
-            logger.error(f"AutoTrader screener refresh error: {e}")
-            return None
+    # _refresh_screener_snapshot is provided by MarketDataMixin
 
     # ═══════════════════════════════════════════════════════════════════════
     # RISK MANAGEMENT - THE MOST IMPORTANT PART
@@ -1829,26 +1401,11 @@ class AutoTrader:
     # SELF-LEARNING
     # ═══════════════════════════════════════════════════════════════════════
 
-    def _learn_from_trade(self, trade: TradeLog):
-        """Learn from every trade outcome"""
-        insights = self._load_learning_insights()
-        self._apply_trade_to_insights(insights, trade)
-        self._save_learning_insights(insights)
+    # _learn_from_trade is provided by LearningMixin
 
-    def _load_learning_insights(self) -> Dict:
-        """Load learning insights"""
-        if self.learning_file.exists():
-            try:
-                with open(self.learning_file) as f:
-                    return json.load(f)
-            except (json.JSONDecodeError, OSError):
-                pass  # intentional: return empty dict on corrupt/missing file
-        return {}
+    # _load_learning_insights is provided by LearningMixin
 
-    def _save_learning_insights(self, insights: Dict):
-        """Save learning insights"""
-        with open(self.learning_file, "w") as f:
-            json.dump(insights, f, indent=2)
+    # _save_learning_insights is provided by LearningMixin
 
     # ═══════════════════════════════════════════════════════════════════════
     # CONTROLS
@@ -1979,313 +1536,15 @@ class AutoTrader:
         print("[AutoTrader] Trading loop stopped")
         logger.info("Trading loop stopped")
 
-    def _fetch_screener_data(self) -> Optional[Dict[str, Dict]]:
-        """
-        Fetch latest market data from FYERS screener output.
-        Returns dict of index -> market_data for NIFTY50, BANKNIFTY, SENSEX
-        """
-        try:
-            latest_file = self._get_latest_screener_file()
-            now = datetime.now()
-            payload: Optional[Dict[str, Any]] = None
+    # _fetch_screener_data is provided by MarketDataMixin
 
-            if latest_file is not None:
-                updated_at = datetime.fromtimestamp(latest_file.stat().st_mtime)
-                age_seconds = (now - updated_at).total_seconds()
-                if age_seconds <= self.screener_max_age_seconds:
-                    payload = self._read_screener_payload(latest_file)
-                    self._set_market_data_status(
-                        healthy=True,
-                        available=True,
-                        message="Using fresh screener snapshot",
-                        source="cache",
-                        file_name=latest_file.name,
-                        updated_at=updated_at.isoformat(),
-                        age_seconds=age_seconds,
-                    )
-                else:
-                    logger.warning(
-                        "Latest screener snapshot is stale: %s (%ss old)",
-                        latest_file.name,
-                        int(age_seconds),
-                    )
+    # _build_market_data_from_payload is provided by MarketDataMixin
 
-            if payload is None:
-                cooldown_elapsed = (
-                    self._last_screener_refresh_attempt is None or
-                    (now - self._last_screener_refresh_attempt).total_seconds() >=
-                    self.screener_refresh_cooldown_seconds
-                )
-                if cooldown_elapsed:
-                    refreshed = self._refresh_screener_snapshot()
-                    if refreshed is not None:
-                        payload, _, _ = refreshed
+    # _enhance_market_data is provided by MarketDataMixin
 
-            if payload is None:
-                if latest_file is None:
-                    self._set_market_data_status(
-                        healthy=False,
-                        available=False,
-                        message="No screener snapshot available",
-                        source="cache",
-                    )
-                else:
-                    updated_at = datetime.fromtimestamp(latest_file.stat().st_mtime)
-                    age_seconds = (now - updated_at).total_seconds()
-                    self._set_market_data_status(
-                        healthy=False,
-                        available=True,
-                        message=f"Screener data stale ({int(age_seconds)}s old)",
-                        source="cache",
-                        file_name=latest_file.name,
-                        updated_at=updated_at.isoformat(),
-                        age_seconds=age_seconds,
-                    )
-                return None
+    # _get_current_prices is provided by MarketDataMixin
 
-            market_data = self._build_market_data_from_payload(payload)
-            return market_data if market_data else None
-
-        except Exception as e:
-            self._set_market_data_status(
-                healthy=False,
-                available=False,
-                message=f"Error fetching screener data: {e}",
-                source="auto_trader",
-            )
-            logger.error(f"Error fetching screener data: {e}")
-            return None
-
-    def _build_market_data_from_payload(self, data: Dict[str, Any]) -> Optional[Dict[str, Dict]]:
-        """Transform screener JSON payload into bot-consumable index market data."""
-        market_bias = data.get("market_bias", "NEUTRAL")
-
-        # Use index_recommendations for direct index data (NIFTY50, BANKNIFTY, SENSEX)
-        index_recs = data.get("index_recommendations", [])
-        market_data = {}
-
-        for rec in index_recs:
-            index = rec.get("index", "")
-            if not index:
-                continue
-
-            market_data[index] = {
-                "ltp": rec.get("ltp", 0) or 0,
-                "change_pct": rec.get("change_pct", 0) or 0,
-                "signal": rec.get("signal", "NEUTRAL"),
-                "option_side": rec.get("option_side", ""),
-                "atm_strike": rec.get("atm_strike", 0),
-                "preferred_strike": rec.get("preferred_strike", 0),
-                "strike_step": rec.get("strike_step", 50),
-                "confidence": rec.get("confidence", 0) or 0,
-                "reason": rec.get("reason", ""),
-                "market_bias": market_bias,
-                "candidate_strikes": rec.get("candidate_strikes", []),
-            }
-
-        # watchlist_baskets is a dict of lists {index: [stock_symbols]}
-        # index_symbols is a dict of strings {index: "NSE:INDEX-INDEX"} — not a stock list
-        index_symbols = data.get("watchlist_baskets") or data.get("index_symbols", {})
-        for index, symbols in index_symbols.items():
-            if not isinstance(symbols, list):
-                continue
-            if index in market_data:
-                market_data[index]["stocks"] = []
-                for stock in data.get("results", []):
-                    if stock.get("symbol") in symbols:
-                        market_data[index]["stocks"].append({
-                            "symbol": stock.get("symbol"),
-                            "ltp": stock.get("last_price") or 0,
-                            "change_pct": stock.get("change_pct") or 0,
-                            "signal": stock.get("signal", ""),
-                            "probability": stock.get("probability") or 50,
-                        })
-
-        if market_data:
-            indices = list(market_data.keys())
-            print(f"[AutoTrader] Loaded index data: {indices}, bias={market_bias}")
-            for idx in indices:
-                conf = market_data[idx].get("confidence", 0)
-                side = market_data[idx].get("option_side", "?")
-                chg = market_data[idx].get("change_pct", 0)
-                print(f"[AutoTrader]   {idx}: {side} signal, conf={conf}%, change={chg:.2f}%")
-
-        market_data = self._enhance_market_data(market_data)
-        return market_data if market_data else None
-
-    def _enhance_market_data(self, market_data: Dict) -> Dict:
-        """
-        Enhance market data with derived values for bot analysis.
-        Adds: prev_change_pct, momentum, estimated OI/PCR, IV estimates
-        """
-        for index, data in market_data.items():
-            ltp = data.get("ltp", 0)
-            change_pct = data.get("change_pct", 0)
-
-            # Update price history
-            if index not in self.price_history:
-                self.price_history[index] = []
-
-            self.price_history[index].append({
-                "ltp": ltp,
-                "change_pct": change_pct,
-                "timestamp": datetime.now().isoformat()
-            })
-
-            # Keep last 100 entries
-            if len(self.price_history[index]) > 100:
-                self.price_history[index] = self.price_history[index][-100:]
-
-            # Calculate prev_change_pct from history
-            history = self.price_history[index]
-            if len(history) >= 2:
-                data["prev_change_pct"] = history[-2]["change_pct"]
-            else:
-                data["prev_change_pct"] = change_pct * 0.95  # Small estimate
-
-            # Calculate momentum
-            data["momentum"] = change_pct - data["prev_change_pct"]
-
-            # Estimate high/low from change if not available
-            # Use realistic intraday range (typically 0.8-1.5% for indices)
-            # Base range + directional bias based on change
-            base_range_pct = 0.8  # Minimum intraday range
-            extra_range = abs(change_pct) * 0.5  # Add extra based on movement
-            total_range_pct = base_range_pct + extra_range
-
-            if "high" not in data or data.get("high") is None:
-                if change_pct >= 0:
-                    # Bullish day: high is further from current price
-                    data["high"] = ltp * (1 + total_range_pct / 100 * 0.6)
-                    data["low"] = ltp * (1 - total_range_pct / 100 * 0.4)
-                else:
-                    # Bearish day: low is further from current price
-                    data["high"] = ltp * (1 + total_range_pct / 100 * 0.4)
-                    data["low"] = ltp * (1 - total_range_pct / 100 * 0.6)
-            if "low" not in data or data.get("low") is None:
-                data["low"] = ltp * (1 - total_range_pct / 100 * 0.5)
-
-            # Inject open price if missing — needed for regime_detector body_pct calculation.
-            # Without open, body_pct=0 → trend_strength≈27 → always RANGING → TrendFollower
-            # gets avoid_bot weight (0.4) instead of preferred_bot weight (1.3).
-            # Back-calculate from change_pct: open = ltp / (1 + change_pct/100)
-            if "open" not in data or data.get("open") is None:
-                if ltp > 0 and change_pct != 0:
-                    data["open"] = ltp / (1 + change_pct / 100)
-                else:
-                    data["open"] = ltp
-
-            # Estimate PCR from signal (heuristic)
-            signal = data.get("signal", "NEUTRAL")
-            if signal == "BULLISH" or data.get("option_side") == "CE":
-                data["pcr"] = 1.1 + (data.get("confidence", 50) / 100 * 0.4)  # 1.1 to 1.5
-            elif signal == "BEARISH" or data.get("option_side") == "PE":
-                data["pcr"] = 0.9 - (data.get("confidence", 50) / 100 * 0.4)  # 0.5 to 0.9
-            else:
-                data["pcr"] = 1.0
-
-            # Estimate OI from signal direction (heuristic for OIAnalyst)
-            conf = data.get("confidence", 50)
-            if change_pct > 0:  # Price up
-                data["ce_oi"] = 100000 * (1 + conf / 100)
-                data["pe_oi"] = 100000 * (1 - conf / 200)
-                data["ce_oi_change"] = 5 if conf > 60 else -5
-                data["pe_oi_change"] = -5 if conf > 60 else 5
-            else:  # Price down
-                data["ce_oi"] = 100000 * (1 - conf / 200)
-                data["pe_oi"] = 100000 * (1 + conf / 100)
-                data["ce_oi_change"] = -5 if conf > 60 else 5
-                data["pe_oi_change"] = 5 if conf > 60 else -5
-
-            # Estimate IV percentile from volatility (heuristic)
-            range_pct = abs(change_pct)
-            if range_pct > 1.5:
-                data["iv_percentile"] = 80 + min(20, range_pct * 5)
-            elif range_pct > 0.8:
-                data["iv_percentile"] = 50 + range_pct * 20
-            else:
-                data["iv_percentile"] = 30 + range_pct * 25
-
-            # Estimate VIX from market movement
-            data["vix"] = 12 + abs(change_pct) * 5  # 12-17 for normal, higher for volatile
-
-            # Set volume estimates
-            data["volume"] = 1000000
-            data["avg_volume"] = 1000000
-
-        return market_data
-
-    def _get_current_prices(self, market_data: Dict) -> Dict[str, float]:
-        """Get current prices for open positions from market data"""
-        prices = {}
-
-        # Lazily initialise market data client for live option quote fetching
-        self._get_market_data_client()
-
-        for pos in self.positions.values():
-            if pos.status != "open":
-                continue
-
-            # Try to find price in market data
-            index_data = market_data.get(pos.index, {})
-
-            # Step 1: try to get option price from stocks list
-            for stock in index_data.get("stocks", []):
-                if stock.get("symbol") == pos.symbol:
-                    prices[pos.symbol] = stock.get("ltp", pos.entry_price)
-                    break
-
-            # Step 2: fetch real option LTP via Fyers API
-            if pos.symbol not in prices and self._market_data_client and pos.strike:
-                fyers_sym = _build_fyers_option_symbol(pos.index, pos.strike, pos.option_type)
-                if fyers_sym:
-                    try:
-                        ltp = self._market_data_client.get_quote_ltp(fyers_sym, ttl_seconds=5)
-                        if ltp > 0:
-                            prices[pos.symbol] = ltp
-                            logger.debug("Option LTP from Fyers: %s = %s", fyers_sym, ltp)
-                    except Exception as e:
-                        logger.warning("Fyers quote fetch failed for %s: %s — SL/target check skipped this cycle", fyers_sym, e)
-
-            # Step 3: final fallback for paper trading — simulate via index change
-            if pos.symbol not in prices and self.mode == TradingMode.PAPER and index_data:
-                index_change_pct = index_data.get("change_pct", 0)
-                # Options typically move 2-3x the underlying for ATM
-                # CE profits when index goes up, PE profits when index goes down
-                if pos.option_type == "CE":
-                    option_change = index_change_pct * 2.5  # Leverage factor
-                else:  # PE
-                    option_change = -index_change_pct * 2.5  # Inverse for PE
-
-                prices[pos.symbol] = pos.entry_price * (1 + option_change / 100)
-
-        return prices
-
-    def feed_market_data(self, index: str, market_data: Dict) -> Dict:
-        """
-        Manual market data feed - called by external systems.
-        Use this when you want to feed data directly instead of polling screener.
-
-        Returns the signal/action result.
-        """
-        if not self.is_running or self.is_paused:
-            return {"action": "SKIP", "reason": "Auto-trader not running"}
-
-        signal = self.process_signal(index, market_data)
-
-        if signal and signal.get("action") == "TRADE":
-            position = self.execute_trade(signal)
-            if position:
-                return {
-                    "action": "EXECUTED",
-                    "position_id": position.id,
-                    "symbol": position.symbol,
-                    "entry_price": position.entry_price,
-                    "stop_loss": position.stop_loss,
-                    "target": position.target,
-                }
-
-        return signal or {"action": "SKIP", "reason": "No signal"}
+    # feed_market_data is provided by MarketDataMixin
 
     def pause(self):
         """Pause trading (keep monitoring)"""
@@ -2400,30 +1659,4 @@ class AutoTrader:
             "learning_insights": insights.get("learning_note", ""),
         }
 
-    def get_recent_trades(self, limit: int = 100, mode: Optional[str] = None) -> List[Dict[str, Any]]:
-        """Return recently closed trades from the canonical auto-trader trade log."""
-        if limit <= 0 or not self.trades_log_file.exists():
-            return []
-
-        normalized_mode = str(mode or "").strip().lower() or None
-        trades: List[Dict[str, Any]] = []
-
-        try:
-            with open(self.trades_log_file) as f:
-                for line in f:
-                    if not line.strip():
-                        continue
-                    try:
-                        trade = json.loads(line)
-                    except json.JSONDecodeError:
-                        continue
-
-                    trade_mode = str(trade.get("mode", "") or "").strip().lower()
-                    if normalized_mode and trade_mode != normalized_mode:
-                        continue
-                    trades.append(trade)
-        except OSError:
-            return []
-
-        trades.reverse()
-        return trades[:limit]
+    # get_recent_trades is provided by TradeRecorderMixin
