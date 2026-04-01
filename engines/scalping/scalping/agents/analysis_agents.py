@@ -1132,6 +1132,15 @@ class StrikeSelectorAgent(BaseBot):
 
         return "CE"  # Default to CE
 
+    @staticmethod
+    def _is_expiry_day() -> bool:
+        """Check if today is a weekly expiry day (Thursday for NSE, Friday for BSE)."""
+        from datetime import date
+        today = date.today()
+        # NSE weekly expiry: Thursday (weekday 3)
+        # BSE weekly expiry: Friday (weekday 4)
+        return today.weekday() in (3, 4)
+
     def _select_strikes(
         self,
         chain: Any,
@@ -1143,13 +1152,26 @@ class StrikeSelectorAgent(BaseBot):
         volatility_surface: Optional[Dict[str, Any]] = None,
         dealer_pressure: Optional[Dict[str, Any]] = None,
     ) -> List[StrikeSelection]:
-        """Select optimal strikes based on criteria."""
+        """Select optimal strikes — institutional approach.
+
+        Expiry day:  Allow wider spreads, use strict OTM/premium/delta filters.
+        Non-expiry:  Relax premium/delta filters, rank by movement quality
+                     (volume×OI momentum, spread tightness, institutional flow).
+        """
         idx_config = self._get_index_config(symbol)
         if not idx_config:
             idx_config = get_index_config(IndexType.NIFTY50)
         volatility_surface = volatility_surface or {}
         dealer_pressure = dealer_pressure or {}
         otm_min, otm_max = self._adaptive_otm_range(idx_config, config, vix, volatility_surface)
+        is_expiry = self._is_expiry_day()
+
+        # Non-expiry: relax thresholds to find best-movement strikes
+        spread_limit = config.max_bid_ask_spread_pct if is_expiry else config.max_bid_ask_spread_pct * 0.6
+        min_vol = config.min_volume_threshold if is_expiry else max(100, config.min_volume_threshold // 5)
+        min_oi = config.min_oi_threshold if is_expiry else max(500, config.min_oi_threshold // 5)
+        premium_lo = idx_config.premium_min
+        premium_hi = idx_config.premium_max if is_expiry else idx_config.premium_max * 4  # wider range on non-expiry
 
         candidates = []
         adaptive_candidates = []
@@ -1169,18 +1191,36 @@ class StrikeSelectorAgent(BaseBot):
             if otm_distance < idx_config.strike_interval:
                 continue
 
-            # Filter by spread
-            if opt.spread_pct > config.max_bid_ask_spread_pct:
+            # Filter by spread — strict on non-expiry (want tight), relaxed on expiry
+            if opt.spread_pct > spread_limit:
                 continue
 
-            # Filter by liquidity
-            if opt.volume < config.min_volume_threshold:
+            # Filter by liquidity — relaxed on non-expiry to find movement
+            if opt.volume < min_vol:
                 continue
-            if opt.oi < config.min_oi_threshold:
+            if opt.oi < min_oi:
                 continue
 
             # Calculate selection score
             score, reasons = self._calculate_score(opt, idx_config, config, spot_price, volatility_surface, dealer_pressure)
+
+            # Non-expiry: boost score for institutional movement indicators
+            if not is_expiry:
+                movement_bonus = 0.0
+                # High volume relative to OI = institutional entry
+                if opt.oi > 0 and opt.volume / opt.oi > 0.1:
+                    movement_bonus += 0.15
+                    reasons = reasons + ["high_vol_oi_ratio"]
+                # Tight spread = institutional interest
+                if opt.spread_pct < 2.0:
+                    movement_bonus += 0.10
+                    reasons = reasons + ["tight_spread"]
+                # Good OI buildup
+                if opt.oi > config.min_oi_threshold:
+                    movement_bonus += 0.05
+                    reasons = reasons + ["strong_oi"]
+                score += movement_bonus
+
             selection = StrikeSelection(
                 symbol=opt.symbol,
                 strike=opt.strike,
@@ -1199,14 +1239,23 @@ class StrikeSelectorAgent(BaseBot):
 
             delta_reliable = abs(float(opt.delta or 0)) >= 0.01
             delta_ok = (idx_config.delta_min <= abs(opt.delta) <= idx_config.delta_max) if delta_reliable else True
-            premium_ok = idx_config.premium_min <= opt.ltp <= idx_config.premium_max
+            premium_ok = premium_lo <= opt.ltp <= premium_hi
             otm_ok = otm_min <= otm_distance <= otm_max
 
-            if otm_ok and premium_ok and delta_ok:
-                candidates.append(selection)
-                continue
+            if is_expiry:
+                # Expiry: strict filters — must match OTM + premium + delta
+                if otm_ok and premium_ok and delta_ok:
+                    candidates.append(selection)
+                    continue
+            else:
+                # Non-expiry: institutional approach — prioritize movement quality
+                # Accept if premium is in range (wider), skip strict delta/OTM
+                if premium_ok:
+                    candidates.append(selection)
+                    continue
 
-            if premium_ok:
+            # Adaptive fallback for both modes
+            if premium_ok or (not is_expiry and opt.ltp > 0):
                 adaptive_score, adaptive_reasons = self._calculate_adaptive_live_score(
                     opt=opt,
                     idx_config=idx_config,

@@ -2259,10 +2259,15 @@ class RiskGuardianAgent(BaseBot):
                 breaches.append(f"Trade risk too high: {trade_risk_pct:.1f}%")
                 blocked_orders.append(order.order_id)
 
-        # Check 3: Spread check
+        # Check 3: Spread check — strict on expiry, lenient on non-expiry
+        from datetime import date as _date
+        _is_expiry = _date.today().weekday() in (3, 4)
+        # On non-expiry, only block if 80%+ options are wide (whole chain is illiquid)
+        # On expiry, block if 50%+ are wide (standard threshold)
+        _spread_block_ratio = 0.5 if _is_expiry else 0.8
         for symbol, chain in option_chains.items():
             wide_spreads = [opt for opt in chain.options if opt.spread > config.max_spread_to_trade]
-            if len(wide_spreads) > len(chain.options) * 0.5:
+            if len(wide_spreads) > len(chain.options) * _spread_block_ratio:
                 if config.disable_high_spread:
                     breaches.append(f"{symbol}: Wide spreads detected")
 
