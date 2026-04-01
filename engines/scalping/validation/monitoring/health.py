@@ -48,6 +48,17 @@ def create_health_app(
         description="Health and monitoring API for the scalping validation pipeline.",
     )
 
+    # -- / (root) ------------------------------------------------------------
+
+    @app.get("/", tags=["Health"])
+    async def root() -> Dict[str, Any]:
+        """Root — redirects to useful info."""
+        return {
+            "service": "Scalping Pipeline Validator",
+            "endpoints": ["/health", "/metrics", "/pipeline-status", "/alerts", "/score"],
+            "docs": "/docs",
+        }
+
     # -- /health -------------------------------------------------------------
 
     @app.get("/health", tags=["Health"])
