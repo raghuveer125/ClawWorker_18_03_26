@@ -1547,7 +1547,7 @@ cmd_all() {
   echo ""
 
   # Ensure infrastructure (Redpanda, PostgreSQL, Redis) is running
-  echo -e "${BLUE}[0/10] Ensuring infrastructure services...${NC}"
+  echo -e "${BLUE}[0/11] Ensuring infrastructure services...${NC}"
   ensure_infrastructure
 
   # Stop any existing processes
@@ -1575,13 +1575,13 @@ cmd_all() {
   # ============================================
   # 1. Start Shared Market Adapter
   # ============================================
-  echo -e "${BLUE}[1/10] Starting shared Market Adapter...${NC}"
+  echo -e "${BLUE}[1/11] Starting shared Market Adapter...${NC}"
   ensure_market_adapter
 
   # ============================================
   # 2. Start LLM Debate Backend
   # ============================================
-  echo -e "${BLUE}[2/10] Starting LLM Debate Backend on port ${LLM_DEBATE_PORT}...${NC}"
+  echo -e "${BLUE}[2/11] Starting LLM Debate Backend on port ${LLM_DEBATE_PORT}...${NC}"
   if [[ -d "${LLM_DEBATE_DIR}/backend" ]]; then
     cmd_llm_debate_background
   else
@@ -1591,7 +1591,7 @@ cmd_all() {
   # ============================================
   # 3. Start fyersN7 Signal Engines
   # ============================================
-  echo -e "${BLUE}[3/10] Starting fyersN7 Signal Engines...${NC}"
+  echo -e "${BLUE}[3/11] Starting fyersN7 Signal Engines...${NC}"
   if [[ -d "${FYERSN7_DIR}" ]]; then
     # Sync credentials
     if [[ -n "${FYERS_ACCESS_TOKEN:-}" ]]; then
@@ -1615,7 +1615,7 @@ EOF
   # ============================================
   # 4. Start Backend API Server
   # ============================================
-  echo -e "${BLUE}[4/10] Starting Backend API on port ${API_PORT}...${NC}"
+  echo -e "${BLUE}[4/11] Starting Backend API on port ${API_PORT}...${NC}"
   local livebench_python
   livebench_python="$(livebench_python_bin)"
   local auto_trader_strategy_id="${AUTO_TRADER_STRATEGY_ID:-clawwork-autotrader}"
@@ -1638,7 +1638,7 @@ EOF
   # ============================================
   # 5. Start Frontend Dashboard
   # ============================================
-  echo -e "${BLUE}[5/10] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
+  echo -e "${BLUE}[5/11] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
   if ! ensure_frontend_dependencies; then
     stop_all
     exit 1
@@ -1662,12 +1662,12 @@ EOF
   # ============================================
   # 6. AutoTrader is API-managed
   # ============================================
-  echo -e "${BLUE}[6/10] AutoTrader is managed by the API startup hook (paper mode).${NC}"
+  echo -e "${BLUE}[6/11] AutoTrader is managed by the API startup hook (paper mode).${NC}"
 
   # ============================================
   # 7. Start Fyers Screener Loop (15s refresh)
   # ============================================
-  start_fyers_screener_loop "[7/10]" || true
+  start_fyers_screener_loop "[7/11]" || true
 
   # ============================================
   # 8. Start Scalping API (Dashboard backend)
@@ -1677,7 +1677,7 @@ EOF
   export SCALPING_ENGINE_ENABLED="${SCALPING_ENGINE_ENABLED:-1}"
   export SCALPING_LIVE="${SCALPING_LIVE:-0}"
   export SCALPING_INTERVAL="${SCALPING_INTERVAL:-5}"
-  echo -e "${BLUE}[8/10] Starting Scalping Dashboard API with embedded engine on port ${SCALPING_API_PORT}...${NC}"
+  echo -e "${BLUE}[8/11] Starting Scalping Dashboard API with embedded engine on port ${SCALPING_API_PORT}...${NC}"
   if [[ -d "${BOT_ARMY_DIR}/scalping" ]]; then
     cmd_scalping_api_background
     echo -e "${GREEN}    Engine embedded in API (SCALPING_ENGINE_ENABLED=${SCALPING_ENGINE_ENABLED})${NC}"
@@ -1691,7 +1691,7 @@ EOF
   # ============================================
   # 9. Start FyersN7 Paper Trading (Optimized)
   # ============================================
-  echo -e "${BLUE}[9/10] Starting FyersN7 Paper Trading (69.7% WR strategy) for all indices...${NC}"
+  echo -e "${BLUE}[9/11] Starting FyersN7 Paper Trading (69.7% WR strategy) for all indices...${NC}"
   for _paper_idx in SENSEX BANKNIFTY NIFTY50 FINNIFTY; do
     INDEX="${_paper_idx}" cmd_fyersn7_paper_background
   done
@@ -1701,7 +1701,7 @@ EOF
   # ============================================
   local livebench_config="${LIVEBENCH_CONFIG:-${CLAWWORK_DIR}/livebench/configs/example_inline_tasks.json}"
   if [[ -f "${livebench_config}" ]]; then
-    echo -e "${BLUE}[10/10] Starting LiveBench Agent Simulation...${NC}"
+    echo -e "${BLUE}[10/11] Starting LiveBench Agent Simulation...${NC}"
     local livebench_python
     livebench_python="$(livebench_python_bin)"
     # Override date range to today so the agent always runs the current day
@@ -1722,7 +1722,23 @@ EOF
     save_pid "livebench-agent" ${livebench_agent_pid}
     echo -e "${GREEN}  LiveBench Agent started (PID: ${livebench_agent_pid}, date: ${lb_init_date}, config: $(basename ${livebench_config}))${NC}"
   else
-    echo -e "${YELLOW}[10/10] LiveBench config not found (${livebench_config}), skipping agent simulation...${NC}"
+    echo -e "${YELLOW}[10/11] LiveBench config not found (${livebench_config}), skipping agent simulation...${NC}"
+  fi
+
+  # ============================================
+  # 11. Start Scalping Validation System
+  # ============================================
+  local validation_dir="${BOT_ARMY_DIR}/validation"
+  if [[ -d "${validation_dir}" ]]; then
+    echo -e "${BLUE}[11/11] Starting Scalping Validation System on port ${VALIDATOR_API_PORT:-8003}...${NC}"
+    local validator_python
+    validator_python="$(livebench_python_bin)"
+    nohup bash -lc "cd '${validation_dir}' && exec env KAFKA_BOOTSTRAP_SERVERS='${KAFKA_BOOTSTRAP_SERVERS:-localhost:9092}' VALIDATOR_API_PORT='${VALIDATOR_API_PORT:-8003}' '${validator_python}' main.py --simulate" > "${PROJECT_ROOT}/logs/scalping_validator.log" 2>&1 &
+    local validator_pid=$!
+    save_pid "scalping-validator" ${validator_pid}
+    echo -e "${GREEN}  Scalping Validator started (PID: ${validator_pid}, API: http://localhost:${VALIDATOR_API_PORT:-8003})${NC}"
+  else
+    echo -e "${YELLOW}[11/11] Scalping validation not found, skipping...${NC}"
   fi
 
   echo ""
@@ -1745,6 +1761,7 @@ EOF
   echo -e "${GREEN}║     - 21-Agent Scalping (8:58 AM - 3:40 PM)                   ║${NC}"
   echo -e "${GREEN}║     - LLM Debate Backend                                      ║${NC}"
   echo -e "${GREEN}║     - LiveBench Agent Simulation                             ║${NC}"
+  echo -e "${GREEN}║     - Scalping Validator (http://localhost:${VALIDATOR_API_PORT:-8003})            ║${NC}"
   echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════╣${NC}"
   echo -e "${GREEN}║   Logs:          ${PROJECT_ROOT}/logs/               ║${NC}"
   echo -e "${GREEN}║   Stop:          ./start.sh stop                              ║${NC}"
