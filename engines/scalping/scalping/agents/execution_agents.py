@@ -1848,6 +1848,7 @@ class PositionManagerAgent(BaseBot):
         self._positions: Dict[str, Position] = {}
         self._trade_log: List[Dict] = []
         self._trade_records: Dict[str, Dict[str, Any]] = {}
+        self._processed_order_ids: set = set()
 
     def get_description(self) -> str:
         return "Position tracking and P&L management"
@@ -1860,15 +1861,18 @@ class PositionManagerAgent(BaseBot):
         position_updates = context.data.get("position_updates", [])
         option_chains = context.data.get("option_chains", {})
 
-        # Process new entry orders
+        # Process new entry orders (skip already-processed ones)
+        processed_order_ids = {pos.position_id for pos in self._positions.values()}
         for order in pending_orders:
-            if order.status in ["filled", "simulated"]:
+            if order.status in ["filled", "simulated"] and order.order_id not in self._processed_order_ids:
                 self._create_position(order, context)
+                self._processed_order_ids.add(order.order_id)
 
-        # Process exit orders
+        # Process exit orders (skip already-processed ones)
         for order in exit_orders:
-            if order.status in ["filled", "simulated"]:
+            if order.status in ["filled", "simulated"] and order.order_id not in self._processed_order_ids:
                 self._process_exit(order, position_updates)
+                self._processed_order_ids.add(order.order_id)
 
         # Update all positions
         total_unrealized, total_realized = self._refresh_context_state(context, config)
