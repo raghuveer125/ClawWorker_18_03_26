@@ -290,8 +290,12 @@ class ScoringEngine:
 
     @staticmethod
     def _safe_get_report(validator: Any) -> Dict[str, Any]:
-        """Call ``get_report()`` on *validator*, returning ``{}`` on failure."""
-        try:
-            return validator.get_report()
-        except Exception:
-            return {}
+        """Call ``get_report()`` (or ``get_coverage_report()``) on *validator*."""
+        for method_name in ("get_report", "get_coverage_report"):
+            fn = getattr(validator, method_name, None)
+            if fn is not None:
+                try:
+                    return fn()
+                except Exception:
+                    pass
+        return {}
