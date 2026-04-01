@@ -1704,10 +1704,15 @@ EOF
     echo -e "${BLUE}[10/10] Starting LiveBench Agent Simulation...${NC}"
     local livebench_python
     livebench_python="$(livebench_python_bin)"
-    nohup bash -lc "cd '${CLAWWORK_DIR}/livebench' && exec '${livebench_python}' main.py '${livebench_config}'" > "${PROJECT_ROOT}/logs/livebench_agent.log" 2>&1 &
+    # Override date range to today so the agent always runs the current day
+    local today
+    today="$(date '+%Y-%m-%d')"
+    local lb_init_date="${INIT_DATE:-${today}}"
+    local lb_end_date="${END_DATE:-${today}}"
+    nohup bash -lc "cd '${CLAWWORK_DIR}/livebench' && exec env INIT_DATE='${lb_init_date}' END_DATE='${lb_end_date}' '${livebench_python}' main.py '${livebench_config}'" > "${PROJECT_ROOT}/logs/livebench_agent.log" 2>&1 &
     local livebench_agent_pid=$!
     save_pid "livebench-agent" ${livebench_agent_pid}
-    echo -e "${GREEN}  LiveBench Agent started (PID: ${livebench_agent_pid}, config: $(basename ${livebench_config}))${NC}"
+    echo -e "${GREEN}  LiveBench Agent started (PID: ${livebench_agent_pid}, date: ${lb_init_date}, config: $(basename ${livebench_config}))${NC}"
   else
     echo -e "${YELLOW}[10/10] LiveBench config not found (${livebench_config}), skipping agent simulation...${NC}"
   fi
