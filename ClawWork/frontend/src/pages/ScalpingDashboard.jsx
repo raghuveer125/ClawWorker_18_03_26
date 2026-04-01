@@ -534,6 +534,29 @@ function PositionsTable({ positions }) {
   return (
     <div className="positions-table">
       <h3>Open Positions ({positions.count})</h3>
+      {(() => {
+        // Extract spot prices from DataFeed agent (agent_id 0 or name DataFeed)
+        const dataFeed = agents?.agents?.find(a => a.bot_type === 'data_feed' || a.name === 'DataFeed');
+        const spotPrices = {};
+        if (dataFeed?.last_output) {
+          Object.entries(dataFeed.last_output).forEach(([sym, data]) => {
+            if (data?.ltp) {
+              const idx = sym.includes('BANKNIFTY') ? 'BANKNIFTY' : sym.includes('SENSEX') ? 'SENSEX' : sym.includes('NIFTY') ? 'NIFTY50' : sym;
+              spotPrices[idx] = data.ltp;
+            }
+          });
+        }
+        const uniqueIndices = [...new Set(positions.positions.map(p => p.index))];
+        return uniqueIndices.length > 0 && (
+          <div className="spot-prices" style={{ display: 'flex', gap: '24px', marginBottom: '8px', fontSize: '14px' }}>
+            {uniqueIndices.map(idx => (
+              <span key={idx} style={{ color: '#e2e8f0' }}>
+                <strong>{idx}</strong>: <span style={{ color: '#60a5fa', fontWeight: 600 }}>{spotPrices[idx]?.toFixed(2) || '--'}</span>
+              </span>
+            ))}
+          </div>
+        );
+      })()}
       <table>
         <thead>
           <tr>
@@ -541,6 +564,7 @@ function PositionsTable({ positions }) {
             <th>Strike</th>
             <th>Type</th>
             <th>Qty</th>
+            <th>Spot</th>
             <th>Entry</th>
             <th>LTP</th>
             <th>SL</th>
@@ -555,6 +579,14 @@ function PositionsTable({ positions }) {
             const sl = pos.current_sl || 0;
             const target = pos.target_price || 0;
             const pnl = pos.unrealized_pnl || 0;
+            // Get spot price for this position's index
+            const dataFeed = agents?.agents?.find(a => a.bot_type === 'data_feed' || a.name === 'DataFeed');
+            const spotKey = Object.keys(dataFeed?.last_output || {}).find(k =>
+              (pos.index === 'NIFTY50' && k.includes('NIFTY50')) ||
+              (pos.index === 'BANKNIFTY' && k.includes('BANKNIFTY')) ||
+              (pos.index === 'SENSEX' && k.includes('SENSEX'))
+            );
+            const spot = spotKey ? dataFeed?.last_output?.[spotKey]?.ltp : null;
             return (
             <tr key={pos.trade_id}>
               <td className="symbol">{pos.index}</td>
@@ -563,6 +595,7 @@ function PositionsTable({ positions }) {
                 {pos.option_type}
               </td>
               <td>{pos.remaining_qty || pos.quantity}</td>
+              <td style={{ color: '#60a5fa' }}>{spot ? spot.toFixed(2) : '--'}</td>
               <td>{pos.entry_price.toFixed(2)}</td>
               <td className={ltp > pos.entry_price ? 'profit' : ltp < pos.entry_price ? 'loss' : ''}>
                 {ltp > 0 ? ltp.toFixed(2) : '--'}
