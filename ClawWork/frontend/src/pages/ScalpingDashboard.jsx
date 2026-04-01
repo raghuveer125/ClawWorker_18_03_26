@@ -522,7 +522,7 @@ function CapitalSummary({ capital }) {
 }
 
 // Positions table component
-function PositionsTable({ positions }) {
+function PositionsTable({ positions, agents }) {
   if (!positions?.positions?.length) {
     return (
       <div className="positions-empty">
@@ -1989,7 +1989,7 @@ export default function ScalpingDashboard() {
         </div>
 
         <CapitalSummary capital={capital} />
-        <PositionsTable positions={positions} />
+        <PositionsTable positions={positions} agents={agents} />
 
         <div className="full-width">
           <TradeHistory trades={trades} />
