@@ -863,19 +863,48 @@ async def get_stats():
 async def get_config():
     """Get current configuration."""
     config = ScalpingConfig()
+    # Per-index configs (premium/delta are on IndexConfig, not ScalpingConfig)
+    index_details = {}
+    for idx_type in config.indices:
+        idx_cfg = get_index_config(idx_type)
+        if idx_cfg:
+            index_details[idx_type.value] = {
+                "lot_size": idx_cfg.lot_size,
+                "strike_interval": idx_cfg.strike_interval,
+                "otm_distance_min": idx_cfg.otm_distance_min,
+                "otm_distance_max": idx_cfg.otm_distance_max,
+                "premium_min": idx_cfg.premium_min,
+                "premium_max": idx_cfg.premium_max,
+                "delta_min": idx_cfg.delta_min,
+                "delta_max": idx_cfg.delta_max,
+            }
     return {
         "indices": [idx.value for idx in config.indices],
+        "index_configs": index_details,
         "total_capital": config.total_capital,
         "risk_per_trade_pct": config.risk_per_trade_pct,
         "daily_loss_limit_pct": config.daily_loss_limit_pct,
         "max_positions": config.max_positions,
-        "premium_min": config.premium_min,
-        "premium_max": config.premium_max,
-        "delta_min": config.delta_min,
-        "delta_max": config.delta_max,
-        "partial_exit_pct": config.partial_exit_pct,
-        "partial_exit_target": config.partial_exit_target,
-        "trail_after_partial": config.trail_after_partial,
+        "max_consecutive_losses": config.max_consecutive_losses,
+        "entry_rules": {
+            "require_structure_break": config.require_structure_break,
+            "require_futures_confirm": config.require_futures_confirm,
+            "require_volume_burst": config.require_volume_burst,
+            "require_trap_confirm": config.require_trap_confirm,
+            "late_entry_cutoff_time": config.late_entry_cutoff_time,
+        },
+        "exit_rules": {
+            "partial_exit_pct": config.partial_exit_pct,
+            "first_target_points": config.first_target_points,
+            "move_sl_to_entry": config.move_sl_to_entry,
+        },
+        "risk_controls": {
+            "max_bid_ask_spread_pct": config.max_bid_ask_spread_pct,
+            "min_volume_threshold": config.min_volume_threshold,
+            "min_oi_threshold": config.min_oi_threshold,
+            "disable_high_spread": config.disable_high_spread,
+            "trading_hours": config.trading_hours,
+        },
     }
 
 
