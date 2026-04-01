@@ -182,24 +182,41 @@ def _infer_activity_from_messages(messages: list) -> Optional[str]:
     combined = "\n".join((msg.get("content") or "") for msg in (messages or []))
     lowered = combined.lower()
     if any(token in lowered for token in [
-        "submit_work", "work task", "lending recommendation", "curriculum", "credit risk"
+        "submit_work", "work task", "lending recommendation", "curriculum", "credit risk",
+        "decide_activity", "activity completed",
     ]):
         return "work"
     if any(token in lowered for token in [
         "learn(", "learn topic", "research and learn", "save_to_memory"
     ]):
         return "learn"
+    # Infer from user prompt ("Analyze your situation and decide your activity")
+    if "decide your activity" in lowered:
+        return "work"
     return None
 
 
 def _extract_reasoning_from_messages(messages: list) -> str:
-    for message in messages or []:
+    # First try: look for assistant messages with actual content
+    for message in reversed(messages or []):
         if message.get("role") != "assistant":
             continue
         content = (message.get("content") or "").strip()
-        if content:
+        if content and len(content) > 10:
             compact = " ".join(content.split())
             return compact[:200]
+    # Second try: look for tool results with reasoning
+    for message in reversed(messages or []):
+        content = (message.get("content") or "").strip()
+        if "reasoning" in content.lower() and len(content) > 20:
+            compact = " ".join(content.split())
+            return compact[:200]
+    # Third try: extract from user prompt date
+    for message in messages or []:
+        if message.get("role") == "user":
+            content = (message.get("content") or "").strip()
+            if "Today is" in content:
+                return content[:200]
     return "Recovered from activity logs"
 
 
