@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional
 
 from ..config import ScalpingConfig
 from ..risk_engine import validate_exit, ExitDecision
+from ..risk.circuit_breaker import CircuitBreaker
 from .execution_simulator import ExecutionSimulator
 from .position_manager import PositionManager, SimulatedPosition
 from . import kafka_config as bus
@@ -15,10 +16,12 @@ from . import kafka_config as bus
 class ExitEngine:
     """Monitors open positions every cycle, applies exit rules."""
 
-    def __init__(self, executor: ExecutionSimulator, position_manager: PositionManager, config: ScalpingConfig) -> None:
+    def __init__(self, executor: ExecutionSimulator, position_manager: PositionManager,
+                 config: ScalpingConfig, circuit_breaker: CircuitBreaker = None) -> None:
         self.executor = executor
         self.pm = position_manager
         self.config = config
+        self.circuit_breaker = circuit_breaker
         self._total_exits = 0
         self._exit_reasons: Dict[str, int] = {}
 
@@ -58,14 +61,23 @@ class ExitEngine:
                     reason_key = str(decision.reason.value if hasattr(decision.reason, "value") else decision.reason)
                     self._exit_reasons[reason_key] = self._exit_reasons.get(reason_key, 0) + 1
 
+                    pnl = round((current_price - pos.entry_price) * pos.filled_qty, 2)
                     bus.publish("decisions", {
                         "event": "exit_executed",
                         "position_id": pos.position_id,
                         "exit_price": current_price,
                         "exit_reason": reason_key,
                         "urgency": decision.urgency,
-                        "pnl": round((current_price - pos.entry_price) * pos.filled_qty, 2),
+                        "pnl": pnl,
                     })
+
+                    # Feed circuit breaker
+                    if self.circuit_breaker:
+                        cycle_now = context.get("cycle_now")
+                        if pnl < 0:
+                            self.circuit_breaker.record_loss(pnl, pos.position_id, reason_key, cycle_now)
+                        else:
+                            self.circuit_breaker.record_win(cycle_now)
 
         return closed_ids
 

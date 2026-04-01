@@ -11,6 +11,7 @@ from typing import Any, Dict, List
 
 from ..config import ScalpingConfig
 from ..risk_engine import KillSwitch
+from ..risk.circuit_breaker import CircuitBreaker
 from .kafka_config import get_bus
 from .position_manager import PositionManager
 from .execution_simulator import ExecutionSimulator
@@ -30,8 +31,9 @@ class DryRunOrchestrator:
         self.config = config
         self.pm = PositionManager()
         self.executor = ExecutionSimulator(self.pm)
+        self.circuit_breaker = CircuitBreaker()
         self.entry_engine = EntryEngine(self.executor, config)
-        self.exit_engine = ExitEngine(self.executor, self.pm, config)
+        self.exit_engine = ExitEngine(self.executor, self.pm, config, self.circuit_breaker)
         self.market_producer = MarketDataProducer()
         self.signal_producer = SignalProducer()
         self.metrics = MetricsEngine(self.pm)
@@ -229,7 +231,10 @@ class DryRunOrchestrator:
         B = type("B", (), {
             "symbol": "NSE:NIFTY50-INDEX", "break_type": "bos_bearish",
         })
-        return {
+        # Inject circuit breaker state
+        ctx: Dict[str, Any] = {}
+        self.circuit_breaker.inject_into_context(ctx, sim_time)
+        ctx.update({
             "vix": vix,
             "daily_pnl": self.pm.daily_pnl,
             "unrealized_pnl": self.pm.total_unrealized_pnl,
@@ -242,7 +247,8 @@ class DryRunOrchestrator:
                 {"exit_time": p.exit_time.isoformat() if p.exit_time else None, "realized_pnl": p.realized_pnl}
                 for p in self.pm.get_all_closed()
             ],
-        }
+        })
+        return ctx
 
     def _finalize(self) -> None:
         self.logger.flush()
@@ -251,6 +257,9 @@ class DryRunOrchestrator:
         self.metrics.print_summary()
         print(f"Entry stats: {self.entry_engine.stats}")
         print(f"Exit stats: {self.exit_engine.stats}")
+        cb = self.circuit_breaker.check()
+        print(f"Circuit breaker: level={cb['level']}, triggers={cb['trigger_count']}, "
+              f"recent_losses={cb['recent_losses']}, size_scale={cb['size_scale']}")
 
 
 def main():

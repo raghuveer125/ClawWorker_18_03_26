@@ -263,6 +263,8 @@ def compute_position_size(
         "TRENDING_BEARISH": 1.0,
         "RANGE_BOUND": 1.0,
         "EXPIRY_PINNING": 0.7,
+        "LOW_VOLATILITY": 0.3,
+        "low_volatility": 0.3,
     }
     regime_scale = regime_scales.get(regime, 0.8)
 
@@ -287,8 +289,11 @@ def compute_position_size(
     # ── Correlation penalty ──
     correlation_scale = float(signal.get("correlation_size_scale", 1.0) or 1.0)
 
+    # ── Circuit breaker size scaling ──
+    circuit_scale = float(context.get("_circuit_size_scale", 1.0) or 1.0)
+
     # ── Final multiplier ──
-    multiplier = base * vix_scale * regime_scale * drawdown_scale * spread_scale * correlation_scale
+    multiplier = base * vix_scale * regime_scale * drawdown_scale * spread_scale * correlation_scale * circuit_scale
     multiplier = max(0.0, min(1.0, multiplier))
 
     if multiplier < 0.15:
@@ -333,6 +338,11 @@ def validate_entry(
     vix_raw = context.get("vix")
     if vix_raw is None or float(vix_raw or 0) <= 0:
         return reject("vix_missing:cannot_size_without_volatility")
+
+    # ── Gate 0b: Circuit breaker ──
+    if context.get("_circuit_entries_blocked"):
+        cb_state = context.get("_circuit_breaker", {})
+        return reject(f"circuit_breaker:{cb_state.get('level', 'L2+')}:entries_blocked")
 
     # ── Gate 1: Trade disabled ──
     if context.get("trade_disabled"):
