@@ -880,6 +880,74 @@ async def get_config():
 
 
 # ============================================================================
+# Index & Expiry Info (fetched from exchange, not hardcoded)
+# ============================================================================
+
+@app.get("/api/scalping/indices")
+async def get_indices_with_expiry():
+    """Get active indices with live expiry dates fetched from exchange."""
+    import sys
+    from pathlib import Path
+    _project_root = Path(__file__).resolve().parents[3]
+    if str(_project_root) not in sys.path:
+        sys.path.insert(0, str(_project_root))
+
+    config = ScalpingConfig()
+    result = {"indices": [], "timestamp": datetime.now().isoformat()}
+
+    try:
+        from shared_project_engine.indices import (
+            get_expiry_schedule,
+            get_todays_expiring_indices,
+            INDEX_CONFIG,
+        )
+        expiry_schedule = get_expiry_schedule(use_live=True)
+        todays_expiry = get_todays_expiring_indices(use_live=True)
+
+        for idx_type in config.indices:
+            # Map enum value to INDEX_CONFIG key (e.g. "NSE:NIFTY50-INDEX" → "NIFTY50")
+            idx_key = None
+            for name, cfg in INDEX_CONFIG.items():
+                if cfg.get("symbol") == idx_type.value or name in idx_type.value:
+                    idx_key = name
+                    break
+            if not idx_key:
+                idx_key = idx_type.name
+
+            expiry_info = expiry_schedule.get(idx_key, {})
+            idx_config = get_index_config(idx_type)
+
+            result["indices"].append({
+                "name": idx_key,
+                "symbol": idx_type.value,
+                "lot_size": idx_config.lot_size if idx_config else 0,
+                "strike_interval": idx_config.strike_interval if idx_config else 0,
+                "is_expiry_today": idx_key in todays_expiry,
+                "upcoming_expiry": expiry_info.get("nextExpiry", expiry_info.get("date")),
+                "expiry_weekday": expiry_info.get("weekday"),
+                "days_to_expiry": expiry_info.get("daysUntil"),
+                "source": expiry_info.get("source", "computed"),
+            })
+    except ImportError:
+        # Fallback if shared_project_engine not available
+        for idx_type in config.indices:
+            idx_config = get_index_config(idx_type)
+            result["indices"].append({
+                "name": idx_type.name,
+                "symbol": idx_type.value,
+                "lot_size": idx_config.lot_size if idx_config else 0,
+                "strike_interval": idx_config.strike_interval if idx_config else 0,
+                "is_expiry_today": False,
+                "upcoming_expiry": None,
+                "source": "unavailable",
+            })
+    except Exception as e:
+        result["error"] = str(e)
+
+    return result
+
+
+# ============================================================================
 # WebSocket for Live Updates
 # ============================================================================
 

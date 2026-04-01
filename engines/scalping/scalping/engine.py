@@ -458,7 +458,17 @@ class ScalpingEngine:
             return False
         if self.kill_switch and getattr(self.kill_switch, "state", None) and self.kill_switch.state.active:
             return False
-        if self.context.data.get("risk_breaches"):
+        # Per-index breach check: only block signals for breached indices
+        blocked_indices = set(self.context.data.get("risk_blocked_indices", []))
+        signal_symbol = signal.get("symbol", "")
+        if signal_symbol in blocked_indices:
+            return False
+        # Global breaches (non-index-specific) still block everything
+        global_breaches = [
+            b for b in self.context.data.get("risk_breaches", [])
+            if not any(idx in b for idx in blocked_indices)
+        ]
+        if global_breaches:
             return False
         positions = self.context.data.get("positions", [])
         open_positions = len([position for position in positions if getattr(position, "status", "") != "closed"])

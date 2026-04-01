@@ -2325,9 +2325,29 @@ class RiskGuardianAgent(BaseBot):
         context.data["risk_checks"] = risk_checks
         context.data["risk_breaches"] = breaches
         context.data["blocked_orders"] = blocked_orders
-        context.data["trade_disabled"] = bool(context.data.get("trade_disabled") or breaches)
-        if breaches:
-            context.data["trade_disabled_reason"] = "; ".join(breaches[:3])
+
+        # Per-index breach tracking: only disable trading for indices with breaches,
+        # not the entire pipeline.  Global trade_disabled only set for non-index-specific
+        # breaches (consecutive losses, daily loss limit, etc.).
+        index_breaches = set()
+        global_breaches = []
+        for b in breaches:
+            # Index-specific breaches contain the symbol (e.g. "NSE:NIFTYBANK-INDEX: Wide spreads")
+            matched_idx = False
+            for symbol, chain in option_chains.items():
+                if symbol in b:
+                    index_breaches.add(symbol)
+                    matched_idx = True
+                    break
+            if not matched_idx:
+                global_breaches.append(b)
+
+        context.data["risk_blocked_indices"] = list(index_breaches)
+        context.data["trade_disabled"] = bool(context.data.get("trade_disabled") or global_breaches)
+        if global_breaches:
+            context.data["trade_disabled_reason"] = "; ".join(global_breaches[:3])
+        elif index_breaches and not context.data.get("trade_disabled"):
+            context.data["trade_disabled_reason"] = f"Partial: {', '.join(index_breaches)} blocked"
 
         # Use LLM Debate for risk validation on pending orders
         if pending_orders and HAS_DEBATE:
