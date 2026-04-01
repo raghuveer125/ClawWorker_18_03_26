@@ -323,6 +323,11 @@ def validate_entry(
         trade_logger.log_decision(log_data)
         return EntryDecision(approved=False, reason=reason, log=log_data)
 
+    # ── Gate 0: VIX must be present (CRIT-4) ──
+    vix_raw = context.get("vix")
+    if vix_raw is None or float(vix_raw or 0) <= 0:
+        return reject("vix_missing:cannot_size_without_volatility")
+
     # ── Gate 1: Trade disabled ──
     if context.get("trade_disabled"):
         return reject(f"trade_disabled:{context.get('trade_disabled_reason', '')}")
@@ -340,11 +345,13 @@ def validate_entry(
     if now.time() > cutoff:
         return reject(f"past_late_entry_cutoff:{cutoff_str}")
 
-    # ── Gate 3: Max positions ──
+    # ── Gate 3: Max positions (CRIT-7: track same-cycle approvals) ──
     positions = context.get("positions", [])
     open_count = sum(1 for p in positions if hasattr(p, "status") and p.status != "closed")
-    if open_count >= config.max_positions:
-        return reject(f"max_positions:{open_count}/{config.max_positions}")
+    approved_this_cycle = int(context.get("_approved_entries_this_cycle", 0) or 0)
+    effective_count = open_count + approved_this_cycle
+    if effective_count >= config.max_positions:
+        return reject(f"max_positions:{effective_count}/{config.max_positions}")
 
     # ── Gate 4: Daily loss limit ──
     daily_pnl = float(context.get("daily_pnl", 0) or 0)
@@ -358,16 +365,17 @@ def validate_entry(
     if hourly_pnl < -hourly_limit:
         return reject(f"hourly_drawdown:{hourly_pnl:.0f}_in_2h")
 
-    # ── Gate 6: Data freshness ──
+    # ── Gate 6: Data freshness (CRIT-2: reject if timestamp missing) ──
     spot_ts = context.get("spot_timestamp")
-    if spot_ts:
-        if isinstance(spot_ts, str):
-            try:
-                spot_ts = datetime.fromisoformat(spot_ts)
-            except ValueError:
-                spot_ts = None
-        if spot_ts and (now - spot_ts).total_seconds() > 3.0:
-            return reject(f"spot_stale:{(now - spot_ts).total_seconds():.1f}s")
+    if not spot_ts:
+        return reject("spot_timestamp_missing:no_data_freshness_available")
+    if isinstance(spot_ts, str):
+        try:
+            spot_ts = datetime.fromisoformat(spot_ts)
+        except ValueError:
+            return reject("spot_timestamp_invalid:cannot_parse")
+    if (now - spot_ts).total_seconds() > 3.0:
+        return reject(f"spot_stale:{(now - spot_ts).total_seconds():.1f}s")
 
     # ── Gate 7: Quality score ──
     quality_score = float(signal.get("quality_score", 0) or 0)
@@ -379,12 +387,26 @@ def validate_entry(
     if grade == "D" and float(signal.get("rr_ratio", 0) or 0) < 1.5:
         return reject(f"grade_D_rr_low:{signal.get('rr_ratio', 0):.2f}<1.5")
 
-    # ── Gate 8: Directional consistency (NEW) ──
+    # ── Gate 8: Directional consistency (HIGH-3: check option_type vs structure) ──
+    symbol = signal.get("symbol", "")
     conditions = signal.get("conditions_met", [])
     has_bullish = any("bullish" in str(c).lower() for c in conditions)
     has_bearish = any("bearish" in str(c).lower() for c in conditions)
     if has_bullish and has_bearish:
         return reject(f"contradictory_signals:{conditions}")
+
+    # Also check option_type alignment with structure breaks
+    opt_type = str(signal.get("option_type", "")).upper()
+    structure_breaks = context.get("structure_breaks", [])
+    for brk in structure_breaks:
+        brk_sym = getattr(brk, "symbol", brk.get("symbol", "") if isinstance(brk, dict) else "")
+        brk_type = getattr(brk, "break_type", brk.get("break_type", "") if isinstance(brk, dict) else "")
+        if brk_sym == symbol:
+            if opt_type == "CE" and "bearish" in str(brk_type).lower():
+                return reject(f"direction_mismatch:CE_with_bearish_structure:{brk_type}")
+            if opt_type == "PE" and "bullish" in str(brk_type).lower():
+                return reject(f"direction_mismatch:PE_with_bullish_structure:{brk_type}")
+            break  # Only check first matching break
 
     # ── Gate 9: Minimum conditions ──
     if len(conditions) < 2:
@@ -485,6 +507,9 @@ def validate_entry(
                     "TRENDING_BEARISH": 1.0, "RANGE_BOUND": 1.0}.get(regime, 0.8)
     drawdown_scale = max(0.25, 1.0 - abs(min(0, daily_pnl)) / max(daily_limit, 1))
 
+    # CRIT-7: Track approved entries this cycle to prevent multi-entry bypass
+    context["_approved_entries_this_cycle"] = approved_this_cycle + 1
+
     log_data.update({
         "decision": "approved",
         "lots": lots,
@@ -534,7 +559,13 @@ def validate_exit(
     Returns ExitDecision with should_exit, reason, and urgency.
     Priority order: max_loss > sl_hit > momentum_reversal > spread > thesis > time_stop
     """
+    # CRIT-6: Price=0 means broken data, not "hold forever"
     if current_price <= 0:
+        trade_logger.log_decision({
+            "event": "exit_price_zero",
+            "position": str(getattr(position, "position_id", "")),
+            "timestamp": datetime.now().isoformat(),
+        })
         return ExitDecision(should_exit=False)
 
     entry = float(getattr(position, "entry_price", 0) or 0)
@@ -549,9 +580,10 @@ def validate_exit(
 
     unrealized = (current_price - entry) * qty
 
-    # ── Check 1: Per-trade max loss (HARD EXIT, highest priority) ──
+    # ── Check 1: Per-trade max loss (CRIT-3: include exit slippage buffer) ──
     max_loss = config.total_capital * config.risk_per_trade_pct / 100
-    if unrealized < -max_loss:
+    exit_slippage_buffer = entry * 0.01 * qty  # 1% conservative exit slippage
+    if unrealized - exit_slippage_buffer < -max_loss:
         return ExitDecision(
             should_exit=True,
             reason=ExitReason.MAX_LOSS,
@@ -560,8 +592,19 @@ def validate_exit(
             urgency=2,
         )
 
-    # ── Check 2: SL hit (volatility-adjusted) ──
+    # ── Check 2: SL hit (CRIT-1: log gap-through events) ──
     if sl > 0 and current_price <= sl and not partial_done:
+        gap_distance = sl - current_price
+        if gap_distance > sl * 0.10:
+            trade_logger.log_decision({
+                "event": "sl_gap_through",
+                "position": str(getattr(position, "position_id", "")),
+                "expected_exit": sl,
+                "actual_exit": current_price,
+                "gap_pct": round(gap_distance / sl * 100, 2),
+                "extra_loss": round(gap_distance * qty, 2),
+                "timestamp": datetime.now().isoformat(),
+            })
         return ExitDecision(
             should_exit=True,
             reason=ExitReason.SL_HIT,
@@ -709,7 +752,20 @@ class KillSwitch:
         })
         return True, reason
 
-    def reset(self) -> None:
+    COOLDOWN_SECONDS = 900  # 15 minutes minimum before reset
+
+    def reset(self) -> bool:
+        """Reset kill switch. Returns False if cooldown hasn't elapsed."""
+        if self.triggered_at:
+            elapsed = (datetime.now() - self.triggered_at).total_seconds()
+            if elapsed < self.COOLDOWN_SECONDS:
+                return False
+        self.active = False
+        self.reason = ""
+        return True
+
+    def force_reset(self) -> None:
+        """Force reset (manual override only)."""
         self.active = False
         self.reason = ""
 
@@ -785,7 +841,14 @@ def _compute_hourly_pnl(context: Dict[str, Any]) -> float:
     if not trades:
         return float(context.get("daily_pnl", 0) or 0)
 
-    cutoff = datetime.now() - timedelta(hours=2)
+    # HIGH-4: Use cycle_now, not wall clock (for replay compatibility)
+    now = context.get("cycle_now", datetime.now())
+    if isinstance(now, str):
+        try:
+            now = datetime.fromisoformat(now)
+        except ValueError:
+            now = datetime.now()
+    cutoff = now - timedelta(hours=2)
     recent_pnl = 0.0
     for t in trades:
         if not isinstance(t, dict):
@@ -829,9 +892,11 @@ def _check_thesis_support(position: Any, context: Dict[str, Any]) -> Dict[str, A
 
     supported = in_selections or in_quality
 
-    # Compute reversal strength from momentum
+    # Compute reversal strength from momentum (HIGH-5: index-specific denominator)
     momentum = context.get("momentum_signals", [])
     reversal_strength = 0.0
+    idx_cfg = _resolve_idx(symbol)
+    reversal_norm = float(idx_cfg.momentum_threshold) if idx_cfg else 25.0
     for m in momentum:
         if getattr(m, "symbol", "") != symbol:
             continue
@@ -840,9 +905,9 @@ def _check_thesis_support(position: Any, context: Dict[str, Any]) -> Dict[str, A
         move = float(getattr(m, "price_move", 0) or 0)
         strength = float(getattr(m, "strength", 0) or 0)
         if option_type == "CE" and move < 0:
-            reversal_strength = max(reversal_strength, strength * abs(move) / 25)
+            reversal_strength = max(reversal_strength, strength * abs(move) / reversal_norm)
         if option_type == "PE" and move > 0:
-            reversal_strength = max(reversal_strength, strength * abs(move) / 25)
+            reversal_strength = max(reversal_strength, strength * abs(move) / reversal_norm)
 
     return {
         "supported": supported,
