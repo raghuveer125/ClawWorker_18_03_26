@@ -1964,7 +1964,6 @@ class PositionManagerAgent(BaseBot):
         option_chains = context.data.get("option_chains", {})
 
         # Process new entry orders (skip already-processed ones)
-        processed_order_ids = {pos.position_id for pos in self._positions.values()}
         for order in pending_orders:
             if order.status in ["filled", "simulated"] and order.order_id not in self._processed_order_ids:
                 self._create_position(order, context)
@@ -1975,6 +1974,10 @@ class PositionManagerAgent(BaseBot):
             if order.status in ["filled", "simulated"] and order.order_id not in self._processed_order_ids:
                 self._process_exit(order, position_updates)
                 self._processed_order_ids.add(order.order_id)
+
+        # Clear processed orders from context so they don't replay on restart
+        context.data["pending_orders"] = []
+        context.data["exit_orders"] = []
 
         # Update all positions
         total_unrealized, total_realized = self._refresh_context_state(context, config)

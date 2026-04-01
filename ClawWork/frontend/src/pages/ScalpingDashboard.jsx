@@ -564,9 +564,8 @@ function PositionsTable({ positions, agents }) {
             <th>Strike</th>
             <th>Type</th>
             <th>Qty</th>
-            <th>Spot</th>
             <th>Entry</th>
-            <th>LTP</th>
+            <th>Cur. Price</th>
             <th>SL</th>
             <th>Target</th>
             <th>P&L</th>
@@ -579,14 +578,6 @@ function PositionsTable({ positions, agents }) {
             const sl = pos.current_sl || 0;
             const target = pos.target_price || 0;
             const pnl = pos.unrealized_pnl || 0;
-            // Get spot price for this position's index
-            const dataFeed = agents?.agents?.find(a => a.bot_type === 'data_feed' || a.name === 'DataFeed');
-            const spotKey = Object.keys(dataFeed?.last_output || {}).find(k =>
-              (pos.index === 'NIFTY50' && k.includes('NIFTY50')) ||
-              (pos.index === 'BANKNIFTY' && k.includes('BANKNIFTY')) ||
-              (pos.index === 'SENSEX' && k.includes('SENSEX'))
-            );
-            const spot = spotKey ? dataFeed?.last_output?.[spotKey]?.ltp : null;
             return (
             <tr key={pos.trade_id}>
               <td className="symbol">{pos.index}</td>
@@ -595,9 +586,8 @@ function PositionsTable({ positions, agents }) {
                 {pos.option_type}
               </td>
               <td>{pos.remaining_qty || pos.quantity}</td>
-              <td style={{ color: '#60a5fa' }}>{spot ? spot.toFixed(2) : '--'}</td>
               <td>{pos.entry_price.toFixed(2)}</td>
-              <td className={ltp > pos.entry_price ? 'profit' : ltp < pos.entry_price ? 'loss' : ''}>
+              <td className={ltp > pos.entry_price ? 'profit' : ltp < pos.entry_price ? 'loss' : ''} style={{ fontWeight: 600 }}>
                 {ltp > 0 ? ltp.toFixed(2) : '--'}
               </td>
               <td className="sl">{sl > 0 ? sl.toFixed(2) : '--'}</td>
