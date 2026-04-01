@@ -1276,6 +1276,13 @@ class ExitAgent(BaseBot):
             if current_price == 0:
                 continue
 
+            # Sanity check: reject obviously bad prices (>80% drop from entry in one tick)
+            # This catches stale/corrupt chain data returning delta/spread as LTP
+            if current_price < pos.entry_price * 0.20:
+                print(f"[ExitAgent] Bad price for {pos.symbol} {pos.strike}{pos.option_type}: "
+                      f"got {current_price:.2f}, entry was {pos.entry_price:.2f} — skipping")
+                continue
+
             pos.current_price = current_price
             pos.unrealized_pnl = (current_price - pos.entry_price) * pos.quantity
 
@@ -1516,8 +1523,17 @@ class ExitAgent(BaseBot):
         for chain in chains.values():
             for opt in chain.options:
                 if opt.strike == order.strike and opt.option_type == order.option_type:
-                    fill_price = opt.bid or opt.ltp or order.price
+                    bid = float(getattr(opt, "bid", 0) or 0)
+                    ltp = float(getattr(opt, "ltp", 0) or 0)
+                    chain_price = bid if bid > 0 else ltp
+                    if chain_price > 0:
+                        fill_price = chain_price
                     break
+        # Fallback to direct broker quote if chain didn't have the strike
+        if fill_price <= 0 or fill_price < order.price * 0.20:
+            live_ltp = _fetch_live_option_ltp(order.symbol, order.strike, order.option_type)
+            if live_ltp > 0:
+                fill_price = live_ltp
         order.fill_price = _round_price_for_symbol(order.symbol, fill_price)
         order.fill_time = fill_time or datetime.now()
         order.status = "simulated"
@@ -1901,7 +1917,7 @@ class PositionManagerAgent(BaseBot):
         for pos_id, pos in self._positions.items():
             if pos.status != "closed":
                 current_price = self._get_current_price(pos, option_chains)
-                if current_price <= 0:
+                if current_price <= 0 or current_price < pos.entry_price * 0.20:
                     current_price = pos.current_price or pos.entry_price
                 pos.current_price = current_price
                 pos.unrealized_pnl = (current_price - pos.entry_price) * pos.quantity
