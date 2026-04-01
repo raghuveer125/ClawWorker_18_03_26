@@ -26,11 +26,33 @@ class EntryEngine:
         signals: List[Dict[str, Any]],
         context: Dict[str, Any],
     ) -> List[str]:
-        """Evaluate a batch of signals. Returns list of position_ids created."""
+        """Evaluate a batch of signals. Returns list of position_ids created.
+
+        Enforces ONE strike per index per cycle — picks highest quality score.
+        """
         context["_approved_entries_this_cycle"] = 0
         position_ids = []
 
-        for signal in signals:
+        # Sort by quality_score descending — best signal per index wins
+        sorted_signals = sorted(signals, key=lambda s: float(s.get("quality_score", 0) or 0), reverse=True)
+
+        # Track which indices already got an entry this cycle
+        entered_indices: set = set()
+        # Also check existing open positions per index
+        for pos in context.get("positions", []):
+            sym = getattr(pos, "symbol", "") if hasattr(pos, "symbol") else ""
+            if sym:
+                entered_indices.add(sym)
+
+        for signal in sorted_signals:
+            symbol = signal.get("symbol", "")
+
+            # ONE strike per index — skip if already entered this index
+            if symbol in entered_indices:
+                self._total_evaluated += 1
+                self._total_rejected += 1
+                continue
+
             self._total_evaluated += 1
             decision = validate_entry(signal, context, self.config)
 
@@ -52,7 +74,7 @@ class EntryEngine:
                 continue
 
             self._total_approved += 1
-            symbol = signal.get("symbol", "")
+            entered_indices.add(symbol)  # Block further entries for this index
             idx_config = None
             for idx_type in IndexType:
                 cfg = get_index_config(idx_type)

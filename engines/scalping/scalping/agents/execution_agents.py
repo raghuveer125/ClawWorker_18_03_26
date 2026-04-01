@@ -471,9 +471,24 @@ class EntryAgent(BaseBot):
         execution_metrics = []
         remaining_slots = max(0, int(config.max_positions) - open_positions)
 
+        # One strike per index: track which indices already have entries
+        entered_indices = set()
+        for p in positions:
+            if p.status != "closed":
+                entered_indices.add(p.symbol)
+
+        # Sort signals by score descending — best strike per index wins
+        signals = sorted(signals, key=lambda s: float(s.get("score", s.get("quality_score", 0)) or 0), reverse=True)
+
         for signal_payload in signals:
             symbol = signal_payload.get("symbol", "")
             if not symbol:
+                continue
+            # One strike per index
+            if symbol in entered_indices:
+                rejected_signals.append(
+                    {**signal_payload, "rejection_reasons": list(signal_payload.get("rejection_reasons", [])) + [f"Index already has position: {symbol}"]}
+                )
                 continue
             if remaining_slots <= 0:
                 rejected_signals.append(
@@ -692,6 +707,7 @@ class EntryAgent(BaseBot):
                 )
                 orders.append(order)
                 remaining_slots -= 1
+                entered_indices.add(symbol)  # One strike per index
             else:
                 rejected_signals.append(
                     {
