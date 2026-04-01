@@ -821,35 +821,41 @@ export default function ScalpingDashboard() {
   const replayResultsRef = useRef(null);
 
   const fetchData = useCallback(async () => {
+    const safeFetch = (url) => fetch(url).then(r => r.json()).catch(() => null);
     try {
       const [statusRes, capitalRes, positionsRes, tradesRes, agentsRes, pipelineRes, dataflowRes, replayRes, debateRes, learningRes] = await Promise.all([
-        fetch(`${SCALPING_API}/status`).then(r => r.json()),
-        fetch(`${SCALPING_API}/capital`).then(r => r.json()),
-        fetch(`${SCALPING_API}/positions`).then(r => r.json()),
-        fetch(`${SCALPING_API}/trades?limit=20`).then(r => r.json()),
-        fetch(`${SCALPING_API}/agents`).then(r => r.json()),
-        fetch(`${SCALPING_API}/pipeline`).then(r => r.json()),
-        fetch(`${SCALPING_API}/dataflow`).then(r => r.json()),
-        fetch(`${SCALPING_API}/replay/status`).then(r => r.json()),
-        fetch(`${SCALPING_API}/debate`).then(r => r.json()),
-        fetch(`${SCALPING_API}/learning`).then(r => r.json()),
+        safeFetch(`${SCALPING_API}/status`),
+        safeFetch(`${SCALPING_API}/capital`),
+        safeFetch(`${SCALPING_API}/positions`),
+        safeFetch(`${SCALPING_API}/trades?limit=20`),
+        safeFetch(`${SCALPING_API}/agents`),
+        safeFetch(`${SCALPING_API}/pipeline`),
+        safeFetch(`${SCALPING_API}/dataflow`),
+        safeFetch(`${SCALPING_API}/replay/status`),
+        safeFetch(`${SCALPING_API}/debate`),
+        safeFetch(`${SCALPING_API}/learning`),
       ]);
 
-      setStatus(statusRes);
-      setCapital(capitalRes);
-      setPositions(positionsRes);
-      setTrades(tradesRes);
-      setAgents(agentsRes);
-      setPipeline(pipelineRes);
-      setDataflow(dataflowRes);
-      setReplay(replayRes);
-      if (!isSeeking) {
-        setReplaySeekPct(Math.min(100, Math.max(0, replayRes?.progress_pct || 0)));
+      // Update each piece of state independently — one failure doesn't block others
+      if (statusRes) setStatus(statusRes);
+      if (capitalRes) setCapital(capitalRes);
+      if (positionsRes) setPositions(positionsRes);
+      if (tradesRes) setTrades(tradesRes);
+      if (agentsRes) setAgents(agentsRes);
+      if (pipelineRes) setPipeline(pipelineRes);
+      if (dataflowRes) setDataflow(dataflowRes);
+      if (replayRes) {
+        setReplay(replayRes);
+        if (!isSeeking) {
+          setReplaySeekPct(Math.min(100, Math.max(0, replayRes?.progress_pct || 0)));
+        }
       }
-      setDebateMode(debateRes?.mode || 'debate');
-      setLearningMode(learningRes?.mode || 'hybrid');
-      setLearningMetrics(learningRes?.metrics || null);
-      setLearningLastUpdate(learningRes?.last_update || null);
+      if (debateRes) setDebateMode(debateRes?.mode || 'debate');
+      if (learningRes) {
+        setLearningMode(learningRes?.mode || 'hybrid');
+        setLearningMetrics(learningRes?.metrics || null);
+        setLearningLastUpdate(learningRes?.last_update || null);
+      }
       setApiReady(true);
       setError(null);
       return true;
@@ -981,7 +987,7 @@ export default function ScalpingDashboard() {
 
   useEffect(() => {
     fetchData();
-    const pollIntervalMs = replay?.active || status?.mode === 'REPLAY' ? 250 : 2000;
+    const pollIntervalMs = replay?.active || status?.mode === 'REPLAY' ? 250 : 1000;
     const interval = setInterval(fetchData, pollIntervalMs);
     return () => clearInterval(interval);
   }, [fetchData, replay?.active, status?.mode]);
