@@ -122,6 +122,48 @@ def _index_name(symbol: str) -> str:
     return symbol
 
 
+_option_prefix_cache: Dict[str, str] = {}
+
+
+def _fetch_live_option_ltp(symbol: str, strike: int, option_type: str) -> float:
+    """Fetch live LTP for a specific option directly from broker.
+
+    Derives the option symbol prefix (e.g. NSE:NIFTY26407) from a nearby
+    chain option, then appends strike + type to build the full symbol.
+    """
+    try:
+        from .data_agents import get_market_adapter
+        adapter = get_market_adapter()
+        if not adapter:
+            return 0.0
+
+        # Check if we already cached the prefix for this index
+        prefix = _option_prefix_cache.get(symbol)
+
+        if not prefix:
+            # Extract prefix from any option in the chain
+            chain = adapter.get_option_chain_snapshot(symbol, strike_count=5)
+            for opt in (chain or {}).get("data", {}).get("optionsChain", []):
+                if not isinstance(opt, dict):
+                    continue
+                opt_sym = str(opt.get("symbol", ""))
+                opt_strike = str(int(float(opt.get("strike_price", 0) or 0)))
+                ot = str(opt.get("option_type", "")).upper()
+                # Extract prefix: everything before the strike+type suffix
+                if opt_strike and ot and opt_sym.endswith(f"{opt_strike}{ot}"):
+                    prefix = opt_sym[: -len(f"{opt_strike}{ot}")]
+                    _option_prefix_cache[symbol] = prefix
+                    break
+
+        if prefix:
+            option_symbol = f"{prefix}{strike}{option_type.upper()}"
+            ltp = adapter.get_quote_ltp(option_symbol)
+            return float(ltp) if ltp and ltp > 0 else 0.0
+    except Exception:
+        pass
+    return 0.0
+
+
 def _sync_dashboard_state(context: BotContext) -> None:
     try:
         from .. import api as api_state
@@ -1481,12 +1523,17 @@ class ExitAgent(BaseBot):
         order.status = "simulated"
 
     def _get_current_price(self, pos: Position, chains: Dict) -> float:
-        """Get current price for a position."""
-        # Find the option in the chain
+        """Get current price for a position from chain or direct broker quote."""
         for symbol, chain in chains.items():
             for opt in chain.options:
                 if opt.strike == pos.strike and opt.option_type == pos.option_type:
-                    return _round_price_for_symbol(pos.symbol, float(getattr(opt, "ltp", 0) or 0))
+                    ltp = float(getattr(opt, "ltp", 0) or 0)
+                    if ltp > 0:
+                        return _round_price_for_symbol(pos.symbol, ltp)
+        # Chain may not include far OTM strikes — fetch directly from broker
+        live_ltp = _fetch_live_option_ltp(pos.symbol, pos.strike, pos.option_type)
+        if live_ltp > 0:
+            return _round_price_for_symbol(pos.symbol, live_ltp)
         return 0
 
     def _check_partial_exit(
@@ -2253,11 +2300,17 @@ class PositionManagerAgent(BaseBot):
         }
 
     def _get_current_price(self, pos: Position, chains: Dict) -> float:
-        """Get current price for a position."""
+        """Get current price for a position from chain or direct broker quote."""
         for symbol, chain in chains.items():
             for opt in chain.options:
                 if opt.strike == pos.strike and opt.option_type == pos.option_type:
-                    return _round_price_for_symbol(pos.symbol, float(getattr(opt, "ltp", 0) or 0))
+                    ltp = float(getattr(opt, "ltp", 0) or 0)
+                    if ltp > 0:
+                        return _round_price_for_symbol(pos.symbol, ltp)
+        # Chain may not include far OTM strikes — fetch directly from broker
+        live_ltp = _fetch_live_option_ltp(pos.symbol, pos.strike, pos.option_type)
+        if live_ltp > 0:
+            return _round_price_for_symbol(pos.symbol, live_ltp)
         return pos.current_price
 
 
