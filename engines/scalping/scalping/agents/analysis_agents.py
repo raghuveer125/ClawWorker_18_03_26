@@ -1221,6 +1221,16 @@ class StrikeSelectorAgent(BaseBot):
                     reasons = reasons + ["strong_oi"]
                 score += movement_bonus
 
+            entry_price = float(getattr(opt, "ask", 0) or getattr(opt, "ltp", 0) or 0)
+            # Scalping SL/target — percentage-based for all premium ranges
+            # SL: ~25% of premium (tight scalping risk)
+            # Target: ~35% of premium (gives R:R ~1.4)
+            sl_price = round(entry_price * 0.75, 2) if entry_price > 0 else 0.0
+            first_target_pts = float(getattr(config, "first_target_points", 4.0) or 4.0)
+            # Use max of fixed target or 35% of premium
+            target_offset = max(first_target_pts, entry_price * 0.35)
+            target_price = round(entry_price + target_offset, 2)
+
             selection = StrikeSelection(
                 symbol=opt.symbol,
                 strike=opt.strike,
@@ -1234,7 +1244,9 @@ class StrikeSelectorAgent(BaseBot):
                 score=score,
                 reasons=reasons,
                 confidence=score,
-                entry=float(getattr(opt, "ask", 0) or getattr(opt, "ltp", 0) or 0),
+                entry=entry_price,
+                sl=sl_price,
+                t1=target_price,
             )
 
             delta_reliable = abs(float(opt.delta or 0)) >= 0.01

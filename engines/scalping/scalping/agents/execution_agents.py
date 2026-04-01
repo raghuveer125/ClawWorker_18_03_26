@@ -645,6 +645,12 @@ class EntryAgent(BaseBot):
                 return f"Strict A+ filter rejected setup ({tag}): {missing}"
             return f"Strict A+ filter rejected setup ({tag})"
         if tag == "C":
+            rr = float(setup_assessment.get("rr_ratio", 0.0) or 0.0)
+            min_rr = float(getattr(config, "strict_b_rr_ratio", 1.1) or 1.1)
+            # Allow C-tag if R:R is acceptable — timeframe data may be sparse
+            # but the signal has valid risk/reward from live option pricing
+            if rr >= min_rr:
+                return None
             missing = ", ".join(setup_assessment.get("missing_requirements", []))
             if missing:
                 return f"Setup quality too weak ({tag}): {missing}"
@@ -839,7 +845,11 @@ class EntryAgent(BaseBot):
             if rr_ratio >= 1.3:
                 base = min(0.4, base + 0.03)
         elif tag == "C":
-            base = 0.0
+            # C-tag with valid R:R gets reduced size (25% of normal)
+            if rr_ratio >= float(context.data.get("config", ScalpingConfig()).strict_b_rr_ratio or 1.1):
+                base = 0.25
+            else:
+                base = 0.0
         else:
             confidence = float(signal.get("confidence", signal.get("quality_score", signal.get("score", 0))) or 0)
             if confidence <= 1.0:
@@ -899,12 +909,28 @@ class EntryAgent(BaseBot):
             strong_momentum = [m for m in symbol_momentum if m.strength >= 0.7]
             if strong_momentum:
                 conditions.append("futures_momentum")
+            elif symbol_momentum and any(
+                getattr(m, "signal_type", "") == "gamma_zone"
+                and getattr(m, "strength", 0) >= 0.8
+                for m in symbol_momentum
+            ):
+                # Gamma zone with high strength + structure break = momentum proxy
+                if "structure_break" in conditions:
+                    conditions.append("futures_momentum")
 
         # Condition 3: Volume burst
         if config.require_volume_burst:
             volume_signals = [m for m in momentum_signals
                            if m.symbol == symbol and m.signal_type == "volume_spike"]
             if volume_signals:
+                conditions.append("volume_burst")
+            elif any(
+                getattr(m, "signal_type", "") == "gamma_zone"
+                and getattr(m, "strength", 0) >= 0.9
+                for m in momentum_signals
+                if m.symbol == symbol
+            ):
+                # High-strength gamma zone implies volume activity at ATM strikes
                 conditions.append("volume_burst")
 
         # Condition 4: Trap confirmation (optional)

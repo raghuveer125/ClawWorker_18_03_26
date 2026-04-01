@@ -209,7 +209,7 @@ class ScalpingConfig:
         ("09:15", "09:20"),  # Opening chaos
         ("15:20", "15:30"),  # Closing
     ])
-    engine_watchdog_factor: float = 1.0
+    engine_watchdog_factor: float = 6.0  # Cycles take 10-25s with 3 indices; only trip on anomalous overruns
 
     # Learning Parameters
     log_all_signals: bool = True
