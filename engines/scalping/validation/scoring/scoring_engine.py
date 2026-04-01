@@ -172,7 +172,8 @@ class ScoringEngine:
             }
 
         report = self._safe_get_report(self._indicator_validator)
-        components_seen = report.get("components_seen", 0)
+        # Handle both "components_seen" (int) and "seen_components" (list)
+        components_seen = report.get("components_seen", report.get("seen_components", 0))
         if isinstance(components_seen, (set, list)):
             components_seen = len(components_seen)
 
