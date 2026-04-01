@@ -1308,7 +1308,9 @@ class ScalpingEngine:
 
                     if results["risk_guardian"].status == BotStatus.BLOCKED:
                         results["cycle_skip_reason"] = "risk_blocked"
-                        await self.execution_queue.put(None)
+                        # Still pass context so Exit/PositionManager can monitor open positions
+                        stage_context.data["risk_blocked_new_entries"] = True
+                        await self.execution_queue.put(stage_context)
                         return
 
                     await self._publish_execution_snapshot(stage_context)
@@ -1331,7 +1333,12 @@ class ScalpingEngine:
                         await self.learning_queue.put(stage_context)
                         return
 
-                    if stage_context.data.get("trade_disabled"):
+                    has_open_positions = any(
+                        p.status != "closed" for p in stage_context.data.get("positions", [])
+                        if hasattr(p, "status")
+                    )
+
+                    if stage_context.data.get("trade_disabled") and not has_open_positions:
                         results["cycle_skip_reason"] = stage_context.data.get("trade_disabled_reason", "trade_disabled")
                         print(f"[Cycle {self.cycle_count}] Execution disabled: {results['cycle_skip_reason']}")
                         await self.learning_queue.put(stage_context)
@@ -1339,21 +1346,30 @@ class ScalpingEngine:
 
                     current_snapshot = stage_context.data.get("execution_candidates_snapshot", {})
                     current_version = int(current_snapshot.get("version", 0) or 0) if isinstance(current_snapshot, dict) else 0
-                    if current_version and stage_context.data.get("executed_snapshot_version") == current_version:
-                        results["cycle_skip_reason"] = "micro_execution_already_ran"
+                    # Skip new entries when: snapshot unchanged, risk blocked, or trade disabled
+                    skip_entry = bool(
+                        (current_version and stage_context.data.get("executed_snapshot_version") == current_version)
+                        or stage_context.data.get("risk_blocked_new_entries")
+                        or stage_context.data.get("trade_disabled")
+                    )
+                    if skip_entry and not has_open_positions:
+                        results["cycle_skip_reason"] = "no_new_signals_no_positions"
                         await self.learning_queue.put(stage_context)
                         return
 
-                    self._update_agent_api("meta_allocator", None, "running")
-                    results["meta_allocator"] = await self.meta_allocator.run(stage_context)
-                    self._update_agent_api("meta_allocator", results["meta_allocator"], "idle")
-                    self._record_flow("Meta", "Entry", "decision", 1)
+                    # Only run entry flow when new signals are available and not blocked
+                    if not skip_entry:
+                        self._update_agent_api("meta_allocator", None, "running")
+                        results["meta_allocator"] = await self.meta_allocator.run(stage_context)
+                        self._update_agent_api("meta_allocator", results["meta_allocator"], "idle")
+                        self._record_flow("Meta", "Entry", "decision", 1)
 
-                    self._update_agent_api("entry", None, "running")
-                    results["entry"] = await self.entry.run(stage_context)
-                    self._update_agent_api("entry", results["entry"], "idle")
-                    self._record_flow("Entry", "Position", "order", 1)
+                        self._update_agent_api("entry", None, "running")
+                        results["entry"] = await self.entry.run(stage_context)
+                        self._update_agent_api("entry", results["entry"], "idle")
+                        self._record_flow("Entry", "Position", "order", 1)
 
+                    # Always run exit monitoring and position management for open positions
                     self._update_agent_api("exit", None, "running")
                     results["exit"] = await self.exit.run(stage_context)
                     self._update_agent_api("exit", results["exit"], "idle")
