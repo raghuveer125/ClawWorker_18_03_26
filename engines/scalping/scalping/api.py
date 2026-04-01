@@ -227,17 +227,23 @@ def _normalize_position(position: Dict[str, Any]) -> Dict[str, Any]:
             )
         )
     )
+    current_price = float(position.get("current_price", 0.0) or 0.0)
+    entry_price = float(position.get("entry_price", 0.0) or 0.0)
+    quantity = int(position.get("remaining_qty", position.get("quantity", 0)) or 0)
+    unrealized = (current_price - entry_price) * quantity if current_price > 0 else float(position.get("unrealized_pnl", 0.0) or 0.0)
     return {
         "trade_id": position.get("trade_id", position.get("position_id", symbol)),
         "symbol": symbol,
         "index": position.get("index", index),
         "strike": position.get("strike", 0),
         "option_type": position.get("option_type", ""),
-        "quantity": position.get("quantity", 0),
-        "remaining_qty": position.get("remaining_qty", position.get("quantity", 0)),
-        "entry_price": position.get("entry_price", 0.0),
-        "current_sl": position.get("current_sl", position.get("trail_stop", position.get("sl_price", 0.0))),
-        "unrealized_pnl": position.get("unrealized_pnl", 0.0),
+        "quantity": int(position.get("quantity", 0) or 0),
+        "remaining_qty": quantity,
+        "entry_price": entry_price,
+        "current_price": current_price,
+        "current_sl": float(position.get("current_sl") or position.get("trail_stop") or position.get("sl_price") or 0.0),
+        "target_price": float(position.get("target_price", 0.0) or 0.0),
+        "unrealized_pnl": round(unrealized, 2),
         "status": position.get("status", "open"),
     }
 

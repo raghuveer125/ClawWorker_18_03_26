@@ -544,12 +544,18 @@ function PositionsTable({ positions }) {
             <th>Entry</th>
             <th>LTP</th>
             <th>SL</th>
+            <th>Target</th>
             <th>P&L</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          {positions.positions.map(pos => (
+          {positions.positions.map(pos => {
+            const ltp = pos.current_price || 0;
+            const sl = pos.current_sl || 0;
+            const target = pos.target_price || 0;
+            const pnl = pos.unrealized_pnl || 0;
+            return (
             <tr key={pos.trade_id}>
               <td className="symbol">{pos.index}</td>
               <td>{pos.strike}</td>
@@ -558,16 +564,20 @@ function PositionsTable({ positions }) {
               </td>
               <td>{pos.remaining_qty || pos.quantity}</td>
               <td>{pos.entry_price.toFixed(2)}</td>
-              <td>--</td>
-              <td className="sl">{pos.current_sl.toFixed(2)}</td>
-              <td>{formatPnL(pos.unrealized_pnl)}</td>
+              <td className={ltp > pos.entry_price ? 'profit' : ltp < pos.entry_price ? 'loss' : ''}>
+                {ltp > 0 ? ltp.toFixed(2) : '--'}
+              </td>
+              <td className="sl">{sl > 0 ? sl.toFixed(2) : '--'}</td>
+              <td className="target">{target > 0 ? target.toFixed(2) : '--'}</td>
+              <td>{formatPnL(pnl)}</td>
               <td>
                 <span className={`status-badge ${pos.status}`}>
                   {pos.status}
                 </span>
               </td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>

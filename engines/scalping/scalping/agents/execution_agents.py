@@ -1237,6 +1237,34 @@ class ExitAgent(BaseBot):
             pos.current_price = current_price
             pos.unrealized_pnl = (current_price - pos.entry_price) * pos.quantity
 
+            # Check initial SL hit (before partial exit)
+            if pos.sl_price > 0 and current_price <= pos.sl_price and not pos.partial_exit_done:
+                import uuid as _uuid
+                sl_order = Order(
+                    order_id=f"SL_{_uuid.uuid4().hex[:8]}",
+                    symbol=pos.symbol,
+                    strike=pos.strike,
+                    option_type=pos.option_type,
+                    order_type="market",
+                    side="sell",
+                    quantity=pos.quantity,
+                    price=_round_price_for_symbol(pos.symbol, current_price),
+                    status="simulated" if self.dry_run else "pending",
+                    reason=f"SL hit: {current_price:.2f} <= {pos.sl_price:.2f}",
+                )
+                if self.dry_run:
+                    sl_order.fill_price = _round_price_for_symbol(pos.symbol, current_price)
+                    sl_order.fill_time = cycle_now
+                exit_orders.append(sl_order)
+                self._simulate_exit_fill(sl_order, option_chains, fill_time=cycle_now)
+                position_updates.append({
+                    "position_id": pos.position_id,
+                    "action": "sl_hit",
+                    "qty": sl_order.quantity,
+                    "price": current_price,
+                })
+                continue
+
             time_stop_order = self._check_time_stop(pos, current_price, config, cycle_now)
             if time_stop_order:
                 exit_orders.append(time_stop_order)
@@ -1891,14 +1919,24 @@ class PositionManagerAgent(BaseBot):
         idx_config = _resolve_index_config(order.symbol)
         lot_size = idx_config.lot_size if idx_config else 25
         lots = order.quantity // lot_size
-        stop_scale = float(order.metadata.get("stop_scale", 1.0) or 1.0)
-        sl_distance_multiplier = 0.3 * max(0.5, min(1.0, stop_scale))
         entry_price = _round_price_for_symbol(order.symbol, order.fill_price or order.price)
-        sl_price = _round_price_for_symbol(order.symbol, entry_price * (1.0 - sl_distance_multiplier))
-        target_price = _round_price_for_symbol(
-            order.symbol,
-            entry_price + (config.first_target_points * float(order.metadata.get("target_scale", 1.0) or 1.0)),
-        )
+        # Use signal's pre-calculated SL/target if available; otherwise fallback
+        signal_sl = float(order.metadata.get("sl", 0) or 0)
+        signal_target = float(order.metadata.get("t1", 0) or 0)
+        stop_scale = float(order.metadata.get("stop_scale", 1.0) or 1.0)
+        if signal_sl > 0:
+            sl_price = _round_price_for_symbol(order.symbol, signal_sl)
+        else:
+            sl_distance_multiplier = 0.25 * max(0.5, min(1.0, stop_scale))
+            sl_price = _round_price_for_symbol(order.symbol, entry_price * (1.0 - sl_distance_multiplier))
+        if signal_target > 0:
+            target_price = _round_price_for_symbol(order.symbol, signal_target)
+        else:
+            target_offset = max(config.first_target_points, entry_price * 0.35)
+            target_price = _round_price_for_symbol(
+                order.symbol,
+                entry_price + (target_offset * float(order.metadata.get("target_scale", 1.0) or 1.0)),
+            )
 
         position = Position(
             position_id=f"POS_{uuid.uuid4().hex[:8]}",
@@ -2055,8 +2093,12 @@ class PositionManagerAgent(BaseBot):
         trade = self._trade_records.get(pos.position_id)
         if trade is None:
             return
+        trade["current_price"] = pos.current_price
         trade["unrealized_pnl"] = pos.unrealized_pnl
+        entry = float(trade.get("entry_price", 0) or 0)
+        trade["pnl_pct"] = round(((pos.current_price - entry) / entry) * 100, 2) if entry > 0 and pos.current_price > 0 else 0.0
         trade["current_sl"] = pos.trail_stop or pos.sl_price
+        trade["target_price"] = pos.target_price
         trade["remaining_qty"] = pos.quantity if pos.status != "closed" else 0
         trade["status"] = "partial" if pos.partial_exit_done and pos.status != "closed" else pos.status
 
