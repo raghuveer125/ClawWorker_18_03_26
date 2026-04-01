@@ -169,7 +169,7 @@ class ScalpingKafkaConsumer:
             bootstrap_servers=self._settings.kafka_bootstrap_servers,
             group_id=self._settings.kafka_consumer_group,
             value_deserializer=lambda v: json.loads(v.decode("utf-8")),
-            auto_offset_reset="latest",
+            auto_offset_reset="earliest",
             enable_auto_commit=True,
             consumer_timeout_ms=self._settings.kafka_consumer_timeout_ms,
         )

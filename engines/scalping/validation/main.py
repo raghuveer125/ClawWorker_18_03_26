@@ -215,18 +215,7 @@ async def run_validation_system(simulate: bool = False) -> None:
         consumer.register_handler(topic, handler)
 
     # 5. Optional mock data generator
-    simulator_task = None
-    if simulate:
-        from simulator.mock_data_generator import MockDataGenerator
-
-        generator = MockDataGenerator(SETTINGS.kafka_bootstrap_servers)
-        simulator_task = asyncio.create_task(
-            generator.generate_and_publish(duration_seconds=300, tick_interval_ms=500),
-            name="mock-data-generator",
-        )
-        logger.info("Simulation mode enabled — generating mock data for 300s")
-
-    # 6. Start Kafka consumer
+    # 6. Start Kafka consumer FIRST (so it's ready before simulator publishes)
     try:
         await consumer.start()
     except ConnectionError:
@@ -235,6 +224,20 @@ async def run_validation_system(simulate: bool = False) -> None:
             "The health API will still start, but no messages will be consumed.",
             SETTINGS.kafka_bootstrap_servers,
         )
+
+    # 6b. Start simulator AFTER consumer is ready
+    simulator_task = None
+    if simulate:
+        # Give consumer time to complete partition assignment
+        await asyncio.sleep(3)
+        from simulator.mock_data_generator import MockDataGenerator
+
+        generator = MockDataGenerator(SETTINGS.kafka_bootstrap_servers)
+        simulator_task = asyncio.create_task(
+            generator.generate_and_publish(duration_seconds=300, tick_interval_ms=500),
+            name="mock-data-generator",
+        )
+        logger.info("Simulation mode enabled — generating mock data for 300s")
 
     # 7. Health API
     health_app = create_health_app(
