@@ -1671,7 +1671,8 @@ class ExitAgent(BaseBot):
         age_minutes = (effective_now - pos.entry_time).total_seconds() / 60 if pos.entry_time else 0
         if age_minutes < config.exit_time_stop_minutes:
             return None
-        if pos.unrealized_pnl > config.first_target_points * pos.lot_size:
+        # Don't time-stop a profitable position — let SL/target/trail handle it
+        if current_price >= pos.entry_price:
             return None
 
         import uuid
@@ -1686,7 +1687,7 @@ class ExitAgent(BaseBot):
             quantity=pos.quantity,
             price=_round_price_for_symbol(pos.symbol, current_price),
             status="pending" if not self.dry_run else "simulated",
-            reason=f"Time stop after {age_minutes:.1f}m",
+            reason=f"Time stop after {age_minutes:.1f}m (price {current_price:.2f} < entry {pos.entry_price:.2f})",
         )
 
     def _check_momentum_reversal_exit(
