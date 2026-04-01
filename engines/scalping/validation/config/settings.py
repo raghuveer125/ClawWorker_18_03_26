@@ -96,7 +96,7 @@ class Settings:
     kafka_consumer_timeout_ms: int = 1000
 
     # ── Validation thresholds ────────────────────────────────────────────
-    max_timestamp_drift_ms: float = 100.0       # max acceptable clock drift
+    max_timestamp_drift_ms: float = 2000.0      # max acceptable clock drift (2s for local Kafka)
     max_tick_gap_ms: float = 5000.0             # gap before "missing tick"
     max_execution_delay_ms: float = 500.0       # trade execution latency limit
     stale_data_threshold_sec: float = 15.0      # no data = stale

@@ -33,6 +33,10 @@ from monitoring.health import create_health_app
 from monitoring.metrics import MetricsCollector
 from scoring.scoring_engine import ScoringEngine
 from validator.data_validator import DataValidator
+from validator.indicator_validator import IndicatorValidator
+from validator.strategy_validator import StrategyValidator
+from validator.trade_validator import TradeValidator
+from validator.pipeline_validator import PipelineValidator
 from validator.kafka_consumer import ScalpingKafkaConsumer
 
 logger = logging.getLogger(__name__)
@@ -58,6 +62,10 @@ def _configure_logging() -> None:
 
 async def _make_message_handler(
     data_validator: DataValidator,
+    indicator_validator: IndicatorValidator,
+    strategy_validator: StrategyValidator,
+    trade_validator: TradeValidator,
+    pipeline_validator: PipelineValidator,
     metrics: MetricsCollector,
     alert_manager: AlertManager,
 ):
@@ -83,8 +91,30 @@ async def _make_message_handler(
             except Exception:
                 pass
 
+        # Track pipeline flow (input/output per component)
+        await pipeline_validator.on_message(topic, message)
+
         # Run data validation
         issues = await data_validator.validate(topic, message)
+
+        # Run indicator validation on analysis/signals topics
+        indicator_issues = await indicator_validator.validate(topic, message)
+        issues.extend(indicator_issues)
+
+        # Strategy validation: feed signals and market data
+        signals_topic = SCALPING_TOPICS.get("signals", "")
+        market_topic = SCALPING_TOPICS.get("market_data", "")
+        if topic == signals_topic:
+            await strategy_validator.on_signal(message)
+            trade_validator.ingest_signal(message)
+        if topic == market_topic:
+            await strategy_validator.on_market_data(message)
+
+        # Trade validation
+        trades_topic = SCALPING_TOPICS.get("trades", "")
+        if topic == trades_topic:
+            trade_issues = await trade_validator.validate(message)
+            issues.extend(trade_issues)
 
         # Record stage latency
         elapsed_ms = (time.time() - start) * 1000
@@ -196,21 +226,32 @@ async def run_validation_system(simulate: bool = False) -> None:
     """
     # 1. Validators
     data_validator = DataValidator(SETTINGS)
+    indicator_validator = IndicatorValidator(SETTINGS)
+    strategy_validator = StrategyValidator(SETTINGS)
+    trade_validator = TradeValidator(SETTINGS)
+    pipeline_validator = PipelineValidator(SETTINGS)
 
     # 2. Monitoring
     metrics = MetricsCollector(SETTINGS)
     alert_manager = AlertManager(SETTINGS)
 
-    # 3. Scoring
+    # 3. Scoring (wire ALL validators)
     scoring_engine = ScoringEngine(
         settings=SETTINGS,
         data_validator=data_validator,
         metrics=metrics,
+        indicator_validator=indicator_validator,
+        strategy_validator=strategy_validator,
+        trade_validator=trade_validator,
+        pipeline_validator=pipeline_validator,
     )
 
     # 4. Kafka consumer + handler registration
     consumer = ScalpingKafkaConsumer(SETTINGS)
-    handler = await _make_message_handler(data_validator, metrics, alert_manager)
+    handler = await _make_message_handler(
+        data_validator, indicator_validator, strategy_validator,
+        trade_validator, pipeline_validator, metrics, alert_manager,
+    )
     for topic in SCALPING_TOPICS.values():
         consumer.register_handler(topic, handler)
 
@@ -243,7 +284,7 @@ async def run_validation_system(simulate: bool = False) -> None:
     health_app = create_health_app(
         metrics=metrics,
         alert_manager=alert_manager,
-        pipeline_validator=None,  # extend when pipeline validator is available
+        pipeline_validator=pipeline_validator,
         scoring_engine=scoring_engine,
     )
 
