@@ -680,6 +680,64 @@ monitor_processes() {
   done
 }
 
+ensure_infrastructure() {
+  local compose_dir="${PROJECT_ROOT}/infrastructure"
+  local compose_file="${compose_dir}/docker-compose.yml"
+
+  if [[ ! -f "${compose_file}" ]]; then
+    echo -e "${YELLOW}  infrastructure/docker-compose.yml not found — skipping infra check.${NC}"
+    return 0
+  fi
+
+  if ! command -v docker >/dev/null 2>&1; then
+    echo -e "${RED}  Docker not found. Please install Docker Desktop to run infrastructure services.${NC}" >&2
+    exit 1
+  fi
+
+  local kafka_up=0 postgres_up=0 redis_up=0
+
+  # Check Redpanda (Kafka)
+  if docker compose -f "${compose_file}" ps --status running 2>/dev/null | grep -q "redpanda"; then
+    kafka_up=1
+  fi
+  # Check PostgreSQL
+  if docker compose -f "${compose_file}" ps --status running 2>/dev/null | grep -q "postgres"; then
+    postgres_up=1
+  fi
+  # Check Redis
+  if docker compose -f "${compose_file}" ps --status running 2>/dev/null | grep -q "redis"; then
+    redis_up=1
+  fi
+
+  if [[ "${kafka_up}" == "1" && "${postgres_up}" == "1" && "${redis_up}" == "1" ]]; then
+    echo -e "${GREEN}  Infrastructure already running (Redpanda, PostgreSQL, Redis).${NC}"
+    return 0
+  fi
+
+  echo -e "${BLUE}  Starting infrastructure services (Redpanda, PostgreSQL, Redis)...${NC}"
+  docker compose -f "${compose_file}" up -d 2>&1 | sed 's/^/    /'
+
+  # Wait for all services to be healthy (max 60s)
+  local retries=0
+  while [[ ${retries} -lt 12 ]]; do
+    local healthy
+    healthy=$(docker compose -f "${compose_file}" ps --format json 2>/dev/null \
+      | python3 -c "import sys,json; data=sys.stdin.read().strip(); rows=json.loads(data) if data.startswith('[') else [json.loads(l) for l in data.splitlines() if l]; healthy=[r for r in rows if r.get('Health','') in ('healthy','')]; print(len(healthy))" 2>/dev/null || echo "0")
+    local total=3
+    if [[ "${healthy}" -ge "${total}" ]]; then
+      echo -e "${GREEN}  Infrastructure ready.${NC}"
+      return 0
+    fi
+    sleep 5
+    retries=$((retries + 1))
+    echo -e "${YELLOW}  Waiting for infrastructure... (${retries}/12)${NC}"
+  done
+
+  echo -e "${RED}  Infrastructure services did not become healthy in time.${NC}" >&2
+  echo -e "${RED}  Run: docker compose -f infrastructure/docker-compose.yml ps${NC}" >&2
+  exit 1
+}
+
 ensure_market_adapter() {
   local env_file="${PROJECT_ROOT}/.env"
   if [[ ! -f "${env_file}" ]]; then
@@ -1488,6 +1546,10 @@ cmd_all() {
   echo -e "${GREEN}Starting ALL Systems (Full Stack + Scalping + LLM Debate)...${NC}"
   echo ""
 
+  # Ensure infrastructure (Redpanda, PostgreSQL, Redis) is running
+  echo -e "${BLUE}[0/10] Ensuring infrastructure services...${NC}"
+  ensure_infrastructure
+
   # Stop any existing processes
   stop_all
 
@@ -1513,13 +1575,13 @@ cmd_all() {
   # ============================================
   # 1. Start Shared Market Adapter
   # ============================================
-  echo -e "${BLUE}[1/9] Starting shared Market Adapter...${NC}"
+  echo -e "${BLUE}[1/10] Starting shared Market Adapter...${NC}"
   ensure_market_adapter
 
   # ============================================
   # 2. Start LLM Debate Backend
   # ============================================
-  echo -e "${BLUE}[2/9] Starting LLM Debate Backend on port ${LLM_DEBATE_PORT}...${NC}"
+  echo -e "${BLUE}[2/10] Starting LLM Debate Backend on port ${LLM_DEBATE_PORT}...${NC}"
   if [[ -d "${LLM_DEBATE_DIR}/backend" ]]; then
     cmd_llm_debate_background
   else
@@ -1529,7 +1591,7 @@ cmd_all() {
   # ============================================
   # 3. Start fyersN7 Signal Engines
   # ============================================
-  echo -e "${BLUE}[3/9] Starting fyersN7 Signal Engines...${NC}"
+  echo -e "${BLUE}[3/10] Starting fyersN7 Signal Engines...${NC}"
   if [[ -d "${FYERSN7_DIR}" ]]; then
     # Sync credentials
     if [[ -n "${FYERS_ACCESS_TOKEN:-}" ]]; then
@@ -1553,7 +1615,7 @@ EOF
   # ============================================
   # 4. Start Backend API Server
   # ============================================
-  echo -e "${BLUE}[4/9] Starting Backend API on port ${API_PORT}...${NC}"
+  echo -e "${BLUE}[4/10] Starting Backend API on port ${API_PORT}...${NC}"
   local livebench_python
   livebench_python="$(livebench_python_bin)"
   local auto_trader_strategy_id="${AUTO_TRADER_STRATEGY_ID:-clawwork-autotrader}"
@@ -1576,7 +1638,7 @@ EOF
   # ============================================
   # 5. Start Frontend Dashboard
   # ============================================
-  echo -e "${BLUE}[5/9] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
+  echo -e "${BLUE}[5/10] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
   if ! ensure_frontend_dependencies; then
     stop_all
     exit 1
@@ -1600,12 +1662,12 @@ EOF
   # ============================================
   # 6. AutoTrader is API-managed
   # ============================================
-  echo -e "${BLUE}[6/9] AutoTrader is managed by the API startup hook (paper mode).${NC}"
+  echo -e "${BLUE}[6/10] AutoTrader is managed by the API startup hook (paper mode).${NC}"
 
   # ============================================
   # 7. Start Fyers Screener Loop (15s refresh)
   # ============================================
-  start_fyers_screener_loop "[7/9]" || true
+  start_fyers_screener_loop "[7/10]" || true
 
   # ============================================
   # 8. Start Scalping API (Dashboard backend)
@@ -1615,7 +1677,7 @@ EOF
   export SCALPING_ENGINE_ENABLED="${SCALPING_ENGINE_ENABLED:-1}"
   export SCALPING_LIVE="${SCALPING_LIVE:-0}"
   export SCALPING_INTERVAL="${SCALPING_INTERVAL:-5}"
-  echo -e "${BLUE}[8/9] Starting Scalping Dashboard API with embedded engine on port ${SCALPING_API_PORT}...${NC}"
+  echo -e "${BLUE}[8/10] Starting Scalping Dashboard API with embedded engine on port ${SCALPING_API_PORT}...${NC}"
   if [[ -d "${BOT_ARMY_DIR}/scalping" ]]; then
     cmd_scalping_api_background
     echo -e "${GREEN}    Engine embedded in API (SCALPING_ENGINE_ENABLED=${SCALPING_ENGINE_ENABLED})${NC}"
@@ -1629,10 +1691,26 @@ EOF
   # ============================================
   # 9. Start FyersN7 Paper Trading (Optimized)
   # ============================================
-  echo -e "${BLUE}[9/9] Starting FyersN7 Paper Trading (69.7% WR strategy) for all indices...${NC}"
+  echo -e "${BLUE}[9/10] Starting FyersN7 Paper Trading (69.7% WR strategy) for all indices...${NC}"
   for _paper_idx in SENSEX BANKNIFTY NIFTY50 FINNIFTY; do
     INDEX="${_paper_idx}" cmd_fyersn7_paper_background
   done
+
+  # ============================================
+  # 10. Start LiveBench Agent Simulation
+  # ============================================
+  local livebench_config="${LIVEBENCH_CONFIG:-${CLAWWORK_DIR}/livebench/configs/example_inline_tasks.json}"
+  if [[ -f "${livebench_config}" ]]; then
+    echo -e "${BLUE}[10/10] Starting LiveBench Agent Simulation...${NC}"
+    local livebench_python
+    livebench_python="$(livebench_python_bin)"
+    nohup bash -lc "cd '${CLAWWORK_DIR}/livebench' && exec '${livebench_python}' main.py '${livebench_config}'" > "${PROJECT_ROOT}/logs/livebench_agent.log" 2>&1 &
+    local livebench_agent_pid=$!
+    save_pid "livebench-agent" ${livebench_agent_pid}
+    echo -e "${GREEN}  LiveBench Agent started (PID: ${livebench_agent_pid}, config: $(basename ${livebench_config}))${NC}"
+  else
+    echo -e "${YELLOW}[10/10] LiveBench config not found (${livebench_config}), skipping agent simulation...${NC}"
+  fi
 
   echo ""
   echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════╗${NC}"
@@ -1653,6 +1731,7 @@ EOF
   echo -e "${GREEN}║       strategy=${AUTO_TRADER_STRATEGY_ID:-clawwork-autotrader}                            ║${NC}"
   echo -e "${GREEN}║     - 21-Agent Scalping (8:58 AM - 3:40 PM)                   ║${NC}"
   echo -e "${GREEN}║     - LLM Debate Backend                                      ║${NC}"
+  echo -e "${GREEN}║     - LiveBench Agent Simulation                             ║${NC}"
   echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════╣${NC}"
   echo -e "${GREEN}║   Logs:          ${PROJECT_ROOT}/logs/               ║${NC}"
   echo -e "${GREEN}║   Stop:          ./start.sh stop                              ║${NC}"
