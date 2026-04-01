@@ -125,39 +125,105 @@ def _index_name(symbol: str) -> str:
 _option_prefix_cache: Dict[str, str] = {}
 
 
-def _fetch_live_option_ltp(symbol: str, strike: int, option_type: str) -> float:
-    """Fetch live LTP for a specific option directly from broker.
-
-    Derives the option symbol prefix (e.g. NSE:NIFTY26407) from a nearby
-    chain option, then appends strike + type to build the full symbol.
-    """
+def _resolve_option_prefix(symbol: str) -> str:
+    """Get cached option symbol prefix (e.g. NSE:NIFTY26407) for an index."""
+    prefix = _option_prefix_cache.get(symbol)
+    if prefix:
+        return prefix
     try:
         from .data_agents import get_market_adapter
         adapter = get_market_adapter()
         if not adapter:
-            return 0.0
+            return ""
+        chain = adapter.get_option_chain_snapshot(symbol, strike_count=5)
+        for opt in (chain or {}).get("data", {}).get("optionsChain", []):
+            if not isinstance(opt, dict):
+                continue
+            opt_sym = str(opt.get("symbol", ""))
+            opt_strike = str(int(float(opt.get("strike_price", 0) or 0)))
+            ot = str(opt.get("option_type", "")).upper()
+            if opt_strike and ot and opt_sym.endswith(f"{opt_strike}{ot}"):
+                prefix = opt_sym[: -len(f"{opt_strike}{ot}")]
+                _option_prefix_cache[symbol] = prefix
+                return prefix
+    except Exception:
+        pass
+    return ""
 
-        # Check if we already cached the prefix for this index
-        prefix = _option_prefix_cache.get(symbol)
 
-        if not prefix:
-            # Extract prefix from any option in the chain
-            chain = adapter.get_option_chain_snapshot(symbol, strike_count=5)
-            for opt in (chain or {}).get("data", {}).get("optionsChain", []):
-                if not isinstance(opt, dict):
-                    continue
-                opt_sym = str(opt.get("symbol", ""))
-                opt_strike = str(int(float(opt.get("strike_price", 0) or 0)))
-                ot = str(opt.get("option_type", "")).upper()
-                # Extract prefix: everything before the strike+type suffix
-                if opt_strike and ot and opt_sym.endswith(f"{opt_strike}{ot}"):
-                    prefix = opt_sym[: -len(f"{opt_strike}{ot}")]
-                    _option_prefix_cache[symbol] = prefix
-                    break
+def _build_option_symbol(symbol: str, strike: int, option_type: str) -> str:
+    """Build full option symbol like NSE:NIFTY2640722000PE."""
+    prefix = _resolve_option_prefix(symbol)
+    return f"{prefix}{strike}{option_type.upper()}" if prefix else ""
 
-        if prefix:
-            option_symbol = f"{prefix}{strike}{option_type.upper()}"
-            ltp = adapter.get_quote_ltp(option_symbol)
+
+def _batch_fetch_position_ltp(positions: List, context_data: Dict[str, Any]) -> Dict[str, float]:
+    """Batch-fetch live LTP for all open positions in a single API call.
+
+    Returns {position_id: ltp} map. Stores results in context for reuse
+    by both ExitAgent and PositionManager within the same cycle.
+    """
+    cache_key = "_position_ltp_cache"
+    cached = context_data.get(cache_key)
+    if isinstance(cached, dict) and cached:
+        return cached
+
+    result: Dict[str, float] = {}
+    # Group positions by index to build option symbols
+    symbols_to_fetch: Dict[str, str] = {}  # option_symbol -> position_id
+    for pos in positions:
+        if not hasattr(pos, "status") or pos.status == "closed":
+            continue
+        opt_sym = _build_option_symbol(pos.symbol, pos.strike, pos.option_type)
+        if opt_sym:
+            symbols_to_fetch[opt_sym] = pos.position_id
+
+    if not symbols_to_fetch:
+        return result
+
+    try:
+        from .data_agents import get_market_adapter
+        adapter = get_market_adapter()
+        if not adapter:
+            return result
+
+        # Single batch API call for all position quotes
+        quotes_resp = adapter.get_quotes(list(symbols_to_fetch.keys()))
+        rows = quotes_resp.get("data", {}).get("d", []) if isinstance(quotes_resp.get("data"), dict) else []
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            sym = str(row.get("n", row.get("symbol", ""))).upper()
+            ltp = float(row.get("v", {}).get("lp", 0) or 0) if isinstance(row.get("v"), dict) else 0
+            if not ltp:
+                ltp = float(row.get("ltp", 0) or 0)
+            pos_id = symbols_to_fetch.get(sym)
+            if pos_id and ltp > 0:
+                result[pos_id] = ltp
+
+        # Fallback: for any position not found in batch, try individual quotes
+        for opt_sym, pos_id in symbols_to_fetch.items():
+            if pos_id not in result:
+                ltp = adapter.get_quote_ltp(opt_sym)
+                if ltp and float(ltp) > 0:
+                    result[pos_id] = float(ltp)
+    except Exception:
+        pass
+
+    context_data[cache_key] = result
+    return result
+
+
+def _fetch_live_option_ltp(symbol: str, strike: int, option_type: str) -> float:
+    """Fetch live LTP for a specific option directly from broker (single quote)."""
+    opt_sym = _build_option_symbol(symbol, strike, option_type)
+    if not opt_sym:
+        return 0.0
+    try:
+        from .data_agents import get_market_adapter
+        adapter = get_market_adapter()
+        if adapter:
+            ltp = adapter.get_quote_ltp(opt_sym)
             return float(ltp) if ltp and ltp > 0 else 0.0
     except Exception:
         pass
@@ -1260,6 +1326,11 @@ class ExitAgent(BaseBot):
         replay_mode = bool(context.data.get("replay_mode"))
         cycle_now = _context_now(context)
 
+        # Batch-prefetch live quotes for all open positions (single API call)
+        # Results are cached in context so PositionManager reuses them
+        context.data.pop("_position_ltp_cache", None)  # Clear stale cache from prior cycle
+        self._position_ltp_cache = _batch_fetch_position_ltp(positions, context.data)
+
         exit_orders = []
         position_updates = []
         debate_results = []
@@ -1544,14 +1615,19 @@ class ExitAgent(BaseBot):
         order.status = "simulated"
 
     def _get_current_price(self, pos: Position, chains: Dict) -> float:
-        """Get current price for a position from chain or direct broker quote."""
+        """Get current price — batch cache first, chain second, single quote last."""
+        # 1. Check batch-prefetched cache (populated once per cycle)
+        cached = getattr(self, "_position_ltp_cache", {})
+        if cached.get(pos.position_id, 0) > 0:
+            return _round_price_for_symbol(pos.symbol, cached[pos.position_id])
+        # 2. Check option chain
         for symbol, chain in chains.items():
             for opt in chain.options:
                 if opt.strike == pos.strike and opt.option_type == pos.option_type:
                     ltp = float(getattr(opt, "ltp", 0) or 0)
                     if ltp > 0:
                         return _round_price_for_symbol(pos.symbol, ltp)
-        # Chain may not include far OTM strikes — fetch directly from broker
+        # 3. Single broker quote fallback
         live_ltp = _fetch_live_option_ltp(pos.symbol, pos.strike, pos.option_type)
         if live_ltp > 0:
             return _round_price_for_symbol(pos.symbol, live_ltp)
@@ -1920,6 +1996,8 @@ class PositionManagerAgent(BaseBot):
 
     def _refresh_context_state(self, context: BotContext, config: ScalpingConfig) -> Tuple[float, float]:
         option_chains = context.data.get("option_chains", {})
+        # Use batch LTP cache populated by ExitAgent earlier in this cycle
+        self._context_ltp_cache = context.data.get("_position_ltp_cache", {})
         total_unrealized = 0
         total_realized = 0
 
@@ -2329,14 +2407,19 @@ class PositionManagerAgent(BaseBot):
         }
 
     def _get_current_price(self, pos: Position, chains: Dict) -> float:
-        """Get current price for a position from chain or direct broker quote."""
+        """Get current price — batch cache first, chain second, single quote last."""
+        # 1. Check batch-prefetched cache (populated by ExitAgent earlier in cycle)
+        cached = self._context_ltp_cache
+        if cached.get(pos.position_id, 0) > 0:
+            return _round_price_for_symbol(pos.symbol, cached[pos.position_id])
+        # 2. Check option chain
         for symbol, chain in chains.items():
             for opt in chain.options:
                 if opt.strike == pos.strike and opt.option_type == pos.option_type:
                     ltp = float(getattr(opt, "ltp", 0) or 0)
                     if ltp > 0:
                         return _round_price_for_symbol(pos.symbol, ltp)
-        # Chain may not include far OTM strikes — fetch directly from broker
+        # 3. Single broker quote fallback
         live_ltp = _fetch_live_option_ltp(pos.symbol, pos.strike, pos.option_type)
         if live_ltp > 0:
             return _round_price_for_symbol(pos.symbol, live_ltp)
