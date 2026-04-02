@@ -253,3 +253,48 @@ The framework is designed to REJECT EOE if it fails, not to confirm it. The gate
 - Shadow logger built and tested on 1 session successfully
 - At least 2 different market types observed (trending + reversal)
 - Option price capture confirmed as continuous (no gaps > 30 seconds)
+
+---
+
+## ADDENDUM: REFINED GATE FRAMEWORK (v2)
+
+### Gate Criticality
+
+| Gate | Level | Rationale |
+|------|-------|-----------|
+| G1: ≥5 sessions | **MANDATORY** | Statistical minimum |
+| G4: Positive expectancy | **MANDATORY** | Edge must exist |
+| G7: Max loss ≤₹200 | **MANDATORY** | Risk envelope integrity |
+| G9: Scalping unaffected | **MANDATORY** | Independence guarantee |
+| G2: ≥3 activations | IMPORTANT | Pattern repeatability |
+| G3: ≥50% true activation | IMPORTANT | Signal quality |
+| G5: ≤30% false activation | IMPORTANT | Capital efficiency |
+| G6: ≥60% tradable premium | IMPORTANT | Executability |
+| G8: MFE >3x in ≥40% | Advisory | Payoff diagnostic |
+
+### Revised Decision Rule
+
+| Mandatory (4) | Important (4) | Decision |
+|---------------|---------------|----------|
+| ANY fail | any | **REJECT** |
+| All pass | 4/4 | **IMPLEMENT** (full ₹5K) |
+| All pass | 3/4 | **IMPLEMENT REDUCED** (₹2.5K) |
+| All pass | 2/4 | **DEFER** (redesign) |
+| All pass | 0-1/4 | **REJECT** |
+
+### Hard Overrides (bypass gates)
+
+- F2 spread trap >50% → REJECT
+- F9 scalping degradation → REJECT
+
+### Tightened Definitions
+
+- **True activation**: spot at T+30min ≥0.3% further in reversal direction
+- **Tradable premium**: ₹2-15 AND spread ≤30% AND bid/ask_qty ≥ 3×lot
+- **Spread trap**: round-trip spread cost >30% of realized profit
+- **Late activation**: entry_premium > 40% of session peak premium
+- **Scalping unaffected**: metrics within ±5% of baseline, API latency <10% increase
+- **False activation**: spot at T+15min moved ≥0.3% against reversal direction
+- **MFE >3x**: premium sustains ≥3x for ≥60 consecutive seconds
+
+### Framework Confidence: 0.95
