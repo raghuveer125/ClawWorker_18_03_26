@@ -1625,10 +1625,115 @@ async def _price_ticker_loop():
 async def startup_event():
     """Start background engine and price ticker when API starts."""
     global _engine_task, _price_ticker_task
+
+    # ── Daily expiry classification check (fresh on every startup) ──
+    _run_expiry_classification_check()
+
     _engine_task = asyncio.create_task(_run_engine_loop())
     _price_ticker_task = asyncio.create_task(_price_ticker_loop())
     print("[API] Background engine task scheduled")
     print("[API] Price ticker WebSocket task started (1.5s interval)")
+
+
+def _run_expiry_classification_check() -> None:
+    """Check expiry status per-index using exchange data. Runs every startup."""
+    import sys
+    from datetime import date
+    from pathlib import Path
+
+    today = date.today()
+    config = ScalpingConfig()
+
+    print()
+    print("╔══════════════════════════════════════════════════════════════╗")
+    print("║            EXPIRY CLASSIFICATION CHECK                       ║")
+    print("╠══════════════════════════════════════════════════════════════╣")
+
+    # Try exchange-sourced schedule
+    schedule_data = {}
+    todays_expiry = []
+    source = "unknown"
+
+    _project_root = Path(__file__).resolve().parents[2]
+    if str(_project_root) not in sys.path:
+        sys.path.insert(0, str(_project_root))
+
+    try:
+        from shared_project_engine.indices import get_expiry_schedule, get_todays_expiring_indices
+        schedule_data = get_expiry_schedule(use_live=True)
+        todays_expiry = get_todays_expiring_indices(use_live=True)
+        source = "exchange_live"
+    except ImportError:
+        source = "cache_file"
+    except Exception as e:
+        print(f"║  ⚠ Schedule fetch error: {e}")
+        source = "error"
+
+    # Fallback: read cache file directly
+    if not schedule_data:
+        try:
+            import json as _json
+            for parents_up in (2, 3, 4):
+                cache_path = Path(__file__).resolve().parents[parents_up] / "shared_project_engine" / "indices" / ".cache" / "expiry_schedule.json"
+                if cache_path.exists():
+                    raw = _json.loads(cache_path.read_text())
+                    data = raw.get("data", {})
+                    today_str = today.isoformat()
+                    schedule_data = {k: {"nextExpiry": v.get("next_expiry"), "source": v.get("source")}
+                                     for k, v in data.items() if isinstance(v, dict)}
+                    todays_expiry = [k for k, v in data.items()
+                                     if isinstance(v, dict) and v.get("next_expiry") == today_str]
+                    fetched_at = raw.get("fetched_at", "unknown")
+                    age_warning = ""
+                    if fetched_at != "unknown":
+                        try:
+                            from datetime import datetime as dt
+                            fetch_dt = dt.fromisoformat(str(fetched_at).replace("+05:30", ""))
+                            age_hours = (dt.now() - fetch_dt).total_seconds() / 3600
+                            if age_hours > 24:
+                                age_warning = f" ⚠ STALE ({age_hours:.0f}h old)"
+                        except Exception:
+                            pass
+                    source = f"cache_file{age_warning}"
+                    break
+        except Exception:
+            pass
+
+    # Map IndexType to names
+    _idx_names = {
+        "NSE:NIFTY50-INDEX": "NIFTY50",
+        "NSE:NIFTYBANK-INDEX": "BANKNIFTY",
+        "BSE:SENSEX-INDEX": "SENSEX",
+        "NSE:FINNIFTY-INDEX": "FINNIFTY",
+        "NSE:MIDCPNIFTY-INDEX": "MIDCPNIFTY",
+    }
+
+    print(f"║  Date:   {today}                                            ║")
+    print(f"║  Source: {source:<50}  ║")
+    print("║                                                              ║")
+
+    for idx_type in config.indices:
+        symbol = idx_type.value
+        name = _idx_names.get(symbol, idx_type.name)
+        is_expiry = name in todays_expiry
+        next_exp = schedule_data.get(name, {}).get("nextExpiry", schedule_data.get(name, {}).get("next_expiry", "?"))
+        marker = "★ EXPIRY" if is_expiry else "  ─"
+        print(f"║  {name:<12} next_expiry={str(next_exp):<12} is_expiry={str(is_expiry):<6} {marker:<8} ║")
+
+    if not todays_expiry:
+        print("║                                                              ║")
+        print("║  No index expiring today — non-expiry filters for all        ║")
+    else:
+        print("║                                                              ║")
+        print(f"║  Today's expiring: {', '.join(todays_expiry):<40} ║")
+
+    if not schedule_data:
+        print("║                                                              ║")
+        print("║  ⚠ WARNING: No expiry schedule available!                    ║")
+        print("║  Using weekday fallback (may be incorrect for holidays)      ║")
+
+    print("╚══════════════════════════════════════════════════════════════╝")
+    print()
 
 
 @app.on_event("shutdown")
