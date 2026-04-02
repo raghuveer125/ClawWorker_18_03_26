@@ -1,8 +1,8 @@
 """EOE Shadow Logger — read-only orchestrator with dynamic index selection.
 
-Consumes engine context.data (via shallow copy), determines which index
-is expiring today, runs EOE state machine, evaluates strikes, tracks
-hypothetical trades, writes logs.
+Determines the expiring index at session start using the SAME source of truth
+as the main scalping engine (shared_project_engine.indices). Does NOT maintain
+a parallel expiry detection system.
 
 SAFETY: No broker imports. No order creation. No context mutation.
 """
@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import sys
 from datetime import datetime, date, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -24,7 +25,7 @@ from .report_generator import generate_session_report
 
 logger = logging.getLogger("scalping.eoe")
 
-# Index name → context.data key mapping
+# Symbol universe (same as scalping engine config)
 _INDEX_SYMBOL_MAP = {
     "NIFTY50": "NSE:NIFTY50-INDEX",
     "BANKNIFTY": "NSE:NIFTYBANK-INDEX",
@@ -32,105 +33,107 @@ _INDEX_SYMBOL_MAP = {
     "FINNIFTY": "NSE:FINNIFTY-INDEX",
     "MIDCPNIFTY": "NSE:MIDCPNIFTY-INDEX",
 }
-
-# Reverse map
 _SYMBOL_INDEX_MAP = {v: k for k, v in _INDEX_SYMBOL_MAP.items()}
 
 
-def _detect_expiry_index(ctx: Dict[str, Any]) -> Tuple[Optional[str], str, str]:
-    """Determine which index is expiring today.
+def _select_eoe_index(ctx: Dict[str, Any]) -> Tuple[Optional[str], str, str, str]:
+    """Select which index EOE should monitor today.
 
-    Returns (symbol, index_name, source) or (None, "", reason).
+    Uses the SAME source of truth as the main engine's startup expiry check.
 
-    Priority:
-      A. Exchange-sourced expiry dates (cache file populated by start.sh / Fyers)
-      B. Live option chain evidence
-      C. Safe fallback (disable)
-
-    Does NOT use weekday assumptions — expiry dates come from the market.
+    Returns (symbol, index_name, expiry_date, source) or (None, "", "", reason).
     """
     today = date.today()
     today_str = today.isoformat()
 
-    # ── Priority A: Exchange-sourced expiry cache ──
-    # This file is populated by fetch_fyers_expiry_dates() or fetch_live_expiry_dates()
-    # via start.sh and contains REAL expiry dates from the exchange, not weekday guesses.
-    cache_paths = [
-        Path(__file__).resolve().parents[4] / "shared_project_engine" / "indices" / ".cache" / "expiry_schedule.json",
-        Path(__file__).resolve().parents[3] / "shared_project_engine" / "indices" / ".cache" / "expiry_schedule.json",
-    ]
-    for cache_path in cache_paths:
+    # Ensure shared_project_engine is importable
+    _project_root = Path(__file__).resolve().parents[3]
+    if str(_project_root) not in sys.path:
+        sys.path.insert(0, str(_project_root))
+
+    # ── Primary: Reuse main engine's expiry infrastructure ──
+    try:
+        from shared_project_engine.indices import get_todays_expiring_indices, get_expiry_schedule
+
+        todays_expiry = get_todays_expiring_indices(use_live=True)
+        schedule = get_expiry_schedule(use_live=True)
+
+        if todays_expiry:
+            # Filter to indices we support and have data for
+            candidates = []
+            for index_name in todays_expiry:
+                symbol = _INDEX_SYMBOL_MAP.get(index_name)
+                if not symbol:
+                    continue
+                expiry_info = schedule.get(index_name, {})
+                expiry_date = expiry_info.get("nextExpiry", expiry_info.get("date", today_str))
+                candidates.append((index_name, symbol, str(expiry_date)))
+
+            if not candidates:
+                return None, "", "", f"expiry_today={todays_expiry}_but_no_supported_symbol"
+
+            # If multiple, pick the one with live spot data
+            spot_data = ctx.get("spot_data", {})
+            for name, sym, exp_date in candidates:
+                spot = spot_data.get(sym)
+                if spot and float(getattr(spot, "ltp", 0) or 0) > 0:
+                    return sym, name, exp_date, f"engine_schedule_with_spot"
+
+            # No spot yet (pre-market), pick by priority: NIFTY > BANKNIFTY > SENSEX
+            priority = ["NIFTY50", "BANKNIFTY", "SENSEX", "FINNIFTY", "MIDCPNIFTY"]
+            for p in priority:
+                for name, sym, exp_date in candidates:
+                    if name == p:
+                        return sym, name, exp_date, "engine_schedule_priority"
+
+            # Fallback: first candidate
+            name, sym, exp_date = candidates[0]
+            return sym, name, exp_date, "engine_schedule_first"
+
+        # No expiry today
+        return None, "", "", "no_expiry_today_per_engine_schedule"
+
+    except ImportError:
+        logger.debug("EOE: shared_project_engine.indices not importable")
+    except Exception as e:
+        logger.debug("EOE: engine schedule error: %s", e)
+
+    # ── Fallback: Read cache file directly ──
+    for parents_up in (3, 4, 5):
+        cache_path = Path(__file__).resolve().parents[parents_up] / "shared_project_engine" / "indices" / ".cache" / "expiry_schedule.json"
         try:
             if not cache_path.exists():
                 continue
             with open(cache_path) as f:
-                cache = json.load(f)
-            schedule = cache.get("data", {})
-            expiring = []
-            for index_name, info in schedule.items():
+                raw = json.load(f)
+            data = raw.get("data", {})
+            for index_name, info in data.items():
                 if isinstance(info, dict) and info.get("next_expiry") == today_str:
                     symbol = _INDEX_SYMBOL_MAP.get(index_name)
                     if symbol:
-                        expiring.append((index_name, symbol))
-
-            if len(expiring) == 1:
-                name, sym = expiring[0]
-                return sym, name, "exchange_expiry_cache"
-
-            if len(expiring) > 1:
-                # Multiple indices expiring same day: pick one with live spot data
-                spot_data = ctx.get("spot_data", {})
-                for name, sym in expiring:
-                    spot = spot_data.get(sym)
-                    if spot and float(getattr(spot, "ltp", 0) or 0) > 0:
-                        return sym, name, f"exchange_cache_multi({len(expiring)})_with_spot"
-                return expiring[0][1], expiring[0][0], f"exchange_cache_multi({len(expiring)})_first"
-
-            if schedule:
-                logger.debug("EOE: cache has dates but none match today %s: %s",
-                             today_str, {k: v.get("next_expiry") for k, v in schedule.items() if isinstance(v, dict)})
-        except Exception as e:
-            logger.debug("EOE: expiry cache read error: %s", e)
-
-    # ── Priority B: Live option chain evidence ──
-    # Check if any chain has options expiring today (very short-dated premium behavior)
-    chains = ctx.get("option_chains", {})
-    spot_data = ctx.get("spot_data", {})
-    for symbol, chain in chains.items():
-        if not hasattr(chain, "options"):
+                        return symbol, index_name, today_str, "cache_file_fallback"
+            return None, "", "", f"cache_checked_no_expiry_today"
+        except Exception:
             continue
-        index_name = _SYMBOL_INDEX_MAP.get(symbol, "")
-        if not index_name:
-            continue
-        # Heuristic: if near-ATM options have very low premium (< ₹5), likely expiry day
-        spot = spot_data.get(symbol)
-        if not spot:
-            continue
-        ltp = float(getattr(spot, "ltp", 0) or 0)
-        if ltp <= 0:
-            continue
-        atm_strike = getattr(chain, "atm_strike", 0) or 0
-        for opt in chain.options:
-            strike = int(getattr(opt, "strike", 0) or 0)
-            premium = float(getattr(opt, "ltp", 0) or 0)
-            if abs(strike - atm_strike) <= 200 and 0 < premium < 5:
-                return symbol, index_name, "chain_evidence_low_atm_premium"
 
-    return None, "", "no_expiry_detected"
+    return None, "", "", "no_expiry_source_available"
 
 
 class EOEShadowLogger:
     """Read-only shadow module for EOE validation.
 
-    Dynamically selects the expiring index each session.
+    Dynamically selects the expiring index each session using the same
+    infrastructure as the main scalping engine.
+
     Call on_cycle() after each engine cycle with a COPY of context.data.
     Never modifies engine state. All failures are caught and logged.
     """
 
     def __init__(self, enabled: bool = True) -> None:
         self.enabled = enabled
-        self._index: Optional[str] = None  # Selected dynamically
+        self._index: Optional[str] = None
         self._index_name: str = ""
+        self._expiry_date: str = ""
         self._selection_source: str = ""
         self._sm: Optional[EOEStateMachine] = None
         self._writer: Optional[EOELogWriter] = None
@@ -148,7 +151,6 @@ class EOEShadowLogger:
         return self._index
 
     def on_cycle(self, ctx: Dict[str, Any]) -> None:
-        """Process one engine cycle. ctx is a shallow copy — never modified."""
         if not self.enabled:
             return
         try:
@@ -157,7 +159,6 @@ class EOEShadowLogger:
             logger.debug("EOE shadow error: %s", e)
 
     def on_session_end(self) -> None:
-        """Call at session end to close trades and generate report."""
         if not self.enabled or not self._initialized:
             return
         try:
@@ -169,11 +170,7 @@ class EOEShadowLogger:
         if not self._initialized:
             self._init_session(ctx)
 
-        # If disabled (no expiry detected), skip silently
-        if self._disabled_reason:
-            return
-
-        if self._index is None:
+        if self._disabled_reason or self._index is None:
             return
 
         now = ctx.get("cycle_now") or ctx.get("cycle_timestamp") or datetime.now()
@@ -183,9 +180,8 @@ class EOEShadowLogger:
             except ValueError:
                 now = datetime.now()
 
-        # Extract data for SELECTED index (read-only)
         spot_data = ctx.get("spot_data", {})
-        spot = spot_data.get(self._index, None)
+        spot = spot_data.get(self._index)
         if spot is None:
             return
 
@@ -197,7 +193,7 @@ class EOEShadowLogger:
         vwap = float(getattr(spot, "vwap", ltp) or ltp)
         prev_close = float(getattr(spot, "prev_close", 0) or 0)
 
-        # Structure breaks
+        # Structure breaks for selected index only
         breaks = ctx.get("structure_breaks", [])
         bos_events = []
         for b in breaks:
@@ -206,21 +202,17 @@ class EOEShadowLogger:
                 bt = getattr(b, "break_type", b.get("break_type", "") if isinstance(b, dict) else "")
                 bos_events.append({"break_type": bt})
 
-        # Option chain for selected index
         chains = ctx.get("option_chains", {})
-        chain = chains.get(self._index, None)
+        chain = chains.get(self._index)
 
-        # ── State machine tick ──
         transition = self._sm.tick(
             now=now, ltp=ltp, vwap=vwap,
             open_price=open_p, prev_close=prev_close,
             bos_events=bos_events,
         )
-
         if transition and self._writer:
             self._writer.write_transition(transition)
 
-        # ── Strike evaluation ──
         candidate = None
         tradable = False
         entry_signal = False
@@ -238,7 +230,6 @@ class EOEShadowLogger:
             self._active_cycles += 1
             if tradable:
                 self._tradable_cycles += 1
-
             if tradable and candidate and self._trade is None:
                 entry_signal = True
             elif self._trade is not None:
@@ -246,22 +237,14 @@ class EOEShadowLogger:
             elif not tradable:
                 entry_blocked = candidate.tradable_reason if candidate else "no_candidate"
 
-        # ── Create hypothetical trade ──
         if entry_signal and candidate and self._trade is None:
             self._trade = HypoTrade(
-                entry_time=now,
-                strike=candidate.strike,
-                option_type=candidate.option_type,
-                entry_premium=candidate.premium,
-                entry_bid=candidate.bid,
-                entry_ask=candidate.ask,
-                entry_spread_pct=candidate.spread_pct,
-                entry_bid_qty=candidate.bid_qty,
-                entry_ask_qty=candidate.ask_qty,
-                tradable_at_entry=True,
+                entry_time=now, strike=candidate.strike, option_type=candidate.option_type,
+                entry_premium=candidate.premium, entry_bid=candidate.bid, entry_ask=candidate.ask,
+                entry_spread_pct=candidate.spread_pct, entry_bid_qty=candidate.bid_qty,
+                entry_ask_qty=candidate.ask_qty, tradable_at_entry=True,
             )
 
-        # ── Update open trade ──
         if self._trade and self._trade.exit_time is None and chain:
             current_prem = self._get_option_premium(chain, self._trade.strike, self._trade.option_type)
             if current_prem > 0:
@@ -272,14 +255,13 @@ class EOEShadowLogger:
                         self._writer.write_hypo_trade(self._trade.to_dict())
                     self._trade = None
 
-        # ── Write cycle log ──
         self._cycle_count += 1
         if self._writer:
             reversal_bos = self._sm.state.bos_bullish_30min if self._sm.state.morning_direction == "bearish" else self._sm.state.bos_bearish_30min
             self._writer.write_cycle({
                 "timestamp": now.isoformat(),
                 "eoe_state": self._sm.current,
-                "sensex_ltp": ltp,  # Field name kept for schema compat; actual index varies
+                "sensex_ltp": ltp,
                 "vwap": vwap,
                 "pct_from_extreme": round(self._sm.state.reversal_pct * 100, 2),
                 "bos_active_count": reversal_bos,
@@ -300,57 +282,59 @@ class EOEShadowLogger:
     def _init_session(self, ctx: Dict[str, Any]) -> None:
         today = date.today()
 
-        # Dynamic index selection
-        symbol, index_name, source = _detect_expiry_index(ctx)
+        symbol, index_name, expiry_date, source = _select_eoe_index(ctx)
 
         if symbol is None:
             self._disabled_reason = source
             self._initialized = True
-            logger.info("EOE shadow DISABLED: %s (no expiry index for %s)", source, today)
+            logger.info("EOE shadow DISABLED: %s", source)
             return
+
+        # Verify spot data will be available
+        spot_data = ctx.get("spot_data", {})
+        spot = spot_data.get(symbol)
+        has_spot = spot is not None and float(getattr(spot, "ltp", 0) or 0) > 0
+
+        # Verify option chain will be available
+        chains = ctx.get("option_chains", {})
+        has_chain = symbol in chains and hasattr(chains.get(symbol), "options")
 
         self._index = symbol
         self._index_name = index_name
+        self._expiry_date = expiry_date
         self._selection_source = source
-
-        # Determine if this is truly expiry day for the selected index
-        is_expiry = True  # We selected it because it's expiring
-
-        self._sm = EOEStateMachine(is_expiry=is_expiry)
+        self._sm = EOEStateMachine(is_expiry=True)
         self._writer = EOELogWriter()
 
         self._session_meta = {
             "session_date": today.isoformat(),
-            "is_expiry": is_expiry,
+            "is_expiry": True,
             "index": symbol,
             "index_name": index_name,
+            "expiry_date": expiry_date,
             "selection_source": source,
+            "has_spot_at_init": has_spot,
+            "has_chain_at_init": has_chain,
             "candidate_indices": list(_INDEX_SYMBOL_MAP.keys()),
         }
         self._initialized = True
-        logger.info("EOE shadow initialized: index=%s (%s), source=%s", index_name, symbol, source)
+        logger.info("EOE shadow: %s (%s) expiry=%s source=%s spot=%s chain=%s",
+                     index_name, symbol, expiry_date, source, has_spot, has_chain)
 
     def _finalize(self) -> None:
         if self._disabled_reason:
-            # Write minimal meta even for disabled sessions
             if self._writer is None:
                 self._writer = EOELogWriter()
-            self._session_meta.update({
-                "disabled": True,
-                "disabled_reason": self._disabled_reason,
-                "total_cycles": 0,
-            })
+            self._session_meta.update({"disabled": True, "disabled_reason": self._disabled_reason, "total_cycles": 0})
             self._writer.write_session_meta(self._session_meta)
             return
 
-        # Close open trade
         if self._trade and self._trade.exit_time is None:
             self._trade.force_close(self._trade.current_premium, datetime.now())
             self._trades.append(self._trade.to_dict())
             if self._writer:
                 self._writer.write_hypo_trade(self._trade.to_dict())
 
-        # Complete session meta
         self._session_meta.update({
             "total_cycles": self._cycle_count,
             "active_cycles": self._active_cycles,
