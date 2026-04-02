@@ -140,6 +140,14 @@ class ScalpingEngine:
         self._micro_quote_state: Dict[str, Dict[str, Any]] = {}
         self._micro_tick_history: Dict[str, List[Dict[str, float]]] = {}
 
+        # EOE Shadow Logger (read-only, crash-safe)
+        self._eoe_shadow = None
+        try:
+            from .eoe import EOEShadowLogger
+            self._eoe_shadow = EOEShadowLogger(enabled=True)
+        except Exception:
+            pass
+
         # Initialize all agents
         self._init_agents()
 
@@ -1441,6 +1449,13 @@ class ScalpingEngine:
                     self._last_cycle_overrun = cycle_duration
                     print(f"[Cycle {self.cycle_count}] Watchdog warning: cycle {cycle_duration:.2f}s exceeded cadence {cadence:.2f}s")
                 api_state.sync_engine_state(self.context)
+
+                # EOE shadow tick (read-only, crash-safe)
+                if self._eoe_shadow:
+                    try:
+                        self._eoe_shadow.on_cycle(dict(self.context.data))
+                    except Exception:
+                        pass
 
                 self._print_cycle_summary(results, cycle_start)
                 return results
