@@ -43,58 +43,56 @@ def _detect_expiry_index(ctx: Dict[str, Any]) -> Tuple[Optional[str], str, str]:
     Returns (symbol, index_name, source) or (None, "", reason).
 
     Priority:
-      A. Expiry schedule from shared_project_engine
-      B. Option chain evidence (shortest-dated options)
+      A. Exchange-sourced expiry dates (cache file populated by start.sh / Fyers)
+      B. Live option chain evidence
       C. Safe fallback (disable)
+
+    Does NOT use weekday assumptions — expiry dates come from the market.
     """
     today = date.today()
+    today_str = today.isoformat()
 
-    # ── Priority A: Expiry schedule ──
-    try:
-        from shared_project_engine.indices import is_expiry_today
-        expiring = []
-        for index_name, symbol in _INDEX_SYMBOL_MAP.items():
-            if is_expiry_today(index_name, today):
-                expiring.append((index_name, symbol))
-
-        if len(expiring) == 1:
-            name, sym = expiring[0]
-            return sym, name, "expiry_schedule"
-
-        if len(expiring) > 1:
-            # Multiple expiries: prefer the one with live spot data
-            spot_data = ctx.get("spot_data", {})
-            for name, sym in expiring:
-                spot = spot_data.get(sym)
-                if spot and float(getattr(spot, "ltp", 0) or 0) > 0:
-                    return sym, name, f"expiry_schedule_multi({len(expiring)})_with_spot"
-            # If no spot data yet, take first
-            name, sym = expiring[0]
-            return sym, name, f"expiry_schedule_multi({len(expiring)})_first"
-
-        # No expiry today per schedule
-    except ImportError:
-        logger.debug("EOE: shared_project_engine.indices not available for schedule lookup")
-    except Exception as e:
-        logger.debug("EOE: expiry schedule lookup error: %s", e)
-
-    # ── Priority B: Expiry cache file ──
-    try:
-        cache_path = Path(__file__).resolve().parents[4] / "shared_project_engine" / "indices" / ".cache" / "expiry_schedule.json"
-        if cache_path.exists():
+    # ── Priority A: Exchange-sourced expiry cache ──
+    # This file is populated by fetch_fyers_expiry_dates() or fetch_live_expiry_dates()
+    # via start.sh and contains REAL expiry dates from the exchange, not weekday guesses.
+    cache_paths = [
+        Path(__file__).resolve().parents[4] / "shared_project_engine" / "indices" / ".cache" / "expiry_schedule.json",
+        Path(__file__).resolve().parents[3] / "shared_project_engine" / "indices" / ".cache" / "expiry_schedule.json",
+    ]
+    for cache_path in cache_paths:
+        try:
+            if not cache_path.exists():
+                continue
             with open(cache_path) as f:
                 cache = json.load(f)
             schedule = cache.get("data", {})
-            today_str = today.isoformat()
+            expiring = []
             for index_name, info in schedule.items():
                 if isinstance(info, dict) and info.get("next_expiry") == today_str:
                     symbol = _INDEX_SYMBOL_MAP.get(index_name)
                     if symbol:
-                        return symbol, index_name, "expiry_cache_file"
-    except Exception as e:
-        logger.debug("EOE: expiry cache read error: %s", e)
+                        expiring.append((index_name, symbol))
 
-    # ── Priority C: Option chain evidence ──
+            if len(expiring) == 1:
+                name, sym = expiring[0]
+                return sym, name, "exchange_expiry_cache"
+
+            if len(expiring) > 1:
+                # Multiple indices expiring same day: pick one with live spot data
+                spot_data = ctx.get("spot_data", {})
+                for name, sym in expiring:
+                    spot = spot_data.get(sym)
+                    if spot and float(getattr(spot, "ltp", 0) or 0) > 0:
+                        return sym, name, f"exchange_cache_multi({len(expiring)})_with_spot"
+                return expiring[0][1], expiring[0][0], f"exchange_cache_multi({len(expiring)})_first"
+
+            if schedule:
+                logger.debug("EOE: cache has dates but none match today %s: %s",
+                             today_str, {k: v.get("next_expiry") for k, v in schedule.items() if isinstance(v, dict)})
+        except Exception as e:
+            logger.debug("EOE: expiry cache read error: %s", e)
+
+    # ── Priority B: Live option chain evidence ──
     # Check if any chain has options expiring today (very short-dated premium behavior)
     chains = ctx.get("option_chains", {})
     spot_data = ctx.get("spot_data", {})
