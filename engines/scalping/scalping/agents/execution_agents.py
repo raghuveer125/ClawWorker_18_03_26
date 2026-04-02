@@ -572,7 +572,7 @@ class EntryAgent(BaseBot):
                 continue
             # Check entry conditions
             conditions_met = self._check_entry_conditions(
-                symbol, structure_breaks, momentum_signals, trap_signals, config
+                symbol, structure_breaks, momentum_signals, trap_signals, config, context
             )
             if replay_mode:
                 conditions_met = self._augment_replay_entry_conditions(signal_payload, conditions_met)
@@ -1034,15 +1034,31 @@ class EntryAgent(BaseBot):
         momentum_signals: List,
         trap_signals: List,
         config: ScalpingConfig,
+        context: Optional[Any] = None,
     ) -> List[str]:
         """Check entry conditions for a symbol."""
         conditions = []
 
-        # Condition 1: Structure breakout
+        # Condition 1: Structure breakout (transient BOS OR persistent structure)
         if config.require_structure_break:
             symbol_breaks = [b for b in structure_breaks if hasattr(b, 'symbol') and b.symbol == symbol]
             if symbol_breaks:
                 conditions.append("structure_break")
+            elif context is not None:
+                # Fallback: persistent structure at high confidence counts as structure evidence
+                market_structure = context.data.get("market_structure", {}) if hasattr(context, "data") else {}
+                sym_struct = market_structure.get(symbol, {}) if isinstance(market_structure, dict) else {}
+                struct_str = str(sym_struct) if isinstance(sym_struct, str) else str(sym_struct.get("summary", sym_struct.get("trend", "")))
+                # Extract confidence from string like "Bearish bias, conf=0.95"
+                has_direction = "bearish" in struct_str.lower() or "bullish" in struct_str.lower()
+                conf = 0.0
+                if "conf=" in struct_str:
+                    try:
+                        conf = float(struct_str.split("conf=")[1].split(",")[0].split(")")[0])
+                    except (ValueError, IndexError):
+                        conf = 0.0
+                if has_direction and conf >= 0.85:
+                    conditions.append("structure_break")
 
         # Condition 2: Futures momentum
         if config.require_futures_confirm:
