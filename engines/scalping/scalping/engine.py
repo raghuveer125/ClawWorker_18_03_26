@@ -1347,11 +1347,16 @@ class ScalpingEngine:
                     current_snapshot = stage_context.data.get("execution_candidates_snapshot", {})
                     current_version = int(current_snapshot.get("version", 0) or 0) if isinstance(current_snapshot, dict) else 0
                     # Skip new entries when: snapshot unchanged, risk blocked, or trade disabled
-                    skip_entry = bool(
-                        (current_version and stage_context.data.get("executed_snapshot_version") == current_version)
-                        or stage_context.data.get("risk_blocked_new_entries")
-                        or stage_context.data.get("trade_disabled")
-                    )
+                    version_match = current_version and stage_context.data.get("executed_snapshot_version") == current_version
+                    risk_blocked = bool(stage_context.data.get("risk_blocked_new_entries"))
+                    trade_off = bool(stage_context.data.get("trade_disabled"))
+                    skip_entry = bool(version_match or risk_blocked or trade_off)
+
+                    if self.cycle_count <= 5 or self.cycle_count % 50 == 0:
+                        print(f"[Cycle {self.cycle_count}] Exec debug: ver={current_version}, exec_ver={stage_context.data.get('executed_snapshot_version')}, "
+                              f"ver_match={version_match}, risk_blocked={risk_blocked}, trade_off={trade_off}, "
+                              f"skip={skip_entry}, open={has_open_positions}")
+
                     if skip_entry and not has_open_positions:
                         results["cycle_skip_reason"] = "no_new_signals_no_positions"
                         await self.learning_queue.put(stage_context)
