@@ -411,18 +411,37 @@ def validate_entry(
     if has_bullish and has_bearish:
         return reject(f"contradictory_signals:{conditions}")
 
-    # Also check option_type alignment with structure breaks
+    # Check option_type alignment with structure (BOTH transient BOS and persistent trend)
     opt_type = str(signal.get("option_type", "")).upper()
+
+    # Check 1: Transient BOS events
     structure_breaks = context.get("structure_breaks", [])
     for brk in structure_breaks:
         brk_sym = getattr(brk, "symbol", brk.get("symbol", "") if isinstance(brk, dict) else "")
         brk_type = getattr(brk, "break_type", brk.get("break_type", "") if isinstance(brk, dict) else "")
         if brk_sym == symbol:
             if opt_type == "CE" and "bearish" in str(brk_type).lower():
-                return reject(f"direction_mismatch:CE_with_bearish_structure:{brk_type}")
+                return reject(f"direction_mismatch:CE_with_bearish_bos:{brk_type}")
             if opt_type == "PE" and "bullish" in str(brk_type).lower():
-                return reject(f"direction_mismatch:PE_with_bullish_structure:{brk_type}")
-            break  # Only check first matching break
+                return reject(f"direction_mismatch:PE_with_bullish_bos:{brk_type}")
+            break
+
+    # Check 2: Persistent structure trend (survives between BOS events)
+    market_structure = context.get("market_structure", {})
+    sym_structure = market_structure.get(symbol, {}) if isinstance(market_structure, dict) else {}
+    if isinstance(sym_structure, str):
+        # Structure agent returns summary string like "NSE:NIFTY50-INDEX: Bearish bias, conf=0.83"
+        struct_trend = "bearish" if "bearish" in sym_structure.lower() else ("bullish" if "bullish" in sym_structure.lower() else "")
+    elif isinstance(sym_structure, dict):
+        struct_trend = str(sym_structure.get("trend", "") or "").lower()
+    else:
+        struct_trend = ""
+
+    if struct_trend:
+        if opt_type == "CE" and "bearish" in struct_trend:
+            return reject(f"direction_mismatch:CE_with_persistent_bearish_structure")
+        if opt_type == "PE" and "bullish" in struct_trend:
+            return reject(f"direction_mismatch:PE_with_persistent_bullish_structure")
 
     # ── Gate 8b: Regime/direction structural filter ──
     # PE gains value in bearish (underlying drops → PE becomes ITM) → ALLOW PE in bearish
