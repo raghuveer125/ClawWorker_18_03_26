@@ -1,0 +1,74 @@
+{
+  "scalping_config": {
+    "total_capital": 100000.0,
+    "risk_per_trade_pct": 5.0,
+    "daily_loss_limit_pct": 10.0,
+    "max_positions": 3,
+    "entry_lots": 4,
+    "require_structure_break": true,
+    "require_futures_confirm": true,
+    "require_volume_burst": true,
+    "max_entry_slippage_pct": 2.0,
+    "max_bid_ask_spread_pct": 5.0,
+    "min_volume_threshold": 1000,
+    "min_oi_threshold": 5000,
+    "exit_time_stop_minutes": 30,
+    "partial_exit_pct": 0.55,
+    "first_target_points": 4.0,
+    "strict_a_plus_only": false,
+    "strict_a_plus_rr_ratio": 1.3,
+    "strict_b_rr_ratio": 1.1,
+    "thesis_invalidation_cycles": 3,
+    "late_entry_cutoff_time": "14:50",
+    "engine_watchdog_factor": 6.0,
+    "high_vix_level": 25.0,
+    "low_vix_level": 15.0
+  },
+  "index_configs": {
+    "NSE:NIFTY50-INDEX": {
+      "lot_size": 25,
+      "strike_interval": 50,
+      "otm_distance_min": 150,
+      "otm_distance_max": 300,
+      "momentum_threshold": 25,
+      "premium_min": 10.0,
+      "premium_max": 25.0
+    },
+    "NSE:NIFTYBANK-INDEX": {
+      "lot_size": 15,
+      "strike_interval": 100,
+      "otm_distance_min": 300,
+      "otm_distance_max": 600,
+      "momentum_threshold": 50,
+      "premium_min": 10.0,
+      "premium_max": 30.0
+    },
+    "BSE:SENSEX-INDEX": {
+      "lot_size": 10,
+      "strike_interval": 100,
+      "otm_distance_min": 400,
+      "otm_distance_max": 800,
+      "momentum_threshold": 80,
+      "premium_min": 10.0,
+      "premium_max": 25.0
+    },
+    "NSE:FINNIFTY-INDEX": {
+      "lot_size": 25,
+      "strike_interval": 50,
+      "otm_distance_min": 150,
+      "otm_distance_max": 300,
+      "momentum_threshold": 25,
+      "premium_min": 10.0,
+      "premium_max": 25.0
+    },
+    "NSE:MIDCPNIFTY-INDEX": {
+      "lot_size": 25,
+      "strike_interval": 50,
+      "otm_distance_min": 150,
+      "otm_distance_max": 300,
+      "momentum_threshold": 25,
+      "premium_min": 10.0,
+      "premium_max": 25.0
+    }
+  }
+}
