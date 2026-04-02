@@ -425,13 +425,15 @@ def validate_entry(
             break  # Only check first matching break
 
     # ── Gate 8b: Regime/direction structural filter ──
-    # PE premiums decay in bearish trends (underlying drops → PE goes further OTM)
-    # CE premiums decay in bullish trends (underlying rises → CE goes further OTM)
+    # PE gains value in bearish (underlying drops → PE becomes ITM) → ALLOW PE in bearish
+    # CE gains value in bullish (underlying rises → CE becomes ITM) → ALLOW CE in bullish
+    # PE decays in bullish (underlying rises → PE goes further OTM) → BLOCK PE in bullish
+    # CE decays in bearish (underlying drops → CE goes further OTM) → BLOCK CE in bearish
     regime = str(context.get("market_regime", "") or "").upper()
-    if opt_type == "PE" and regime in ("TRENDING_BEARISH", "TRENDING_DOWN"):
-        return reject(f"regime_direction_structural:PE_in_bearish_trend")
-    if opt_type == "CE" and regime in ("TRENDING_BULLISH", "TRENDING_UP"):
-        return reject(f"regime_direction_structural:CE_in_bullish_trend")
+    if opt_type == "PE" and regime in ("TRENDING_BULLISH", "TRENDING_UP"):
+        return reject(f"regime_direction_structural:PE_decays_in_bullish_trend")
+    if opt_type == "CE" and regime in ("TRENDING_BEARISH", "TRENDING_DOWN"):
+        return reject(f"regime_direction_structural:CE_decays_in_bearish_trend")
 
     # ── Gate 9: Minimum conditions ──
     if len(conditions) < 2:
