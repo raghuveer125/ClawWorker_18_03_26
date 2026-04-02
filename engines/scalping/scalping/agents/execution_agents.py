@@ -501,6 +501,23 @@ class EntryAgent(BaseBot):
                 continue
             strike = int(float(signal_payload.get("strike", 0) or 0))
             option_type = str(signal_payload.get("option_type", signal_payload.get("side", "CE"))).upper()
+
+            # Persistent structure direction check: block CE in bearish, PE in bullish
+            market_structure = context.data.get("market_structure", {})
+            sym_struct = market_structure.get(symbol, {}) if isinstance(market_structure, dict) else {}
+            if isinstance(sym_struct, str):
+                struct_trend = "bearish" if "bearish" in sym_struct.lower() else ("bullish" if "bullish" in sym_struct.lower() else "")
+            elif isinstance(sym_struct, dict):
+                struct_trend = str(sym_struct.get("trend", "") or "").lower()
+            else:
+                struct_trend = ""
+            if struct_trend:
+                if option_type == "CE" and "bearish" in struct_trend:
+                    rejected_signals.append({**signal_payload, "rejection_reasons": list(signal_payload.get("rejection_reasons", [])) + ["CE_blocked:persistent_bearish_structure"]})
+                    continue
+                if option_type == "PE" and "bullish" in struct_trend:
+                    rejected_signals.append({**signal_payload, "rejection_reasons": list(signal_payload.get("rejection_reasons", [])) + ["PE_blocked:persistent_bullish_structure"]})
+                    continue
             signal_key = _signal_key(symbol, strike, option_type)
             confirmation_state = (
                 dict(confirmation_map.get(signal_key, {}) or {}) if isinstance(confirmation_map, dict) else {}
