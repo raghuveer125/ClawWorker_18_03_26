@@ -1,0 +1,75 @@
+{
+  "timestamp": "2026-04-02T15:12:22.683011",
+  "pe_trades": 8,
+  "ce_trades": 0,
+  "pe_wr": 12.5,
+  "pe_pnl": -122.50000000000001,
+  "persistent_structure": {
+    "NSE:NIFTY50-INDEX": "NSE:NIFTY50-INDEX: Bearish bias, conf=1.00",
+    "NSE:NIFTYBANK-INDEX": "NSE:NIFTYBANK-INDEX: Bearish bias, conf=1.00",
+    "BSE:SENSEX-INDEX": "BSE:SENSEX-INDEX: Bearish bias, conf=1.00"
+  },
+  "transient_bos": [
+    {
+      "symbol": "NSE:NIFTY50-INDEX",
+      "break_type": "bos_bullish",
+      "break_price": 22751.6,
+      "previous_level": 22696.15,
+      "strength": 0.24431456436442783,
+      "timestamp": "2026-04-02T15:12:19.931440"
+    },
+    {
+      "symbol": "BSE:SENSEX-INDEX",
+      "break_type": "bos_bullish",
+      "break_price": 73404.16,
+      "previous_level": 73115.77,
+      "strength": 0.3944292729188237,
+      "timestamp": "2026-04-02T15:12:19.932135"
+    }
+  ],
+  "regimes": {
+    "NSE:NIFTY50-INDEX": "RANGE_BOUND",
+    "NSE:NIFTYBANK-INDEX": "RANGE_BOUND",
+    "BSE:SENSEX-INDEX": "RANGE_BOUND"
+  },
+  "spot": {
+    "NSE:NIFTY50-INDEX": {
+      "symbol": "NSE:NIFTY50-INDEX",
+      "ltp": 22751.6,
+      "open": 22383.4,
+      "high": 22759.3,
+      "low": 22182.55,
+      "prev_close": 22679.4,
+      "volume": 0,
+      "vwap": 22751.6,
+      "change_pct": 0.31835057364832,
+      "timestamp": "2026-04-02T15:12:13.321664"
+    },
+    "NSE:NIFTYBANK-INDEX": {
+      "symbol": "NSE:NIFTYBANK-INDEX",
+      "ltp": 51677.05,
+      "open": 50625.65,
+      "high": 51730.4,
+      "low": 49954.85,
+      "prev_close": 51448.65,
+      "volume": 0,
+      "vwap": 51677.05,
+      "change_pct": 0.44393779039877906,
+      "timestamp": "2026-04-02T15:12:14.376227"
+    },
+    "BSE:SENSEX-INDEX": {
+      "symbol": "BSE:SENSEX-INDEX",
+      "ltp": 73404.16,
+      "open": 72262.05,
+      "high": 73493.94,
+      "low": 71545.81,
+      "prev_close": 73134.32,
+      "volume": 0,
+      "vwap": 73404.16,
+      "change_pct": 0.3689649401266006,
+      "timestamp": "2026-04-02T15:12:15.503999"
+    }
+  },
+  "root_cause": "Persistent structure bias has no flip mechanism; favors continuation over reversal",
+  "confidence": 0.97
+}

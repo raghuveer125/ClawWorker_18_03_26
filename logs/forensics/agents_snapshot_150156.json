@@ -1,0 +1,1608 @@
+{
+  "agents": [
+    {
+      "agent_id": 0,
+      "name": "KillSwitch",
+      "layer": "safety",
+      "status": "idle",
+      "bot_type": "kill_switch",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:49.707308",
+      "last_output": {
+        "kill_switch_active": false,
+        "checks_passed": [
+          "latency",
+          "loss_cluster",
+          "api_health",
+          "volatility",
+          "daily_limit"
+        ],
+        "consecutive_losses": 1,
+        "api_failures": 0
+      },
+      "metrics": {
+        "latency_ok": true,
+        "loss_cluster_ok": true,
+        "api_health_ok": true,
+        "volatility_ok": true
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 1,
+      "name": "DataFeed",
+      "layer": "data",
+      "status": "idle",
+      "bot_type": "data_feed",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:50.755615",
+      "last_output": {
+        "NSE:NIFTY50-INDEX": {
+          "symbol": "NSE:NIFTY50-INDEX",
+          "ltp": 22680.15,
+          "open": 22383.4,
+          "high": 22706.65,
+          "low": 22182.55,
+          "prev_close": 22679.4,
+          "volume": 0,
+          "vwap": 22680.15,
+          "change_pct": 0.0033069657927458397,
+          "timestamp": "2026-04-02T15:01:50.076939"
+        },
+        "NSE:NIFTYBANK-INDEX": {
+          "symbol": "NSE:NIFTYBANK-INDEX",
+          "ltp": 51321.7,
+          "open": 50625.65,
+          "high": 51381.55,
+          "low": 49954.85,
+          "prev_close": 51448.65,
+          "volume": 0,
+          "vwap": 51321.7,
+          "change_pct": -0.2467508865636015,
+          "timestamp": "2026-04-02T15:01:50.400627"
+        },
+        "BSE:SENSEX-INDEX": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "ltp": 73186.73,
+          "open": 72262.05,
+          "high": 73255.52,
+          "low": 71545.81,
+          "prev_close": 73134.32,
+          "volume": 0,
+          "vwap": 73186.73,
+          "change_pct": 0.07166266125122779,
+          "timestamp": "2026-04-02T15:01:50.755503"
+        }
+      },
+      "metrics": {
+        "symbols_fetched": 3
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 2,
+      "name": "OptionChain",
+      "layer": "data",
+      "status": "idle",
+      "bot_type": "option_chain",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:51.046961",
+      "last_output": {
+        "NSE:NIFTY50-INDEX": {
+          "atm": 22700,
+          "pcr": 0.991,
+          "max_pain": 22700,
+          "options_count": 102,
+          "pressure": {
+            "avg_imbalance": 0.0,
+            "pressure": "neutral"
+          }
+        },
+        "NSE:NIFTYBANK-INDEX": {
+          "atm": 51300,
+          "pcr": 1.267,
+          "max_pain": 51300,
+          "options_count": 102,
+          "pressure": {
+            "avg_imbalance": 0.0,
+            "pressure": "neutral"
+          }
+        },
+        "BSE:SENSEX-INDEX": {
+          "atm": 73200,
+          "pcr": 1.106,
+          "max_pain": 73200,
+          "options_count": 102,
+          "pressure": {
+            "avg_imbalance": 0.0,
+            "pressure": "neutral"
+          }
+        }
+      },
+      "metrics": {
+        "chains_fetched": 3
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 3,
+      "name": "Futures",
+      "layer": "data",
+      "status": "idle",
+      "bot_type": "futures",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.058822",
+      "last_output": {
+        "NSE:NIFTY50-INDEX": {
+          "ltp": 22730.1,
+          "basis": 49.94999999999709,
+          "basis_pct": 0.22023663864655696
+        },
+        "NSE:NIFTYBANK-INDEX": {
+          "ltp": 51582.8,
+          "basis": 261.1000000000058,
+          "basis_pct": 0.5087516586551222
+        },
+        "BSE:SENSEX-INDEX": {
+          "ltp": 73728.2,
+          "basis": 541.4700000000012,
+          "basis_pct": 0.7398472373338735
+        }
+      },
+      "metrics": {
+        "futures_fetched": 3
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 4,
+      "name": "LatencyGuardian",
+      "layer": "data",
+      "status": "idle",
+      "bot_type": "latency_guardian",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.059825",
+      "last_output": {
+        "health_pct": 33.3,
+        "stale_sources": [],
+        "dead_heartbeats": [],
+        "trading_blocked": false,
+        "sources_checked": 9
+      },
+      "metrics": {
+        "healthy_sources": 3,
+        "stale_sources_count": 0,
+        "health_pct": 33.33333333333333
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 5,
+      "name": "MarketRegime",
+      "layer": "analysis",
+      "status": "idle",
+      "bot_type": "market_regime",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.060593",
+      "last_output": {
+        "regimes": {
+          "NSE:NIFTY50-INDEX": "RANGE_BOUND",
+          "NSE:NIFTYBANK-INDEX": "RANGE_BOUND",
+          "BSE:SENSEX-INDEX": "RANGE_BOUND"
+        },
+        "regime_changes": 0,
+        "avg_confidence": 0.5892759828797475
+      },
+      "metrics": {
+        "symbols_analyzed": 3,
+        "regime_changes": 0,
+        "vix": 15.0
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 6,
+      "name": "Structure",
+      "layer": "analysis",
+      "status": "idle",
+      "bot_type": "structure",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.063243",
+      "last_output": {
+        "structures": {
+          "NSE:NIFTY50-INDEX": "NSE:NIFTY50-INDEX: Bearish bias, conf=0.98",
+          "NSE:NIFTYBANK-INDEX": "NSE:NIFTYBANK-INDEX: Bearish bias, conf=1.00",
+          "BSE:SENSEX-INDEX": "BSE:SENSEX-INDEX: Bearish bias, conf=0.98"
+        },
+        "breaks": [
+          {
+            "symbol": "NSE:NIFTY50-INDEX",
+            "break_type": "bos_bullish",
+            "break_price": 22680.15,
+            "previous_level": 22663.35,
+            "strength": 0.07412849380167942,
+            "timestamp": "2026-04-02T15:01:52.061417"
+          },
+          {
+            "symbol": "NSE:NIFTYBANK-INDEX",
+            "break_type": "bos_bullish",
+            "break_price": 51321.7,
+            "previous_level": 51254.9,
+            "strength": 0.13032900269046593,
+            "timestamp": "2026-04-02T15:01:52.061501"
+          },
+          {
+            "symbol": "BSE:SENSEX-INDEX",
+            "break_type": "bos_bullish",
+            "break_price": 73186.73,
+            "previous_level": 73115.77,
+            "strength": 0.09705156630367409,
+            "timestamp": "2026-04-02T15:01:52.061578"
+          }
+        ],
+        "vwap_deviations": [],
+        "debate_used": false
+      },
+      "metrics": {
+        "symbols_analyzed": 3,
+        "breaks_detected": 3,
+        "vwap_signals": 0
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 7,
+      "name": "Momentum",
+      "layer": "analysis",
+      "status": "idle",
+      "bot_type": "momentum",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.063246",
+      "last_output": {
+        "signals": [
+          {
+            "symbol": "NSE:NIFTY50-INDEX",
+            "signal_type": "gamma_zone",
+            "strength": 1.0,
+            "price_move": 0,
+            "volume_multiple": 0,
+            "option_expansion_pct": 0,
+            "timestamp": "2026-04-02T15:01:52.062300",
+            "direction": "neutral"
+          },
+          {
+            "symbol": "NSE:NIFTYBANK-INDEX",
+            "signal_type": "futures_surge",
+            "strength": 1.0,
+            "price_move": 52.60000000000582,
+            "volume_multiple": 0,
+            "option_expansion_pct": 0,
+            "timestamp": "2026-04-02T15:01:52.062304",
+            "direction": "bullish"
+          },
+          {
+            "symbol": "NSE:NIFTYBANK-INDEX",
+            "signal_type": "gamma_zone",
+            "strength": 1.0,
+            "price_move": 0,
+            "volume_multiple": 0,
+            "option_expansion_pct": 0,
+            "timestamp": "2026-04-02T15:01:52.062356",
+            "direction": "neutral"
+          },
+          {
+            "symbol": "BSE:SENSEX-INDEX",
+            "signal_type": "futures_surge",
+            "strength": 1.0,
+            "price_move": 80.0,
+            "volume_multiple": 0,
+            "option_expansion_pct": 0,
+            "timestamp": "2026-04-02T15:01:52.062358",
+            "direction": "bullish"
+          },
+          {
+            "symbol": "BSE:SENSEX-INDEX",
+            "signal_type": "gamma_zone",
+            "strength": 1.0,
+            "price_move": 0,
+            "volume_multiple": 0,
+            "option_expansion_pct": 0,
+            "timestamp": "2026-04-02T15:01:52.062408",
+            "direction": "neutral"
+          }
+        ],
+        "strong_signals": 5,
+        "entry_ready": true
+      },
+      "metrics": {
+        "total_signals": 5,
+        "strong_signals": 5
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 8,
+      "name": "TrapDetector",
+      "layer": "analysis",
+      "status": "idle",
+      "bot_type": "trap_detector",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.063248",
+      "last_output": {
+        "traps": [
+          {
+            "symbol": "NSE:NIFTY50-INDEX",
+            "trap_type": "liquidity_sweep_high",
+            "confidence": 0.7,
+            "oi_change": 0,
+            "pcr_change": 0,
+            "bid_ask_imbalance": 0,
+            "timestamp": "2026-04-02T15:01:52.062988"
+          },
+          {
+            "symbol": "NSE:NIFTYBANK-INDEX",
+            "trap_type": "liquidity_sweep_high",
+            "confidence": 0.7,
+            "oi_change": 0,
+            "pcr_change": 0,
+            "bid_ask_imbalance": 0,
+            "timestamp": "2026-04-02T15:01:52.062992"
+          },
+          {
+            "symbol": "BSE:SENSEX-INDEX",
+            "trap_type": "liquidity_sweep_high",
+            "confidence": 0.7,
+            "oi_change": 0,
+            "pcr_change": 0,
+            "bid_ask_imbalance": 0,
+            "timestamp": "2026-04-02T15:01:52.062996"
+          }
+        ],
+        "total_traps": 3,
+        "high_confidence_traps": 3
+      },
+      "metrics": {
+        "traps_detected": 3
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 9,
+      "name": "VolatilitySurface",
+      "layer": "analysis",
+      "status": "idle",
+      "bot_type": "volatility_surface",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.063981",
+      "last_output": {
+        "symbols": {
+          "NSE:NIFTY50-INDEX": {
+            "surface_score": 0.3055,
+            "vix": 15.0,
+            "iv_percentile": 0.5,
+            "realized_vol": 0.000658,
+            "term_structure_slope": 0.0,
+            "otm_scale": 1.0,
+            "size_scale": 1.05,
+            "target_scale": 0.9
+          },
+          "NSE:NIFTYBANK-INDEX": {
+            "surface_score": 0.3063,
+            "vix": 15.0,
+            "iv_percentile": 0.5,
+            "realized_vol": 0.000752,
+            "term_structure_slope": 0.0,
+            "otm_scale": 1.0,
+            "size_scale": 1.05,
+            "target_scale": 0.9
+          },
+          "BSE:SENSEX-INDEX": {
+            "surface_score": 0.3058,
+            "vix": 15.0,
+            "iv_percentile": 0.5,
+            "realized_vol": 0.000692,
+            "term_structure_slope": 0.0,
+            "otm_scale": 1.0,
+            "size_scale": 1.05,
+            "target_scale": 0.9
+          }
+        }
+      },
+      "metrics": {
+        "symbols_analyzed": 3
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 10,
+      "name": "DealerPressure",
+      "layer": "analysis",
+      "status": "idle",
+      "bot_type": "dealer_pressure",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.064902",
+      "last_output": {
+        "symbols": {
+          "NSE:NIFTY50-INDEX": {
+            "gamma_regime": "short",
+            "gamma_flip_level": 22717.17938769782,
+            "pinning_score": 0.0,
+            "acceleration_score": 1.0,
+            "max_oi_strike": 22500.0,
+            "gamma_density": 1.0
+          },
+          "NSE:NIFTYBANK-INDEX": {
+            "gamma_regime": "short",
+            "gamma_flip_level": 51365.33942991487,
+            "pinning_score": 0.0,
+            "acceleration_score": 1.0,
+            "max_oi_strike": 52000.0,
+            "gamma_density": 1.0
+          },
+          "BSE:SENSEX-INDEX": {
+            "gamma_regime": "short",
+            "gamma_flip_level": 73229.21611685997,
+            "pinning_score": 0.0,
+            "acceleration_score": 1.0,
+            "max_oi_strike": 73000.0,
+            "gamma_density": 1.0
+          }
+        }
+      },
+      "metrics": {
+        "symbols_analyzed": 3
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 11,
+      "name": "StrikeSelector",
+      "layer": "analysis",
+      "status": "idle",
+      "bot_type": "strike_selector",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.065774",
+      "last_output": {
+        "selections": {
+          "BSE:SENSEX-INDEX": [
+            {
+              "strike": 73300,
+              "type": "CE",
+              "premium": 12.0,
+              "score": 1.0,
+              "reasons": [
+                "Optimal premium range",
+                "Very tight spread",
+                "High volume",
+                "High OI",
+                "Dealer short gamma acceleration",
+                "Adaptive premium-band fallback",
+                "Closer-to-ATM fallback",
+                "Execution-grade spread",
+                "Volume confirmation",
+                "High open interest"
+              ]
+            }
+          ]
+        },
+        "total_selections": 1
+      },
+      "metrics": {
+        "symbols_with_selection": 1
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 12,
+      "name": "SignalQuality",
+      "layer": "quality",
+      "status": "idle",
+      "bot_type": "signal_quality",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.066476",
+      "last_output": {
+        "signals_evaluated": 1,
+        "signals_passed": 1,
+        "signals_rejected": 0,
+        "pass_rate_pct": 100.0,
+        "average_quality_score": 0.728,
+        "grade_distribution": {
+          "A+": 0,
+          "A": 0,
+          "B": 1223,
+          "C": 1965,
+          "D": 113,
+          "F": 0
+        },
+        "top_signals": [
+          {
+            "symbol": "BSE:SENSEX-INDEX",
+            "strike": 73300,
+            "option_type": "CE",
+            "premium": 12.0,
+            "delta": 0.3687937015631158,
+            "spread": 0.09999999999999964,
+            "spread_pct": 0.8333333333333304,
+            "volume": 276876580,
+            "oi": 3364970,
+            "score": 1.0,
+            "reasons": [
+              "Optimal premium range",
+              "Very tight spread",
+              "High volume",
+              "High OI",
+              "Dealer short gamma acceleration",
+              "Adaptive premium-band fallback",
+              "Closer-to-ATM fallback",
+              "Execution-grade spread",
+              "Volume confirmation",
+              "High open interest"
+            ],
+            "confidence": 1.0,
+            "entry": 12.0,
+            "sl": 9.0,
+            "t1": 16.2,
+            "status": "",
+            "action": "",
+            "source": "live",
+            "underlying_symbol": "BSE:SENSEX-INDEX",
+            "option_symbol": "BSE:SENSEX2640273300CE",
+            "quality_grade": "B",
+            "quality_score": 0.7282878411910669,
+            "recommended_size_pct": 75,
+            "priority": 7,
+            "quality_reasons": [
+              "High confidence: 100%",
+              "Momentum aligned",
+              "Dealer short gamma acceleration"
+            ]
+          }
+        ]
+      },
+      "metrics": {
+        "evaluated": 3301,
+        "passed": 3301,
+        "failed": 0,
+        "pass_rate": 100.0
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 13,
+      "name": "LiquidityMonitor",
+      "layer": "risk",
+      "status": "idle",
+      "bot_type": "liquidity_monitor",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.067393",
+      "last_output": {
+        "liquidity_health_pct": 94.1,
+        "tradeable_options": 288,
+        "total_options": 306,
+        "illiquid_selected_count": 0
+      },
+      "metrics": {
+        "tradeable_pct": 94.11764705882352,
+        "illiquid_strikes": 0
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 14,
+      "name": "RiskGuardian",
+      "layer": "risk",
+      "status": "idle",
+      "bot_type": "risk_guardian",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.068135",
+      "last_output": {
+        "risk_checks": [
+          {
+            "check": "daily_loss",
+            "current": 0.12250000000000001,
+            "limit": 10.0,
+            "passed": true
+          }
+        ],
+        "breaches": [
+          "NSE:NIFTYBANK-INDEX: Wide spreads detected",
+          "Consecutive losses pause: 3"
+        ],
+        "blocked_orders": [],
+        "trading_allowed": false
+      },
+      "metrics": {
+        "daily_pnl": -122.50000000000001,
+        "daily_pnl_pct": -0.12250000000000001,
+        "breach_count": 2
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 15,
+      "name": "CorrelationGuard",
+      "layer": "risk",
+      "status": "idle",
+      "bot_type": "correlation_guard",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.068779",
+      "last_output": {
+        "alerts": [],
+        "blocked_orders": [],
+        "blocked_signal_keys": [],
+        "signal_penalties": {},
+        "adjustments": []
+      },
+      "metrics": {
+        "alerts_count": 0,
+        "high_risk_alerts": 0,
+        "orders_blocked": 0,
+        "signals_adjusted": 0
+      },
+      "run_count": 2600
+    },
+    {
+      "agent_id": 16,
+      "name": "MetaAllocator",
+      "layer": "risk",
+      "status": "idle",
+      "bot_type": "meta_allocator",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T12:33:22.356772",
+      "last_output": {
+        "allocations": [
+          {
+            "strategy": "breakdown_scalping",
+            "regime": "bearish",
+            "allocation_pct": 0.6999999999999998,
+            "reason": "Regime trending_bearish favors breakdown_scalping",
+            "confidence": 0.9999999999999999
+          },
+          {
+            "strategy": "breakdown_scalping",
+            "regime": "bearish",
+            "allocation_pct": 0.6999999999999998,
+            "reason": "Regime trending_bearish favors breakdown_scalping",
+            "confidence": 0.9999999999999999
+          },
+          {
+            "strategy": "breakdown_scalping",
+            "regime": "bearish",
+            "allocation_pct": 0.6999999999999998,
+            "reason": "Regime trending_bearish favors breakdown_scalping",
+            "confidence": 0.9999999999999999
+          }
+        ],
+        "regime_changes": [],
+        "current_regimes": {
+          "NSE:NIFTY50-INDEX": "bearish",
+          "NSE:NIFTYBANK-INDEX": "bearish",
+          "BSE:SENSEX-INDEX": "bearish"
+        }
+      },
+      "metrics": {
+        "symbols_allocated": 3,
+        "regime_changes": 0
+      },
+      "run_count": 510
+    },
+    {
+      "agent_id": 17,
+      "name": "Entry",
+      "layer": "execution",
+      "status": "idle",
+      "bot_type": "entry",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T12:33:22.363639",
+      "last_output": {
+        "entry_signals": [],
+        "orders_created": 0,
+        "dry_run": true
+      },
+      "metrics": {
+        "signals_generated": 0,
+        "orders_pending": 0
+      },
+      "run_count": 510
+    },
+    {
+      "agent_id": 18,
+      "name": "Exit",
+      "layer": "execution",
+      "status": "idle",
+      "bot_type": "exit",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T12:33:22.370917",
+      "last_output": {
+        "exit_orders": 1,
+        "position_updates": [
+          {
+            "position_id": "POS_c778045b",
+            "action": "momentum_reversal",
+            "qty": 10,
+            "price": 17.1
+          }
+        ],
+        "debate_validated": 0
+      },
+      "metrics": {
+        "exits_triggered": 1,
+        "debate_validations": 0
+      },
+      "run_count": 510
+    },
+    {
+      "agent_id": 19,
+      "name": "PositionManager",
+      "layer": "execution",
+      "status": "idle",
+      "bot_type": "position_manager",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T12:33:22.377679",
+      "last_output": {
+        "open_positions": 0,
+        "total_unrealized_pnl": 0,
+        "total_realized_pnl": -122.5
+      },
+      "metrics": {
+        "positions_count": 8,
+        "unrealized_pnl": 0,
+        "realized_pnl": -122.50000000000003
+      },
+      "run_count": 510
+    },
+    {
+      "agent_id": 20,
+      "name": "QuantLearner",
+      "layer": "learning",
+      "status": "idle",
+      "bot_type": "quant_learner",
+      "debate_mode": "single",
+      "last_run": "2026-04-02T15:01:52.075051",
+      "last_output": {
+        "insights_generated": 2,
+        "high_confidence": 1,
+        "actionable": 2
+      },
+      "metrics": {
+        "total_insights": 2,
+        "avg_confidence": 0.7150000000000001
+      },
+      "run_count": 54
+    },
+    {
+      "agent_id": 21,
+      "name": "StrategyOptimizer",
+      "layer": "learning",
+      "status": "idle",
+      "bot_type": "strategy_optimizer",
+      "debate_mode": "single",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0
+    },
+    {
+      "agent_id": 22,
+      "name": "ExitOptimizer",
+      "layer": "learning",
+      "status": "idle",
+      "bot_type": "exit_optimizer",
+      "debate_mode": "single",
+      "last_run": null,
+      "last_output": {},
+      "metrics": {},
+      "run_count": 0
+    }
+  ],
+  "by_layer": {
+    "safety": [
+      {
+        "agent_id": 0,
+        "name": "KillSwitch",
+        "layer": "safety",
+        "status": "idle",
+        "bot_type": "kill_switch",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:49.707308",
+        "last_output": {
+          "kill_switch_active": false,
+          "checks_passed": [
+            "latency",
+            "loss_cluster",
+            "api_health",
+            "volatility",
+            "daily_limit"
+          ],
+          "consecutive_losses": 1,
+          "api_failures": 0
+        },
+        "metrics": {
+          "latency_ok": true,
+          "loss_cluster_ok": true,
+          "api_health_ok": true,
+          "volatility_ok": true
+        },
+        "run_count": 2600
+      }
+    ],
+    "data": [
+      {
+        "agent_id": 1,
+        "name": "DataFeed",
+        "layer": "data",
+        "status": "idle",
+        "bot_type": "data_feed",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:50.755615",
+        "last_output": {
+          "NSE:NIFTY50-INDEX": {
+            "symbol": "NSE:NIFTY50-INDEX",
+            "ltp": 22680.15,
+            "open": 22383.4,
+            "high": 22706.65,
+            "low": 22182.55,
+            "prev_close": 22679.4,
+            "volume": 0,
+            "vwap": 22680.15,
+            "change_pct": 0.0033069657927458397,
+            "timestamp": "2026-04-02T15:01:50.076939"
+          },
+          "NSE:NIFTYBANK-INDEX": {
+            "symbol": "NSE:NIFTYBANK-INDEX",
+            "ltp": 51321.7,
+            "open": 50625.65,
+            "high": 51381.55,
+            "low": 49954.85,
+            "prev_close": 51448.65,
+            "volume": 0,
+            "vwap": 51321.7,
+            "change_pct": -0.2467508865636015,
+            "timestamp": "2026-04-02T15:01:50.400627"
+          },
+          "BSE:SENSEX-INDEX": {
+            "symbol": "BSE:SENSEX-INDEX",
+            "ltp": 73186.73,
+            "open": 72262.05,
+            "high": 73255.52,
+            "low": 71545.81,
+            "prev_close": 73134.32,
+            "volume": 0,
+            "vwap": 73186.73,
+            "change_pct": 0.07166266125122779,
+            "timestamp": "2026-04-02T15:01:50.755503"
+          }
+        },
+        "metrics": {
+          "symbols_fetched": 3
+        },
+        "run_count": 2600
+      },
+      {
+        "agent_id": 2,
+        "name": "OptionChain",
+        "layer": "data",
+        "status": "idle",
+        "bot_type": "option_chain",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:51.046961",
+        "last_output": {
+          "NSE:NIFTY50-INDEX": {
+            "atm": 22700,
+            "pcr": 0.991,
+            "max_pain": 22700,
+            "options_count": 102,
+            "pressure": {
+              "avg_imbalance": 0.0,
+              "pressure": "neutral"
+            }
+          },
+          "NSE:NIFTYBANK-INDEX": {
+            "atm": 51300,
+            "pcr": 1.267,
+            "max_pain": 51300,
+            "options_count": 102,
+            "pressure": {
+              "avg_imbalance": 0.0,
+              "pressure": "neutral"
+            }
+          },
+          "BSE:SENSEX-INDEX": {
+            "atm": 73200,
+            "pcr": 1.106,
+            "max_pain": 73200,
+            "options_count": 102,
+            "pressure": {
+              "avg_imbalance": 0.0,
+              "pressure": "neutral"
+            }
+          }
+        },
+        "metrics": {
+          "chains_fetched": 3
+        },
+        "run_count": 2600
+      },
+      {
+        "agent_id": 3,
+        "name": "Futures",
+        "layer": "data",
+        "status": "idle",
+        "bot_type": "futures",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.058822",
+        "last_output": {
+          "NSE:NIFTY50-INDEX": {
+            "ltp": 22730.1,
+            "basis": 49.94999999999709,
+            "basis_pct": 0.22023663864655696
+          },
+          "NSE:NIFTYBANK-INDEX": {
+            "ltp": 51582.8,
+            "basis": 261.1000000000058,
+            "basis_pct": 0.5087516586551222
+          },
+          "BSE:SENSEX-INDEX": {
+            "ltp": 73728.2,
+            "basis": 541.4700000000012,
+            "basis_pct": 0.7398472373338735
+          }
+        },
+        "metrics": {
+          "futures_fetched": 3
+        },
+        "run_count": 2600
+      },
+      {
+        "agent_id": 4,
+        "name": "LatencyGuardian",
+        "layer": "data",
+        "status": "idle",
+        "bot_type": "latency_guardian",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.059825",
+        "last_output": {
+          "health_pct": 33.3,
+          "stale_sources": [],
+          "dead_heartbeats": [],
+          "trading_blocked": false,
+          "sources_checked": 9
+        },
+        "metrics": {
+          "healthy_sources": 3,
+          "stale_sources_count": 0,
+          "health_pct": 33.33333333333333
+        },
+        "run_count": 2600
+      }
+    ],
+    "analysis": [
+      {
+        "agent_id": 5,
+        "name": "MarketRegime",
+        "layer": "analysis",
+        "status": "idle",
+        "bot_type": "market_regime",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.060593",
+        "last_output": {
+          "regimes": {
+            "NSE:NIFTY50-INDEX": "RANGE_BOUND",
+            "NSE:NIFTYBANK-INDEX": "RANGE_BOUND",
+            "BSE:SENSEX-INDEX": "RANGE_BOUND"
+          },
+          "regime_changes": 0,
+          "avg_confidence": 0.5892759828797475
+        },
+        "metrics": {
+          "symbols_analyzed": 3,
+          "regime_changes": 0,
+          "vix": 15.0
+        },
+        "run_count": 2600
+      },
+      {
+        "agent_id": 6,
+        "name": "Structure",
+        "layer": "analysis",
+        "status": "idle",
+        "bot_type": "structure",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.063243",
+        "last_output": {
+          "structures": {
+            "NSE:NIFTY50-INDEX": "NSE:NIFTY50-INDEX: Bearish bias, conf=0.98",
+            "NSE:NIFTYBANK-INDEX": "NSE:NIFTYBANK-INDEX: Bearish bias, conf=1.00",
+            "BSE:SENSEX-INDEX": "BSE:SENSEX-INDEX: Bearish bias, conf=0.98"
+          },
+          "breaks": [
+            {
+              "symbol": "NSE:NIFTY50-INDEX",
+              "break_type": "bos_bullish",
+              "break_price": 22680.15,
+              "previous_level": 22663.35,
+              "strength": 0.07412849380167942,
+              "timestamp": "2026-04-02T15:01:52.061417"
+            },
+            {
+              "symbol": "NSE:NIFTYBANK-INDEX",
+              "break_type": "bos_bullish",
+              "break_price": 51321.7,
+              "previous_level": 51254.9,
+              "strength": 0.13032900269046593,
+              "timestamp": "2026-04-02T15:01:52.061501"
+            },
+            {
+              "symbol": "BSE:SENSEX-INDEX",
+              "break_type": "bos_bullish",
+              "break_price": 73186.73,
+              "previous_level": 73115.77,
+              "strength": 0.09705156630367409,
+              "timestamp": "2026-04-02T15:01:52.061578"
+            }
+          ],
+          "vwap_deviations": [],
+          "debate_used": false
+        },
+        "metrics": {
+          "symbols_analyzed": 3,
+          "breaks_detected": 3,
+          "vwap_signals": 0
+        },
+        "run_count": 2600
+      },
+      {
+        "agent_id": 7,
+        "name": "Momentum",
+        "layer": "analysis",
+        "status": "idle",
+        "bot_type": "momentum",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.063246",
+        "last_output": {
+          "signals": [
+            {
+              "symbol": "NSE:NIFTY50-INDEX",
+              "signal_type": "gamma_zone",
+              "strength": 1.0,
+              "price_move": 0,
+              "volume_multiple": 0,
+              "option_expansion_pct": 0,
+              "timestamp": "2026-04-02T15:01:52.062300",
+              "direction": "neutral"
+            },
+            {
+              "symbol": "NSE:NIFTYBANK-INDEX",
+              "signal_type": "futures_surge",
+              "strength": 1.0,
+              "price_move": 52.60000000000582,
+              "volume_multiple": 0,
+              "option_expansion_pct": 0,
+              "timestamp": "2026-04-02T15:01:52.062304",
+              "direction": "bullish"
+            },
+            {
+              "symbol": "NSE:NIFTYBANK-INDEX",
+              "signal_type": "gamma_zone",
+              "strength": 1.0,
+              "price_move": 0,
+              "volume_multiple": 0,
+              "option_expansion_pct": 0,
+              "timestamp": "2026-04-02T15:01:52.062356",
+              "direction": "neutral"
+            },
+            {
+              "symbol": "BSE:SENSEX-INDEX",
+              "signal_type": "futures_surge",
+              "strength": 1.0,
+              "price_move": 80.0,
+              "volume_multiple": 0,
+              "option_expansion_pct": 0,
+              "timestamp": "2026-04-02T15:01:52.062358",
+              "direction": "bullish"
+            },
+            {
+              "symbol": "BSE:SENSEX-INDEX",
+              "signal_type": "gamma_zone",
+              "strength": 1.0,
+              "price_move": 0,
+              "volume_multiple": 0,
+              "option_expansion_pct": 0,
+              "timestamp": "2026-04-02T15:01:52.062408",
+              "direction": "neutral"
+            }
+          ],
+          "strong_signals": 5,
+          "entry_ready": true
+        },
+        "metrics": {
+          "total_signals": 5,
+          "strong_signals": 5
+        },
+        "run_count": 2600
+      },
+      {
+        "agent_id": 8,
+        "name": "TrapDetector",
+        "layer": "analysis",
+        "status": "idle",
+        "bot_type": "trap_detector",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.063248",
+        "last_output": {
+          "traps": [
+            {
+              "symbol": "NSE:NIFTY50-INDEX",
+              "trap_type": "liquidity_sweep_high",
+              "confidence": 0.7,
+              "oi_change": 0,
+              "pcr_change": 0,
+              "bid_ask_imbalance": 0,
+              "timestamp": "2026-04-02T15:01:52.062988"
+            },
+            {
+              "symbol": "NSE:NIFTYBANK-INDEX",
+              "trap_type": "liquidity_sweep_high",
+              "confidence": 0.7,
+              "oi_change": 0,
+              "pcr_change": 0,
+              "bid_ask_imbalance": 0,
+              "timestamp": "2026-04-02T15:01:52.062992"
+            },
+            {
+              "symbol": "BSE:SENSEX-INDEX",
+              "trap_type": "liquidity_sweep_high",
+              "confidence": 0.7,
+              "oi_change": 0,
+              "pcr_change": 0,
+              "bid_ask_imbalance": 0,
+              "timestamp": "2026-04-02T15:01:52.062996"
+            }
+          ],
+          "total_traps": 3,
+          "high_confidence_traps": 3
+        },
+        "metrics": {
+          "traps_detected": 3
+        },
+        "run_count": 2600
+      },
+      {
+        "agent_id": 9,
+        "name": "VolatilitySurface",
+        "layer": "analysis",
+        "status": "idle",
+        "bot_type": "volatility_surface",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.063981",
+        "last_output": {
+          "symbols": {
+            "NSE:NIFTY50-INDEX": {
+              "surface_score": 0.3055,
+              "vix": 15.0,
+              "iv_percentile": 0.5,
+              "realized_vol": 0.000658,
+              "term_structure_slope": 0.0,
+              "otm_scale": 1.0,
+              "size_scale": 1.05,
+              "target_scale": 0.9
+            },
+            "NSE:NIFTYBANK-INDEX": {
+              "surface_score": 0.3063,
+              "vix": 15.0,
+              "iv_percentile": 0.5,
+              "realized_vol": 0.000752,
+              "term_structure_slope": 0.0,
+              "otm_scale": 1.0,
+              "size_scale": 1.05,
+              "target_scale": 0.9
+            },
+            "BSE:SENSEX-INDEX": {
+              "surface_score": 0.3058,
+              "vix": 15.0,
+              "iv_percentile": 0.5,
+              "realized_vol": 0.000692,
+              "term_structure_slope": 0.0,
+              "otm_scale": 1.0,
+              "size_scale": 1.05,
+              "target_scale": 0.9
+            }
+          }
+        },
+        "metrics": {
+          "symbols_analyzed": 3
+        },
+        "run_count": 2600
+      },
+      {
+        "agent_id": 10,
+        "name": "DealerPressure",
+        "layer": "analysis",
+        "status": "idle",
+        "bot_type": "dealer_pressure",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.064902",
+        "last_output": {
+          "symbols": {
+            "NSE:NIFTY50-INDEX": {
+              "gamma_regime": "short",
+              "gamma_flip_level": 22717.17938769782,
+              "pinning_score": 0.0,
+              "acceleration_score": 1.0,
+              "max_oi_strike": 22500.0,
+              "gamma_density": 1.0
+            },
+            "NSE:NIFTYBANK-INDEX": {
+              "gamma_regime": "short",
+              "gamma_flip_level": 51365.33942991487,
+              "pinning_score": 0.0,
+              "acceleration_score": 1.0,
+              "max_oi_strike": 52000.0,
+              "gamma_density": 1.0
+            },
+            "BSE:SENSEX-INDEX": {
+              "gamma_regime": "short",
+              "gamma_flip_level": 73229.21611685997,
+              "pinning_score": 0.0,
+              "acceleration_score": 1.0,
+              "max_oi_strike": 73000.0,
+              "gamma_density": 1.0
+            }
+          }
+        },
+        "metrics": {
+          "symbols_analyzed": 3
+        },
+        "run_count": 2600
+      },
+      {
+        "agent_id": 11,
+        "name": "StrikeSelector",
+        "layer": "analysis",
+        "status": "idle",
+        "bot_type": "strike_selector",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.065774",
+        "last_output": {
+          "selections": {
+            "BSE:SENSEX-INDEX": [
+              {
+                "strike": 73300,
+                "type": "CE",
+                "premium": 12.0,
+                "score": 1.0,
+                "reasons": [
+                  "Optimal premium range",
+                  "Very tight spread",
+                  "High volume",
+                  "High OI",
+                  "Dealer short gamma acceleration",
+                  "Adaptive premium-band fallback",
+                  "Closer-to-ATM fallback",
+                  "Execution-grade spread",
+                  "Volume confirmation",
+                  "High open interest"
+                ]
+              }
+            ]
+          },
+          "total_selections": 1
+        },
+        "metrics": {
+          "symbols_with_selection": 1
+        },
+        "run_count": 2600
+      }
+    ],
+    "quality": [
+      {
+        "agent_id": 12,
+        "name": "SignalQuality",
+        "layer": "quality",
+        "status": "idle",
+        "bot_type": "signal_quality",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.066476",
+        "last_output": {
+          "signals_evaluated": 1,
+          "signals_passed": 1,
+          "signals_rejected": 0,
+          "pass_rate_pct": 100.0,
+          "average_quality_score": 0.728,
+          "grade_distribution": {
+            "A+": 0,
+            "A": 0,
+            "B": 1223,
+            "C": 1965,
+            "D": 113,
+            "F": 0
+          },
+          "top_signals": [
+            {
+              "symbol": "BSE:SENSEX-INDEX",
+              "strike": 73300,
+              "option_type": "CE",
+              "premium": 12.0,
+              "delta": 0.3687937015631158,
+              "spread": 0.09999999999999964,
+              "spread_pct": 0.8333333333333304,
+              "volume": 276876580,
+              "oi": 3364970,
+              "score": 1.0,
+              "reasons": [
+                "Optimal premium range",
+                "Very tight spread",
+                "High volume",
+                "High OI",
+                "Dealer short gamma acceleration",
+                "Adaptive premium-band fallback",
+                "Closer-to-ATM fallback",
+                "Execution-grade spread",
+                "Volume confirmation",
+                "High open interest"
+              ],
+              "confidence": 1.0,
+              "entry": 12.0,
+              "sl": 9.0,
+              "t1": 16.2,
+              "status": "",
+              "action": "",
+              "source": "live",
+              "underlying_symbol": "BSE:SENSEX-INDEX",
+              "option_symbol": "BSE:SENSEX2640273300CE",
+              "quality_grade": "B",
+              "quality_score": 0.7282878411910669,
+              "recommended_size_pct": 75,
+              "priority": 7,
+              "quality_reasons": [
+                "High confidence: 100%",
+                "Momentum aligned",
+                "Dealer short gamma acceleration"
+              ]
+            }
+          ]
+        },
+        "metrics": {
+          "evaluated": 3301,
+          "passed": 3301,
+          "failed": 0,
+          "pass_rate": 100.0
+        },
+        "run_count": 2600
+      }
+    ],
+    "risk": [
+      {
+        "agent_id": 13,
+        "name": "LiquidityMonitor",
+        "layer": "risk",
+        "status": "idle",
+        "bot_type": "liquidity_monitor",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.067393",
+        "last_output": {
+          "liquidity_health_pct": 94.1,
+          "tradeable_options": 288,
+          "total_options": 306,
+          "illiquid_selected_count": 0
+        },
+        "metrics": {
+          "tradeable_pct": 94.11764705882352,
+          "illiquid_strikes": 0
+        },
+        "run_count": 2600
+      },
+      {
+        "agent_id": 14,
+        "name": "RiskGuardian",
+        "layer": "risk",
+        "status": "idle",
+        "bot_type": "risk_guardian",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.068135",
+        "last_output": {
+          "risk_checks": [
+            {
+              "check": "daily_loss",
+              "current": 0.12250000000000001,
+              "limit": 10.0,
+              "passed": true
+            }
+          ],
+          "breaches": [
+            "NSE:NIFTYBANK-INDEX: Wide spreads detected",
+            "Consecutive losses pause: 3"
+          ],
+          "blocked_orders": [],
+          "trading_allowed": false
+        },
+        "metrics": {
+          "daily_pnl": -122.50000000000001,
+          "daily_pnl_pct": -0.12250000000000001,
+          "breach_count": 2
+        },
+        "run_count": 2600
+      },
+      {
+        "agent_id": 15,
+        "name": "CorrelationGuard",
+        "layer": "risk",
+        "status": "idle",
+        "bot_type": "correlation_guard",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.068779",
+        "last_output": {
+          "alerts": [],
+          "blocked_orders": [],
+          "blocked_signal_keys": [],
+          "signal_penalties": {},
+          "adjustments": []
+        },
+        "metrics": {
+          "alerts_count": 0,
+          "high_risk_alerts": 0,
+          "orders_blocked": 0,
+          "signals_adjusted": 0
+        },
+        "run_count": 2600
+      },
+      {
+        "agent_id": 16,
+        "name": "MetaAllocator",
+        "layer": "risk",
+        "status": "idle",
+        "bot_type": "meta_allocator",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T12:33:22.356772",
+        "last_output": {
+          "allocations": [
+            {
+              "strategy": "breakdown_scalping",
+              "regime": "bearish",
+              "allocation_pct": 0.6999999999999998,
+              "reason": "Regime trending_bearish favors breakdown_scalping",
+              "confidence": 0.9999999999999999
+            },
+            {
+              "strategy": "breakdown_scalping",
+              "regime": "bearish",
+              "allocation_pct": 0.6999999999999998,
+              "reason": "Regime trending_bearish favors breakdown_scalping",
+              "confidence": 0.9999999999999999
+            },
+            {
+              "strategy": "breakdown_scalping",
+              "regime": "bearish",
+              "allocation_pct": 0.6999999999999998,
+              "reason": "Regime trending_bearish favors breakdown_scalping",
+              "confidence": 0.9999999999999999
+            }
+          ],
+          "regime_changes": [],
+          "current_regimes": {
+            "NSE:NIFTY50-INDEX": "bearish",
+            "NSE:NIFTYBANK-INDEX": "bearish",
+            "BSE:SENSEX-INDEX": "bearish"
+          }
+        },
+        "metrics": {
+          "symbols_allocated": 3,
+          "regime_changes": 0
+        },
+        "run_count": 510
+      }
+    ],
+    "execution": [
+      {
+        "agent_id": 17,
+        "name": "Entry",
+        "layer": "execution",
+        "status": "idle",
+        "bot_type": "entry",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T12:33:22.363639",
+        "last_output": {
+          "entry_signals": [],
+          "orders_created": 0,
+          "dry_run": true
+        },
+        "metrics": {
+          "signals_generated": 0,
+          "orders_pending": 0
+        },
+        "run_count": 510
+      },
+      {
+        "agent_id": 18,
+        "name": "Exit",
+        "layer": "execution",
+        "status": "idle",
+        "bot_type": "exit",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T12:33:22.370917",
+        "last_output": {
+          "exit_orders": 1,
+          "position_updates": [
+            {
+              "position_id": "POS_c778045b",
+              "action": "momentum_reversal",
+              "qty": 10,
+              "price": 17.1
+            }
+          ],
+          "debate_validated": 0
+        },
+        "metrics": {
+          "exits_triggered": 1,
+          "debate_validations": 0
+        },
+        "run_count": 510
+      },
+      {
+        "agent_id": 19,
+        "name": "PositionManager",
+        "layer": "execution",
+        "status": "idle",
+        "bot_type": "position_manager",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T12:33:22.377679",
+        "last_output": {
+          "open_positions": 0,
+          "total_unrealized_pnl": 0,
+          "total_realized_pnl": -122.5
+        },
+        "metrics": {
+          "positions_count": 8,
+          "unrealized_pnl": 0,
+          "realized_pnl": -122.50000000000003
+        },
+        "run_count": 510
+      }
+    ],
+    "learning": [
+      {
+        "agent_id": 20,
+        "name": "QuantLearner",
+        "layer": "learning",
+        "status": "idle",
+        "bot_type": "quant_learner",
+        "debate_mode": "single",
+        "last_run": "2026-04-02T15:01:52.075051",
+        "last_output": {
+          "insights_generated": 2,
+          "high_confidence": 1,
+          "actionable": 2
+        },
+        "metrics": {
+          "total_insights": 2,
+          "avg_confidence": 0.7150000000000001
+        },
+        "run_count": 54
+      },
+      {
+        "agent_id": 21,
+        "name": "StrategyOptimizer",
+        "layer": "learning",
+        "status": "idle",
+        "bot_type": "strategy_optimizer",
+        "debate_mode": "single",
+        "last_run": null,
+        "last_output": {},
+        "metrics": {},
+        "run_count": 0
+      },
+      {
+        "agent_id": 22,
+        "name": "ExitOptimizer",
+        "layer": "learning",
+        "status": "idle",
+        "bot_type": "exit_optimizer",
+        "debate_mode": "single",
+        "last_run": null,
+        "last_output": {},
+        "metrics": {},
+        "run_count": 0
+      }
+    ]
+  }
+}
