@@ -1133,13 +1133,55 @@ class StrikeSelectorAgent(BaseBot):
         return "CE"  # Default to CE
 
     @staticmethod
-    def _is_expiry_day() -> bool:
-        """Check if today is a weekly expiry day (Thursday for NSE, Friday for BSE)."""
+    def _is_expiry_day_for_symbol(symbol: str = "") -> bool:
+        """Check if today is expiry day for a specific index using exchange data.
+
+        Reads the expiry schedule cache (populated from Fyers/exchange API)
+        rather than assuming fixed weekdays. Falls back to weekday heuristic
+        only if cache is unavailable.
+        """
         from datetime import date
+        from pathlib import Path
+        import json as _json
+
         today = date.today()
-        # NSE weekly expiry: Thursday (weekday 3)
-        # BSE weekly expiry: Friday (weekday 4)
+        today_str = today.isoformat()
+
+        # Map symbol to index name for cache lookup
+        _sym_to_name = {
+            "NSE:NIFTY50-INDEX": "NIFTY50",
+            "NSE:NIFTYBANK-INDEX": "BANKNIFTY",
+            "BSE:SENSEX-INDEX": "SENSEX",
+            "NSE:FINNIFTY-INDEX": "FINNIFTY",
+            "NSE:MIDCPNIFTY-INDEX": "MIDCPNIFTY",
+        }
+        index_name = _sym_to_name.get(str(symbol).upper(), "")
+
+        # Priority: exchange-sourced expiry cache
+        if index_name:
+            for parents_up in (5, 4, 3, 6):
+                cache_path = Path(__file__).resolve().parents[parents_up] / "shared_project_engine" / "indices" / ".cache" / "expiry_schedule.json"
+                try:
+                    if cache_path.exists():
+                        data = _json.loads(cache_path.read_text()).get("data", {})
+                        info = data.get(index_name, {})
+                        if isinstance(info, dict) and info.get("next_expiry"):
+                            return info["next_expiry"] == today_str
+                except Exception:
+                    continue
+
+        # Fallback: weekday heuristic (clearly inferior, log warning)
+        import logging
+        logging.getLogger("scalping.strike_selector").warning(
+            "Expiry cache unavailable for %s — using weekday fallback", symbol
+        )
         return today.weekday() in (3, 4)
+
+    @staticmethod
+    def _is_expiry_day() -> bool:
+        """Legacy global check — DEPRECATED. Use _is_expiry_day_for_symbol()."""
+        from datetime import date
+        return date.today().weekday() in (3, 4)
 
     def _select_strikes(
         self,
@@ -1164,7 +1206,7 @@ class StrikeSelectorAgent(BaseBot):
         volatility_surface = volatility_surface or {}
         dealer_pressure = dealer_pressure or {}
         otm_min, otm_max = self._adaptive_otm_range(idx_config, config, vix, volatility_surface)
-        is_expiry = self._is_expiry_day()
+        is_expiry = self._is_expiry_day_for_symbol(symbol)
 
         # Non-expiry: relax thresholds to find best-movement strikes
         spread_limit = config.max_bid_ask_spread_pct if is_expiry else config.max_bid_ask_spread_pct * 0.6
