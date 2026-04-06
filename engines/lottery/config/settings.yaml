@@ -1,0 +1,160 @@
+# ============================================================================
+# Lottery Strike Picker — Default Configuration
+# All parameters are overridable via environment variables or runtime updates.
+# Config version is stored with every signal/trade for auditability.
+# ============================================================================
+
+# --- Instrument ---
+instrument:
+  symbol: "NIFTY"
+  exchange: "NSE"
+  strike_step: 50
+  expiry_mode: "NEAREST_WEEKLY"   # NEAREST_WEEKLY | NEAREST_MONTHLY | SPECIFIC
+
+# --- Premium Band ---
+premium_band:
+  min: 2.10
+  max: 8.50
+  fit_mode: "DISTANCE"            # BINARY | DISTANCE
+
+# --- OTM Distance ---
+otm_distance:
+  min_points: 250
+  max_points: 450
+
+# --- Trigger Zones ---
+triggers:
+  mode: "DYNAMIC"                 # DYNAMIC (derived from chain) | STATIC
+  # Static values used when mode=STATIC:
+  upper_trigger: 22700
+  lower_trigger: 22650
+  # Dynamic: derived from nearest round strikes around spot
+
+# --- Scoring Weights ---
+scoring:
+  w1_distance: 1.0
+  w2_momentum: 1.0
+  w3_liquidity: 1.0
+  w4_band_fit: 1.0
+  w5_bias: 1.0
+  tie_epsilon: 0.01
+  min_valid_candidates: 1
+
+# --- Strike Window ---
+window:
+  type: "ATM_SYMMETRIC"           # FULL_CHAIN | ATM_SYMMETRIC | VISIBLE_RANGE
+  size: 4                         # ATM ± N strikes
+
+# --- Decay / Momentum ---
+decay:
+  mode: "NORMALIZED"              # RAW | NORMALIZED
+  epsilon: 0.01                   # floor divisor to avoid division by zero
+
+# --- Side Bias ---
+bias:
+  aggregation: "MEAN"             # MEAN | VOLUME_WEIGHTED | DISTANCE_WEIGHTED
+  use_pcr: false
+
+# --- Extrapolation ---
+extrapolation:
+  fit_window_ce: 3
+  fit_window_pe: 3
+  alpha_mode: "CALIBRATED"        # FIXED | CALIBRATED
+  alpha_value: 0.05               # used when alpha_mode=FIXED
+  min_valid_strikes: 3            # guard: skip if fewer valid OTM strikes
+
+# --- Data Quality Thresholds ---
+data_quality:
+  max_spot_age_ms: 2000
+  max_chain_age_ms: 5000
+  max_cross_source_skew_ms: 3000
+  intrinsic_floor_epsilon: 0.50
+  min_volume: 1000
+  min_oi: 500
+  max_spread_pct: 5.0             # percent
+  min_bid_qty: 1
+  min_ask_qty: 1
+  max_stale_cycles: 5             # reject if hash unchanged for N cycles
+  snapshot_mode: "STRICT"         # STRICT | TOLERANT
+
+# --- Paper Trading ---
+paper_trading:
+  starting_capital: 100000
+  lot_size: 75                    # NIFTY lot size
+  max_risk_per_trade_pct: 2.0     # % of capital
+  max_daily_loss: 5000
+  max_open_trades: 1
+  max_daily_trades: 5
+  max_consecutive_losses: 3
+  sizing_mode: "FIXED_LOTS"       # FIXED_LOTS | FIXED_RUPEE | PCT_CAPITAL | PREMIUM_BUDGET
+  fixed_lots: 1
+
+# --- Execution Model ---
+execution:
+  mode: "MID_SLIPPAGE"            # LTP | MID | ASK | BID | MID_SLIPPAGE
+  slippage_pct: 0.5               # percent
+  brokerage_per_lot: 20.0
+  exchange_charges_pct: 0.05
+
+# --- Exit Rules ---
+exit_rules:
+  sl_ratio: 0.5                   # SL = sl_ratio * entry_price
+  t1_ratio: 2.0                   # T1 = t1_ratio * entry_price
+  t2_ratio: 3.0
+  t3_ratio: 4.0
+  time_stop_minutes: 0            # 0 = disabled
+  eod_exit: true                  # mandatory square-off at session end
+  trailing_stop: false
+  trailing_stop_pct: 0.0
+  invalidation_exit: true         # exit if trigger reverses
+
+# --- Time Filters ---
+time_filters:
+  no_trade_first_minutes: 15      # skip first N minutes after open
+  no_trade_lunch_start: "12:30"
+  no_trade_lunch_end: "13:15"
+  mandatory_squareoff_time: "15:15"
+  market_open: "09:15"
+  market_close: "15:30"
+
+# --- Cooldown ---
+cooldown:
+  seconds: 300
+  max_reentries: 2
+  allow_same_strike_reentry: false
+
+# --- State Machine ---
+state_machine:
+  no_trade_zone_enabled: true
+
+# --- Risk Guardrails ---
+risk:
+  cooldown_after_loss: true
+  no_trade_poor_quality: true
+  no_trade_near_close_minutes: 10
+
+# --- Polling ---
+polling:
+  interval_seconds: 1
+  chain_refresh_seconds: 30       # REST option chain refresh interval (avoid rate limits)
+  retry_max_attempts: 3
+  retry_backoff_base_ms: 500
+
+# --- Logging ---
+logging:
+  level: "INFO"                   # TRACE | DEBUG | INFO | WARN | ERROR
+  json_output: true
+  log_dir: "engines/lottery/logs"
+
+# --- Storage ---
+storage:
+  db_path: "engines/lottery/data/lottery.db"
+  snapshot_dump_on_failure: true
+  snapshot_dump_on_signal: true
+
+# --- Alerting ---
+alerting:
+  enabled: false
+  channels: []                    # "telegram" | "slack" | "email"
+  telegram_bot_token_env: "LOTTERY_TELEGRAM_TOKEN"
+  telegram_chat_id_env: "LOTTERY_TELEGRAM_CHAT_ID"

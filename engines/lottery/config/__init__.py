@@ -1,0 +1,45 @@
+"""Configuration module — settings loader, config models, and versioning."""
+
+from .settings import (
+    LotteryConfig,
+    load_config,
+    # Sub-configs
+    InstrumentConfig,
+    PremiumBandConfig,
+    OtmDistanceConfig,
+    TriggerConfig,
+    ScoringConfig,
+    WindowConfig,
+    DecayConfig,
+    BiasConfig,
+    ExtrapolationConfig,
+    DataQualityConfig,
+    PaperTradingConfig,
+    ExecutionConfig,
+    ExitRulesConfig,
+    TimeFiltersConfig,
+    CooldownConfig,
+    StateMachineConfig,
+    RiskConfig,
+    PollingConfig,
+    LoggingConfig,
+    StorageConfig,
+    AlertingConfig,
+    # Enums
+    ExpiryMode,
+    BandFitMode,
+    TriggerMode,
+    WindowType,
+    DecayMode,
+    BiasAggregation,
+    AlphaMode,
+    SnapshotMode,
+    SizingMode,
+    ExecutionMode,
+    LogLevel,
+)
+
+__all__ = [
+    "LotteryConfig",
+    "load_config",
+]

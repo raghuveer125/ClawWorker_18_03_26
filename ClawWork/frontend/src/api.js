@@ -308,4 +308,36 @@ export const saveHiddenAgents = (hiddenArray) => {
   })
 }
 
+// ── Lottery Pipeline ──────────────────────────────────────────────────────────
+
+export const fetchLotteryStatus = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/status?symbol=${symbol}`))
+
+export const fetchLotteryConfig = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/config?symbol=${symbol}`))
+
+export const fetchLotteryRawData = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/raw-data?symbol=${symbol}`))
+
+export const fetchLotteryFormulaAudit = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/formula-audit?symbol=${symbol}`))
+
+export const fetchLotteryQuality = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/quality?symbol=${symbol}`))
+
+export const fetchLotterySignals = (symbol = 'NIFTY', limit = 50) =>
+  get(liveUrl(`lottery/signals?symbol=${symbol}&limit=${limit}`))
+
+export const fetchLotteryTrades = (symbol = 'NIFTY', limit = 50) =>
+  get(liveUrl(`lottery/trades?symbol=${symbol}&limit=${limit}`))
+
+export const fetchLotteryCapital = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/capital?symbol=${symbol}`))
+
+export const fetchLotteryCandidates = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/candidates?symbol=${symbol}`))
+
+export const fetchLotteryRejections = (symbol = 'NIFTY', limit = 20) =>
+  get(liveUrl(`lottery/rejections?symbol=${symbol}&limit=${limit}`))
+
 export const IS_STATIC = STATIC

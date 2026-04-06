@@ -16,6 +16,7 @@ const BotEnsemble = lazy(() => import('./pages/BotEnsemble'))
 const SignalView = lazy(() => import('./pages/SignalView'))
 const SwingAnalysis = lazy(() => import('./pages/SwingAnalysis'))
 const ScalpingDashboard = lazy(() => import('./pages/ScalpingDashboard'))
+const Lottery = lazy(() => import('./pages/Lottery'))
 
 function App() {
   const [agents, setAgents] = useState([])
@@ -203,6 +204,9 @@ function App() {
               } />
               <Route path="/scalping" element={
                 <ScalpingDashboard />
+              } />
+              <Route path="/lottery" element={
+                <Lottery />
               } />
             </Routes>
           </Suspense>

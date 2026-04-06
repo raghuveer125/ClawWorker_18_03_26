@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Home, Briefcase, Brain, Activity, Trophy, FolderOpen, Settings, X, Check, Star, Github, PanelLeftClose, PanelLeft, Bot, Radio, BarChart2, Zap } from 'lucide-react'
+import { Home, Briefcase, Brain, Activity, Trophy, FolderOpen, Settings, X, Check, Star, Github, PanelLeftClose, PanelLeft, Bot, Radio, BarChart2, Zap, Ticket } from 'lucide-react'
 import { useDisplayName } from '../DisplayNamesContext'
 
 const formatINR = (value, digits = 2) =>
@@ -32,6 +32,7 @@ const Sidebar = ({ agents, allAgents, hiddenAgents, onUpdateHiddenAgents, select
     { path: '/artifacts', icon: FolderOpen, label: 'Artifacts' },
     { path: '/work', icon: Briefcase, label: 'Work Tasks' },
     { path: '/learning', icon: Brain, label: 'Learning' },
+    { path: '/lottery', icon: Ticket, label: 'Lottery' },
   ]
 
   const getStatusColor = (status) => {

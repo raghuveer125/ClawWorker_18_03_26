@@ -39,6 +39,7 @@ from .routers import (  # noqa: E402
     auto_trader,
     ensemble,
     fyersn7,
+    lottery,
     market,
     pipelines,
     settings,
@@ -54,6 +55,7 @@ app.include_router(market.router)
 app.include_router(artifacts.router)
 app.include_router(settings.router)
 app.include_router(websocket.router)
+app.include_router(lottery.router)
 
 
 # ---------------------------------------------------------------------------
