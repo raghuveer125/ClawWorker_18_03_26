@@ -195,7 +195,7 @@ storage:
 
 # --- Alerting ---
 alerting:
-  enabled: false
+  enabled: true
   channels: []                    # "telegram" | "slack" | "email"
   telegram_bot_token_env: "LOTTERY_TELEGRAM_TOKEN"
   telegram_chat_id_env: "LOTTERY_TELEGRAM_CHAT_ID"

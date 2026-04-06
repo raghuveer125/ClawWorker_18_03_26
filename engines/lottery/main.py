@@ -93,6 +93,14 @@ class LotteryPipeline:
         self._rsm = RuntimeStateManager(config=config, symbol=symbol)
         self._failures = FailureBucket()
 
+        # ── Telegram alerts ────────────────────────────────────────
+        from .alerting import AlertNotifier
+        self._alerts = AlertNotifier(
+            token_env=config.alerting.telegram_bot_token_env,
+            chat_id_env=config.alerting.telegram_chat_id_env,
+            enabled=config.alerting.enabled,
+        )
+
         # ── Candle builder ─────────────────────────────────────────
         self._candle_builder = CandleBuilder(config=config, symbol=symbol)
 
@@ -205,6 +213,13 @@ class LotteryPipeline:
         self._logger.info("Pipeline running: trigger every %ds, analysis every %ds",
             interval, self._config.polling.chain_refresh_seconds)
 
+        self._alerts.on_pipeline_start(
+            symbol=self._symbol,
+            profile=self._active_profile.mode.value,
+            dte=self._dte_detector.dte or -1,
+            capital=self._config.paper_trading.starting_capital,
+        )
+
         while self._running:
             cycle_start = time.monotonic()
 
@@ -217,12 +232,18 @@ class LotteryPipeline:
             except Exception as e:
                 self._logger.error("Cycle error: %s", e, exc_info=True)
                 self._failures.record("PARSING", str(e))
+                self._alerts.on_system_error(self._symbol, str(e))
 
             elapsed = time.monotonic() - cycle_start
             sleep_time = max(0, interval - elapsed)
             if sleep_time > 0:
                 time.sleep(sleep_time)
 
+        self._alerts.on_pipeline_stop(
+            symbol=self._symbol,
+            trades=self._sm.context.daily_trade_count,
+            pnl=self._capital.realized_pnl,
+        )
         self._logger.info("Pipeline stopped")
         self._db.close()
 
@@ -600,6 +621,12 @@ class LotteryPipeline:
                 closed.exit_price, closed.pnl, exit_reason.value,
             )
 
+            self._alerts.on_trade_exit(
+                symbol=self._symbol, strike=closed.strike, side=closed.side.value,
+                entry_price=closed.entry_price, exit_price=closed.exit_price or 0,
+                pnl=closed.pnl or 0, reason=exit_reason.value,
+            )
+
     def _execute_entry(self, signal_event, analysis, trigger_snap, tracer):
         """Execute paper trade entry with live candidate quote."""
         candidate = self._sm.context.candidate
@@ -653,6 +680,11 @@ class LotteryPipeline:
             "ENTRY: K=%s %s entry=%.2f qty=%d SL=%.2f T1=%.2f",
             trade.strike, trade.side.value,
             trade.entry_price, trade.qty, trade.sl, trade.t1,
+        )
+
+        self._alerts.on_trade_entry(
+            symbol=self._symbol, strike=trade.strike, side=trade.side.value,
+            entry_price=trade.entry_price, sl=trade.sl, t1=trade.t1, qty=trade.qty,
         )
 
     # ── Support Methods ────────────────────────────────────────────
