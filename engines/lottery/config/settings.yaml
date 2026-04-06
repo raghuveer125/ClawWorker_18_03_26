@@ -127,6 +127,47 @@ cooldown:
 state_machine:
   no_trade_zone_enabled: true
 
+# --- Trigger Hysteresis ---
+hysteresis:
+  buffer_points: 10               # spot must exceed trigger by N points to activate zone
+  min_zone_hold_seconds: 5        # zone must be held for N seconds before candidate search
+  rearm_distance_points: 20       # after IDLE return, spot must move N points before re-activation
+  invalidation_buffer_points: 5   # spot must reverse N points past trigger to invalidate trade
+
+# --- Tradability Filters ---
+tradability:
+  require_bid: true               # bid must be > 0
+  require_ask: true               # ask must be > 0
+  min_bid_qty: 50                 # minimum bid quantity
+  min_ask_qty: 50                 # minimum ask quantity
+  min_recent_volume: 500          # minimum volume on the specific strike
+  max_spread_pct: 10.0            # max spread % for candidate acceptance
+  max_last_trade_age_seconds: 0   # 0 = disabled (FYERS field unreliable)
+
+# --- Breakout Confirmation ---
+confirmation:
+  mode: "QUORUM"                  # CANDLE | PREMIUM | HYBRID | QUORUM | DISABLED
+  quorum: 2                       # min checks to pass in QUORUM mode
+  hold_duration_seconds: 15.0     # min seconds spot must hold beyond trigger
+  premium_expansion_min_pct: 5.0  # min % premium increase since candidate found
+  volume_spike_multiplier: 1.5    # current vol > avg * multiplier
+  spread_widen_max_pct: 20.0      # max % spread can widen during confirmation
+
+# --- Strategy Profile ---
+strategy:
+  mode: "AUTO"                    # AUTO | PRE_EXPIRY_MOMENTUM | DTE1_HYBRID | EXPIRY_DAY_TRUE_LOTTERY
+  # AUTO uses DTE detection from exchange calendar
+
+# --- Adaptive Refresh ---
+refresh:
+  chain_idle_seconds: 30
+  chain_active_seconds: 30
+  candidate_zone_seconds: 5
+  candidate_found_seconds: 2
+  trade_quote_seconds: 1
+  spot_drift_threshold: 100.0     # force chain refresh if spot drifts > N points
+  candidate_stale_seconds: 60.0   # force refresh if candidate data > N seconds old
+
 # --- Risk Guardrails ---
 risk:
   cooldown_after_loss: true

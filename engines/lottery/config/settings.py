@@ -223,6 +223,51 @@ class StateMachineConfig:
 
 
 @dataclass(frozen=True)
+class HysteresisConfig:
+    buffer_points: float = 10.0
+    min_zone_hold_seconds: float = 5.0
+    rearm_distance_points: float = 20.0
+    invalidation_buffer_points: float = 5.0
+
+
+@dataclass(frozen=True)
+class TradabilityConfig:
+    require_bid: bool = True
+    require_ask: bool = True
+    min_bid_qty: int = 50
+    min_ask_qty: int = 50
+    min_recent_volume: int = 500
+    max_spread_pct: float = 10.0
+    max_last_trade_age_seconds: int = 0  # 0 = disabled
+
+
+@dataclass(frozen=True)
+class ConfirmationSettingsConfig:
+    mode: str = "QUORUM"
+    quorum: int = 2
+    hold_duration_seconds: float = 15.0
+    premium_expansion_min_pct: float = 5.0
+    volume_spike_multiplier: float = 1.5
+    spread_widen_max_pct: float = 20.0
+
+
+@dataclass(frozen=True)
+class StrategySettingsConfig:
+    mode: str = "AUTO"
+
+
+@dataclass(frozen=True)
+class RefreshSettingsConfig:
+    chain_idle_seconds: int = 30
+    chain_active_seconds: int = 30
+    candidate_zone_seconds: int = 5
+    candidate_found_seconds: int = 2
+    trade_quote_seconds: int = 1
+    spot_drift_threshold: float = 100.0
+    candidate_stale_seconds: float = 60.0
+
+
+@dataclass(frozen=True)
 class RiskConfig:
     cooldown_after_loss: bool = True
     no_trade_poor_quality: bool = True
@@ -279,6 +324,11 @@ class LotteryConfig:
     time_filters: TimeFiltersConfig = field(default_factory=TimeFiltersConfig)
     cooldown: CooldownConfig = field(default_factory=CooldownConfig)
     state_machine: StateMachineConfig = field(default_factory=StateMachineConfig)
+    hysteresis: HysteresisConfig = field(default_factory=HysteresisConfig)
+    tradability: TradabilityConfig = field(default_factory=TradabilityConfig)
+    confirmation: ConfirmationSettingsConfig = field(default_factory=ConfirmationSettingsConfig)
+    strategy: StrategySettingsConfig = field(default_factory=StrategySettingsConfig)
+    refresh: RefreshSettingsConfig = field(default_factory=RefreshSettingsConfig)
     risk: RiskConfig = field(default_factory=RiskConfig)
     polling: PollingConfig = field(default_factory=PollingConfig)
     logging: LoggingConfig = field(default_factory=LoggingConfig)
@@ -400,6 +450,11 @@ def load_config(path: Optional[str] = None) -> LotteryConfig:
         time_filters=_build_sub_config(TimeFiltersConfig, raw.get("time_filters"), "time_filters"),
         cooldown=_build_sub_config(CooldownConfig, raw.get("cooldown"), "cooldown"),
         state_machine=_build_sub_config(StateMachineConfig, raw.get("state_machine"), "state_machine"),
+        hysteresis=_build_sub_config(HysteresisConfig, raw.get("hysteresis"), "hysteresis"),
+        tradability=_build_sub_config(TradabilityConfig, raw.get("tradability"), "tradability"),
+        confirmation=_build_sub_config(ConfirmationSettingsConfig, raw.get("confirmation"), "confirmation"),
+        strategy=_build_sub_config(StrategySettingsConfig, raw.get("strategy"), "strategy"),
+        refresh=_build_sub_config(RefreshSettingsConfig, raw.get("refresh"), "refresh"),
         risk=_build_sub_config(RiskConfig, raw.get("risk"), "risk"),
         polling=_build_sub_config(PollingConfig, raw.get("polling"), "polling"),
         logging=_build_sub_config(LoggingConfig, raw.get("logging"), "logging"),

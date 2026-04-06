@@ -322,6 +322,177 @@ class FyersAdapter(DataProvider):
         logger.warning("No lot size for '%s', defaulting to config value", symbol)
         return self._config.paper_trading.lot_size
 
+    def fetch_candidate_quotes(
+        self,
+        symbol: str,
+        candidates: list[tuple[float, str]],
+    ) -> dict[tuple[float, str], dict]:
+        """Fetch live quotes for 2-3 shortlisted candidate strikes.
+
+        Uses a single REST quotes call for all candidates.
+        Much lighter than a full chain refresh.
+
+        Args:
+            symbol: Instrument name (e.g., "NIFTY").
+            candidates: List of (strike, option_type) tuples.
+                e.g., [(24000, "CE"), (21000, "PE")]
+
+        Returns:
+            Dict mapping (strike, type) → {ltp, bid, ask, volume, ...}
+        """
+        if not candidates:
+            return {}
+
+        client = self._get_client()
+        results: dict[tuple[float, str], dict] = {}
+
+        # Build FYERS option symbols
+        fyers_symbols = []
+        symbol_map: dict[str, tuple[float, str]] = {}
+
+        for strike, opt_type in candidates:
+            fyers_sym = self._build_option_symbol(symbol, int(strike), opt_type)
+            if fyers_sym:
+                fyers_symbols.append(fyers_sym)
+                symbol_map[fyers_sym] = (strike, opt_type)
+
+        if not fyers_symbols:
+            return {}
+
+        # Single quotes call for all candidates
+        symbols_str = ",".join(fyers_symbols)
+        result = client.quotes(symbols_str)
+
+        if not result.get("success"):
+            logger.warning("Candidate quotes failed: %s", result.get("error", "")[:80])
+            return {}
+
+        data = result.get("data", {})
+        quotes_list = data.get("d", [])
+        if not quotes_list:
+            quotes_list = data.get("data", {}).get("d", [])
+
+        now = datetime.now(timezone.utc)
+        for q in quotes_list:
+            v = q.get("v", {})
+            n = q.get("n", "")  # symbol name
+
+            # Match back to our candidate
+            matched_key = None
+            for fyers_sym, key in symbol_map.items():
+                if fyers_sym in n or n in fyers_sym:
+                    matched_key = key
+                    break
+
+            if matched_key is None:
+                # Try matching by index in same order
+                idx = quotes_list.index(q)
+                if idx < len(fyers_symbols):
+                    matched_key = symbol_map.get(fyers_symbols[idx])
+
+            if matched_key:
+                ltp = _safe_float(v.get("lp", 0))
+                bid = _safe_float(v.get("bp"))      # best bid
+                ask = _safe_float(v.get("sp"))      # best ask (sell price)
+                volume = _safe_int(v.get("volume"))
+                spread_pct = None
+                if bid and ask and bid > 0 and ask > 0:
+                    mid = (bid + ask) / 2
+                    spread_pct = round(((ask - bid) / mid) * 100, 2) if mid > 0 else None
+
+                results[matched_key] = {
+                    "ltp": ltp or 0,
+                    "bid": bid,
+                    "ask": ask,
+                    "bid_qty": _safe_int(v.get("bq")),
+                    "ask_qty": _safe_int(v.get("sq")),
+                    "volume": volume,
+                    "spread_pct": spread_pct,
+                    "timestamp": now,
+                }
+
+        return results
+
+    def _build_option_symbol(
+        self,
+        symbol: str,
+        strike: int,
+        option_type: str,
+    ) -> Optional[str]:
+        """Build FYERS option contract symbol.
+
+        Uses exchange expiry calendar for expiry date.
+        Format: NSE:NIFTY{DDMMMYY}{STRIKE}{CE/PE}
+        """
+        _prefix_map = {
+            "NIFTY": "NSE:NIFTY",
+            "NIFTY50": "NSE:NIFTY",
+            "BANKNIFTY": "NSE:BANKNIFTY",
+            "FINNIFTY": "NSE:FINNIFTY",
+            "MIDCPNIFTY": "NSE:MIDCPNIFTY",
+            "SENSEX": "BSE:SENSEX",
+        }
+
+        prefix = _prefix_map.get(symbol.upper())
+        if not prefix or not strike:
+            return None
+
+        # Get nearest expiry from exchange calendar
+        expiry_str = self._get_nearest_expiry_str(symbol)
+        if not expiry_str:
+            return None
+
+        return f"{prefix}{expiry_str}{strike}{option_type}"
+
+    def _get_nearest_expiry_str(self, symbol: str) -> Optional[str]:
+        """Get nearest expiry date formatted as DDMMMYY for FYERS symbol.
+
+        Uses shared_project_engine exchange calendar as primary source.
+        """
+        try:
+            from shared_project_engine.indices.config import get_expiry_snapshot
+
+            snapshot = get_expiry_snapshot(use_live=False)
+            schedule = snapshot.get("schedule", {})
+
+            # Map our symbol to calendar key
+            cal_key_map = {
+                "NIFTY": "NIFTY50",
+                "NIFTY50": "NIFTY50",
+                "BANKNIFTY": "BANKNIFTY",
+                "FINNIFTY": "FINNIFTY",
+                "SENSEX": "SENSEX",
+            }
+            cal_key = cal_key_map.get(symbol.upper(), symbol.upper())
+            index_data = schedule.get(cal_key, {})
+
+            expiry_date_str = index_data.get("next_expiry")
+            if expiry_date_str:
+                # Parse YYYY-MM-DD → DDMMMYY
+                from datetime import datetime as dt
+                exp_date = dt.strptime(expiry_date_str, "%Y-%m-%d")
+                return exp_date.strftime("%d%b%y").upper()
+
+        except Exception as e:
+            logger.debug("Exchange calendar lookup failed: %s", e)
+
+        # Fallback: compute from weekday (NIFTY=Thu, SENSEX=Fri)
+        try:
+            from datetime import timedelta
+            _weekday_map = {"NIFTY": 3, "NIFTY50": 3, "SENSEX": 4}
+            weekday = _weekday_map.get(symbol.upper())
+            if weekday is not None:
+                now = datetime.now(timezone.utc)
+                days = (weekday - now.weekday()) % 7
+                if days == 0 and now.hour >= 10:  # past IST 15:30
+                    days = 7
+                exp = now + timedelta(days=days)
+                return exp.strftime("%d%b%y").upper()
+        except Exception:
+            pass
+
+        return None
+
     def is_connected(self) -> bool:
         """Check if FYERS client has valid auth."""
         try:

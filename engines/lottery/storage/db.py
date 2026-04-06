@@ -223,16 +223,18 @@ class LotteryDB:
         conn.execute(
             """INSERT OR REPLACE INTO paper_trades
                (trade_id, timestamp_entry, timestamp_exit, side, symbol, expiry,
-                strike, option_type, entry_price, exit_price, qty, lots,
-                capital_before, capital_after, sl, t1, t2, t3,
+                strike, option_type,
+                selection_price, confirmation_price, entry_price, exit_price,
+                qty, lots, capital_before, capital_after, sl, t1, t2, t3,
                 pnl, charges, status, reason_entry, reason_exit, exit_detail,
                 signal_id, snapshot_id, config_version)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (
                 trade.trade_id, trade.timestamp_entry.isoformat(),
                 trade.timestamp_exit.isoformat() if trade.timestamp_exit else None,
                 trade.side.value, trade.symbol, trade.expiry,
                 trade.strike, trade.option_type.value,
+                trade.selection_price, trade.confirmation_price,
                 trade.entry_price, trade.exit_price,
                 trade.qty, trade.lots,
                 trade.capital_before, trade.capital_after,
@@ -310,6 +312,42 @@ class LotteryDB:
             ),
         )
         conn.commit()
+
+    # ── 9. Strike Rejection Audit ─────────────────────────────────
+
+    def save_rejection_audit(self, audits: list) -> None:
+        """Persist per-strike rejection audit rows."""
+        if not audits:
+            return
+        conn = self._get_conn()
+        for a in audits:
+            conn.execute(
+                """INSERT INTO strike_rejection_audit
+                   (snapshot_id, symbol, strike, option_type, ltp,
+                    band_pass, distance_pass, direction_pass, tradability_pass,
+                    liquidity_pass, spread_pass, bias_pass, trigger_pass,
+                    score, accepted, rejection_primary, rejection_all, timestamp)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (
+                    a.snapshot_id, a.symbol, a.strike, a.option_type.value, a.ltp,
+                    int(a.band_pass), int(a.distance_pass), int(a.direction_pass),
+                    int(a.tradability_pass), int(a.liquidity_pass), int(a.spread_pass),
+                    int(a.bias_pass), int(a.trigger_pass),
+                    a.score, int(a.accepted), a.rejection_primary,
+                    ",".join(a.rejection_all) if a.rejection_all else None,
+                    a.timestamp.isoformat(),
+                ),
+            )
+        conn.commit()
+
+    def get_rejection_audit(self, snapshot_id: str) -> list[dict]:
+        """Get rejection audit for a specific snapshot."""
+        conn = self._get_conn()
+        rows = conn.execute(
+            "SELECT * FROM strike_rejection_audit WHERE snapshot_id = ? ORDER BY strike, option_type",
+            (snapshot_id,),
+        ).fetchall()
+        return [dict(r) for r in rows]
 
     # ── Queries ────────────────────────────────────────────────────
 
@@ -435,6 +473,8 @@ CREATE TABLE IF NOT EXISTS paper_trades (
     expiry TEXT,
     strike REAL NOT NULL,
     option_type TEXT NOT NULL,
+    selection_price REAL,
+    confirmation_price REAL,
     entry_price REAL NOT NULL,
     exit_price REAL,
     qty INTEGER NOT NULL,
@@ -494,6 +534,28 @@ CREATE TABLE IF NOT EXISTS config_versions (
     saved_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS strike_rejection_audit (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    snapshot_id TEXT NOT NULL,
+    symbol TEXT NOT NULL,
+    strike REAL NOT NULL,
+    option_type TEXT NOT NULL,
+    ltp REAL,
+    band_pass INTEGER,
+    distance_pass INTEGER,
+    direction_pass INTEGER,
+    tradability_pass INTEGER,
+    liquidity_pass INTEGER,
+    spread_pass INTEGER,
+    bias_pass INTEGER,
+    trigger_pass INTEGER,
+    score REAL,
+    accepted INTEGER,
+    rejection_primary TEXT,
+    rejection_all TEXT,
+    timestamp TEXT NOT NULL
+);
+
 -- Indexes for common queries
 CREATE INDEX IF NOT EXISTS idx_signals_timestamp ON signal_events(timestamp);
 CREATE INDEX IF NOT EXISTS idx_signals_validity ON signal_events(validity);
@@ -502,4 +564,6 @@ CREATE INDEX IF NOT EXISTS idx_trades_entry ON paper_trades(timestamp_entry);
 CREATE INDEX IF NOT EXISTS idx_ledger_timestamp ON capital_ledger(timestamp);
 CREATE INDEX IF NOT EXISTS idx_debug_timestamp ON debug_events(timestamp);
 CREATE INDEX IF NOT EXISTS idx_snapshots_symbol ON raw_chain_snapshots(symbol);
+CREATE INDEX IF NOT EXISTS idx_rejection_snapshot ON strike_rejection_audit(snapshot_id);
+CREATE INDEX IF NOT EXISTS idx_rejection_strike ON strike_rejection_audit(strike, option_type);
 """

@@ -49,6 +49,8 @@ class PaperBroker:
         config_version: str,
         bid: Optional[float] = None,
         ask: Optional[float] = None,
+        selection_price: Optional[float] = None,
+        confirmation_price: Optional[float] = None,
     ) -> PaperTrade:
         """Simulate a buy entry.
 
@@ -64,9 +66,11 @@ class PaperBroker:
             config_version: Config version for audit.
             bid: Current bid price (for fill calculation).
             ask: Current ask price (for fill calculation).
+            selection_price: LTP when candidate was scored (from AnalysisSnapshot).
+            confirmation_price: LTP when confirmation passed (from TriggerSnapshot).
 
         Returns:
-            PaperTrade with entry filled.
+            PaperTrade with entry filled and all price roles set.
         """
         ltp = candidate.ltp
         fill_price = self._compute_fill_price_buy(ltp, bid, ask)
@@ -83,6 +87,8 @@ class PaperBroker:
             expiry=expiry,
             strike=candidate.strike,
             option_type=candidate.option_type,
+            selection_price=selection_price or candidate.ltp,
+            confirmation_price=confirmation_price,
             entry_price=fill_price,
             qty=qty,
             lots=lots,
