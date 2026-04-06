@@ -196,12 +196,31 @@ class ReplayEngine:
         broker = PaperBroker(config=cfg)
         capital = CapitalManager(config=cfg, symbol=self._symbol)
 
+        # Confirmation parity — same gate as live path
+        from .strategy.confirmation import (
+            BreakoutConfirmation, ConfirmationConfig, ConfirmationMode,
+        )
+        from .calculations.candle_builder import CandleBuilder
+
+        confirmation = BreakoutConfirmation(config=ConfirmationConfig(
+            mode=ConfirmationMode(cfg.confirmation.mode),
+            quorum=cfg.confirmation.quorum,
+            hold_duration_seconds=cfg.confirmation.hold_duration_seconds,
+            premium_expansion_min_pct=cfg.confirmation.premium_expansion_min_pct,
+            volume_spike_multiplier=cfg.confirmation.volume_spike_multiplier,
+            spread_widen_max_pct=cfg.confirmation.spread_widen_max_pct,
+        ))
+        candle_builder = CandleBuilder(config=cfg, symbol=self._symbol)
+
         active_trade = None
         prev_snapshot = None
 
         for snap, stored_config_version in snapshots:
             cycle_start = time.monotonic()
             tracer = CycleTracer(config=cfg, symbol=self._symbol)
+
+            # Feed candle builder every snapshot for continuous candle data
+            candle_builder.on_tick(snap.spot_ltp, snap.snapshot_timestamp)
 
             # ── Validate ───────────────────────────────────────────
             t0 = time.monotonic()
@@ -287,11 +306,38 @@ class ReplayEngine:
                 })
 
                 if signal.validity == SignalValidity.VALID:
-                    result.signals_valid += 1
-
-                    # Enter paper trade
                     candidate = sm.context.candidate
                     if candidate:
+                        # Feed candle builder with snapshot spot
+                        candle_builder.on_tick(snap.spot_ltp, snap.snapshot_timestamp)
+
+                        # Confirmation gate — same logic as live path
+                        sm_state = sm.state
+                        if sm_state in (MachineState.ZONE_ACTIVE_CE, MachineState.ZONE_ACTIVE_PE):
+                            confirmation.on_zone_active(timestamp=snap.snapshot_timestamp)
+                        if sm_state == MachineState.CANDIDATE_FOUND:
+                            confirmation.on_candidate_found(candidate, timestamp=snap.snapshot_timestamp)
+
+                            direction = "above" if candidate.option_type == OptionType.CE else "below"
+                            trigger_price = triggers.upper_trigger if direction == "above" else triggers.lower_trigger
+
+                            conf_result = confirmation.evaluate(
+                                candidate=candidate,
+                                trigger_price=trigger_price,
+                                direction=direction,
+                                candle_builder=candle_builder,
+                                timestamp=snap.snapshot_timestamp,
+                            )
+
+                            if not conf_result.confirmed:
+                                result.signals_invalid += 1
+                                tracer.record_paper_execution(None, "CONFIRMATION_BLOCKED")
+                                confirmation.reset()
+                                prev_snapshot = snap
+                                continue
+
+                        # Confirmation passed — enter trade
+                        result.signals_valid += 1
                         sm.enter_trade()
                         lot_size = cfg.paper_trading.lot_size
                         qty, lots = capital.compute_position_size(candidate.ltp, lot_size)
@@ -304,11 +350,16 @@ class ReplayEngine:
                             signal_id=signal.signal_id,
                             snapshot_id=snap.snapshot_id,
                             config_version=cfg.version_hash,
+                            selection_price=candidate.ltp,
                         )
                         capital.record_entry(trade)
                         active_trade = trade
                         result.trades_entered += 1
                         tracer.record_paper_execution(trade, "ENTRY")
+                        confirmation.reset()
+                    else:
+                        result.signals_valid += 1
+                        tracer.record_paper_execution(None, "NO_CANDIDATE")
                 else:
                     result.signals_invalid += 1
                     tracer.record_paper_execution(None, "NO_TRADE")
