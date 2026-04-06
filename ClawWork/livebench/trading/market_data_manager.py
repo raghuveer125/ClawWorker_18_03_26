@@ -34,6 +34,13 @@ class MarketDataMixin:
     ``_get_market_data_client`` method defined on AutoTrader.
     """
 
+    # Index → FYERS symbol mapping for option chain lookups
+    _OI_INDEX_SYMBOLS: Dict[str, str] = {
+        "NIFTY50": "NSE:NIFTY50-INDEX",
+        "BANKNIFTY": "NSE:NIFTYBANK-INDEX",
+        "SENSEX": "BSE:SENSEX-INDEX",
+    }
+
     # ------------------------------------------------------------------
     # Market-data status setter
     # ------------------------------------------------------------------
@@ -340,27 +347,43 @@ class MarketDataMixin:
                 else:
                     data["open"] = ltp
 
-            # Estimate PCR from signal (heuristic)
-            signal = data.get("signal", "NEUTRAL")
-            if signal == "BULLISH" or data.get("option_side") == "CE":
-                data["pcr"] = 1.1 + (data.get("confidence", 50) / 100 * 0.4)
-            elif signal == "BEARISH" or data.get("option_side") == "PE":
-                data["pcr"] = 0.9 - (data.get("confidence", 50) / 100 * 0.4)
+            # --- OI data: prefer live FYERS option chain, fall back to heuristic ---
+            oi_live = self._fetch_live_oi(index, ltp)
+            if oi_live:
+                data["ce_oi"] = oi_live["ce_oi"]
+                data["pe_oi"] = oi_live["pe_oi"]
+                data["pcr"] = oi_live["pcr"]
+                data["ce_oi_change"] = oi_live["ce_oi_change"]
+                data["pe_oi_change"] = oi_live["pe_oi_change"]
+                data["oi_source"] = "live"
+                print(
+                    f"[OI-LIVE] {index}  ce_oi={oi_live['ce_oi']}  pe_oi={oi_live['pe_oi']}"
+                    f"  pcr={oi_live['pcr']:.3f}  ce_chg={oi_live['ce_oi_change']}"
+                    f"  pe_chg={oi_live['pe_oi_change']}"
+                )
             else:
-                data["pcr"] = 1.0
+                # Heuristic fallback (synthetic OI)
+                signal = data.get("signal", "NEUTRAL")
+                if signal == "BULLISH" or data.get("option_side") == "CE":
+                    data["pcr"] = 1.1 + (data.get("confidence", 50) / 100 * 0.4)
+                elif signal == "BEARISH" or data.get("option_side") == "PE":
+                    data["pcr"] = 0.9 - (data.get("confidence", 50) / 100 * 0.4)
+                else:
+                    data["pcr"] = 1.0
 
-            # Estimate OI from signal direction (heuristic for OIAnalyst)
-            conf = data.get("confidence", 50)
-            if change_pct > 0:  # Price up
-                data["ce_oi"] = 100000 * (1 + conf / 100)
-                data["pe_oi"] = 100000 * (1 - conf / 200)
-                data["ce_oi_change"] = 5 if conf > 60 else -5
-                data["pe_oi_change"] = -5 if conf > 60 else 5
-            else:  # Price down
-                data["ce_oi"] = 100000 * (1 - conf / 200)
-                data["pe_oi"] = 100000 * (1 + conf / 100)
-                data["ce_oi_change"] = -5 if conf > 60 else 5
-                data["pe_oi_change"] = 5 if conf > 60 else -5
+                conf = data.get("confidence", 50)
+                if change_pct > 0:
+                    data["ce_oi"] = 100000 * (1 + conf / 100)
+                    data["pe_oi"] = 100000 * (1 - conf / 200)
+                    data["ce_oi_change"] = 5 if conf > 60 else -5
+                    data["pe_oi_change"] = -5 if conf > 60 else 5
+                else:
+                    data["ce_oi"] = 100000 * (1 - conf / 200)
+                    data["pe_oi"] = 100000 * (1 + conf / 100)
+                    data["ce_oi_change"] = -5 if conf > 60 else 5
+                    data["pe_oi_change"] = 5 if conf > 60 else -5
+                data["oi_source"] = "heuristic"
+                print(f"[OI-HEURISTIC] {index} — live OI unavailable, using synthetic data")
 
             # Estimate IV percentile from volatility (heuristic)
             range_pct = abs(change_pct)
@@ -379,6 +402,92 @@ class MarketDataMixin:
             data["avg_volume"] = 1000000
 
         return market_data
+
+    # ------------------------------------------------------------------
+    # Live OI fetching from FYERS option chain
+    # ------------------------------------------------------------------
+
+    def _fetch_live_oi(self, index: str, ltp: float) -> Optional[Dict[str, Any]]:
+        """Fetch real OI data from FYERS option chain API.
+
+        Returns dict with ce_oi, pe_oi, pcr, ce_oi_change, pe_oi_change
+        or None on failure.
+        """
+        fyers_symbol = self._OI_INDEX_SYMBOLS.get(index)
+        if not fyers_symbol:
+            print(f"[OI-LIVE] No FYERS symbol mapping for index {index}")
+            return None
+
+        try:
+            # Use FyersClient directly (not the Kafka market data client)
+            if not hasattr(self, "_fyers_oi_client"):
+                try:
+                    from shared_project_engine.auth.fyers_client import FyersClient
+                    self._fyers_oi_client = FyersClient()
+                    print(f"[OI-LIVE] FyersClient created, token={'SET' if self._fyers_oi_client.access_token else 'MISSING'}")
+                except Exception as e:
+                    print(f"[OI-LIVE] Cannot create FyersClient: {e}")
+                    self._fyers_oi_client = None
+
+            client = self._fyers_oi_client
+            if not client:
+                print("[OI-LIVE] No FyersClient available")
+                return None
+
+            result = client.option_chain(fyers_symbol, strike_count=10)
+            if not result.get("success"):
+                print(f"[OI-LIVE] option_chain failed for {index}: {result.get('error', 'unknown')}")
+                return None
+
+            chain_data = result.get("data", {})
+            # FYERS wraps in a nested 'data' key
+            if isinstance(chain_data, dict) and "data" in chain_data:
+                chain_data = chain_data["data"]
+
+            # Total OI from summary fields
+            total_ce_oi = chain_data.get("callOi", 0)
+            total_pe_oi = chain_data.get("putOi", 0)
+
+            # Per-contract OI for ATM region (for change signals)
+            contracts = chain_data.get("optionsChain", [])
+            ce_oi_near = 0
+            pe_oi_near = 0
+            for c in contracts:
+                strike = c.get("strike_price", 0)
+                if strike <= 0:
+                    continue  # skip underlying row
+                ot = c.get("option_type", "")
+                oi = c.get("oi", 0) or 0
+                # Focus on ATM +/- 2 strikes
+                if ltp > 0 and abs(strike - ltp) / ltp <= 0.02:
+                    if ot == "CE":
+                        ce_oi_near += oi
+                    elif ot == "PE":
+                        pe_oi_near += oi
+
+            pcr = total_pe_oi / total_ce_oi if total_ce_oi > 0 else 1.0
+
+            # OI change: compare against cached previous snapshot
+            cache_key = f"_oi_prev_{index}"
+            prev = getattr(self, cache_key, None)
+            ce_oi_change = 0
+            pe_oi_change = 0
+            if prev:
+                ce_oi_change = total_ce_oi - prev["ce_oi"]
+                pe_oi_change = total_pe_oi - prev["pe_oi"]
+            setattr(self, cache_key, {"ce_oi": total_ce_oi, "pe_oi": total_pe_oi})
+
+            return {
+                "ce_oi": total_ce_oi,
+                "pe_oi": total_pe_oi,
+                "pcr": round(pcr, 4),
+                "ce_oi_change": ce_oi_change,
+                "pe_oi_change": pe_oi_change,
+            }
+
+        except Exception as e:
+            print(f"[OI-LIVE] Failed to fetch OI for {index}: {e}")
+            return None
 
     # ------------------------------------------------------------------
     # Live price fetching for position monitoring
