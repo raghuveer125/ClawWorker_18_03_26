@@ -171,8 +171,8 @@ def score_and_select(
     pe_candidates = [c for c in all_candidates if c.option_type == OptionType.PE]
 
     # ── Select best per side with tie-break ────────────────────────
-    best_ce = _select_best(ce_candidates, eps) if len(ce_candidates) >= min_candidates else None
-    best_pe = _select_best(pe_candidates, eps) if len(pe_candidates) >= min_candidates else None
+    best_ce = _select_best(ce_candidates, eps, config) if len(ce_candidates) >= min_candidates else None
+    best_pe = _select_best(pe_candidates, eps, config) if len(pe_candidates) >= min_candidates else None
 
     logger.info(
         "Scoring: %d CE (%d visible, %d extrap), %d PE (%d visible, %d extrap). Best CE=%s, Best PE=%s",
@@ -377,6 +377,7 @@ def _compute_band_fit(ltp: float, config: LotteryConfig) -> float:
 def _select_best(
     candidates: list[ScoredCandidate],
     tie_epsilon: float,
+    config: Optional[LotteryConfig] = None,
 ) -> Optional[ScoredCandidate]:
     """Select best candidate with tie-break logic.
 
@@ -385,16 +386,14 @@ def _select_best(
     2. If tie (within epsilon): best band-fit
     3. If still tied: lowest spread %
     4. If still tied: highest volume
-    5. If still tied: closest to target OTM distance
+    5. If still tied: closest to target OTM distance (from config)
     """
     if not candidates:
         return None
 
-    # Sort by composite score descending
     sorted_cands = sorted(candidates, key=lambda c: c.score, reverse=True)
     best = sorted_cands[0]
 
-    # Find all tied candidates (within epsilon of best score)
     tied = [c for c in sorted_cands if abs(c.score - best.score) <= tie_epsilon]
 
     if len(tied) == 1:
@@ -420,16 +419,10 @@ def _select_best(
     if len(tied) == 1:
         return tied[0]
 
-    # Tie-break 4: closest to mid-range OTM distance
-    target_otm = (config_otm_min_default() + config_otm_max_default()) / 2
+    # Tie-break 4: closest to target OTM distance — from config, not hardcoded
+    otm_min = config.otm_distance.min_points if config else 250
+    otm_max = config.otm_distance.max_points if config else 450
+    target_otm = (otm_min + otm_max) / 2
     tied.sort(key=lambda c: abs(c.distance - target_otm))
 
     return tied[0]
-
-
-def config_otm_min_default() -> float:
-    return 250.0
-
-
-def config_otm_max_default() -> float:
-    return 450.0

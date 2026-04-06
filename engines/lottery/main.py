@@ -104,6 +104,14 @@ class LotteryPipeline:
         # ── Candle builder ─────────────────────────────────────────
         self._candle_builder = CandleBuilder(config=config, symbol=symbol)
 
+        # ── Microstructure tracker ─────────────────────────────────
+        from .calculations.microstructure import MicrostructureTracker, MicrostructureConfig
+        self._microstructure = MicrostructureTracker(config=MicrostructureConfig())
+
+        # ── Hysteresis ─────────────────────────────────────────────
+        from .strategy.hysteresis import TriggerHysteresis
+        self._hysteresis = TriggerHysteresis(config=config.hysteresis)
+
         # ── DTE detector + strategy profile ────────────────────────
         from .strategy import DTEDetector, StrategyMode
         manual_mode = None
@@ -332,6 +340,21 @@ class LotteryPipeline:
         )
         rows = update_rows_with_scores(rows, all_cands)
 
+        # ── Rejection audit ────────────────────────────────────────
+        try:
+            from .calculations.rejection_audit import build_rejection_audit
+            scored_map = {(c.strike, c.option_type.value): c.score for c in all_cands}
+            rejection_audits = build_rejection_audit(
+                snapshot=snapshot, config=self._config,
+                preferred_side=side,
+                trigger_ce_active=self._sm.state == MachineState.ZONE_ACTIVE_CE,
+                trigger_pe_active=self._sm.state == MachineState.ZONE_ACTIVE_PE,
+                scored_strikes=scored_map,
+            )
+            self._db.save_rejection_audit(rejection_audits)
+        except Exception as e:
+            self._failures.record("PERSISTENCE", f"rejection audit: {e}")
+
         calc_snapshot = CalculatedSnapshot(
             snapshot_id=snapshot.snapshot_id,
             symbol=self._symbol,
@@ -427,17 +450,27 @@ class LotteryPipeline:
         # ── Signal for new entry ───────────────────────────────────
         if self._rsm.state.active_trade is None:
             triggers = resolve_triggers(live_spot, self._config, analysis.chain.strikes)
+            spot_time = self._last_ws_time or datetime.now(timezone.utc)
 
-            # Use analysis candidates but live spot for trigger detection
+            # ── Hysteresis gate ────────────────────────────────────
+            hyst_allowed, hyst_side, hyst_reason = self._hysteresis.can_activate_zone(
+                live_spot, triggers.upper_trigger, triggers.lower_trigger, spot_time,
+            )
+
             signal_event = self._se.evaluate_entry(
                 live_spot, quality_status, triggers,
-                analysis.best_ce, analysis.best_pe,
+                analysis.best_ce if hyst_allowed else None,
+                analysis.best_pe if hyst_allowed else None,
                 analysis.calculated.preferred_side if analysis.calculated else None,
                 analysis.chain.snapshot_id, self._config.version_hash,
             )
             tracer.record_trade_decision(signal_event)
             self._rsm.update_signal(signal_event)
             self._rsm.update_machine_state(signal_event.machine_state)
+
+            # Record hysteresis state for idle returns
+            if signal_event.machine_state == MachineState.IDLE and hyst_side:
+                self._hysteresis.record_idle_return(live_spot)
 
             try:
                 self._db.save_signal(signal_event)
@@ -446,22 +479,48 @@ class LotteryPipeline:
 
             # ── Confirmation gate ──────────────────────────────────
             if signal_event.validity == SignalValidity.VALID:
-                # Track confirmation state
                 sm_state = self._sm.state
-                if sm_state == MachineState.ZONE_ACTIVE_CE or sm_state == MachineState.ZONE_ACTIVE_PE:
-                    self._confirmation.on_zone_active()
-                if sm_state == MachineState.CANDIDATE_FOUND and self._sm.context.candidate:
-                    self._confirmation.on_candidate_found(self._sm.context.candidate)
+                if sm_state in (MachineState.ZONE_ACTIVE_CE, MachineState.ZONE_ACTIVE_PE):
+                    self._confirmation.on_zone_active(timestamp=spot_time)
 
-                    # Evaluate confirmation
+                    # Check hysteresis hold duration
+                    held, held_secs = self._hysteresis.is_zone_held_long_enough(spot_time)
+                    if not held:
+                        tracer.record_paper_execution(
+                            None, f"HYSTERESIS_HOLD: {held_secs:.1f}s < {self._config.hysteresis.min_zone_hold_seconds}s",
+                        )
+                        self._finalize_trigger_cycle(tracer, cycle_start)
+                        return
+
+                if sm_state == MachineState.CANDIDATE_FOUND and self._sm.context.candidate:
                     candidate = self._sm.context.candidate
+                    self._confirmation.on_candidate_found(candidate, timestamp=spot_time)
+
+                    # ── Tradability gate ────────────────────────────
+                    from .calculations.tradability import check_tradability
+                    cq = trigger_snap.get_candidate_quote(candidate.strike, candidate.option_type)
+                    if cq:
+                        # Build a synthetic OptionRow from candidate quote for tradability
+                        from .models import OptionRow
+                        trad_row = OptionRow(
+                            symbol=self._symbol, expiry="", strike=candidate.strike,
+                            option_type=candidate.option_type, ltp=cq.ltp,
+                            bid=cq.bid, ask=cq.ask, bid_qty=cq.bid_qty,
+                            ask_qty=cq.ask_qty, volume=cq.volume,
+                        )
+                        trad_result = check_tradability(trad_row, self._config.tradability)
+                        if not trad_result.tradable:
+                            tracer.record_paper_execution(
+                                None, f"TRADABILITY_BLOCKED: {trad_result.rejection_primary}",
+                            )
+                            self._finalize_trigger_cycle(tracer, cycle_start)
+                            return
+
+                    # ── Confirmation evaluation ─────────────────────
                     direction = "above" if candidate.option_type == OptionType.CE else "below"
                     trigger_price = triggers.upper_trigger if direction == "above" else triggers.lower_trigger
-
-                    # Get candidate's live volume for confirmation
-                    cq = trigger_snap.get_candidate_quote(candidate.strike, candidate.option_type)
                     current_vol = cq.volume if cq else candidate.volume
-                    recent_avg_vol = float(candidate.volume or 0) * 0.8  # rough estimate
+                    recent_avg_vol = float(candidate.volume or 0) * 0.8
                     current_spread = cq.spread_pct if cq else candidate.spread_pct
 
                     conf_result = self._confirmation.evaluate(
@@ -472,15 +531,17 @@ class LotteryPipeline:
                         current_volume=current_vol,
                         recent_avg_volume=recent_avg_vol,
                         current_spread_pct=current_spread,
+                        timestamp=spot_time,
                     )
 
                     if conf_result.confirmed:
-                        self._execute_entry(signal_event, analysis, trigger_snap, tracer)
-                    else:
-                        self._logger.debug(
-                            "Entry blocked by confirmation: %d/%d checks",
-                            conf_result.checks_passed, conf_result.checks_total,
+                        # Capture confirmation_price from live quote
+                        conf_price = cq.ltp if cq and cq.ltp > 0 else candidate.ltp
+                        self._execute_entry(
+                            signal_event, analysis, trigger_snap, tracer,
+                            confirmation_price=conf_price,
                         )
+                    else:
                         tracer.record_paper_execution(
                             None, f"CONFIRMATION_BLOCKED: {conf_result.checks_passed}/{conf_result.checks_total}",
                         )
@@ -545,6 +606,16 @@ class LotteryPipeline:
         self._cached_candidate_quotes = quotes
         self._refresh_sched.record_candidate_refresh()
 
+        # Feed microstructure tracker
+        for (strike, otype), data in quotes.items():
+            self._microstructure.record(
+                strike=strike, option_type=otype,
+                bid=data.get("bid"), ask=data.get("ask"),
+                bid_qty=data.get("bid_qty"), ask_qty=data.get("ask_qty"),
+                ltp=data.get("ltp", 0), volume=data.get("volume"),
+                timestamp=data.get("timestamp"),
+            )
+
     def _build_trigger_snapshot(self, live_spot: float, analysis: AnalysisSnapshot) -> TriggerSnapshot:
         """Build a TriggerSnapshot from live data."""
         candidate_quotes = []
@@ -579,18 +650,32 @@ class LotteryPipeline:
         triggers = resolve_triggers(live_spot, self._config,
             analysis.chain.strikes if analysis.chain else None)
 
-        # Get current LTP — prefer live candidate quote, fall back to chain
+        # Get current LTP — prefer live candidate quote
         cq = trigger_snap.get_candidate_quote(trade.strike, trade.option_type)
         if cq and cq.ltp > 0:
             current_ltp = cq.ltp
         else:
-            # Fall back to chain data
+            # Fall back to chain data WITH staleness guard
             current_ltp = None
             if analysis.chain:
-                for row in analysis.chain.rows:
-                    if row.strike == trade.strike and row.option_type == trade.option_type:
-                        current_ltp = row.ltp
-                        break
+                chain_age = (datetime.now(timezone.utc) - analysis.chain.snapshot_timestamp).total_seconds()
+                max_stale = 15.0  # reject chain data older than 15s for exit pricing
+
+                if chain_age <= max_stale:
+                    for row in analysis.chain.rows:
+                        if row.strike == trade.strike and row.option_type == trade.option_type:
+                            current_ltp = row.ltp
+                            break
+                    if current_ltp is not None:
+                        self._logger.warning(
+                            "Exit using chain LTP (age=%.0fs) — candidate quote unavailable for K=%s %s",
+                            chain_age, trade.strike, trade.option_type.value,
+                        )
+                else:
+                    self._logger.warning(
+                        "Exit skipped: chain data too stale (%.0fs > %.0fs) and no candidate quote for K=%s %s",
+                        chain_age, max_stale, trade.strike, trade.option_type.value,
+                    )
 
         if current_ltp is None:
             return
@@ -627,7 +712,19 @@ class LotteryPipeline:
                 pnl=closed.pnl or 0, reason=exit_reason.value,
             )
 
-    def _execute_entry(self, signal_event, analysis, trigger_snap, tracer):
+            # Divergence report
+            try:
+                from .reporting.divergence import build_trade_divergence
+                divergence = build_trade_divergence(
+                    trade=closed,
+                    peak_ltp=self._rsm.state.active_trade_peak_ltp if hasattr(self._rsm.state, 'active_trade_peak_ltp') else None,
+                    trough_ltp=None,
+                )
+                self._db.save_divergence_report(divergence)
+            except Exception as e:
+                self._failures.record("PERSISTENCE", f"divergence report: {e}")
+
+    def _execute_entry(self, signal_event, analysis, trigger_snap, tracer, confirmation_price=None):
         """Execute paper trade entry with live candidate quote."""
         candidate = self._sm.context.candidate
         if not candidate:
@@ -647,7 +744,6 @@ class LotteryPipeline:
 
         qty, lots = self._capital.compute_position_size(candidate.ltp, lot_size)
 
-        # Use live bid/ask from trigger snapshot if available
         cq = trigger_snap.get_candidate_quote(candidate.strike, candidate.option_type)
         bid = cq.bid if cq else None
         ask = cq.ask if cq else None
@@ -663,6 +759,8 @@ class LotteryPipeline:
             snapshot_id=analysis.chain.snapshot_id if analysis.chain else "",
             config_version=self._config.version_hash,
             bid=bid, ask=ask,
+            selection_price=candidate.ltp,
+            confirmation_price=confirmation_price,
         )
         self._capital.record_entry(trade)
         self._rsm.set_active_trade(trade)

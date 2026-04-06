@@ -95,27 +95,52 @@ class BreakoutConfirmation:
         self._config = config
 
         # State tracking — set when candidate is first discovered
-        self._candidate_found_time: Optional[float] = None
+        self._candidate_found_time: Optional[datetime] = None
         self._candidate_initial_ltp: Optional[float] = None
         self._candidate_initial_spread_pct: Optional[float] = None
-        self._zone_active_time: Optional[float] = None
+        self._candidate_strike: Optional[float] = None  # track which strike was recorded
+        self._zone_active_time: Optional[datetime] = None
 
-    def on_zone_active(self) -> None:
-        """Call when state machine enters ZONE_ACTIVE_CE or ZONE_ACTIVE_PE."""
+    def on_zone_active(self, timestamp: Optional[datetime] = None) -> None:
+        """Call when state machine enters ZONE_ACTIVE_CE or ZONE_ACTIVE_PE.
+
+        Args:
+            timestamp: Snapshot timestamp for replay safety. Defaults to now.
+        """
         if self._zone_active_time is None:
-            self._zone_active_time = time.monotonic()
+            self._zone_active_time = timestamp or datetime.now(timezone.utc)
 
-    def on_candidate_found(self, candidate: ScoredCandidate) -> None:
-        """Call when a new candidate is discovered for the first time."""
-        self._candidate_found_time = time.monotonic()
-        self._candidate_initial_ltp = candidate.ltp
-        self._candidate_initial_spread_pct = candidate.spread_pct
+    def on_candidate_found(self, candidate: ScoredCandidate, timestamp: Optional[datetime] = None) -> None:
+        """Record candidate state. Resets if strike changed since last recording.
+
+        Args:
+            candidate: The scored candidate.
+            timestamp: Snapshot timestamp for replay safety.
+        """
+        # If strike changed, reset — old initial_ltp is from a different contract
+        if self._candidate_strike is not None and self._candidate_strike != candidate.strike:
+            logger.info(
+                "Confirmation reset: strike changed from %.0f to %.0f",
+                self._candidate_strike, candidate.strike,
+            )
+            self._candidate_found_time = None
+            self._candidate_initial_ltp = None
+            self._candidate_initial_spread_pct = None
+
+        # Only record initial state once per strike
+        if self._candidate_initial_ltp is None:
+            self._candidate_found_time = timestamp or datetime.now(timezone.utc)
+            self._candidate_initial_ltp = candidate.ltp
+            self._candidate_initial_spread_pct = candidate.spread_pct
+
+        self._candidate_strike = candidate.strike
 
     def reset(self) -> None:
         """Reset confirmation state (call on state machine reset / zone change)."""
         self._candidate_found_time = None
         self._candidate_initial_ltp = None
         self._candidate_initial_spread_pct = None
+        self._candidate_strike = None
         self._zone_active_time = None
 
     def evaluate(
@@ -127,6 +152,7 @@ class BreakoutConfirmation:
         current_volume: Optional[int] = None,
         recent_avg_volume: Optional[float] = None,
         current_spread_pct: Optional[float] = None,
+        timestamp: Optional[datetime] = None,
     ) -> ConfirmationResult:
         """Evaluate all confirmation checks for the current candidate.
 
@@ -138,6 +164,7 @@ class BreakoutConfirmation:
             current_volume: Current candidate volume (from trigger snapshot).
             recent_avg_volume: Average recent volume for comparison.
             current_spread_pct: Current candidate spread %.
+            timestamp: Snapshot timestamp for replay-safe hold_duration check.
 
         Returns:
             ConfirmationResult with all check outcomes.
@@ -169,7 +196,7 @@ class BreakoutConfirmation:
         checks.append(spread_ok)
 
         # ── Check 5: Hold Duration ─────────────────────────────────
-        hold_ok = self._check_hold_duration()
+        hold_ok = self._check_hold_duration(timestamp)
         checks.append(hold_ok)
 
         # ── Decision ───────────────────────────────────────────────
@@ -307,8 +334,11 @@ class BreakoutConfirmation:
             threshold=f"widen < {self._config.spread_widen_max_pct:.0f}%",
         )
 
-    def _check_hold_duration(self) -> ConfirmationCheck:
-        """Check if spot has held beyond trigger for minimum duration."""
+    def _check_hold_duration(self, timestamp: Optional[datetime] = None) -> ConfirmationCheck:
+        """Check if spot has held beyond trigger for minimum duration.
+
+        Uses datetime timestamps for replay safety — NOT time.monotonic().
+        """
         if self._zone_active_time is None:
             return ConfirmationCheck(
                 name="hold_duration", passed=False,
@@ -316,7 +346,8 @@ class BreakoutConfirmation:
                 threshold=f">= {self._config.hold_duration_seconds:.0f}s",
             )
 
-        elapsed = time.monotonic() - self._zone_active_time
+        now = timestamp or datetime.now(timezone.utc)
+        elapsed = (now - self._zone_active_time).total_seconds()
         passed = elapsed >= self._config.hold_duration_seconds
         return ConfirmationCheck(
             name="hold_duration", passed=passed,
