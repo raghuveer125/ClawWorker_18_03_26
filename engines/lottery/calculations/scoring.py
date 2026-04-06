@@ -132,28 +132,39 @@ def score_and_select(
             )
             all_candidates.append(candidate)
 
-    # ── Score extrapolated candidates ──────────────────────────────
-    for ext in extrapolated_ce:
-        if ext.in_band and abs(ext.strike - spot) >= otm_min:
-            candidate = _score_extrapolated_candidate(
-                ext=ext,
-                spot=spot,
-                step=step,
-                bias_score=bias_score,
-                config=config,
-            )
-            all_candidates.append(candidate)
+    # ── Score extrapolated candidates (ADVISORY ONLY) ───────────────
+    # Extrapolated candidates are only included if no real quoted
+    # candidates exist for that side. Prefer real market data.
+    visible_ce = [c for c in all_candidates if c.option_type == OptionType.CE]
+    visible_pe = [c for c in all_candidates if c.option_type == OptionType.PE]
 
-    for ext in extrapolated_pe:
-        if ext.in_band and abs(ext.strike - spot) >= otm_min:
-            candidate = _score_extrapolated_candidate(
-                ext=ext,
-                spot=spot,
-                step=step,
-                bias_score=bias_score,
-                config=config,
-            )
-            all_candidates.append(candidate)
+    if not visible_ce:
+        for ext in extrapolated_ce:
+            if ext.in_band and abs(ext.strike - spot) >= otm_min:
+                candidate = _score_extrapolated_candidate(
+                    ext=ext,
+                    spot=spot,
+                    step=step,
+                    bias_score=bias_score,
+                    config=config,
+                )
+                all_candidates.append(candidate)
+        if extrapolated_ce:
+            logger.info("Extrapolation advisory: %d CE projected (no visible CE in band)", len(extrapolated_ce))
+
+    if not visible_pe:
+        for ext in extrapolated_pe:
+            if ext.in_band and abs(ext.strike - spot) >= otm_min:
+                candidate = _score_extrapolated_candidate(
+                    ext=ext,
+                    spot=spot,
+                    step=step,
+                    bias_score=bias_score,
+                    config=config,
+                )
+                all_candidates.append(candidate)
+        if extrapolated_pe:
+            logger.info("Extrapolation advisory: %d PE projected (no visible PE in band)", len(extrapolated_pe))
 
     # ── Separate by side ──────────────────────────────────────────
     ce_candidates = [c for c in all_candidates if c.option_type == OptionType.CE]
@@ -164,11 +175,11 @@ def score_and_select(
     best_pe = _select_best(pe_candidates, eps) if len(pe_candidates) >= min_candidates else None
 
     logger.info(
-        "Scoring: %d CE candidates, %d PE candidates. Best CE=%s, Best PE=%s",
-        len(ce_candidates),
-        len(pe_candidates),
-        f"K={best_ce.strike:.0f} score={best_ce.score:.4f}" if best_ce else "None",
-        f"K={best_pe.strike:.0f} score={best_pe.score:.4f}" if best_pe else "None",
+        "Scoring: %d CE (%d visible, %d extrap), %d PE (%d visible, %d extrap). Best CE=%s, Best PE=%s",
+        len(ce_candidates), len(visible_ce), len(ce_candidates) - len(visible_ce),
+        len(pe_candidates), len(visible_pe), len(pe_candidates) - len(visible_pe),
+        f"K={best_ce.strike:.0f} score={best_ce.score:.4f} ({best_ce.source})" if best_ce else "None",
+        f"K={best_pe.strike:.0f} score={best_pe.score:.4f} ({best_pe.source})" if best_pe else "None",
     )
 
     return best_ce, best_pe, all_candidates

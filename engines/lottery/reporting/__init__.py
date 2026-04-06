@@ -18,4 +18,14 @@ __all__ = [
     "trade_table",
     "capital_table",
     "candidate_table",
+    "divergence_table",
+    "build_trade_divergence",
+    "build_rejection_divergence",
 ]
+
+from .divergence import (
+    divergence_table,
+    build_trade_divergence,
+    build_rejection_divergence,
+    DivergenceReport,
+)

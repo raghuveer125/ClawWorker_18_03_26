@@ -340,6 +340,46 @@ class LotteryDB:
             )
         conn.commit()
 
+    def save_divergence_report(self, report) -> None:
+        """Persist a divergence report."""
+        conn = self._get_conn()
+        conn.execute(
+            """INSERT INTO divergence_reports
+               (report_id, symbol, timestamp, candidate_selected_time, entry_time, exit_time,
+                selection_price, confirmation_price, simulated_entry_price, simulated_exit_price,
+                spread_at_entry, spread_pct_at_entry, truly_executable, tradability_detail,
+                max_favorable_excursion, max_adverse_excursion, mfe_pct, mae_pct,
+                trade_id, side, strike, pnl, status, rejected, rejection_reasons,
+                selection_to_entry_slippage, selection_to_entry_slippage_pct)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                report.report_id, report.symbol, report.timestamp.isoformat(),
+                report.candidate_selected_time.isoformat() if report.candidate_selected_time else None,
+                report.entry_time.isoformat() if report.entry_time else None,
+                report.exit_time.isoformat() if report.exit_time else None,
+                report.selection_price, report.confirmation_price,
+                report.simulated_entry_price, report.simulated_exit_price,
+                report.spread_at_entry, report.spread_pct_at_entry,
+                int(report.truly_executable), report.tradability_detail,
+                report.max_favorable_excursion, report.max_adverse_excursion,
+                report.mfe_pct, report.mae_pct,
+                report.trade_id, report.side, report.strike,
+                report.pnl, report.status, int(report.rejected),
+                ",".join(report.rejection_reasons) if report.rejection_reasons else None,
+                report.selection_to_entry_slippage, report.selection_to_entry_slippage_pct,
+            ),
+        )
+        conn.commit()
+
+    def get_divergence_reports(self, limit: int = 50) -> list[dict]:
+        """Get divergence reports."""
+        conn = self._get_conn()
+        rows = conn.execute(
+            "SELECT * FROM divergence_reports ORDER BY timestamp DESC LIMIT ?",
+            (limit,),
+        ).fetchall()
+        return [dict(r) for r in rows]
+
     def get_rejection_audit(self, snapshot_id: str) -> list[dict]:
         """Get rejection audit for a specific snapshot."""
         conn = self._get_conn()
@@ -554,6 +594,36 @@ CREATE TABLE IF NOT EXISTS strike_rejection_audit (
     rejection_primary TEXT,
     rejection_all TEXT,
     timestamp TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS divergence_reports (
+    report_id TEXT,
+    symbol TEXT NOT NULL,
+    timestamp TEXT NOT NULL,
+    candidate_selected_time TEXT,
+    entry_time TEXT,
+    exit_time TEXT,
+    selection_price REAL,
+    confirmation_price REAL,
+    simulated_entry_price REAL,
+    simulated_exit_price REAL,
+    spread_at_entry REAL,
+    spread_pct_at_entry REAL,
+    truly_executable INTEGER,
+    tradability_detail TEXT,
+    max_favorable_excursion REAL,
+    max_adverse_excursion REAL,
+    mfe_pct REAL,
+    mae_pct REAL,
+    trade_id TEXT,
+    side TEXT,
+    strike REAL,
+    pnl REAL,
+    status TEXT,
+    rejected INTEGER,
+    rejection_reasons TEXT,
+    selection_to_entry_slippage REAL,
+    selection_to_entry_slippage_pct REAL
 );
 
 -- Indexes for common queries
