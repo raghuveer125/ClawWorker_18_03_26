@@ -140,7 +140,7 @@ class ScalpingAPIClient:
         try:
             resp = requests.get(f"{self.base_url}/api/scalping/status", timeout=5)
             return resp.json() if resp.ok else None
-        except:
+        except Exception:
             return None
 
     def update_agent(self, agent_id: int, status: str, output: Dict):
@@ -151,8 +151,8 @@ class ScalpingAPIClient:
                 json={"status": status, "output": output},
                 timeout=5
             )
-        except:
-            pass
+        except Exception:
+            pass  # intentional: dashboard update is best-effort
 
     def add_signal(self, signal: Dict):
         """Add a trading signal."""
@@ -162,8 +162,8 @@ class ScalpingAPIClient:
                 json=signal,
                 timeout=5
             )
-        except:
-            pass
+        except Exception:
+            pass  # intentional: dashboard update is best-effort
 
     def add_trade(self, trade: Dict):
         """Add a simulated trade."""
@@ -173,8 +173,8 @@ class ScalpingAPIClient:
                 json=trade,
                 timeout=5
             )
-        except:
-            pass
+        except Exception:
+            pass  # intentional: dashboard update is best-effort
 
     def clear_backtest(self):
         """Clear previous backtest data."""
@@ -183,8 +183,8 @@ class ScalpingAPIClient:
                 f"{self.base_url}/api/scalping/backtest/clear",
                 timeout=5
             )
-        except:
-            pass
+        except Exception:
+            pass  # intentional: dashboard update is best-effort
 
 
 class BacktestEngine:

@@ -48,7 +48,7 @@ try:
             print(f"  ✓ Status: RUNNING ({len(lines)} log entries)")
             for line in lines[-3:]:
                 print(f"    {line.strip()[:65]}")
-except:
+except OSError:
     print(f"  ⏳ Status: Starting (logs pending)")
 
 # Summary

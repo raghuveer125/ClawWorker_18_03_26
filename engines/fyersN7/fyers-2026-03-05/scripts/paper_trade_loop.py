@@ -4,6 +4,7 @@ import csv
 import datetime as dt
 import json
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -13,6 +14,20 @@ from typing import Any, Dict, List, Optional, Tuple
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(_SCRIPT_DIR)))
 sys.path.insert(0, _PROJECT_ROOT)
+
+# Import centralised PostgreSQL trade recording (Step 6)
+try:
+    from data_platform.db.trades import (
+        TradeRecord as DBTradeRecord,
+        TradesConfig,
+        sync_insert_trade,
+    )
+    _DB_TRADES_AVAILABLE = True
+except ImportError:
+    _DB_TRADES_AVAILABLE = False
+
+import logging as _logging
+_ptl_log = _logging.getLogger(__name__)
 
 # Import market hours from shared config
 try:
@@ -31,18 +46,7 @@ except ImportError:
         return (9 * 60) <= now_mins <= (15 * 60 + 45)
 
 
-def to_float(v: Any, default: float = 0.0) -> float:
-    try:
-        return float(v)
-    except Exception:
-        return default
-
-
-def to_int(v: Any, default: int = 0) -> int:
-    try:
-        return int(float(v))
-    except Exception:
-        return default
+from core.utils import to_float, to_int, parse_dt as _core_parse_dt, ensure_csv, append_csv  # noqa: E402
 
 
 def parse_score(v: str) -> int:
@@ -53,29 +57,12 @@ def parse_score(v: str) -> int:
     return to_int(s, 0)
 
 
-def parse_dt(date_s: str, time_s: str) -> dt.datetime:
-    raw = f"{(date_s or '').strip()} {(time_s or '').strip()}".strip()
-    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
-        try:
-            return dt.datetime.strptime(raw, fmt)
-        except Exception:
-            pass
-    return dt.datetime.now()
+# parse_dt, ensure_csv, append_csv imported from core.utils above
 
 
-def ensure_csv(path: str, headers: List[str]) -> None:
-    if os.path.exists(path):
-        return
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=headers)
-        writer.writeheader()
-
-
-def append_csv(path: str, headers: List[str], row: Dict[str, Any]) -> None:
-    ensure_csv(path, headers)
-    with open(path, "a", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=headers)
-        writer.writerow({k: row.get(k, "") for k in headers})
+def parse_dt(date_s: str, time_s: str) -> Optional[dt.datetime]:
+    """Wrapper kept for local callers — delegates to core.utils."""
+    return _core_parse_dt(date_s, time_s)
 
 
 def load_rows(path: str) -> List[Dict[str, str]]:
@@ -108,6 +95,23 @@ def backfill_journal_outcomes(journal_csv: str, trades: List[Dict[str, Any]]) ->
 
     if not rows or "outcome" not in headers:
         return 0
+
+    # Load existing sidecar so already-resolved rows are skipped in matching.
+    _sidecar = journal_csv + ".outcomes.json"
+    _sidecar_data: Dict[str, str] = {}
+    if os.path.exists(_sidecar):
+        try:
+            with open(_sidecar, "r", encoding="utf-8") as f:
+                _sidecar_data = json.load(f)
+        except Exception:
+            pass
+    for _i, _o in _sidecar_data.items():
+        try:
+            _idx = int(_i)
+            if 0 <= _idx < len(rows):
+                rows[_idx]["outcome"] = _o
+        except (ValueError, TypeError):
+            pass
 
     # Keep queues of unresolved rows so repeated keys can be mapped in order.
     by_full: Dict[Tuple[str, str, str, str, str], List[int]] = {}
@@ -160,13 +164,50 @@ def backfill_journal_outcomes(journal_csv: str, trades: List[Dict[str, Any]]) ->
     if updated <= 0:
         return 0
 
-    with open(journal_csv, "w", newline="", encoding="utf-8") as f:
+    # Write outcomes to sidecar — never rewrite the live journal.
+    for _idx, _row in enumerate(rows):
+        _o = str(_row.get("outcome", "") or "").strip()
+        if _o in {"Win", "Loss"}:
+            _sidecar_data[str(_idx)] = _o
+    _tmp = _sidecar + ".tmp"
+    with open(_tmp, "w", encoding="utf-8") as f:
+        json.dump(_sidecar_data, f)
+    os.replace(_tmp, _sidecar)
+
+    return updated
+
+
+def _journal_csv_with_outcomes(journal_csv: str) -> str:
+    """Return a merged journal path with sidecar outcomes applied (for training).
+    Never touches the live journal. Returns journal_csv unchanged if no sidecar."""
+    sidecar = journal_csv + ".outcomes.json"
+    if not os.path.exists(sidecar):
+        return journal_csv
+    try:
+        with open(sidecar, "r", encoding="utf-8") as f:
+            outcomes: Dict[str, str] = json.load(f)
+    except Exception:
+        return journal_csv
+    rows = load_rows(journal_csv)
+    if not rows:
+        return journal_csv
+    for idx_str, outcome in outcomes.items():
+        try:
+            idx = int(idx_str)
+            if 0 <= idx < len(rows):
+                rows[idx]["outcome"] = outcome
+        except (ValueError, TypeError):
+            pass
+    headers = list(rows[0].keys())
+    merged = journal_csv + ".training"
+    tmp = merged + ".tmp"
+    with open(tmp, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=headers)
         writer.writeheader()
         for row in rows:
             writer.writerow({k: row.get(k, "") for k in headers})
-
-    return updated
+    os.replace(tmp, merged)
+    return merged
 
 
 def load_trade_results(path: str) -> List[Dict[str, Any]]:
@@ -198,6 +239,11 @@ def save_json(path: str, payload: Dict[str, Any]) -> None:
         json.dump(payload, f, indent=2)
 
 
+def _pos_key(side: str, strike: str) -> str:
+    """Single-source key for recently_closed (must be str — JSON-persisted)."""
+    return f"{side}:{strike}"
+
+
 def infer_initial_capital(state: Dict[str, Any], fallback_capital: float) -> float:
     cash = to_float(state.get("cash", fallback_capital), fallback_capital)
     realized_pnl = to_float(state.get("realized_pnl", 0.0))
@@ -227,6 +273,8 @@ def load_state(path: str, capital: float) -> Tuple[Dict[str, Any], Optional[str]
                 "losses": 0,
                 "open_positions": [],
                 "initial_capital": capital,
+                "daily_trades": 0,
+                "daily_trades_date": "",
             },
             None,
         )
@@ -243,6 +291,8 @@ def load_state(path: str, capital: float) -> Tuple[Dict[str, Any], Optional[str]
         data.setdefault("wins", 0)
         data.setdefault("losses", 0)
         data.setdefault("open_positions", [])
+        data.setdefault("daily_trades", 0)
+        data.setdefault("daily_trades_date", "")
         previous_capital = to_float(data.get("initial_capital"), 0.0)
         if previous_capital <= 0:
             previous_capital = infer_initial_capital(data, capital)
@@ -258,21 +308,20 @@ def load_state(path: str, capital: float) -> Tuple[Dict[str, Any], Optional[str]
 
         data["initial_capital"] = capital
         return data, migration_note
-    except Exception:
-        return (
-            {
-                "cash": capital,
-                "processed_rows": 0,
-                "next_trade_id": 1,
-                "realized_pnl": 0.0,
-                "total_fees": 0.0,
-                "wins": 0,
-                "losses": 0,
-                "open_positions": [],
-                "initial_capital": capital,
-            },
-            None,
-        )
+    except Exception as exc:
+        import time as _time
+        backup = f"{path}.corrupt.{int(_time.time())}"
+        try:
+            os.rename(path, backup)
+        except OSError:
+            backup = path  # rename failed; report original path
+        raise SystemExit(
+            f"FATAL: state file is corrupt and cannot be loaded.\n"
+            f"  file   : {path}\n"
+            f"  backup : {backup}\n"
+            f"  reason : {exc}\n"
+            f"Remove or repair the file before restarting."
+        ) from exc
 
 
 def print_table(headers: List[str], rows: List[List[str]]) -> None:
@@ -363,7 +412,7 @@ def run_adaptive_train(args: argparse.Namespace) -> int:
         sys.executable,
         args.train_script,
         "--journal-csv",
-        args.journal_csv,
+        _journal_csv_with_outcomes(args.journal_csv),
         "--model-file",
         args.adaptive_model_file,
         "--min-labels",
@@ -410,7 +459,8 @@ def close_position(
         state["losses"] = int(state.get("losses", 0)) + 1
         result = "Loss"
 
-    hold_sec = max(0, int((exit_ts - parse_dt(pos["entry_date"], pos["entry_time"])).total_seconds()))
+    _entry_dt = parse_dt(pos["entry_date"], pos["entry_time"])
+    hold_sec = max(0, int((exit_ts - _entry_dt).total_seconds())) if _entry_dt is not None else 0
 
     trade_row = {
         "trade_id": pos["trade_id"],
@@ -435,6 +485,8 @@ def close_position(
         "result": result,
         "capital_before": f"{capital_before:.2f}",
         "capital_after": f"{to_float(state.get('cash', 0.0)):.2f}",
+        "engine_id": "fyersn7",
+        "index": os.environ.get("INDEX", "UNKNOWN"),
     }
 
     append_csv(
@@ -462,10 +514,88 @@ def close_position(
             "result",
             "capital_before",
             "capital_after",
+            "engine_id",
+            "index",
         ],
         trade_row,
     )
+
+    # Persist to centralised PostgreSQL trades table
+    if _DB_TRADES_AVAILABLE:
+        try:
+            _entry_dt_db = parse_dt(pos["entry_date"], pos["entry_time"]) or dt.datetime.now()
+            _index = os.environ.get("INDEX", "UNKNOWN")
+            _outcome = "WIN" if net >= 0 else "LOSS"
+            _side = str(pos.get("side", ""))
+            _option_type = "CE" if _side.upper() == "CE" else ("PE" if _side.upper() == "PE" else "")
+            db_record = DBTradeRecord(
+                trade_id=pos["trade_id"],
+                strategy="fyersn7",
+                bot_name="paper_trade_loop",
+                index_name=_index,
+                entry_price=entry_price,
+                quantity=qty,
+                mode="paper",
+                entry_time=_entry_dt_db,
+                option_type=_option_type,
+                strike=to_float(pos.get("strike"), None),
+                exit_price=exit_price,
+                exit_time=exit_ts,
+                pnl=net,
+                pnl_pct=(net / (entry_price * qty) * 100) if entry_price * qty else 0.0,
+                outcome=_outcome,
+                signal_source=exit_reason,
+            )
+            sync_insert_trade(TradesConfig.from_env(), db_record)
+        except Exception as _exc:
+            _ptl_log.warning(
+                "close_position DB write failed for %s: %s — CSV intact",
+                pos.get("trade_id", "?"), _exc,
+            )
+
     return trade_row
+
+
+def _candidate_ems(c: Dict[str, Any]) -> float:
+    """Expected Move Score for a candidate trade row.
+
+    Formula: (confidence/100) * (|delta| * 100) / premium
+    Higher score = better risk/reward per rupee of premium paid.
+    Falls back to 0.0 if premium <= 0 or delta unavailable.
+    """
+    premium = c.get("entry", 0.0)
+    if premium <= 0:
+        return 0.0
+    confidence = c.get("confidence", 0) / 100.0
+    delta = abs(to_float(c.get("row", {}).get("delta", "0"), 0.0))
+    return confidence * delta * 100.0 / (premium ** 0.5)
+
+
+def _risk_qty(
+    capital: float,
+    entry: float,
+    sl: float,
+    risk_pct: float,
+    lot_size: int,
+    max_lot_mult: float,
+) -> int:
+    """Return integer qty for the trade, or 0 to reject.
+
+    If risk_pct == 0: return lot_size (fixed sizing, backwards-compatible).
+    Otherwise: size by risk budget; reject if stop distance <= 0 or qty == 0.
+    Capital scaling guard: cap at lot_size * max_lot_mult.
+    """
+    if risk_pct <= 0:
+        return lot_size
+    stop_dist = entry - sl
+    if stop_dist <= 0:
+        return 0  # Invalid stop: entry <= sl, reject.
+    risk_amount = capital * (risk_pct / 100.0)
+    qty = int(risk_amount / stop_dist)
+    if qty <= 0:
+        return 0
+    cap = max(lot_size, int(lot_size * max_lot_mult))
+    return min(qty, cap)
 
 
 def process_new_rows(
@@ -475,10 +605,14 @@ def process_new_rows(
 ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], Optional[str]]:
     processed = int(state.get("processed_rows", 0))
     if processed > len(rows):
-        processed = 0
+        print(
+            f"WARNING: journal shrank ({processed} → {len(rows)} rows). "
+            "Clamping processed_rows to end — no rows reprocessed."
+        )
+        processed = len(rows)
     new_rows = rows[processed:]
-    state["processed_rows"] = len(rows)
     if not new_rows:
+        state["processed_rows"] = len(rows)
         return [], [], None
 
     quote_by_key: Dict[Tuple[str, str], Dict[str, Any]] = {}
@@ -492,6 +626,8 @@ def process_new_rows(
         if side not in {"CE", "PE"} or not strike:
             continue
         ts = parse_dt(r.get("date", ""), r.get("time", ""))
+        if ts is None:
+            continue
         key = (side, strike)
         quote = {
             "ltp": to_float(r.get("entry", "0"), 0.0),
@@ -504,12 +640,14 @@ def process_new_rows(
         if prev is None or ts >= prev["ts"]:
             quote_by_key[key] = quote
 
-        if latest_ts is None or ts >= latest_ts:
-            latest_ts = ts
-            latest_side = side
-
         status = (r.get("status", "") or "").strip().upper()
         action = (r.get("action", "") or "").strip().upper()
+
+        if status == "APPROVED" and action == "TAKE":
+            if latest_ts is None or ts >= latest_ts:
+                latest_ts = ts
+                latest_side = side
+
         entry_ready = (r.get("entry_ready", "") or "").strip().upper() == "Y"
         selected = (r.get("selected", "") or "").strip().upper() == "Y"
 
@@ -517,9 +655,13 @@ def process_new_rows(
         # vol_dom = CE (bullish flow) → only CE entries allowed
         # vol_dom = PE (bearish flow) → only PE entries allowed
         # vol_dom = NEUTRAL → both sides allowed
+        # vol_dom = missing/unknown → rejected (not treated as aligned)
         vol_dom = (r.get("vol_dom", "") or "").strip().upper()
-        trend_aligned = True
-        if vol_dom in ("CE", "PE") and vol_dom != side:
+        if vol_dom == "NEUTRAL":
+            trend_aligned = True
+        elif vol_dom in ("CE", "PE"):
+            trend_aligned = vol_dom == side
+        else:
             trend_aligned = False
 
         if status == "APPROVED" and action == "TAKE" and entry_ready and selected and trend_aligned:
@@ -552,13 +694,13 @@ def process_new_rows(
         current_price = to_float(pos.get("last_price", pos.get("entry_price", 0.0)), 0.0)
         current_ts = parse_dt(pos.get("last_date", ""), pos.get("last_time", ""))
         entry_ts = parse_dt(pos.get("entry_date", ""), pos.get("entry_time", ""))
-        age = max(0, int((current_ts - entry_ts).total_seconds()))
+        age = 0 if current_ts is None or entry_ts is None else max(0, int((current_ts - entry_ts).total_seconds()))
         target_price = to_float(pos.get("t1", 0.0)) if args.exit_target == "t1" else to_float(pos.get("t2", 0.0))
 
         reason = ""
-        if current_price <= to_float(pos.get("sl", 0.0)):
+        if quote is not None and current_price <= to_float(pos.get("sl", 0.0)):
             reason = "SL"
-        elif current_price >= target_price > 0:
+        elif quote is not None and current_price >= target_price > 0:
             reason = args.exit_target.upper()
         elif args.exit_on_side_flip and latest_side and latest_side != str(pos.get("side", "")):
             reason = "SIDE_FLIP"
@@ -566,78 +708,142 @@ def process_new_rows(
             reason = "TIME"
 
         if reason:
+            exit_ts_safe = current_ts if current_ts is not None else dt.datetime.now()
             closed_trade = close_position(
                 state=state,
                 pos=pos,
                 exit_price=current_price,
-                exit_ts=current_ts,
+                exit_ts=exit_ts_safe,
                 exit_reason=reason,
                 args=args,
                 trades_csv=args.trades_csv,
             )
             closed.append(closed_trade)
+            # Persist reentry cooldown using real exit timestamp.
+            _rk_close = _pos_key(pos.get("side", ""), pos.get("strike", ""))
+            state.setdefault("recently_closed", {})[_rk_close] = exit_ts_safe.timestamp()
+            # TIME exits get a separate key so the open pass can block them independently.
+            if reason == "TIME":
+                state["recently_closed"]["TIME:" + _rk_close] = exit_ts_safe.timestamp()
         else:
             still_open.append(pos)
 
     state["open_positions"] = still_open
 
-    open_keys = {(str(p.get("side", "")), str(p.get("strike", ""))) for p in state.get("open_positions", [])}
-    candidates.sort(key=lambda x: (x["score"], x["confidence"], x["entry"]), reverse=True)
+    # Collect keys closed in this same call so they cannot reopen immediately.
+    just_closed_keys = {
+        (str(t.get("side", "")), str(t.get("strike", ""))) for t in closed
+    }
 
-    opened: List[Dict[str, Any]] = []
+    # Deduplicate candidates by (side, strike) before sorting.
+    # new_rows spans multiple ticks; each tick writes the same strikes again.
+    # _candidate_ems uses entry price (LTP at that tick) as denominator, so a
+    # stale row where 73800 was ATM (low premium, high delta, no conf penalty)
+    # can score higher than the current-tick 73900 row, causing wrong execution.
+    # Fix: keep only the most recent row per (side, strike).
+    _deduped: Dict[Tuple[str, str], Dict[str, Any]] = {}
+    for _c in candidates:
+        _key = (_c["side"], _c["strike"])
+        if _key not in _deduped or _c["ts"] >= _deduped[_key]["ts"]:
+            _deduped[_key] = _c
+    candidates = list(_deduped.values())
+
+    open_keys = {(str(p.get("side", "")), str(p.get("strike", ""))) for p in state.get("open_positions", [])}
+    candidates.sort(key=_candidate_ems, reverse=True)
+
+    # --- Risk layer: reset daily counters on date change. ---
+    _today = dt.date.today().isoformat()
+    if state.get("daily_trades_date") != _today:
+        state["daily_trades_date"] = _today
+        state["daily_trades"] = 0
+
+    _capital_now = to_float(state.get("cash", 0.0))
+    _session_blocked = (
+        (args.daily_loss_limit > 0 and to_float(state.get("realized_pnl", 0.0)) <= -args.daily_loss_limit)
+        or (args.max_trades_per_day > 0 and int(state.get("daily_trades", 0)) >= args.max_trades_per_day)
+        or (args.max_concurrent_positions > 0 and len(state.get("open_positions", [])) >= args.max_concurrent_positions)
+    )
+
+    # Collect all candidates that pass every gate; then select the single best by EMS.
+    valid_candidates: List[Dict[str, Any]] = []
     for c in candidates:
+        if _session_blocked:
+            break  # All new entries blocked for this session.
         key = (c["side"], c["strike"])
         if key in open_keys:
             continue
+        if key in just_closed_keys:
+            continue  # Prevent same-cycle close→reopen.
+        _recently = state.get("recently_closed", {})
+        _rk = _pos_key(c["side"], c["strike"])
+        _c_ts = c["ts"].timestamp()
+        if _rk in _recently and 0 <= (_c_ts - _recently[_rk]) < args.reentry_cooldown_sec:
+            continue  # Reentry cooldown still active.
+        if ("TIME:" + _rk) in _recently and 0 <= (_c_ts - _recently["TIME:" + _rk]) < args.reentry_cooldown_sec:
+            continue  # TIME-exit cooldown still active for this strike.
         if c["entry"] <= 0:
             continue
-
-        qty = int(args.lot_size)
-        required_cash = (c["entry"] * qty) + float(args.entry_fee)
-        if to_float(state.get("cash", 0.0)) < required_cash:
+        if abs(to_float(c.get("row", {}).get("delta", "0"), 0.0)) <= 0:
+            continue  # Reject zero/missing/unparseable delta — no EMS basis for entry.
+        _qty = _risk_qty(
+            _capital_now, c["entry"], c["sl"],
+            args.risk_per_trade_pct, int(args.lot_size), args.max_lot_multiplier,
+        )
+        if _qty <= 0:
+            continue  # Invalid stop distance or zero risk qty — reject.
+        required_cash = (c["entry"] * _qty) + float(args.entry_fee)
+        if _capital_now < required_cash:
             continue
+        c["risk_qty"] = _qty
+        valid_candidates.append(c)
 
+    opened: List[Dict[str, Any]] = []
+    if valid_candidates:
+        best = max(valid_candidates, key=_candidate_ems)
+        qty = int(best.get("risk_qty", args.lot_size))
+        required_cash = (best["entry"] * qty) + float(args.entry_fee)
         capital_before = to_float(state.get("cash", 0.0))
         state["cash"] = capital_before - required_cash
         state["total_fees"] = to_float(state.get("total_fees", 0.0)) + float(args.entry_fee)
+        state["daily_trades"] = int(state.get("daily_trades", 0)) + 1
 
         trade_id = int(state.get("next_trade_id", 1))
         state["next_trade_id"] = trade_id + 1
 
-        entry_ts = c["ts"]
+        entry_ts = best["ts"]
         pos = {
             "trade_id": trade_id,
-            "symbol": c["row"].get("symbol", "SENSEX"),
-            "side": c["side"],
-            "strike": c["strike"],
+            "symbol": best["row"].get("symbol", "SENSEX"),
+            "side": best["side"],
+            "strike": best["strike"],
             "qty": qty,
-            "entry_price": c["entry"],
+            "entry_price": best["entry"],
             "entry_fee": float(args.entry_fee),
             "entry_date": entry_ts.strftime("%Y-%m-%d"),
             "entry_time": entry_ts.strftime("%H:%M:%S"),
-            "last_price": c["entry"],
+            "last_price": best["entry"],
             "last_date": entry_ts.strftime("%Y-%m-%d"),
             "last_time": entry_ts.strftime("%H:%M:%S"),
-            "sl": c["sl"],
-            "t1": c["t1"],
-            "t2": c["t2"],
-            "confidence": c["confidence"],
-            "score": c["score"],
+            "sl": best["sl"],
+            "t1": best["t1"],
+            "t2": best["t2"],
+            "confidence": best["confidence"],
+            "score": best["score"],
         }
         state["open_positions"].append(pos)
-        open_keys.add(key)
         opened.append(
             {
                 "trade_id": trade_id,
-                "side": c["side"],
-                "strike": c["strike"],
+                "side": best["side"],
+                "strike": best["strike"],
                 "qty": qty,
-                "entry_price": c["entry"],
+                "entry_price": best["entry"],
                 "capital_before": capital_before,
                 "capital_after": to_float(state.get("cash", 0.0)),
             }
         )
 
+    state["processed_rows"] = len(rows)
     return opened, closed, latest_side
 
 
@@ -847,6 +1053,16 @@ def print_market_closed_summary(state: Dict[str, Any], args: argparse.Namespace,
     print()
 
 
+def _interruptible_sleep(seconds: float, flag: list) -> None:
+    """Sleep for up to `seconds`, waking every 0.5 s to check the shutdown flag."""
+    deadline = time.time() + seconds
+    while not flag[0]:
+        remaining = deadline - time.time()
+        if remaining <= 0:
+            return
+        time.sleep(min(0.5, remaining))
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Paper trade loop on top of FYERS signal journal.")
 
@@ -889,6 +1105,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--learn-gate-relax-sec", type=int, default=300)
     p.add_argument("--confirm-pulls", type=int, default=2)
     p.add_argument("--flip-cooldown-sec", type=int, default=45)
+    p.add_argument("--reentry-cooldown-sec", type=int, default=300)
     p.add_argument("--max-select-strikes", type=int, default=3)
     p.add_argument("--max-spread-pct", type=float, default=2.5)
     p.add_argument("--signal-state-file", default=".signal_state.json")
@@ -906,6 +1123,18 @@ def build_parser() -> argparse.ArgumentParser:
     p.set_defaults(auto_train_on_backfill=True)
     p.add_argument("--skip-market-check", action="store_true",
                    help="Skip market hours check (run even when market is closed)")
+
+    # Risk engine
+    p.add_argument("--daily-loss-limit", type=float, default=0.0,
+                   help="Stop new entries when realized_pnl <= -limit (0 = disabled)")
+    p.add_argument("--max-trades-per-day", type=int, default=0,
+                   help="Hard cap on trades opened per day (0 = disabled)")
+    p.add_argument("--max-concurrent-positions", type=int, default=0,
+                   help="Hard cap on simultaneous open positions (0 = disabled)")
+    p.add_argument("--risk-per-trade-pct", type=float, default=0.0,
+                   help="Per-trade risk as %% of capital for auto-sizing (0 = use fixed --lot-size)")
+    p.add_argument("--max-lot-multiplier", type=float, default=3.0,
+                   help="Cap risk-sized qty at lot_size × this value (capital scaling guard)")
 
     return p
 
@@ -948,10 +1177,21 @@ def main() -> int:
     )
     print("Press Ctrl+C to stop.")
 
+    _sigterm_received: list = [False]
+
+    def _on_sigterm(*_):
+        _sigterm_received[0] = True
+
+    signal.signal(signal.SIGTERM, _on_sigterm)
+
     last_market_closed_msg = 0
     last_summary_shown = 0
     try:
         while True:
+            # Check shutdown flag at the top of every iteration — safe boundary.
+            if _sigterm_received[0]:
+                break
+
             # Check if market is open
             if not args.skip_market_check and not is_market_open():
                 now_ts = int(time.time())
@@ -975,7 +1215,7 @@ def main() -> int:
                 elif now_ts - last_market_closed_msg >= 60:
                     print(f"[{dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Market closed. Waiting...")
                     last_market_closed_msg = now_ts
-                time.sleep(max(1, int(args.interval_sec)))
+                _interruptible_sleep(max(1, int(args.interval_sec)), _sigterm_received)
                 continue
 
             print()
@@ -995,11 +1235,14 @@ def main() -> int:
             save_json(args.paper_state_file, state)
             if args.once:
                 break
-            time.sleep(max(1, int(args.interval_sec)))
+            _interruptible_sleep(max(1, int(args.interval_sec)), _sigterm_received)
     except KeyboardInterrupt:
-        save_json(args.paper_state_file, state)
-        print("\nStopped. State saved.")
-        return 0
+        pass  # Ctrl+C — fall through to unconditional save below.
+
+    # Unconditional cleanup: save state on both normal exit and signal-driven exit.
+    save_json(args.paper_state_file, state)
+    print("\nStopped. State saved.")
+    return 0
 
 
 if __name__ == "__main__":

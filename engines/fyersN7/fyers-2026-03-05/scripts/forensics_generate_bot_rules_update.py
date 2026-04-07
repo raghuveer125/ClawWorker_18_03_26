@@ -10,6 +10,12 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from zoneinfo import ZoneInfo
 
+_PROJECT_ROOT = Path(__file__).resolve().parents[4]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
+from core.utils import to_float_opt as to_float, to_int_opt as to_int
+
 
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
@@ -270,20 +276,6 @@ def read_json(path: Path) -> Tuple[Dict[str, object], str]:
         return {}, "invalid_json_root"
     except Exception as exc:
         return {}, f"parse_error:{type(exc).__name__}"
-
-
-def to_float(v: str) -> Optional[float]:
-    try:
-        return float((v or "").strip())
-    except Exception:
-        return None
-
-
-def to_int(v: str) -> Optional[int]:
-    f = to_float(v)
-    if f is None:
-        return None
-    return int(f)
 
 
 def rule_id(date_str: str, symbol: str, pattern_id_raw: str) -> str:

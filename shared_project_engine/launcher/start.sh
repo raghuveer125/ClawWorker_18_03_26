@@ -49,9 +49,30 @@ MARKET_ADAPTER_PID_FILE="${PROJECT_ROOT}/logs/market_adapter.pid"
 MARKET_ADAPTER_HELPER="${SHARED_ENGINE}/launcher/market_adapter.sh"
 AUTH_ENV_FILE="${PROJECT_ROOT}/.env"
 
-# Python - use system python3 to avoid venv conflicts
-# The shared_project_engine needs to be on PYTHONPATH, not in a venv
-PYTHON_BIN="${PYTHON_BIN:-/usr/bin/python3}"
+# Python - prefer an explicit override, then repo-managed virtualenvs, then PATH.
+resolve_python_bin() {
+  local candidates=(
+    "${PROJECT_ROOT}/.venv/bin/python"
+    "${CLAWWORK_DIR}/livebench/venv/bin/python"
+  )
+  local candidate
+
+  for candidate in "${candidates[@]}"; do
+    if [[ -x "${candidate}" ]]; then
+      printf '%s\n' "${candidate}"
+      return 0
+    fi
+  done
+
+  if command -v python3 >/dev/null 2>&1; then
+    command -v python3
+    return 0
+  fi
+
+  printf '%s\n' "/usr/bin/python3"
+}
+
+PYTHON_BIN="${PYTHON_BIN:-$(resolve_python_bin)}"
 
 # Set PYTHONPATH so shared_project_engine can be found
 export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH:-}"
@@ -321,9 +342,118 @@ print_menu() {
 }
 
 check_python() {
-  if ! command -v "${PYTHON_BIN}" &>/dev/null; then
-    echo -e "${RED}Error: ${PYTHON_BIN} not found${NC}" >&2
-    exit 1
+  if [[ "${PYTHON_BIN}" == */* ]]; then
+    if [[ -x "${PYTHON_BIN}" ]]; then
+      return 0
+    fi
+  elif command -v "${PYTHON_BIN}" &>/dev/null; then
+    return 0
+  fi
+
+  echo -e "${RED}Error: ${PYTHON_BIN} not found${NC}" >&2
+  exit 1
+}
+
+check_auth_python_deps() {
+  local missing=()
+  local module
+
+  for module in requests urllib3; do
+    if ! "${PYTHON_BIN}" -c "import ${module}" >/dev/null 2>&1; then
+      missing+=("${module}")
+    fi
+  done
+
+  if [[ "${#missing[@]}" -eq 0 ]]; then
+    return 0
+  fi
+
+  echo -e "${RED}Error: missing Python packages for authentication: ${missing[*]}${NC}" >&2
+  echo -e "${YELLOW}Create a repo-local venv and install them with:${NC}" >&2
+  echo "  python3 -m venv .venv" >&2
+  echo "  .venv/bin/pip install requests urllib3" >&2
+  exit 1
+}
+
+check_auth_ready() {
+  check_python
+  check_auth_python_deps
+}
+
+is_truthy() {
+  case "${1:-}" in
+    1|true|TRUE|True|yes|YES|Yes|on|ON|On)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+run_auth_cli() {
+  local subcommand="$1"
+  shift || true
+
+  local insecure_enabled=0
+  if is_truthy "${FYERS_INSECURE:-${FYERS_AUTH_INSECURE:-}}"; then
+    insecure_enabled=1
+  fi
+
+  local ca_bundle="${FYERS_CA_BUNDLE:-${REQUESTS_CA_BUNDLE:-${SSL_CERT_FILE:-}}}"
+
+  if [[ "${insecure_enabled}" == "1" && -n "${ca_bundle}" ]]; then
+    "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" "${subcommand}" --insecure --ca-bundle "${ca_bundle}" "$@"
+  elif [[ "${insecure_enabled}" == "1" ]]; then
+    "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" "${subcommand}" --insecure "$@"
+  elif [[ -n "${ca_bundle}" ]]; then
+    "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" "${subcommand}" --ca-bundle "${ca_bundle}" "$@"
+  else
+    "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" "${subcommand}" "$@"
+  fi
+}
+
+run_auth_status() {
+  run_auth_cli status
+}
+
+print_auth_tls_hint() {
+  echo -e "${YELLOW}Hint: if your network uses a self-signed or corporate TLS certificate, set FYERS_INSECURE=1 or FYERS_CA_BUNDLE=/path/to/corp-ca.pem in .env and retry.${NC}"
+}
+
+check_frontend_runtime() {
+  if ! command -v node >/dev/null 2>&1; then
+    echo -e "${RED}Error: node is not installed or not on PATH.${NC}" >&2
+    return 1
+  fi
+
+  if ! command -v npm >/dev/null 2>&1; then
+    echo -e "${RED}Error: npm is not installed or not on PATH.${NC}" >&2
+    return 1
+  fi
+
+  local node_output
+  if ! node_output="$(node --version 2>&1)"; then
+    echo -e "${RED}Error: Node.js runtime is not healthy.${NC}" >&2
+    if echo "${node_output}" | grep -qi "libsimdjson"; then
+      echo -e "${YELLOW}Homebrew node is linked against a missing simdjson library. Repair it with:${NC}" >&2
+      echo "  brew reinstall simdjson node" >&2
+    else
+      printf '%s\n' "${node_output}" >&2
+    fi
+    return 1
+  fi
+
+  local npm_output
+  if ! npm_output="$(npm --version 2>&1)"; then
+    echo -e "${RED}Error: npm is not healthy.${NC}" >&2
+    if echo "${npm_output}" | grep -qi "libsimdjson"; then
+      echo -e "${YELLOW}Homebrew node/npm is linked against a missing simdjson library. Repair it with:${NC}" >&2
+      echo "  brew reinstall simdjson node" >&2
+    else
+      printf '%s\n' "${npm_output}" >&2
+    fi
+    return 1
   fi
 }
 
@@ -345,7 +475,10 @@ ensure_auth() {
   # Check if we have credentials
   if [[ -z "${FYERS_ACCESS_TOKEN:-}" ]] || [[ -z "${FYERS_CLIENT_ID:-}" ]]; then
     echo -e "${YELLOW}No valid credentials found. Starting login...${NC}"
-    cmd_login
+    if ! cmd_login; then
+      print_auth_tls_hint
+      return 1
+    fi
     # Reload env after login
     load_env || true
   fi
@@ -353,18 +486,34 @@ ensure_auth() {
   # Verify token is valid
   echo -e "${BLUE}Verifying authentication...${NC}"
   local status_output
-  status_output=$("${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" status 2>&1) || true
+  status_output="$(run_auth_status 2>&1)" || true
 
   if echo "${status_output}" | grep -q "Token is VALID"; then
     echo -e "${GREEN}Authentication valid.${NC}"
     return 0
   elif echo "${status_output}" | grep -q "expired\|INVALID"; then
     echo -e "${YELLOW}Token expired. Starting login...${NC}"
-    cmd_login
+    if ! cmd_login; then
+      print_auth_tls_hint
+      return 1
+    fi
     load_env || true
-    return 0
+    echo -e "${BLUE}Re-verifying authentication...${NC}"
+    status_output="$(run_auth_status 2>&1)" || true
+    if echo "${status_output}" | grep -q "Token is VALID"; then
+      echo -e "${GREEN}Authentication valid.${NC}"
+      return 0
+    fi
+    echo -e "${RED}Authentication refresh failed. Please run: ./start.sh login${NC}"
+    if echo "${status_output}" | grep -qi "CERTIFICATE_VERIFY_FAILED\|self-signed certificate"; then
+      print_auth_tls_hint
+    fi
+    return 1
   else
     echo -e "${RED}Authentication check failed. Please run: ./start.sh login${NC}"
+    if echo "${status_output}" | grep -qi "CERTIFICATE_VERIFY_FAILED\|self-signed certificate"; then
+      print_auth_tls_hint
+    fi
     return 1
   fi
 }
@@ -435,6 +584,8 @@ stop_fyersn7_workers() {
 ensure_frontend_dependencies() {
   local frontend_dir="${CLAWWORK_DIR}/frontend"
 
+  check_frontend_runtime || return 1
+
   if [[ -x "${frontend_dir}/node_modules/.bin/vite" ]]; then
     return 0
   fi
@@ -446,13 +597,45 @@ ensure_frontend_dependencies() {
   )
 }
 
+resolve_service_python() {
+  local candidate
+
+  for candidate in "$@"; do
+    [[ -n "${candidate}" ]] || continue
+
+    if [[ "${candidate}" == */* ]]; then
+      if [[ -x "${candidate}" ]]; then
+        printf '%s\n' "${candidate}"
+        return 0
+      fi
+      continue
+    fi
+
+    if command -v "${candidate}" >/dev/null 2>&1; then
+      command -v "${candidate}"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
 livebench_python_bin() {
-  local candidate="${CLAWWORK_DIR}/livebench/venv/bin/python"
-  if [[ -x "${candidate}" ]]; then
-    printf '%s\n' "${candidate}"
-    return 0
-  fi
-  printf '%s\n' "python3"
+  resolve_service_python \
+    "${CLAWWORK_DIR}/livebench/venv/bin/python" \
+    "${PYTHON_BIN}" \
+    "${PROJECT_ROOT}/.venv/bin/python" \
+    "python3" \
+    "/usr/bin/python3"
+}
+
+llm_debate_python_bin() {
+  resolve_service_python \
+    "${LLM_DEBATE_DIR}/backend/venv/bin/python" \
+    "${PYTHON_BIN}" \
+    "${PROJECT_ROOT}/.venv/bin/python" \
+    "python3" \
+    "/usr/bin/python3"
 }
 
 start_fyers_screener_loop() {
@@ -495,6 +678,64 @@ monitor_processes() {
       fi
     fi
   done
+}
+
+ensure_infrastructure() {
+  local compose_dir="${PROJECT_ROOT}/infrastructure"
+  local compose_file="${compose_dir}/docker-compose.yml"
+
+  if [[ ! -f "${compose_file}" ]]; then
+    echo -e "${YELLOW}  infrastructure/docker-compose.yml not found — skipping infra check.${NC}"
+    return 0
+  fi
+
+  if ! command -v docker >/dev/null 2>&1; then
+    echo -e "${RED}  Docker not found. Please install Docker Desktop to run infrastructure services.${NC}" >&2
+    exit 1
+  fi
+
+  local kafka_up=0 postgres_up=0 redis_up=0
+
+  # Check Redpanda (Kafka)
+  if docker compose -f "${compose_file}" ps --status running 2>/dev/null | grep -q "redpanda"; then
+    kafka_up=1
+  fi
+  # Check PostgreSQL
+  if docker compose -f "${compose_file}" ps --status running 2>/dev/null | grep -q "postgres"; then
+    postgres_up=1
+  fi
+  # Check Redis
+  if docker compose -f "${compose_file}" ps --status running 2>/dev/null | grep -q "redis"; then
+    redis_up=1
+  fi
+
+  if [[ "${kafka_up}" == "1" && "${postgres_up}" == "1" && "${redis_up}" == "1" ]]; then
+    echo -e "${GREEN}  Infrastructure already running (Redpanda, PostgreSQL, Redis).${NC}"
+    return 0
+  fi
+
+  echo -e "${BLUE}  Starting infrastructure services (Redpanda, PostgreSQL, Redis)...${NC}"
+  docker compose -f "${compose_file}" up -d 2>&1 | sed 's/^/    /'
+
+  # Wait for all services to be healthy (max 60s)
+  local retries=0
+  while [[ ${retries} -lt 12 ]]; do
+    local healthy
+    healthy=$(docker compose -f "${compose_file}" ps --format json 2>/dev/null \
+      | python3 -c "import sys,json; data=sys.stdin.read().strip(); rows=json.loads(data) if data.startswith('[') else [json.loads(l) for l in data.splitlines() if l]; healthy=[r for r in rows if r.get('Health','') in ('healthy','')]; print(len(healthy))" 2>/dev/null || echo "0")
+    local total=3
+    if [[ "${healthy}" -ge "${total}" ]]; then
+      echo -e "${GREEN}  Infrastructure ready.${NC}"
+      return 0
+    fi
+    sleep 5
+    retries=$((retries + 1))
+    echo -e "${YELLOW}  Waiting for infrastructure... (${retries}/12)${NC}"
+  done
+
+  echo -e "${RED}  Infrastructure services did not become healthy in time.${NC}" >&2
+  echo -e "${RED}  Run: docker compose -f infrastructure/docker-compose.yml ps${NC}" >&2
+  exit 1
 }
 
 ensure_market_adapter() {
@@ -557,22 +798,25 @@ stop_all() {
 # ============================================================================
 
 cmd_login() {
-  check_python
+  check_auth_ready
+  load_env || true
   cd "${PROJECT_ROOT}"
   echo -e "${BLUE}Starting FYERS login...${NC}"
-  "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" login "$@"
+  run_auth_cli login "$@"
 }
 
 cmd_status() {
-  check_python
+  check_auth_ready
+  load_env || true
   cd "${PROJECT_ROOT}"
-  "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" status
+  run_auth_cli status "$@"
 }
 
 cmd_test() {
-  check_python
+  check_auth_ready
+  load_env || true
   cd "${PROJECT_ROOT}"
-  "${PYTHON_BIN}" -m shared_project_engine.auth.cli --env-file "${AUTH_ENV_FILE}" test
+  run_auth_cli test "$@"
 }
 
 # ============================================================================
@@ -642,7 +886,7 @@ EOF
   # Use existing start script
   if [[ -x "./scripts/start_all.sh" ]]; then
     ensure_market_adapter
-    INDEX="${index}" MARKET_ADAPTER_URL="${MARKET_ADAPTER_URL}" exec ./scripts/start_all.sh run
+    PYTHON_BIN="${PYTHON_BIN}" INDEX="${index}" MARKET_ADAPTER_URL="${MARKET_ADAPTER_URL}" exec ./scripts/start_all.sh run
   else
     echo -e "${RED}Error: scripts/start_all.sh not found${NC}" >&2
     exit 1
@@ -678,7 +922,7 @@ EOF
 
   cd "${FYERSN7_DIR}"
   ensure_market_adapter
-  INDEX="${index}" MARKET_ADAPTER_URL="${MARKET_ADAPTER_URL}" exec ./scripts/start_all.sh paper
+  PYTHON_BIN="${PYTHON_BIN}" INDEX="${index}" MARKET_ADAPTER_URL="${MARKET_ADAPTER_URL}" exec ./scripts/start_all.sh paper
 }
 
 cmd_fyersn7_live() {
@@ -702,7 +946,7 @@ cmd_fyersn7_live() {
   echo ""
 
   cd "${PROJECT_ROOT}"
-  exec python live_fyersn7_trading.py \
+  exec "${PYTHON_BIN}" live_fyersn7_trading.py \
     --indices ${indices} \
     --capital "${capital}" \
     --poll-interval "${poll_interval}"
@@ -714,7 +958,7 @@ cmd_fyersn7_live_background() {
   local capital="${CAPITAL:-100000}"
   local poll_interval="${POLL_INTERVAL:-5}"
 
-  nohup bash -lc "cd '${PROJECT_ROOT}' && exec python live_fyersn7_trading.py --indices ${indices} --capital '${capital}' --poll-interval '${poll_interval}'" > "${PROJECT_ROOT}/logs/fyersn7_live.log" 2>&1 &
+  nohup bash -lc "cd '${PROJECT_ROOT}' && exec '${PYTHON_BIN}' live_fyersn7_trading.py --indices ${indices} --capital '${capital}' --poll-interval '${poll_interval}'" > "${PROJECT_ROOT}/logs/fyersn7_live.log" 2>&1 &
   local live_pid=$!
   save_pid "fyersn7_live" "${live_pid}"
   echo -e "${GREEN}  FyersN7 Live Trading started (PID: ${live_pid})${NC}"
@@ -731,10 +975,10 @@ cmd_fyersn7_paper_background() {
     return 0
   fi
 
-  nohup bash -lc "cd '${FYERSN7_DIR}' && exec env MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' CAPITAL='${capital}' ./scripts/start_all.sh paper" > "${PROJECT_ROOT}/logs/fyersn7_paper.log" 2>&1 &
+  nohup bash -lc "cd '${FYERSN7_DIR}' && exec env PYTHON_BIN='${PYTHON_BIN}' MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' CAPITAL='${capital}' INDEX='${index}' ENABLE_WEB_VIEW=0 ./scripts/start_all.sh paper" > "${PROJECT_ROOT}/logs/fyersn7_paper_${index}.log" 2>&1 &
   local paper_pid=$!
-  save_pid "fyersn7_paper" "${paper_pid}"
-  echo -e "${GREEN}  FyersN7 Paper Trading started (PID: ${paper_pid})${NC}"
+  save_pid "fyersn7_paper_${index}" "${paper_pid}"
+  echo -e "${GREEN}  FyersN7 Paper Trading started for ${index} (PID: ${paper_pid})${NC}"
 }
 
 cmd_forensics_check() {
@@ -962,10 +1206,12 @@ cmd_scalping_api_background() {
 
   mkdir -p "${PROJECT_ROOT}/logs"
 
-  nohup bash -lc "cd '${BOT_ARMY_DIR}' && exec '${PYTHON_BIN}' -m uvicorn scalping.api:app --host 0.0.0.0 --port '${port}'" > "${PROJECT_ROOT}/logs/scalping_api.log" 2>&1 &
+  # caffeinate -i prevents idle sleep so the engine keeps running when screen locks
+  # caffeinate -w exits when the child process exits
+  nohup caffeinate -iw $$ bash -lc "cd '${BOT_ARMY_DIR}' && set -a && source '${PROJECT_ROOT}/.env' 2>/dev/null; set +a && exec '${PYTHON_BIN}' -m uvicorn scalping.api:app --host 0.0.0.0 --port '${port}'" > "${PROJECT_ROOT}/logs/scalping_api.log" 2>&1 &
   local api_pid=$!
   save_pid "scalping_api" "${api_pid}"
-  echo -e "${GREEN}  Scalping API started on port ${port} (PID: ${api_pid})${NC}"
+  echo -e "${GREEN}  Scalping API started on port ${port} (PID: ${api_pid}) [caffeinate: sleep prevented]${NC}"
 }
 
 cmd_scalping_background() {
@@ -985,10 +1231,11 @@ cmd_scalping_background() {
 
   mkdir -p "${PROJECT_ROOT}/logs"
 
-  nohup bash -lc "cd '${BOT_ARMY_DIR}' && exec '${PYTHON_BIN}' -m scalping.launcher ${live_flag} --interval '${interval}' --respect-hours" > "${PROJECT_ROOT}/logs/scalping.log" 2>&1 &
+  # caffeinate -i prevents idle sleep so the engine keeps running when screen locks
+  nohup caffeinate -iw $$ bash -lc "cd '${BOT_ARMY_DIR}' && set -a && source '${PROJECT_ROOT}/.env' 2>/dev/null; set +a && exec '${PYTHON_BIN}' -m scalping.launcher ${live_flag} --interval '${interval}' --respect-hours" > "${PROJECT_ROOT}/logs/scalping.log" 2>&1 &
   local scalping_pid=$!
   save_pid "scalping" "${scalping_pid}"
-  echo -e "${GREEN}  Scalping Engine started (PID: ${scalping_pid})${NC}"
+  echo -e "${GREEN}  Scalping Engine started (PID: ${scalping_pid}) [caffeinate: sleep prevented]${NC}"
 }
 
 # ============================================================================
@@ -1004,19 +1251,15 @@ cmd_llm_debate() {
   fi
 
   local port="${LLM_DEBATE_PORT:-8080}"
+  local debate_python
+  debate_python="$(llm_debate_python_bin)"
 
   echo -e "${GREEN}Starting LLM Debate Backend...${NC}"
   echo -e "  Port: ${port}"
   echo ""
 
   cd "${LLM_DEBATE_DIR}/backend"
-
-  # Activate venv if exists
-  if [[ -f "venv/bin/activate" ]]; then
-    source venv/bin/activate
-  fi
-
-  exec python main.py --port "${port}" "$@"
+  exec "${debate_python}" -m uvicorn main:app --host 0.0.0.0 --port "${port}" "$@"
 }
 
 cmd_llm_debate_background() {
@@ -1028,6 +1271,8 @@ cmd_llm_debate_background() {
   fi
 
   local port="${LLM_DEBATE_PORT:-8080}"
+  local debate_python
+  debate_python="$(llm_debate_python_bin)"
 
   mkdir -p "${PROJECT_ROOT}/logs"
 
@@ -1053,7 +1298,7 @@ cmd_llm_debate_background() {
     fi
   fi
 
-  nohup bash -lc "cd '${LLM_DEBATE_DIR}/backend' && source venv/bin/activate 2>/dev/null || true && exec python main.py --port '${port}'" > "${PROJECT_ROOT}/logs/llm_debate.log" 2>&1 &
+  nohup bash -lc "cd '${LLM_DEBATE_DIR}/backend' && exec '${debate_python}' -m uvicorn main:app --host 0.0.0.0 --port '${port}'" > "${PROJECT_ROOT}/logs/llm_debate.log" 2>&1 &
   local debate_pid=$!
   save_pid "llm_debate" "${debate_pid}"
   echo -e "${GREEN}  LLM Debate Backend started (PID: ${debate_pid})${NC}"
@@ -1105,7 +1350,7 @@ FYERS_ACCESS_TOKEN=${FYERS_ACCESS_TOKEN:-}
 EOF
     fi
 
-    nohup bash -lc "cd '${FYERSN7_DIR}' && exec env ENABLE_WEB_VIEW=1 MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' ./scripts/start_all.sh run" > "${PROJECT_ROOT}/logs/fyersn7.log" 2>&1 &
+    nohup bash -lc "cd '${FYERSN7_DIR}' && exec env PYTHON_BIN='${PYTHON_BIN}' ENABLE_WEB_VIEW=1 MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' ./scripts/start_all.sh run" > "${PROJECT_ROOT}/logs/fyersn7.log" 2>&1 &
     local fyersn7_wrapper_pid=$!
     save_pid "fyersn7-wrapper" "${fyersn7_wrapper_pid}"
     sleep 2
@@ -1140,7 +1385,10 @@ EOF
   # 4. Start Frontend Dashboard
   # ============================================
   echo -e "${BLUE}[4/5] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
-  ensure_frontend_dependencies
+  if ! ensure_frontend_dependencies; then
+    stop_all
+    exit 1
+  fi
   nohup bash -lc "cd '${CLAWWORK_DIR}/frontend' && exec npm run dev -- --host 0.0.0.0 --port '${FRONTEND_PORT}'" > "${CLAWWORK_DIR}/logs/frontend.log" 2>&1 &
   FRONTEND_PID=$!
   save_pid "frontend" ${FRONTEND_PID}
@@ -1208,7 +1456,7 @@ cmd_dashboard() {
   FRONTEND_PORT="${FRONTEND_PORT:-3001}"
 
   # Start Backend API Server
-  echo -e "${BLUE}[1/2] Starting Backend API on port ${API_PORT}...${NC}"
+  echo -e "${BLUE}[1/3] Starting Backend API on port ${API_PORT}...${NC}"
   local livebench_python
   livebench_python="$(livebench_python_bin)"
   local auto_trader_strategy_id="${AUTO_TRADER_STRATEGY_ID:-clawwork-autotrader}"
@@ -1229,8 +1477,11 @@ cmd_dashboard() {
   done
 
   # Start Frontend Dashboard
-  echo -e "${BLUE}[2/2] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
-  ensure_frontend_dependencies
+  echo -e "${BLUE}[2/3] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
+  if ! ensure_frontend_dependencies; then
+    stop_all
+    exit 1
+  fi
   nohup bash -lc "cd '${CLAWWORK_DIR}/frontend' && exec npm run dev -- --host 0.0.0.0 --port '${FRONTEND_PORT}'" > "${CLAWWORK_DIR}/logs/frontend.log" 2>&1 &
   FRONTEND_PID=$!
   save_pid "frontend" ${FRONTEND_PID}
@@ -1247,13 +1498,37 @@ cmd_dashboard() {
     echo -n "."
   done
 
+  # Start Scalping Dashboard API so /scalping works in dashboard mode too.
+  SCALPING_API_PORT="${SCALPING_API_PORT:-8002}"
+  export SCALPING_ENGINE_ENABLED="${SCALPING_ENGINE_ENABLED:-1}"
+  export SCALPING_LIVE="${SCALPING_LIVE:-0}"
+  export SCALPING_INTERVAL="${SCALPING_INTERVAL:-5}"
+  echo -e "${BLUE}[3/3] Starting Scalping Dashboard API on port ${SCALPING_API_PORT}...${NC}"
+  if [[ -d "${BOT_ARMY_DIR}/scalping" ]]; then
+    cmd_scalping_api_background
+    echo -n "  Waiting for Scalping API..."
+    for i in {1..30}; do
+      if curl -s "http://localhost:${SCALPING_API_PORT}/api/scalping/status" > /dev/null 2>&1; then
+        echo -e " ${GREEN}ready${NC}"
+        break
+      fi
+      sleep 1
+      echo -n "."
+    done
+    echo -e "${GREEN}    Engine embedded in API (SCALPING_ENGINE_ENABLED=${SCALPING_ENGINE_ENABLED})${NC}"
+  else
+    echo -e "${YELLOW}  Scalping API not found, skipping...${NC}"
+  fi
+
   echo ""
   echo -e "${GREEN}Dashboard is running!${NC}"
   echo -e "  Dashboard: http://localhost:${FRONTEND_PORT}"
+  echo -e "  Scalping: http://localhost:${FRONTEND_PORT}/scalping"
   echo -e "  API: http://localhost:${API_PORT}/api"
+  echo -e "  Scalping API: http://localhost:${SCALPING_API_PORT}/api/scalping"
   echo -e "  Docs: http://localhost:${API_PORT}/docs"
   echo ""
-  echo -e "${YELLOW}Note: Signal engines not started. Use './start.sh both' for full system.${NC}"
+  echo -e "${YELLOW}Note: fyersN7 signal engines are not started in dashboard mode. Use './start.sh both' or './start.sh all' for the full stack.${NC}"
   echo ""
 
   if should_detach; then
@@ -1273,6 +1548,10 @@ cmd_all() {
 
   echo -e "${GREEN}Starting ALL Systems (Full Stack + Scalping + LLM Debate)...${NC}"
   echo ""
+
+  # Ensure infrastructure (Redpanda, PostgreSQL, Redis) is running
+  echo -e "${BLUE}[0/11] Ensuring infrastructure services...${NC}"
+  ensure_infrastructure
 
   # Stop any existing processes
   stop_all
@@ -1299,13 +1578,13 @@ cmd_all() {
   # ============================================
   # 1. Start Shared Market Adapter
   # ============================================
-  echo -e "${BLUE}[1/9] Starting shared Market Adapter...${NC}"
+  echo -e "${BLUE}[1/11] Starting shared Market Adapter...${NC}"
   ensure_market_adapter
 
   # ============================================
   # 2. Start LLM Debate Backend
   # ============================================
-  echo -e "${BLUE}[2/9] Starting LLM Debate Backend on port ${LLM_DEBATE_PORT}...${NC}"
+  echo -e "${BLUE}[2/11] Starting LLM Debate Backend on port ${LLM_DEBATE_PORT}...${NC}"
   if [[ -d "${LLM_DEBATE_DIR}/backend" ]]; then
     cmd_llm_debate_background
   else
@@ -1315,7 +1594,7 @@ cmd_all() {
   # ============================================
   # 3. Start fyersN7 Signal Engines
   # ============================================
-  echo -e "${BLUE}[3/9] Starting fyersN7 Signal Engines...${NC}"
+  echo -e "${BLUE}[3/11] Starting fyersN7 Signal Engines...${NC}"
   if [[ -d "${FYERSN7_DIR}" ]]; then
     # Sync credentials
     if [[ -n "${FYERS_ACCESS_TOKEN:-}" ]]; then
@@ -1328,7 +1607,7 @@ EOF
     fi
 
     # Disable paper trading in signal engines - step 8 handles paper trading separately
-    nohup bash -lc "cd '${FYERSN7_DIR}' && exec env ENABLE_PAPER_TRADING=0 ENABLE_WEB_VIEW=1 MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' ./scripts/start_all.sh run" > "${PROJECT_ROOT}/logs/fyersn7.log" 2>&1 &
+    nohup bash -lc "cd '${FYERSN7_DIR}' && exec env PYTHON_BIN='${PYTHON_BIN}' ENABLE_PAPER_TRADING=0 ENABLE_WEB_VIEW=1 MARKET_ADAPTER_URL='${MARKET_ADAPTER_URL}' ./scripts/start_all.sh run" > "${PROJECT_ROOT}/logs/fyersn7.log" 2>&1 &
     local fyersn7_wrapper_pid=$!
     save_pid "fyersn7-wrapper" "${fyersn7_wrapper_pid}"
     sleep 2
@@ -1339,7 +1618,7 @@ EOF
   # ============================================
   # 4. Start Backend API Server
   # ============================================
-  echo -e "${BLUE}[4/9] Starting Backend API on port ${API_PORT}...${NC}"
+  echo -e "${BLUE}[4/11] Starting Backend API on port ${API_PORT}...${NC}"
   local livebench_python
   livebench_python="$(livebench_python_bin)"
   local auto_trader_strategy_id="${AUTO_TRADER_STRATEGY_ID:-clawwork-autotrader}"
@@ -1362,8 +1641,11 @@ EOF
   # ============================================
   # 5. Start Frontend Dashboard
   # ============================================
-  echo -e "${BLUE}[5/9] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
-  ensure_frontend_dependencies
+  echo -e "${BLUE}[5/11] Starting Frontend on port ${FRONTEND_PORT}...${NC}"
+  if ! ensure_frontend_dependencies; then
+    stop_all
+    exit 1
+  fi
   nohup bash -lc "cd '${CLAWWORK_DIR}/frontend' && exec npm run dev -- --host 0.0.0.0 --port '${FRONTEND_PORT}'" > "${CLAWWORK_DIR}/logs/frontend.log" 2>&1 &
   FRONTEND_PID=$!
   save_pid "frontend" ${FRONTEND_PID}
@@ -1383,12 +1665,12 @@ EOF
   # ============================================
   # 6. AutoTrader is API-managed
   # ============================================
-  echo -e "${BLUE}[6/9] AutoTrader is managed by the API startup hook (paper mode).${NC}"
+  echo -e "${BLUE}[6/11] AutoTrader is managed by the API startup hook (paper mode).${NC}"
 
   # ============================================
   # 7. Start Fyers Screener Loop (15s refresh)
   # ============================================
-  start_fyers_screener_loop "[7/9]" || true
+  start_fyers_screener_loop "[7/11]" || true
 
   # ============================================
   # 8. Start Scalping API (Dashboard backend)
@@ -1398,7 +1680,7 @@ EOF
   export SCALPING_ENGINE_ENABLED="${SCALPING_ENGINE_ENABLED:-1}"
   export SCALPING_LIVE="${SCALPING_LIVE:-0}"
   export SCALPING_INTERVAL="${SCALPING_INTERVAL:-5}"
-  echo -e "${BLUE}[8/9] Starting Scalping Dashboard API with embedded engine on port ${SCALPING_API_PORT}...${NC}"
+  echo -e "${BLUE}[8/11] Starting Scalping Dashboard API with embedded engine on port ${SCALPING_API_PORT}...${NC}"
   if [[ -d "${BOT_ARMY_DIR}/scalping" ]]; then
     cmd_scalping_api_background
     echo -e "${GREEN}    Engine embedded in API (SCALPING_ENGINE_ENABLED=${SCALPING_ENGINE_ENABLED})${NC}"
@@ -1412,8 +1694,55 @@ EOF
   # ============================================
   # 9. Start FyersN7 Paper Trading (Optimized)
   # ============================================
-  echo -e "${BLUE}[9/9] Starting FyersN7 Paper Trading (69.7% WR strategy)...${NC}"
-  cmd_fyersn7_paper_background
+  echo -e "${BLUE}[9/11] Starting FyersN7 Paper Trading (69.7% WR strategy) for all indices...${NC}"
+  for _paper_idx in SENSEX BANKNIFTY NIFTY50 FINNIFTY; do
+    INDEX="${_paper_idx}" cmd_fyersn7_paper_background
+  done
+
+  # ============================================
+  # 10. Start LiveBench Agent Simulation
+  # ============================================
+  local livebench_config="${LIVEBENCH_CONFIG:-${CLAWWORK_DIR}/livebench/configs/example_inline_tasks.json}"
+  if [[ -f "${livebench_config}" ]]; then
+    echo -e "${BLUE}[10/11] Starting LiveBench Agent Simulation...${NC}"
+    local livebench_python
+    livebench_python="$(livebench_python_bin)"
+    # Override date range to today so the agent always runs the current day
+    local today
+    today="$(date '+%Y-%m-%d')"
+    local lb_init_date="${INIT_DATE:-${today}}"
+    local lb_end_date="${END_DATE:-${today}}"
+    # Run agent in a daily loop: execute today's session, sleep until next market open, repeat
+    nohup bash -lc "cd '${CLAWWORK_DIR}/livebench' && while true; do
+      _today=\$(date '+%Y-%m-%d')
+      echo \"[LiveBench] [\$(date '+%Y-%m-%d %H:%M:%S')] Starting session for \${_today}\"
+      env INIT_DATE=\"\${_today}\" END_DATE=\"\${_today}\" '${livebench_python}' main.py '${livebench_config}'
+      _exit=\$?
+      echo \"[LiveBench] [\$(date '+%Y-%m-%d %H:%M:%S')] Session ended (exit \${_exit}). Sleeping 1 hour before next run...\"
+      sleep 3600
+    done" > "${PROJECT_ROOT}/logs/livebench_agent.log" 2>&1 &
+    local livebench_agent_pid=$!
+    save_pid "livebench-agent" ${livebench_agent_pid}
+    echo -e "${GREEN}  LiveBench Agent started (PID: ${livebench_agent_pid}, date: ${lb_init_date}, config: $(basename ${livebench_config}))${NC}"
+  else
+    echo -e "${YELLOW}[10/11] LiveBench config not found (${livebench_config}), skipping agent simulation...${NC}"
+  fi
+
+  # ============================================
+  # 11. Start Scalping Validation System
+  # ============================================
+  local validation_dir="${BOT_ARMY_DIR}/validation"
+  if [[ -d "${validation_dir}" ]]; then
+    echo -e "${BLUE}[11/11] Starting Scalping Validation System on port ${VALIDATOR_API_PORT:-8003}...${NC}"
+    local validator_python
+    validator_python="$(livebench_python_bin)"
+    nohup bash -lc "cd '${validation_dir}' && exec env KAFKA_BOOTSTRAP_SERVERS='${KAFKA_BOOTSTRAP_SERVERS:-localhost:9092}' VALIDATOR_API_PORT='${VALIDATOR_API_PORT:-8003}' '${validator_python}' main.py --simulate" > "${PROJECT_ROOT}/logs/scalping_validator.log" 2>&1 &
+    local validator_pid=$!
+    save_pid "scalping-validator" ${validator_pid}
+    echo -e "${GREEN}  Scalping Validator started (PID: ${validator_pid}, API: http://localhost:${VALIDATOR_API_PORT:-8003})${NC}"
+  else
+    echo -e "${YELLOW}[11/11] Scalping validation not found, skipping...${NC}"
+  fi
 
   echo ""
   echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════╗${NC}"
@@ -1434,6 +1763,8 @@ EOF
   echo -e "${GREEN}║       strategy=${AUTO_TRADER_STRATEGY_ID:-clawwork-autotrader}                            ║${NC}"
   echo -e "${GREEN}║     - 21-Agent Scalping (8:58 AM - 3:40 PM)                   ║${NC}"
   echo -e "${GREEN}║     - LLM Debate Backend                                      ║${NC}"
+  echo -e "${GREEN}║     - LiveBench Agent Simulation                             ║${NC}"
+  echo -e "${GREEN}║     - Scalping Validator (http://localhost:${VALIDATOR_API_PORT:-8003})            ║${NC}"
   echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════╣${NC}"
   echo -e "${GREEN}║   Logs:          ${PROJECT_ROOT}/logs/               ║${NC}"
   echo -e "${GREEN}║   Stop:          ./start.sh stop                              ║${NC}"
@@ -1479,11 +1810,11 @@ main() {
       ;;
     status)
       print_banner
-      cmd_status
+      cmd_status "$@"
       ;;
     test)
       print_banner
-      cmd_test
+      cmd_test "$@"
       ;;
     forensics-check|forensics|validate)
       print_banner

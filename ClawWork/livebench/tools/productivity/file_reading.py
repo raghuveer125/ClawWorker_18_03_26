@@ -370,8 +370,8 @@ def read_pptx_as_images(pptx_path: Path) -> Optional[List[bytes]]:
             import shutil
             try:
                 shutil.rmtree(temp_dir)
-            except:
-                pass
+            except OSError:
+                pass  # intentional: best-effort temp directory cleanup
 
 
 def read_pdf_as_images(pdf_path: Path) -> Optional[List[bytes]]:
@@ -695,9 +695,10 @@ def _pdf_to_png_base64_list(pdf_path: Path, poppler_path: Optional[str] = None) 
     return result
 
 if __name__ == "__main__":
-    pdf = Path(
-        "/Users/tianyu/Desktop/workspace/-Live-Bench/livebench/data/test_data/AITrader.pdf"
-    )
+    # Resolve test data path relative to this file's location
+    # (ClawWork/livebench/tools/productivity/ -> ClawWork/livebench/data/test_data/)
+    _this_dir = Path(__file__).resolve().parent
+    pdf = _this_dir.parents[1] / "data" / "test_data" / "AITrader.pdf"
 
-    result = read_pdf(pdf)
+    result = read_pdf_as_images(pdf)
     print(result)

@@ -7,6 +7,30 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [[ -z "${PROJECT_ROOT:-}" ]]; then
+  _resolve_project_root() {
+    local current="${ROOT_DIR}"
+
+    while [[ "${current}" != "/" ]]; do
+      if [[ -d "${current}/shared_project_engine" ]]; then
+        printf '%s\n' "${current}"
+        return 0
+      fi
+      current="$(dirname "${current}")"
+    done
+
+    return 1
+  }
+
+  PROJECT_ROOT="$(_resolve_project_root || true)"
+  export PROJECT_ROOT
+fi
+
+PYTHON_BIN="${PYTHON_BIN:-${ROOT_DIR}/.venv/bin/python}"
+
+if [[ "${PYTHON_BIN}" != */* ]]; then
+  PYTHON_BIN="$(command -v "${PYTHON_BIN}" 2>/dev/null || true)"
+fi
 
 if [[ ! -f "${ROOT_DIR}/.fyers.env" ]]; then
   echo "Error: .fyers.env not found. Please login first." >&2
@@ -21,9 +45,9 @@ elif [[ -n "${INDICES:-}" ]]; then
   INDICES=(${INDICES})
 else
   # Try to get ACTIVE_INDICES from shared_project_engine
-  SHARED_INDICES=$("${ROOT_DIR}/.venv/bin/python" -c "
+  SHARED_INDICES=$("${PYTHON_BIN}" -c "
 import sys
-sys.path.insert(0, '${ROOT_DIR}/../..')
+sys.path.insert(0, '${PROJECT_ROOT}')
 try:
     from shared_project_engine.indices import ACTIVE_INDICES
     print(' '.join(ACTIVE_INDICES))

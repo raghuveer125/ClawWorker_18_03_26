@@ -2,8 +2,65 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SHARED_ROOT="$(cd "${ROOT_DIR}/../.." && pwd)"
-PYTHON_BIN="${ROOT_DIR}/.venv/bin/python"
+
+resolve_project_root() {
+  local current="${ROOT_DIR}"
+
+  while [[ "${current}" != "/" ]]; do
+    if [[ -d "${current}/shared_project_engine" ]]; then
+      printf '%s\n' "${current}"
+      return 0
+    fi
+    current="$(dirname "${current}")"
+  done
+
+  return 1
+}
+
+PROJECT_ROOT="$(resolve_project_root || true)"
+if [[ -z "${PROJECT_ROOT}" ]]; then
+  PROJECT_ROOT="$(cd "${ROOT_DIR}/../.." && pwd)"
+fi
+SHARED_ROOT="${PROJECT_ROOT}"
+export PROJECT_ROOT SHARED_ROOT
+export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH:-}"
+
+resolve_python_bin() {
+  local candidate
+  local candidates=(
+    "${PYTHON_BIN:-}"
+    "${ROOT_DIR}/.venv/bin/python"
+    "${SHARED_ROOT}/.venv/bin/python"
+    "python3"
+    "/usr/bin/python3"
+  )
+
+  for candidate in "${candidates[@]}"; do
+    [[ -n "${candidate}" ]] || continue
+
+    if [[ "${candidate}" == */* ]]; then
+      if [[ -x "${candidate}" ]]; then
+        printf '%s\n' "${candidate}"
+        return 0
+      fi
+      continue
+    fi
+
+    if command -v "${candidate}" >/dev/null 2>&1; then
+      command -v "${candidate}"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+PYTHON_BIN="$(resolve_python_bin || true)"
+if [[ -z "${PYTHON_BIN}" ]]; then
+  echo "Error: unable to locate a Python runtime. Set PYTHON_BIN or create a virtualenv." >&2
+  exit 1
+fi
+export PYTHON_BIN
 AUTH_SCRIPT="${ROOT_DIR}/scripts/fyers_auth.py"
 ENGINE_SCRIPT="${ROOT_DIR}/scripts/run_opportunity_engine.sh"
 SIGNAL_SCRIPT="${ROOT_DIR}/scripts/run_signal_loop.sh"
@@ -23,9 +80,9 @@ BOT_RULES_SCRIPT="${ROOT_DIR}/scripts/forensics_generate_bot_rules_update.py"
 ACTION="${1:-run}"
 
 # Load redirect URI from shared config if available
-_SHARED_REDIRECT_URI=$("${ROOT_DIR}/.venv/bin/python" -c "
+_SHARED_REDIRECT_URI=$("${PYTHON_BIN}" -c "
 import sys
-sys.path.insert(0, '${ROOT_DIR}/../..')
+sys.path.insert(0, '${PROJECT_ROOT}')
 try:
     from shared_project_engine.services import get_auth_redirect_uri
     print(get_auth_redirect_uri())

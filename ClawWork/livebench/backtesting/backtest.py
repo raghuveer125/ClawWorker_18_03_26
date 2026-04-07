@@ -22,7 +22,7 @@ try:
     if str(_PROJECT_ROOT) not in sys.path:
         sys.path.insert(0, str(_PROJECT_ROOT))
     from shared_project_engine.indices import ACTIVE_INDICES as _SHARED_INDICES, get_market_index_config
-    from shared_project_engine.market import MarketDataClient
+    from data_platform.market_consumer import KafkaMarketDataClient as MarketDataClient
 except ImportError:
     _SHARED_INDICES = ["SENSEX", "NIFTY50", "BANKNIFTY", "FINNIFTY"]
     get_market_index_config = None

@@ -136,8 +136,8 @@ else:
             try:
                 sandbox.close()
                 print(f"\n✅ Sandbox closed")
-            except:
-                pass
+            except Exception:
+                pass  # intentional: best-effort sandbox cleanup
 
 
 def main():

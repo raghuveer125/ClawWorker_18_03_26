@@ -1365,6 +1365,8 @@ def main() -> int:
         access_token=args.access_token,
         client_id=args.client_id,
         env_file=args.env_file,
+        insecure=args.insecure,
+        ca_bundle=args.ca_bundle,
     )
 
     now_local = now_ist()
@@ -1807,12 +1809,29 @@ def main() -> int:
         "learn_prob",
         "learn_gate",
         "outside_window",
+        "ems_score",
         "reason",
         "outcome",
     ]
     learn_gate_candidate_pull = False
     learn_gate_pass_pull = False
     learn_gate_blocked_pull = False
+
+    # Re-rank signal_lines by EMS before the idx-based selected_strike assignment.
+    # Without this, idx=1 is always nearest OTM (positional), not best risk/reward.
+    # After sort, idx=1 = highest (confidence * |delta| * 100 / premium).
+    def _signal_ems(ln: str) -> float:
+        _f = parse_signal_line_fields(ln)
+        _strike = int(float(_f.get("strike", "0") or 0))
+        _premium = float((contract_by_strike.get(_strike) or {}).get("ltp", 0) or 0)
+        if _premium <= 0:
+            return 0.0
+        _conf = int(float(_f.get("confidence", "0") or 0)) / 100.0
+        _delta = abs(float((greeks_by_strike.get(_strike) or {}).get("delta", 0) or 0))
+        return _conf * _delta * 100.0 / _premium
+
+    signal_lines.sort(key=_signal_ems, reverse=True)
+
     for idx, line in enumerate(signal_lines, start=1):
         f = parse_signal_line_fields(line)
         conf_val = int(float(f.get("confidence", "0") or 0))
@@ -1953,7 +1972,7 @@ def main() -> int:
             "stable": "Y" if stable_side else "N",
             "cooldown_sec": str(cooldown_left),
             "entry_ready": "Y" if entry_ready else "N",
-            "selected": "Y" if selected_strike else "N",
+            "selected": "Y" if (selected_strike and entry_ready) else "N",
             "spread_pct": f"{spread_pct:.4f}",
             "bid": f"{bid:.4f}",
             "ask": f"{ask:.4f}",
@@ -1982,6 +2001,7 @@ def main() -> int:
             "learn_prob": f"{learn_prob:.4f}" if learn_prob is not None else "",
             "learn_gate": learn_gate_label,
             "outside_window": "Y" if outside_window else "N",
+            "ems_score": f"{(conf_val / 100.0) * (abs(delta) * 100.0) / ltp:.6f}" if ltp > 0 else "0.000000",
         }
 
         if prefilter_notes:

@@ -456,13 +456,34 @@ class InstitutionalRiskLayer:
         lowest = min(lows)
         hl_range = highest - lowest
 
+        # ── SYNTHETIC-DATA GUARD ─────────────────────────────────────────────
+        # Mathematical signature of repeated synthetic bars:
+        #   each bar has range R (synthetic, constant); price barely drifts
+        #   → tr_sum ≈ (N-1)*R, hl_range ≈ R  → CI ≈ 100 always (false CHOPPY)
+        # Detect it: full-period HL range should grow as price drifts across bars.
+        # If hl_range < 1.5× avg single-bar range, price is effectively static
+        # and the choppiness formula is unreliable.  Return neutral (50) so
+        # downstream logic can decide based on other signals.
+        if hl_range > 0 and avg_hl_range > 0 and hl_range < avg_hl_range * 1.5:
+            print(
+                f"[CI] Synthetic/static data guard: hl_range={hl_range:.1f} "
+                f"avg_bar_range={avg_hl_range:.1f} "
+                f"ratio={hl_range/avg_hl_range:.2f} (< 1.5) → CI=50 (neutral)"
+            )
+            return 50
+        # ─────────────────────────────────────────────────────────────────────
+
         if hl_range == 0 or tr_sum == 0:
             return 50
 
         # Choppiness Index formula
         ci = 100 * math.log10(tr_sum / hl_range) / math.log10(period)
-
-        return min(max(ci, 0), 100)
+        ci_final = min(max(ci, 0), 100)
+        print(
+            f"[CI] Real OHLC: tr_sum={tr_sum:.1f} hl_range={hl_range:.1f} "
+            f"avg_bar_range={avg_hl_range:.1f} ratio={hl_range/avg_hl_range:.2f} CI={ci_final:.1f}"
+        )
+        return ci_final
 
     def _calculate_volatility_percentile(self, prices: List[Dict], market_data: Dict) -> float:
         """Calculate current volatility as percentile of historical"""
@@ -495,6 +516,22 @@ class InstitutionalRiskLayer:
 
         if not atrs:
             return 50
+
+        # ── UNIFORM ATR GUARD ──────────────────────────────────────────────────
+        # Fyers screener provides cumulative day H/L (not per-bar OHLC).
+        # Every price_history entry gets the same day_high/day_low, so all ATRs
+        # are nearly identical.  Percentile rank then = N/N = 100th percentile
+        # → falsely triggers HIGH_VOLATILITY → TrendFollower hard-blocked.
+        # Detect it: CV < 5% means uniform ATRs.  Fall back to the change_pct
+        # formula already used above for the <0.5% range case.
+        if len(atrs) >= 5:
+            mean_atr = sum(atrs) / len(atrs)
+            if mean_atr > 0:
+                cv = (sum((a - mean_atr) ** 2 for a in atrs) / len(atrs)) ** 0.5 / mean_atr
+                if cv < 0.05:
+                    change_pct = abs(market_data.get("change_pct", 0))
+                    return min(30 + change_pct * 20, 90)
+        # ──────────────────────────────────────────────────────────────────────
 
         current_atr = sum(atrs[-14:]) / min(14, len(atrs[-14:]))
 
@@ -1044,7 +1081,8 @@ class InstitutionalRiskLayer:
         current_positions: List[Dict],
         capital: float,
         market_data: Dict,
-        signals: List[Dict]
+        signals: List[Dict],
+        regime: Optional["RegimeAnalysis"] = None,
     ) -> Tuple[bool, str, Dict]:
         """
         MAIN PRE-TRADE INTELLIGENCE CHECK
@@ -1060,8 +1098,11 @@ class InstitutionalRiskLayer:
 
         # ═══════════════════════════════════════════════════════════════════
         # CHECK 1: REGIME GATE - Is the market tradeable?
+        # Reuse STEP 0 regime if provided — avoids double-computation and
+        # ensures both steps use the identical RegimeAnalysis object.
         # ═══════════════════════════════════════════════════════════════════
-        regime = self.detect_regime(index, market_data)
+        if regime is None:
+            regime = self.detect_regime(index, market_data)
 
         if regime.trading_condition == TradingCondition.NO_TRADE:
             return False, f"Market regime blocked: {regime.regime.value} (choppy/untradeable)", modifications
@@ -1071,11 +1112,18 @@ class InstitutionalRiskLayer:
         elif regime.trading_condition == TradingCondition.CAUTION:
             modifications["position_size_mult"] = 0.6
 
-        # Check if contributing bots are suited for regime
+        # Check if contributing bots are suited for regime.
+        # Hard-block only when condition is NO_TRADE (choppy/untradeable).
+        # For CAUTION/POOR the regime already cleared STEP 0; penalise size instead
+        # of contradicting that decision with a hard block here.
         bots = proposed_trade.get("contributing_bots", [])
         for bot in bots:
             if bot in regime.avoid_strategies:
-                return False, f"Bot {bot} not suited for {regime.regime.value} regime", modifications
+                if regime.trading_condition == TradingCondition.NO_TRADE:
+                    return False, f"Bot {bot} not suited for {regime.regime.value} regime", modifications
+                else:
+                    # CAUTION or POOR: additional 30% size penalty, no hard block
+                    modifications["position_size_mult"] *= 0.7
 
         # ═══════════════════════════════════════════════════════════════════
         # CHECK 2: EXPOSURE LIMITS - Would this exceed risk budget?

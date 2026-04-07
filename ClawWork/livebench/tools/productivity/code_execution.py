@@ -136,8 +136,8 @@ open = _safe_open
             # Clean up code file
             try:
                 os.unlink(code_file)
-            except:
-                pass
+            except OSError:
+                pass  # intentional: best-effort temp file cleanup
 
     except Exception as e:
         return {

@@ -4,8 +4,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { analyzeHybridPipeline, fetchExpirySchedule, fetchHybridPipelineStatus, fetchLiveMarketData, setHybridModuleWeight, toggleHybridModule } from '../api'
 import { useMarketWebSocket } from '../hooks/useMarketWebSocket'
 
-// Note: Market data and expiry schedule fetched from FYERS API via shared_project_engine
-// No sample/hardcoded data - shows empty if live data unavailable
+// Market data comes from FYERS. Expiry dates prefer official exchange sources
+// and fall back to authenticated FYERS option-chain data when needed.
 
 const formatPct = (v) => `${(v || 0).toFixed(1)}%`
 
@@ -49,6 +49,18 @@ const TREND_COLORS = {
   DOWN: 'text-orange-400',
   STRONG_DOWN: 'text-red-400',
 }
+
+const formatExpiryDate = (value) => {
+  if (!value) return 'NA'
+  const parsed = new Date(`${value}T00:00:00`)
+  if (Number.isNaN(parsed.getTime())) return value
+  return parsed.toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+  }).replace(' ', ' ')
+}
+
+const hasUsableExpirySource = (entry) => entry?.source === 'exchange' || entry?.source === 'fyers'
 
 // Module card component
 const ModuleCard = ({ title, icon: Icon, gradient, data, enabled, weight, onToggle, onWeightChange }) => {
@@ -138,7 +150,7 @@ const ModuleCard = ({ title, icon: Icon, gradient, data, enabled, weight, onTogg
 }
 
 // Index Summary Row component
-const IndexSummaryRow = ({ index, analysis, isSelected, onClick, isAnalyzing, isExpiry }) => {
+const IndexSummaryRow = ({ index, analysis, isSelected, onClick, isAnalyzing, isExpiry, nextExpiryLabel }) => {
   const hasEntry = analysis?.entry_side && analysis.entry_side !== 'NONE'
   const regimeClass = analysis ? REGIME_COLORS[analysis.regime] || REGIME_COLORS.UNKNOWN : ''
 
@@ -154,6 +166,11 @@ const IndexSummaryRow = ({ index, analysis, isSelected, onClick, isAnalyzing, is
             <span className="flex items-center space-x-0.5 px-1.5 py-0.5 bg-amber-500/20 text-amber-400 text-[10px] font-bold rounded border border-amber-500/30">
               <Clock className="w-2.5 h-2.5" />
               <span>EXP</span>
+            </span>
+          )}
+          {!isExpiry && nextExpiryLabel && (
+            <span className="px-1.5 py-0.5 bg-cyan-500/15 text-cyan-300 text-[10px] font-bold rounded border border-cyan-500/30">
+              {nextExpiryLabel}
             </span>
           )}
           {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-indigo-400" />}
@@ -208,6 +225,7 @@ export default function HybridPipelineCard({ marketData }) {
   const [status, setStatus] = useState(null)
   const [analysisMap, setAnalysisMap] = useState({}) // Map of index -> analysis
   const [selectedIndex, setSelectedIndex] = useState('NIFTY50')
+  const [hasManualSelection, setHasManualSelection] = useState(false)
   const [loading, setLoading] = useState(true)
   const [analyzingIndices, setAnalyzingIndices] = useState(new Set())
   const [expanded, setExpanded] = useState(true)
@@ -221,6 +239,7 @@ export default function HybridPipelineCard({ marketData }) {
   const [expirySchedule, setExpirySchedule] = useState({})
   const [indices, setIndices] = useState(FALLBACK_INDICES)
   const [todaysExpiry, setTodaysExpiry] = useState([])
+  const [expirySourceStatus, setExpirySourceStatus] = useState('unavailable')
 
   // Live market data from FYERS API
   const [liveData, setLiveData] = useState({})
@@ -235,7 +254,15 @@ export default function HybridPipelineCard({ marketData }) {
 
   // Get expiry day name for index
   const getExpiryDayName = useCallback((index) => {
-    return expirySchedule[index]?.weekday_short || '?'
+    return hasUsableExpirySource(expirySchedule[index])
+      ? (expirySchedule[index]?.weekday_short || 'NA')
+      : 'NA'
+  }, [expirySchedule])
+
+  const getNextExpiryDate = useCallback((index) => {
+    return hasUsableExpirySource(expirySchedule[index])
+      ? (expirySchedule[index]?.next_expiry || null)
+      : null
   }, [expirySchedule])
 
   // Fetch expiry schedule from shared_project_engine
@@ -251,9 +278,15 @@ export default function HybridPipelineCard({ marketData }) {
       if (data.todaysExpiry) {
         setTodaysExpiry(data.todaysExpiry)
       }
+      if (data.sourceStatus) {
+        setExpirySourceStatus(data.sourceStatus)
+      } else {
+        setExpirySourceStatus('unavailable')
+      }
     } catch (err) {
       console.error('Error fetching expiry schedule:', err)
-      // Keep fallback values
+      setExpirySourceStatus('unavailable')
+      setTodaysExpiry([])
     }
   }, [])
 
@@ -271,6 +304,13 @@ export default function HybridPipelineCard({ marketData }) {
       // Keep existing data
     }
   }, [])
+
+  const refreshLiveContext = useCallback(async () => {
+    await Promise.allSettled([
+      loadLiveMarketData(),
+      loadExpirySchedule(),
+    ])
+  }, [loadExpirySchedule, loadLiveMarketData])
 
   // Fetch status
   const fetchStatus = useCallback(async () => {
@@ -339,6 +379,24 @@ export default function HybridPipelineCard({ marketData }) {
     fetchStatus()
     loadLiveMarketData()
   }, [fetchStatus, loadExpirySchedule, loadLiveMarketData])
+
+  useEffect(() => {
+    if (hasManualSelection) return
+
+    if (todaysExpiry.length > 0) {
+      setSelectedIndex(prev => (todaysExpiry.includes(prev) ? prev : todaysExpiry[0]))
+      return
+    }
+
+    const upcoming = indices
+      .map(index => ({ index, nextExpiry: getNextExpiryDate(index) }))
+      .filter(item => item.nextExpiry)
+      .sort((left, right) => left.nextExpiry.localeCompare(right.nextExpiry))
+
+    if (upcoming.length > 0) {
+      setSelectedIndex(prev => (prev === upcoming[0].index ? prev : upcoming[0].index))
+    }
+  }, [getNextExpiryDate, hasManualSelection, indices, todaysExpiry])
 
   useEffect(() => {
     if (typeof document === 'undefined') return undefined
@@ -429,6 +487,15 @@ export default function HybridPipelineCard({ marketData }) {
   const regimeClass = analysis ? REGIME_COLORS[analysis.regime] || REGIME_COLORS.UNKNOWN : ''
   const indicesWithEntry = indices.filter(idx => analysisMap[idx]?.entry_side && analysisMap[idx].entry_side !== 'NONE')
   const selectedIsExpiry = isExpiryDay(selectedIndex)
+  const selectedNextExpiry = getNextExpiryDate(selectedIndex)
+  const selectedUpcomingLabel = (!selectedIsExpiry && selectedNextExpiry)
+    ? `NEXT ${formatExpiryDate(selectedNextExpiry)}`
+    : ''
+  const upcomingExpiries = indices
+    .map(index => ({ index, nextExpiry: getNextExpiryDate(index) }))
+    .filter(item => item.nextExpiry && !isExpiryDay(item.index))
+    .sort((left, right) => left.nextExpiry.localeCompare(right.nextExpiry))
+  const nextUpcomingExpiry = upcomingExpiries[0] || null
 
   return (
     <motion.div
@@ -454,6 +521,12 @@ export default function HybridPipelineCard({ marketData }) {
                 <span className="flex items-center space-x-1 px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs font-bold rounded border border-amber-500/30">
                   <Clock className="w-3 h-3" />
                   <span>{todaysExpiry.join(', ')} EXP</span>
+                </span>
+              )}
+              {todaysExpiry.length === 0 && nextUpcomingExpiry && (
+                <span className="flex items-center space-x-1 px-2 py-0.5 bg-cyan-500/15 text-cyan-300 text-xs font-bold rounded border border-cyan-500/30">
+                  <Clock className="w-3 h-3" />
+                  <span>{nextUpcomingExpiry.index} {formatExpiryDate(nextUpcomingExpiry.nextExpiry)} NEXT</span>
                 </span>
               )}
             </div>
@@ -515,7 +588,11 @@ export default function HybridPipelineCard({ marketData }) {
                     isSelected={selectedIndex === index}
                     isAnalyzing={analyzingIndices.has(index)}
                     isExpiry={isExpiryDay(index)}
-                    onClick={() => setSelectedIndex(index)}
+                    nextExpiryLabel={!isExpiryDay(index) && getNextExpiryDate(index) ? `NEXT ${formatExpiryDate(getNextExpiryDate(index))}` : ''}
+                    onClick={() => {
+                      setHasManualSelection(true)
+                      setSelectedIndex(index)
+                    }}
                   />
                 ))}
               </tbody>
@@ -532,6 +609,12 @@ export default function HybridPipelineCard({ marketData }) {
                   <span className="flex items-center space-x-1 px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs font-bold rounded border border-amber-500/30">
                     <Clock className="w-3 h-3" />
                     <span>EXPIRY TODAY</span>
+                  </span>
+                )}
+                {!selectedIsExpiry && selectedUpcomingLabel && (
+                  <span className="flex items-center space-x-1 px-2 py-0.5 bg-cyan-500/15 text-cyan-300 text-xs font-bold rounded border border-cyan-500/30">
+                    <Clock className="w-3 h-3" />
+                    <span>{selectedUpcomingLabel}</span>
                   </span>
                 )}
                 <span className="text-xs text-slate-500">Details</span>
@@ -717,9 +800,9 @@ export default function HybridPipelineCard({ marketData }) {
                 <span>Analyze {selectedIndex}</span>
               </button>
               <button
-                onClick={loadLiveMarketData}
+                onClick={refreshLiveContext}
                 className="flex items-center space-x-2 px-3 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 rounded-lg text-emerald-400 text-sm transition-colors border border-emerald-500/30"
-                title="Refresh live market data from FYERS"
+                title="Refresh live market data and exchange expiry schedule"
               >
                 <RefreshCw className="w-4 h-4" />
                 <span>Refresh Live</span>
@@ -730,10 +813,26 @@ export default function HybridPipelineCard({ marketData }) {
             <div className="flex items-center space-x-3 text-xs text-slate-500">
               <span>Expiry:</span>
               {indices.map(idx => (
-                <span key={idx} className={isExpiryDay(idx) ? 'text-amber-400 font-bold' : ''}>
+                <span
+                  key={idx}
+                  className={
+                    !hasUsableExpirySource(expirySchedule[idx])
+                      ? 'text-slate-600'
+                      : (isExpiryDay(idx) ? 'text-amber-400 font-bold' : '')
+                  }
+                >
                   {idx.substring(0, 3)}-{getExpiryDayName(idx)}
                 </span>
               ))}
+              {(expirySourceStatus === 'partial' || expirySourceStatus === 'mixed') && (
+                <span className="text-amber-400/80">Using FYERS for some expiry dates</span>
+              )}
+              {expirySourceStatus === 'fyers' && (
+                <span className="text-cyan-300/80">Using FYERS expiry dates</span>
+              )}
+              {expirySourceStatus === 'unavailable' && (
+                <span className="text-amber-400/80">Expiry data unavailable from exchange or FYERS</span>
+              )}
             </div>
           </div>
 

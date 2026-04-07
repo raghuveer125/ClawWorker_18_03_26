@@ -8,11 +8,39 @@
 
 const STATIC = import.meta.env.VITE_STATIC_DATA === 'true'
 const BASE_URL = import.meta.env.BASE_URL || '/'          // e.g. /-Live-Bench/
+const FRONTEND_PORT = import.meta.env.VITE_FRONTEND_PORT || '3001'
+const API_PORT = import.meta.env.VITE_API_PORT || '8001'
+const API_ORIGIN = import.meta.env.VITE_API_ORIGIN || ''
+const WS_ORIGIN = import.meta.env.VITE_WS_ORIGIN || ''
 
 const staticUrl = (path) => `${BASE_URL}data/${path}`
 const liveUrl = (path) => `/api/${path}`
 
 const get = (url) => fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.json() })
+
+const trimTrailingSlash = (value) => value.replace(/\/$/, '')
+
+const resolveBackendHttpOrigin = () => {
+  if (API_ORIGIN) return trimTrailingSlash(API_ORIGIN)
+  if (typeof window === 'undefined') return ''
+
+  const { protocol, hostname, origin, port } = window.location
+  if (port === FRONTEND_PORT) {
+    return `${protocol}//${hostname}:${API_PORT}`
+  }
+
+  return origin
+}
+
+export const resolveWebSocketUrl = (path) => {
+  if (typeof window === 'undefined') return path
+
+  const baseOrigin = WS_ORIGIN
+    ? trimTrailingSlash(WS_ORIGIN)
+    : resolveBackendHttpOrigin().replace(/^http/, 'ws')
+
+  return `${baseOrigin}${path}`
+}
 
 // ── Endpoints ─────────────────────────────────────────────────────────────────
 
@@ -177,6 +205,9 @@ export const configureHybridNormal = () =>
 export const fetchTradeHistory = () =>
   get(liveUrl('auto-trader/trades'))
 
+export const fetchFyersn7TradeHistory = (date) =>
+  get(liveUrl(`fyersn7/trades-flat/${date}`))
+
 export const fetchAutoTraderStatus = () =>
   get(liveUrl('auto-trader/status'))
 
@@ -276,5 +307,40 @@ export const saveHiddenAgents = (hiddenArray) => {
     body: JSON.stringify({ hidden: hiddenArray }),
   })
 }
+
+// ── Lottery Pipeline ──────────────────────────────────────────────────────────
+
+export const fetchLotteryStatus = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/status?symbol=${symbol}`))
+
+export const fetchLotteryConfig = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/config?symbol=${symbol}`))
+
+export const fetchLotteryRawData = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/raw-data?symbol=${symbol}`))
+
+export const fetchLotteryFormulaAudit = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/formula-audit?symbol=${symbol}`))
+
+export const fetchLotteryQuality = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/quality?symbol=${symbol}`))
+
+export const fetchLotterySignals = (symbol = 'NIFTY', limit = 50) =>
+  get(liveUrl(`lottery/signals?symbol=${symbol}&limit=${limit}`))
+
+export const fetchLotteryTrades = (symbol = 'NIFTY', limit = 50) =>
+  get(liveUrl(`lottery/trades?symbol=${symbol}&limit=${limit}`))
+
+export const fetchLotteryCapital = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/capital?symbol=${symbol}`))
+
+export const fetchLotteryCandidates = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/candidates?symbol=${symbol}`))
+
+export const fetchLotteryRejections = (symbol = 'NIFTY', limit = 20) =>
+  get(liveUrl(`lottery/rejections?symbol=${symbol}&limit=${limit}`))
+
+export const fetchLotteryBandCandidates = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/band-candidates?symbol=${symbol}`))
 
 export const IS_STATIC = STATIC

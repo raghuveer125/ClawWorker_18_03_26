@@ -1,0 +1,52 @@
+{
+  "gates": [
+    {
+      "name": "paper_validation",
+      "duration_days": 10,
+      "min_trades": 30,
+      "max_slippage_pct": 1.0,
+      "max_avg_latency_ms": 1000,
+      "min_fill_rate_pct": 95.0,
+      "max_rejection_rate_pct": 5.0,
+      "min_win_rate_pct": 55.0,
+      "max_drawdown_pct": 15.0,
+      "capital_pct": 0.0
+    },
+    {
+      "name": "micro_live",
+      "duration_days": 20,
+      "min_trades": 20,
+      "max_slippage_pct": 0.5,
+      "max_avg_latency_ms": 200,
+      "min_fill_rate_pct": 98.0,
+      "max_rejection_rate_pct": 2.0,
+      "min_win_rate_pct": 50.0,
+      "max_drawdown_pct": 10.0,
+      "capital_pct": 20.0
+    },
+    {
+      "name": "scale_up",
+      "duration_days": 30,
+      "min_trades": 50,
+      "max_slippage_pct": 0.3,
+      "max_avg_latency_ms": 150,
+      "min_fill_rate_pct": 99.0,
+      "max_rejection_rate_pct": 1.0,
+      "min_win_rate_pct": 52.0,
+      "max_drawdown_pct": 8.0,
+      "capital_pct": 60.0
+    },
+    {
+      "name": "full_capital",
+      "duration_days": 0,
+      "min_trades": 0,
+      "max_slippage_pct": 0.3,
+      "max_avg_latency_ms": 150,
+      "min_fill_rate_pct": 99.0,
+      "max_rejection_rate_pct": 1.0,
+      "min_win_rate_pct": 50.0,
+      "max_drawdown_pct": 10.0,
+      "capital_pct": 100.0
+    }
+  ]
+}

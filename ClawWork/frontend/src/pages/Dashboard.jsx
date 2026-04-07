@@ -1,12 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { DollarSign, TrendingUp, Activity, AlertCircle, Briefcase, Brain, Wallet, Bell, BellOff, X } from 'lucide-react'
-import { fetchAgentDashboardSupplemental, fetchAgentDetail, fetchAgentEconomic, fetchAgentTasks, fetchIndicesConfig } from '../api'
+import { fetchAgentDashboardSupplemental, fetchAgentDetail, fetchAgentEconomic, fetchAgentTasks } from '../api'
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useDisplayName } from '../DisplayNamesContext'
 
 const formatINR = (value, digits = 2) =>
   `₹${Number(value || 0).toLocaleString('en-IN', { minimumFractionDigits: digits, maximumFractionDigits: digits })}`
+
+const isNotFoundError = (error) => {
+  const status = error?.status ?? Number(error?.message)
+  return status === 404
+}
 
 // Bias change detection helper
 const shouldNotifyBiasChange = (prevBias, newBias) => {
@@ -44,6 +49,7 @@ const isSignificantMovement = (fromSignal, toSignal) => {
 }
 
 const MOVEMENT_ALERT_THRESHOLD = 3 // Alert when 3+ stocks move in same direction
+const DEFAULT_SCREENER_BASKETS = ['SENSEX', 'NIFTY50', 'BANKNIFTY']
 
 const Dashboard = ({ agents, selectedAgent }) => {
   const dn = useDisplayName()
@@ -54,22 +60,15 @@ const Dashboard = ({ agents, selectedAgent }) => {
   const [institutionalShadow, setInstitutionalShadow] = useState(null)
   const [marketSession, setMarketSession] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
   const [resultsView, setResultsView] = useState('few')
   const [basketFilter, setBasketFilter] = useState('ALL')
   const [signalFilter, setSignalFilter] = useState('ALL')
   const [signalSort, setSignalSort] = useState('default')
-  const [indicesConfig, setIndicesConfig] = useState({ activeIndices: ['SENSEX', 'NIFTY50', 'BANKNIFTY'] })
   const [isDocumentVisible, setIsDocumentVisible] = useState(() => {
     if (typeof document === 'undefined') return true
     return document.visibilityState !== 'hidden'
   })
-
-  // Fetch indices config on mount
-  useEffect(() => {
-    fetchIndicesConfig()
-      .then(data => { if (data?.activeIndices) setIndicesConfig(data) })
-      .catch(err => console.error('Error fetching indices config:', err))
-  }, [])
 
   // Bias change notification state
   const [biasAlerts, setBiasAlerts] = useState([])
@@ -300,6 +299,8 @@ const Dashboard = ({ agents, selectedAgent }) => {
       setTasksData(null)
       setFyersScreener(null)
       setInstitutionalShadow(null)
+      setMarketSession(null)
+      setNotFound(false)
       setLoading(false)
       return () => { cancelled = true }
     }
@@ -307,6 +308,7 @@ const Dashboard = ({ agents, selectedAgent }) => {
     const loadSelectedAgent = async () => {
       try {
         setLoading(true)
+        setNotFound(false)
         setAgentDetails(null)
         setEconomicData(null)
         setTasksData(null)
@@ -321,12 +323,25 @@ const Dashboard = ({ agents, selectedAgent }) => {
 
         if (cancelled) return
 
+        if (details.status === 'rejected' && isNotFoundError(details.reason)) {
+          setNotFound(true)
+          setAgentDetails(null)
+          setEconomicData(null)
+          setTasksData(null)
+          applyDashboardSupplemental(null)
+          return
+        }
+
         setAgentDetails(details.status === 'fulfilled' ? details.value : null)
         setEconomicData(economic.status === 'fulfilled' ? economic.value : null)
         setTasksData(tasks.status === 'fulfilled' ? tasks.value : null)
         applyDashboardSupplemental(supplemental.status === 'fulfilled' ? supplemental.value : null)
       } catch (error) {
         if (!cancelled) {
+          if (isNotFoundError(error)) {
+            setNotFound(true)
+            applyDashboardSupplemental(null)
+          }
           console.error('Error loading selected agent:', error)
         }
       } finally {
@@ -344,14 +359,14 @@ const Dashboard = ({ agents, selectedAgent }) => {
   }, [applyDashboardSupplemental, selectedAgent])
 
   useEffect(() => {
-    if (!selectedAgent || !isDocumentVisible) return
+    if (!selectedAgent || !isDocumentVisible || notFound) return
 
     const id = setInterval(() => {
       refreshDashboardSupplemental(selectedAgent)
     }, 15000)
 
     return () => clearInterval(id)
-  }, [isDocumentVisible, refreshDashboardSupplemental, selectedAgent])
+  }, [isDocumentVisible, notFound, refreshDashboardSupplemental, selectedAgent])
 
   if (!selectedAgent) {
     return (
@@ -365,7 +380,29 @@ const Dashboard = ({ agents, selectedAgent }) => {
     )
   }
 
-  if (loading || !agentDetails) {
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      </div>
+    )
+  }
+
+  if (notFound) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center max-w-md px-6">
+          <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-700">Worker Unavailable</h2>
+          <p className="text-gray-500 mt-2">
+            {dn(selectedAgent)} is not an active worker in this dashboard. Select a valid agent from the sidebar.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!agentDetails) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
@@ -463,7 +500,30 @@ const Dashboard = ({ agents, selectedAgent }) => {
 
   const screenerResults = fyersScreener?.data?.results || []
   const watchlistBaskets = fyersScreener?.data?.watchlist_baskets || {}
-  const basketOptions = indicesConfig.activeIndices || ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+  const rawBasketSummaries = fyersScreener?.data?.basket_summaries || []
+  const basketSummaryMap = rawBasketSummaries.reduce((acc, row) => {
+    if (row?.basket) acc[row.basket] = row
+    return acc
+  }, {})
+  const basketOptions = [
+    ...DEFAULT_SCREENER_BASKETS.filter((basket) => watchlistBaskets[basket] || basketSummaryMap[basket]),
+    ...Object.keys(watchlistBaskets).filter((basket) => !DEFAULT_SCREENER_BASKETS.includes(basket)),
+    ...rawBasketSummaries
+      .map((row) => row?.basket)
+      .filter((basket) => basket && !DEFAULT_SCREENER_BASKETS.includes(basket) && !watchlistBaskets[basket]),
+  ]
+  const basketSummaryRows = basketOptions.map((basket) => (
+    basketSummaryMap[basket] || {
+      basket,
+      total: (watchlistBaskets[basket] || []).length,
+      buy_candidates: 0,
+      sell_candidates: 0,
+      watch: 0,
+      overbought: 0,
+      oversold: 0,
+      missing_quotes: 0,
+    }
+  ))
   const basketFilteredResults = basketFilter === 'ALL'
     ? screenerResults
     : screenerResults.filter((row) => (watchlistBaskets[basketFilter] || []).includes(row.symbol))
@@ -781,7 +841,10 @@ const Dashboard = ({ agents, selectedAgent }) => {
 
         {!fyersScreener?.available ? (
           <div className="text-sm text-gray-500">
-            No screener run found yet. Run <span className="font-mono">./scripts/fyers_screener.sh</span> and refresh.
+            <div>{fyersScreener?.message || <>No screener run found yet. Run <span className="font-mono">./scripts/fyers_screener.sh</span> and refresh.</>}</div>
+            {fyersScreener?.hint && (
+              <div className="mt-2 font-mono text-xs text-amber-700 break-all">{fyersScreener.hint}</div>
+            )}
           </div>
         ) : (
           <>
@@ -937,7 +1000,7 @@ const Dashboard = ({ agents, selectedAgent }) => {
               )}
             </AnimatePresence>
 
-            {(fyersScreener.data?.basket_summaries || []).length > 0 && (
+            {basketSummaryRows.length > 0 && (
               <div className="mb-3 overflow-x-auto">
                 <table className="min-w-full text-[13px] table-fixed">
                   <colgroup>
@@ -963,7 +1026,7 @@ const Dashboard = ({ agents, selectedAgent }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {(fyersScreener.data?.basket_summaries || []).map((row, idx) => (
+                    {basketSummaryRows.map((row, idx) => (
                       <tr key={`${row.basket}-${idx}`} className="border-b border-gray-50">
                         <td className="py-1.5 pr-2 text-gray-900 font-semibold tracking-wide">{row.basket}</td>
                         <td className="py-1.5 px-2 text-center bg-gray-50 text-gray-800 font-semibold">{row.total ?? 0}</td>

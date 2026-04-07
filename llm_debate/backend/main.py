@@ -393,10 +393,11 @@ async def apply_code(session_id: str, request: ApplyCodeRequest):
         Path(session.messages[0].content).parent / relative_path if session.messages else None,
     ]
 
-    # Add common project roots
+    # Add common project roots (resolved relative to this file's location)
+    _project_root = Path(__file__).resolve().parents[2]
     common_roots = [
-        Path("/Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7/ClawWork"),
-        Path("/Users/bhoomidakshpc/Project_WebSocket/ClawWork_FyersN7"),
+        _project_root / "ClawWork",
+        _project_root,
     ]
 
     for root in common_roots:

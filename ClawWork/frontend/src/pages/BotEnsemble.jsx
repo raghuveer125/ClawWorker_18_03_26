@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { Activity, AlertCircle, AlertTriangle, ArrowDownRight, ArrowUpRight, BarChart2, Bot, Brain, Clock, DollarSign, Pause, Play, Power, RefreshCw, RotateCcw, Shield, ShieldCheck, Square, Target, TrendingDown, TrendingUp, Zap } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
-import { fetchAgentLearningRoi, fetchAgents, fetchAutoTraderStatus, fetchBotDetails, fetchBotsLeaderboard, fetchBotsStatus, fetchEnsembleStats, fetchGateStatus, fetchIctSniperStatus, fetchRHPipelineStatus, fetchTradeHistory, pauseAutoTrader, pauseRHPipeline, resetAutoTraderDaily, resetRHPipelineDaily, resumeAutoTrader, resumeRHPipeline, startAutoTrader, startRHPipeline, stopAutoTrader, stopRHPipeline, toggleTradingMode } from '../api'
+import { fetchAgentLearningRoi, fetchAgents, fetchAutoTraderStatus, fetchBotDetails, fetchBotsLeaderboard, fetchBotsStatus, fetchEnsembleStats, fetchFyersn7TradeHistory, fetchGateStatus, fetchIctSniperStatus, fetchRHPipelineStatus, fetchTradeHistory, pauseAutoTrader, pauseRHPipeline, resetAutoTraderDaily, resetRHPipelineDaily, resumeAutoTrader, resumeRHPipeline, startAutoTrader, startRHPipeline, stopAutoTrader, stopRHPipeline, toggleTradingMode } from '../api'
 import HybridPipelineCard from '../components/HybridPipelineCard'
 
 const formatPct = (v) => `${(v || 0).toFixed(1)}%`
@@ -805,16 +805,20 @@ const TradeHistoryRow = ({ trade, idx }) => {
       </td>
       <td className="py-2 px-3 text-xs text-slate-400">{trade.exit_reason}</td>
       <td className="py-2 px-3">
-        <div className="flex -space-x-1">
-          {(trade.bot_signals?.contributing_bots || []).slice(0, 3).map((bot, i) => {
-            const Icon = BOT_ICONS[bot] || Bot
-            return (
-              <div key={i} className="w-5 h-5 rounded-full bg-slate-700 flex items-center justify-center" title={bot}>
-                <Icon className="w-3 h-3 text-slate-400" />
-              </div>
-            )
-          })}
-        </div>
+        {trade.bot_signals?.contributing_bots?.length > 0 ? (
+          <div className="flex -space-x-1">
+            {trade.bot_signals.contributing_bots.slice(0, 3).map((bot, i) => {
+              const Icon = BOT_ICONS[bot] || Bot
+              return (
+                <div key={i} className="w-5 h-5 rounded-full bg-slate-700 flex items-center justify-center" title={bot}>
+                  <Icon className="w-3 h-3 text-slate-400" />
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <span className="text-xs text-slate-500">{trade.engine || '—'}</span>
+        )}
       </td>
     </motion.tr>
   )
@@ -1088,6 +1092,8 @@ export default function BotEnsemble() {
   const [leaderboard, setLeaderboard] = useState([])
   const [ensembleStats, setEnsembleStats] = useState({})
   const [tradeHistory, setTradeHistory] = useState([])
+  const [atTradeHistory, setAtTradeHistory] = useState([])
+  const [engineTab, setEngineTab] = useState('fyersn7')
   const [selectedBot, setSelectedBot] = useState(null)
   const [botDetails, setBotDetails] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -1129,9 +1135,13 @@ export default function BotEnsemble() {
   }, [learningAgentSignature])
 
   const fetchFastData = useCallback(async () => {
-    const [tradesRes, autoTraderRes, rhPipelineRes] = await Promise.all([
-      fetchTradeHistory().catch((err) => {
+    const [tradesRes, atTradesRes, autoTraderRes, rhPipelineRes] = await Promise.all([
+      fetchFyersn7TradeHistory(new Date().toISOString().slice(0, 10)).catch((err) => {
         console.error('Error fetching trade history:', err)
+        return null
+      }),
+      fetchTradeHistory().catch((err) => {
+        console.error('Error fetching AutoTrader trade history:', err)
         return null
       }),
       fetchAutoTraderStatus().catch((err) => {
@@ -1144,10 +1154,13 @@ export default function BotEnsemble() {
       }),
     ])
 
-    const didUpdate = Boolean(tradesRes || autoTraderRes || rhPipelineRes)
+    const didUpdate = Boolean(tradesRes || atTradesRes || autoTraderRes || rhPipelineRes)
 
     if (tradesRes) {
       setTradeHistory(tradesRes.trades || [])
+    }
+    if (atTradesRes) {
+      setAtTradeHistory(atTradesRes.trades || [])
     }
     if (autoTraderRes) {
       setAutoTraderStatus(autoTraderRes.status || null)
@@ -1402,6 +1415,12 @@ export default function BotEnsemble() {
     )
   }
 
+  const displayedTrades =
+    engineTab === 'fyersn7'    ? tradeHistory
+    : engineTab === 'autotrader' ? atTradeHistory
+    : [...tradeHistory, ...atTradeHistory].sort((a, b) =>
+        (b.timestamp || '').localeCompare(a.timestamp || ''))
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
       {/* Header */}
@@ -1544,10 +1563,30 @@ export default function BotEnsemble() {
         <h2 className="text-lg font-bold text-white mb-4 flex items-center space-x-2">
           <Clock className="w-5 h-5 text-cyan-400" />
           <span>Trade History</span>
-          <span className="text-sm font-normal text-slate-400">({tradeHistory.length} trades)</span>
+          <span className="text-sm font-normal text-slate-400">({displayedTrades.length} trades)</span>
         </h2>
+        {/* Engine tabs */}
+        <div className="flex space-x-2 mb-3">
+          {[
+            { key: 'fyersn7',     label: 'FyersN7',     count: tradeHistory.length },
+            { key: 'autotrader',  label: 'AutoTrader',  count: atTradeHistory.length },
+            { key: 'all',         label: 'All',         count: tradeHistory.length + atTradeHistory.length },
+          ].map(({ key, label, count }) => (
+            <button
+              key={key}
+              onClick={() => setEngineTab(key)}
+              className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                engineTab === key
+                  ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30'
+                  : 'text-slate-400 border-slate-600/50 hover:text-white hover:border-slate-500'
+              }`}
+            >
+              {label} ({count})
+            </button>
+          ))}
+        </div>
         <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 overflow-hidden">
-          {tradeHistory.length > 0 ? (
+          {displayedTrades.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -1561,11 +1600,11 @@ export default function BotEnsemble() {
                     <th className="py-2 px-3 text-center">P&L</th>
                     <th className="py-2 px-3 text-center">Outcome</th>
                     <th className="py-2 px-3 text-left">Reason</th>
-                    <th className="py-2 px-3 text-left">Bots</th>
+                    <th className="py-2 px-3 text-left">Engine</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {tradeHistory.slice().reverse().map((trade, idx) => (
+                  {displayedTrades.slice().reverse().map((trade, idx) => (
                     <TradeHistoryRow key={trade.id || idx} trade={trade} idx={idx} />
                   ))}
                 </tbody>
@@ -1575,7 +1614,7 @@ export default function BotEnsemble() {
             <div className="py-12 text-center text-slate-500">
               <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
               <p>No closed trades recorded yet</p>
-              <p className="text-xs mt-1">Completed AutoTrader trades will appear here after they close</p>
+              <p className="text-xs mt-1">Closed paper trades will appear here after they exit</p>
             </div>
           )}
         </div>

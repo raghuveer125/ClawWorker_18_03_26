@@ -254,8 +254,8 @@ if startup_script.exists():
     try:
         os.access(startup_script, os.X_OK)
         check_pass("Script is executable")
-    except:
-        check_warn("Script not executable", 
+    except OSError:
+        check_warn("Script not executable",
                   f"Run: chmod +x {startup_script}")
 else:
     check_fail("Startup script missing: start_paper_trading.sh")

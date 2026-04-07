@@ -12,6 +12,12 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from zoneinfo import ZoneInfo
 
+_PROJECT_ROOT = Path(__file__).resolve().parents[4]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
+from core.utils import to_float_opt as to_float
+
 
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
@@ -92,13 +98,6 @@ def parse_ts(ts_raw: str, date_raw: str, time_raw: str) -> Optional[dt.datetime]
     try:
         return dt.datetime.strptime(f"{d} {t}", "%Y-%m-%d %H:%M:%S")
     except ValueError:
-        return None
-
-
-def to_float(value: str) -> Optional[float]:
-    try:
-        return float((value or "").strip())
-    except Exception:
         return None
 
 

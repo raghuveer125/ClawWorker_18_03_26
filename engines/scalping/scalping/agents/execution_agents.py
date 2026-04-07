@@ -122,6 +122,114 @@ def _index_name(symbol: str) -> str:
     return symbol
 
 
+_option_prefix_cache: Dict[str, str] = {}
+
+
+def _resolve_option_prefix(symbol: str) -> str:
+    """Get cached option symbol prefix (e.g. NSE:NIFTY26407) for an index."""
+    prefix = _option_prefix_cache.get(symbol)
+    if prefix:
+        return prefix
+    try:
+        from .data_agents import get_market_adapter
+        adapter = get_market_adapter()
+        if not adapter:
+            return ""
+        chain = adapter.get_option_chain_snapshot(symbol, strike_count=5)
+        for opt in (chain or {}).get("data", {}).get("optionsChain", []):
+            if not isinstance(opt, dict):
+                continue
+            opt_sym = str(opt.get("symbol", ""))
+            opt_strike = str(int(float(opt.get("strike_price", 0) or 0)))
+            ot = str(opt.get("option_type", "")).upper()
+            if opt_strike and ot and opt_sym.endswith(f"{opt_strike}{ot}"):
+                prefix = opt_sym[: -len(f"{opt_strike}{ot}")]
+                _option_prefix_cache[symbol] = prefix
+                return prefix
+    except Exception:
+        pass
+    return ""
+
+
+def _build_option_symbol(symbol: str, strike: int, option_type: str) -> str:
+    """Build full option symbol like NSE:NIFTY2640722000PE."""
+    prefix = _resolve_option_prefix(symbol)
+    return f"{prefix}{strike}{option_type.upper()}" if prefix else ""
+
+
+def _batch_fetch_position_ltp(positions: List, context_data: Dict[str, Any]) -> Dict[str, float]:
+    """Batch-fetch live LTP for all open positions in a single API call.
+
+    Returns {position_id: ltp} map. Stores results in context for reuse
+    by both ExitAgent and PositionManager within the same cycle.
+    """
+    cache_key = "_position_ltp_cache"
+    cached = context_data.get(cache_key)
+    if isinstance(cached, dict) and cached:
+        return cached
+
+    result: Dict[str, float] = {}
+    # Group positions by index to build option symbols
+    symbols_to_fetch: Dict[str, str] = {}  # option_symbol -> position_id
+    for pos in positions:
+        if not hasattr(pos, "status") or pos.status == "closed":
+            continue
+        opt_sym = _build_option_symbol(pos.symbol, pos.strike, pos.option_type)
+        if opt_sym:
+            symbols_to_fetch[opt_sym] = pos.position_id
+
+    if not symbols_to_fetch:
+        return result
+
+    try:
+        from .data_agents import get_market_adapter
+        adapter = get_market_adapter()
+        if not adapter:
+            return result
+
+        # Single batch API call for all position quotes
+        quotes_resp = adapter.get_quotes(list(symbols_to_fetch.keys()))
+        rows = quotes_resp.get("data", {}).get("d", []) if isinstance(quotes_resp.get("data"), dict) else []
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            sym = str(row.get("n", row.get("symbol", ""))).upper()
+            ltp = float(row.get("v", {}).get("lp", 0) or 0) if isinstance(row.get("v"), dict) else 0
+            if not ltp:
+                ltp = float(row.get("ltp", 0) or 0)
+            pos_id = symbols_to_fetch.get(sym)
+            if pos_id and ltp > 0:
+                result[pos_id] = ltp
+
+        # Fallback: for any position not found in batch, try individual quotes
+        for opt_sym, pos_id in symbols_to_fetch.items():
+            if pos_id not in result:
+                ltp = adapter.get_quote_ltp(opt_sym)
+                if ltp and float(ltp) > 0:
+                    result[pos_id] = float(ltp)
+    except Exception:
+        pass
+
+    context_data[cache_key] = result
+    return result
+
+
+def _fetch_live_option_ltp(symbol: str, strike: int, option_type: str) -> float:
+    """Fetch live LTP for a specific option directly from broker (single quote)."""
+    opt_sym = _build_option_symbol(symbol, strike, option_type)
+    if not opt_sym:
+        return 0.0
+    try:
+        from .data_agents import get_market_adapter
+        adapter = get_market_adapter()
+        if adapter:
+            ltp = adapter.get_quote_ltp(opt_sym)
+            return float(ltp) if ltp and ltp > 0 else 0.0
+    except Exception:
+        pass
+    return 0.0
+
+
 def _sync_dashboard_state(context: BotContext) -> None:
     try:
         from .. import api as api_state
@@ -363,9 +471,24 @@ class EntryAgent(BaseBot):
         execution_metrics = []
         remaining_slots = max(0, int(config.max_positions) - open_positions)
 
+        # One strike per index: track which indices already have entries
+        entered_indices = set()
+        for p in positions:
+            if p.status != "closed":
+                entered_indices.add(p.symbol)
+
+        # Sort signals by score descending — best strike per index wins
+        signals = sorted(signals, key=lambda s: float(s.get("score", s.get("quality_score", 0)) or 0), reverse=True)
+
         for signal_payload in signals:
             symbol = signal_payload.get("symbol", "")
             if not symbol:
+                continue
+            # One strike per index
+            if symbol in entered_indices:
+                rejected_signals.append(
+                    {**signal_payload, "rejection_reasons": list(signal_payload.get("rejection_reasons", [])) + [f"Index already has position: {symbol}"]}
+                )
                 continue
             if remaining_slots <= 0:
                 rejected_signals.append(
@@ -378,6 +501,23 @@ class EntryAgent(BaseBot):
                 continue
             strike = int(float(signal_payload.get("strike", 0) or 0))
             option_type = str(signal_payload.get("option_type", signal_payload.get("side", "CE"))).upper()
+
+            # Persistent structure direction check: block CE in bearish, PE in bullish
+            market_structure = context.data.get("market_structure", {})
+            sym_struct = market_structure.get(symbol, {}) if isinstance(market_structure, dict) else {}
+            if isinstance(sym_struct, str):
+                struct_trend = "bearish" if "bearish" in sym_struct.lower() else ("bullish" if "bullish" in sym_struct.lower() else "")
+            elif isinstance(sym_struct, dict):
+                struct_trend = str(sym_struct.get("trend", "") or "").lower()
+            else:
+                struct_trend = ""
+            if struct_trend:
+                if option_type == "CE" and "bearish" in struct_trend:
+                    rejected_signals.append({**signal_payload, "rejection_reasons": list(signal_payload.get("rejection_reasons", [])) + ["CE_blocked:persistent_bearish_structure"]})
+                    continue
+                if option_type == "PE" and "bullish" in struct_trend:
+                    rejected_signals.append({**signal_payload, "rejection_reasons": list(signal_payload.get("rejection_reasons", [])) + ["PE_blocked:persistent_bullish_structure"]})
+                    continue
             signal_key = _signal_key(symbol, strike, option_type)
             confirmation_state = (
                 dict(confirmation_map.get(signal_key, {}) or {}) if isinstance(confirmation_map, dict) else {}
@@ -432,7 +572,7 @@ class EntryAgent(BaseBot):
                 continue
             # Check entry conditions
             conditions_met = self._check_entry_conditions(
-                symbol, structure_breaks, momentum_signals, trap_signals, config
+                symbol, structure_breaks, momentum_signals, trap_signals, config, context
             )
             if replay_mode:
                 conditions_met = self._augment_replay_entry_conditions(signal_payload, conditions_met)
@@ -584,6 +724,7 @@ class EntryAgent(BaseBot):
                 )
                 orders.append(order)
                 remaining_slots -= 1
+                entered_indices.add(symbol)  # One strike per index
             else:
                 rejected_signals.append(
                     {
@@ -645,6 +786,12 @@ class EntryAgent(BaseBot):
                 return f"Strict A+ filter rejected setup ({tag}): {missing}"
             return f"Strict A+ filter rejected setup ({tag})"
         if tag == "C":
+            rr = float(setup_assessment.get("rr_ratio", 0.0) or 0.0)
+            min_rr = float(getattr(config, "strict_b_rr_ratio", 1.1) or 1.1)
+            # Allow C-tag if R:R is acceptable — timeframe data may be sparse
+            # but the signal has valid risk/reward from live option pricing
+            if rr >= min_rr:
+                return None
             missing = ", ".join(setup_assessment.get("missing_requirements", []))
             if missing:
                 return f"Setup quality too weak ({tag}): {missing}"
@@ -839,7 +986,11 @@ class EntryAgent(BaseBot):
             if rr_ratio >= 1.3:
                 base = min(0.4, base + 0.03)
         elif tag == "C":
-            base = 0.0
+            # C-tag with valid R:R gets reduced size (25% of normal)
+            if rr_ratio >= float(context.data.get("config", ScalpingConfig()).strict_b_rr_ratio or 1.1):
+                base = 0.25
+            else:
+                base = 0.0
         else:
             confidence = float(signal.get("confidence", signal.get("quality_score", signal.get("score", 0))) or 0)
             if confidence <= 1.0:
@@ -883,15 +1034,31 @@ class EntryAgent(BaseBot):
         momentum_signals: List,
         trap_signals: List,
         config: ScalpingConfig,
+        context: Optional[Any] = None,
     ) -> List[str]:
         """Check entry conditions for a symbol."""
         conditions = []
 
-        # Condition 1: Structure breakout
+        # Condition 1: Structure breakout (transient BOS OR persistent structure)
         if config.require_structure_break:
             symbol_breaks = [b for b in structure_breaks if hasattr(b, 'symbol') and b.symbol == symbol]
             if symbol_breaks:
                 conditions.append("structure_break")
+            elif context is not None:
+                # Fallback: persistent structure at high confidence counts as structure evidence
+                market_structure = context.data.get("market_structure", {}) if hasattr(context, "data") else {}
+                sym_struct = market_structure.get(symbol, {}) if isinstance(market_structure, dict) else {}
+                struct_str = str(sym_struct) if isinstance(sym_struct, str) else str(sym_struct.get("summary", sym_struct.get("trend", "")))
+                # Extract confidence from string like "Bearish bias, conf=0.95"
+                has_direction = "bearish" in struct_str.lower() or "bullish" in struct_str.lower()
+                conf = 0.0
+                if "conf=" in struct_str:
+                    try:
+                        conf = float(struct_str.split("conf=")[1].split(",")[0].split(")")[0])
+                    except (ValueError, IndexError):
+                        conf = 0.0
+                if has_direction and conf >= 0.85:
+                    conditions.append("structure_break")
 
         # Condition 2: Futures momentum
         if config.require_futures_confirm:
@@ -899,12 +1066,28 @@ class EntryAgent(BaseBot):
             strong_momentum = [m for m in symbol_momentum if m.strength >= 0.7]
             if strong_momentum:
                 conditions.append("futures_momentum")
+            elif symbol_momentum and any(
+                getattr(m, "signal_type", "") == "gamma_zone"
+                and getattr(m, "strength", 0) >= 0.8
+                for m in symbol_momentum
+            ):
+                # Gamma zone with high strength + structure break = momentum proxy
+                if "structure_break" in conditions:
+                    conditions.append("futures_momentum")
 
         # Condition 3: Volume burst
         if config.require_volume_burst:
             volume_signals = [m for m in momentum_signals
                            if m.symbol == symbol and m.signal_type == "volume_spike"]
             if volume_signals:
+                conditions.append("volume_burst")
+            elif any(
+                getattr(m, "signal_type", "") == "gamma_zone"
+                and getattr(m, "strength", 0) >= 0.9
+                for m in momentum_signals
+                if m.symbol == symbol
+            ):
+                # High-strength gamma zone implies volume activity at ATM strikes
                 conditions.append("volume_burst")
 
         # Condition 4: Trap confirmation (optional)
@@ -1192,6 +1375,11 @@ class ExitAgent(BaseBot):
         replay_mode = bool(context.data.get("replay_mode"))
         cycle_now = _context_now(context)
 
+        # Batch-prefetch live quotes for all open positions (single API call)
+        # Results are cached in context so PositionManager reuses them
+        context.data.pop("_position_ltp_cache", None)  # Clear stale cache from prior cycle
+        self._position_ltp_cache = _batch_fetch_position_ltp(positions, context.data)
+
         exit_orders = []
         position_updates = []
         debate_results = []
@@ -1208,8 +1396,43 @@ class ExitAgent(BaseBot):
             if current_price == 0:
                 continue
 
+            # Sanity check: reject obviously bad prices (>80% drop from entry in one tick)
+            # This catches stale/corrupt chain data returning delta/spread as LTP
+            if current_price < pos.entry_price * 0.20:
+                print(f"[ExitAgent] Bad price for {pos.symbol} {pos.strike}{pos.option_type}: "
+                      f"got {current_price:.2f}, entry was {pos.entry_price:.2f} — skipping")
+                continue
+
             pos.current_price = current_price
             pos.unrealized_pnl = (current_price - pos.entry_price) * pos.quantity
+
+            # Check initial SL hit (before partial exit)
+            if pos.sl_price > 0 and current_price <= pos.sl_price and not pos.partial_exit_done:
+                import uuid as _uuid
+                sl_order = Order(
+                    order_id=f"SL_{_uuid.uuid4().hex[:8]}",
+                    symbol=pos.symbol,
+                    strike=pos.strike,
+                    option_type=pos.option_type,
+                    order_type="market",
+                    side="sell",
+                    quantity=pos.quantity,
+                    price=_round_price_for_symbol(pos.symbol, current_price),
+                    status="simulated" if self.dry_run else "pending",
+                    reason=f"SL hit: {current_price:.2f} <= {pos.sl_price:.2f}",
+                )
+                if self.dry_run:
+                    sl_order.fill_price = _round_price_for_symbol(pos.symbol, current_price)
+                    sl_order.fill_time = cycle_now
+                exit_orders.append(sl_order)
+                self._simulate_exit_fill(sl_order, option_chains, fill_time=cycle_now)
+                position_updates.append({
+                    "position_id": pos.position_id,
+                    "action": "sl_hit",
+                    "qty": sl_order.quantity,
+                    "price": current_price,
+                })
+                continue
 
             time_stop_order = self._check_time_stop(pos, current_price, config, cycle_now)
             if time_stop_order:
@@ -1346,6 +1569,11 @@ class ExitAgent(BaseBot):
         if replay_mode:
             return None
 
+        # Don't invalidate thesis when entry pipeline was skipped (risk blocked,
+        # max positions, etc.) — strike_selections will be stale/empty
+        if context.data.get("risk_blocked_new_entries") or context.data.get("trade_disabled"):
+            return None
+
         support = self._current_thesis_support(pos, context)
         if support["supported"]:
             self._thesis_support_loss_streaks[pos.position_id] = 0
@@ -1420,19 +1648,38 @@ class ExitAgent(BaseBot):
         for chain in chains.values():
             for opt in chain.options:
                 if opt.strike == order.strike and opt.option_type == order.option_type:
-                    fill_price = opt.bid or opt.ltp or order.price
+                    bid = float(getattr(opt, "bid", 0) or 0)
+                    ltp = float(getattr(opt, "ltp", 0) or 0)
+                    chain_price = bid if bid > 0 else ltp
+                    if chain_price > 0:
+                        fill_price = chain_price
                     break
+        # Fallback to direct broker quote if chain didn't have the strike
+        if fill_price <= 0 or fill_price < order.price * 0.20:
+            live_ltp = _fetch_live_option_ltp(order.symbol, order.strike, order.option_type)
+            if live_ltp > 0:
+                fill_price = live_ltp
         order.fill_price = _round_price_for_symbol(order.symbol, fill_price)
         order.fill_time = fill_time or datetime.now()
         order.status = "simulated"
 
     def _get_current_price(self, pos: Position, chains: Dict) -> float:
-        """Get current price for a position."""
-        # Find the option in the chain
+        """Get current price — batch cache first, chain second, single quote last."""
+        # 1. Check batch-prefetched cache (populated once per cycle)
+        cached = getattr(self, "_position_ltp_cache", {})
+        if cached.get(pos.position_id, 0) > 0:
+            return _round_price_for_symbol(pos.symbol, cached[pos.position_id])
+        # 2. Check option chain
         for symbol, chain in chains.items():
             for opt in chain.options:
                 if opt.strike == pos.strike and opt.option_type == pos.option_type:
-                    return _round_price_for_symbol(pos.symbol, float(getattr(opt, "ltp", 0) or 0))
+                    ltp = float(getattr(opt, "ltp", 0) or 0)
+                    if ltp > 0:
+                        return _round_price_for_symbol(pos.symbol, ltp)
+        # 3. Single broker quote fallback
+        live_ltp = _fetch_live_option_ltp(pos.symbol, pos.strike, pos.option_type)
+        if live_ltp > 0:
+            return _round_price_for_symbol(pos.symbol, live_ltp)
         return 0
 
     def _check_partial_exit(
@@ -1473,7 +1720,8 @@ class ExitAgent(BaseBot):
         age_minutes = (effective_now - pos.entry_time).total_seconds() / 60 if pos.entry_time else 0
         if age_minutes < config.exit_time_stop_minutes:
             return None
-        if pos.unrealized_pnl > config.first_target_points * pos.lot_size:
+        # Don't time-stop a profitable position — let SL/target/trail handle it
+        if current_price >= pos.entry_price:
             return None
 
         import uuid
@@ -1488,24 +1736,28 @@ class ExitAgent(BaseBot):
             quantity=pos.quantity,
             price=_round_price_for_symbol(pos.symbol, current_price),
             status="pending" if not self.dry_run else "simulated",
-            reason=f"Time stop after {age_minutes:.1f}m",
+            reason=f"Time stop after {age_minutes:.1f}m (price {current_price:.2f} < entry {pos.entry_price:.2f})",
         )
 
     def _check_momentum_reversal_exit(
         self, pos: Position, current_price: float, context: BotContext
     ) -> Optional[Order]:
+        # Only consider reversal exits for futures_surge signals (not gamma_zone)
+        # and only when there's a genuine directional move against the position
         momentum_signals = context.data.get("momentum_signals", [])
         symbol_momentum = [m for m in momentum_signals if getattr(m, "symbol", None) == pos.symbol]
         reversal = False
         for signal in symbol_momentum:
             signal_type = str(getattr(signal, "signal_type", "")).lower()
+            if signal_type != "futures_surge":
+                continue
             price_move = float(getattr(signal, "price_move", 0) or 0)
             strength = float(getattr(signal, "strength", 0) or 0)
-            if strength < 0.7:
+            if strength < 0.8:
                 continue
-            if pos.option_type == "CE" and signal_type == "futures_surge" and price_move < 0:
+            if pos.option_type == "CE" and price_move < -30:
                 reversal = True
-            if pos.option_type == "PE" and signal_type == "futures_surge" and price_move > 0:
+            if pos.option_type == "PE" and price_move > 30:
                 reversal = True
 
         if not reversal:
@@ -1747,6 +1999,7 @@ class PositionManagerAgent(BaseBot):
         self._positions: Dict[str, Position] = {}
         self._trade_log: List[Dict] = []
         self._trade_records: Dict[str, Dict[str, Any]] = {}
+        self._processed_order_ids: set = set()
 
     def get_description(self) -> str:
         return "Position tracking and P&L management"
@@ -1759,15 +2012,21 @@ class PositionManagerAgent(BaseBot):
         position_updates = context.data.get("position_updates", [])
         option_chains = context.data.get("option_chains", {})
 
-        # Process new entry orders
+        # Process new entry orders (skip already-processed ones)
         for order in pending_orders:
-            if order.status in ["filled", "simulated"]:
+            if order.status in ["filled", "simulated"] and order.order_id not in self._processed_order_ids:
                 self._create_position(order, context)
+                self._processed_order_ids.add(order.order_id)
 
-        # Process exit orders
+        # Process exit orders (skip already-processed ones)
         for order in exit_orders:
-            if order.status in ["filled", "simulated"]:
+            if order.status in ["filled", "simulated"] and order.order_id not in self._processed_order_ids:
                 self._process_exit(order, position_updates)
+                self._processed_order_ids.add(order.order_id)
+
+        # Clear processed orders from context so they don't replay on restart
+        context.data["pending_orders"] = []
+        context.data["exit_orders"] = []
 
         # Update all positions
         total_unrealized, total_realized = self._refresh_context_state(context, config)
@@ -1790,13 +2049,15 @@ class PositionManagerAgent(BaseBot):
 
     def _refresh_context_state(self, context: BotContext, config: ScalpingConfig) -> Tuple[float, float]:
         option_chains = context.data.get("option_chains", {})
+        # Use batch LTP cache populated by ExitAgent earlier in this cycle
+        self._context_ltp_cache = context.data.get("_position_ltp_cache", {})
         total_unrealized = 0
         total_realized = 0
 
         for pos_id, pos in self._positions.items():
             if pos.status != "closed":
                 current_price = self._get_current_price(pos, option_chains)
-                if current_price <= 0:
+                if current_price <= 0 or current_price < pos.entry_price * 0.20:
                     current_price = pos.current_price or pos.entry_price
                 pos.current_price = current_price
                 pos.unrealized_pnl = (current_price - pos.entry_price) * pos.quantity
@@ -1865,14 +2126,24 @@ class PositionManagerAgent(BaseBot):
         idx_config = _resolve_index_config(order.symbol)
         lot_size = idx_config.lot_size if idx_config else 25
         lots = order.quantity // lot_size
-        stop_scale = float(order.metadata.get("stop_scale", 1.0) or 1.0)
-        sl_distance_multiplier = 0.3 * max(0.5, min(1.0, stop_scale))
         entry_price = _round_price_for_symbol(order.symbol, order.fill_price or order.price)
-        sl_price = _round_price_for_symbol(order.symbol, entry_price * (1.0 - sl_distance_multiplier))
-        target_price = _round_price_for_symbol(
-            order.symbol,
-            entry_price + (config.first_target_points * float(order.metadata.get("target_scale", 1.0) or 1.0)),
-        )
+        # Use signal's pre-calculated SL/target if available; otherwise fallback
+        signal_sl = float(order.metadata.get("sl", 0) or 0)
+        signal_target = float(order.metadata.get("t1", 0) or 0)
+        stop_scale = float(order.metadata.get("stop_scale", 1.0) or 1.0)
+        if signal_sl > 0:
+            sl_price = _round_price_for_symbol(order.symbol, signal_sl)
+        else:
+            sl_distance_multiplier = 0.25 * max(0.5, min(1.0, stop_scale))
+            sl_price = _round_price_for_symbol(order.symbol, entry_price * (1.0 - sl_distance_multiplier))
+        if signal_target > 0:
+            target_price = _round_price_for_symbol(order.symbol, signal_target)
+        else:
+            target_offset = max(config.first_target_points, entry_price * 0.35)
+            target_price = _round_price_for_symbol(
+                order.symbol,
+                entry_price + (target_offset * float(order.metadata.get("target_scale", 1.0) or 1.0)),
+            )
 
         position = Position(
             position_id=f"POS_{uuid.uuid4().hex[:8]}",
@@ -2029,8 +2300,12 @@ class PositionManagerAgent(BaseBot):
         trade = self._trade_records.get(pos.position_id)
         if trade is None:
             return
+        trade["current_price"] = pos.current_price
         trade["unrealized_pnl"] = pos.unrealized_pnl
+        entry = float(trade.get("entry_price", 0) or 0)
+        trade["pnl_pct"] = round(((pos.current_price - entry) / entry) * 100, 2) if entry > 0 and pos.current_price > 0 else 0.0
         trade["current_sl"] = pos.trail_stop or pos.sl_price
+        trade["target_price"] = pos.target_price
         trade["remaining_qty"] = pos.quantity if pos.status != "closed" else 0
         trade["status"] = "partial" if pos.partial_exit_done and pos.status != "closed" else pos.status
 
@@ -2185,11 +2460,22 @@ class PositionManagerAgent(BaseBot):
         }
 
     def _get_current_price(self, pos: Position, chains: Dict) -> float:
-        """Get current price for a position."""
+        """Get current price — batch cache first, chain second, single quote last."""
+        # 1. Check batch-prefetched cache (populated by ExitAgent earlier in cycle)
+        cached = self._context_ltp_cache
+        if cached.get(pos.position_id, 0) > 0:
+            return _round_price_for_symbol(pos.symbol, cached[pos.position_id])
+        # 2. Check option chain
         for symbol, chain in chains.items():
             for opt in chain.options:
                 if opt.strike == pos.strike and opt.option_type == pos.option_type:
-                    return _round_price_for_symbol(pos.symbol, float(getattr(opt, "ltp", 0) or 0))
+                    ltp = float(getattr(opt, "ltp", 0) or 0)
+                    if ltp > 0:
+                        return _round_price_for_symbol(pos.symbol, ltp)
+        # 3. Single broker quote fallback
+        live_ltp = _fetch_live_option_ltp(pos.symbol, pos.strike, pos.option_type)
+        if live_ltp > 0:
+            return _round_price_for_symbol(pos.symbol, live_ltp)
         return pos.current_price
 
 
@@ -2259,10 +2545,15 @@ class RiskGuardianAgent(BaseBot):
                 breaches.append(f"Trade risk too high: {trade_risk_pct:.1f}%")
                 blocked_orders.append(order.order_id)
 
-        # Check 3: Spread check
+        # Check 3: Spread check — strict on expiry, lenient on non-expiry
+        from datetime import date as _date
+        _is_expiry = _date.today().weekday() in (3, 4)
+        # On non-expiry, only block if 80%+ options are wide (whole chain is illiquid)
+        # On expiry, block if 50%+ are wide (standard threshold)
+        _spread_block_ratio = 0.5 if _is_expiry else 0.8
         for symbol, chain in option_chains.items():
             wide_spreads = [opt for opt in chain.options if opt.spread > config.max_spread_to_trade]
-            if len(wide_spreads) > len(chain.options) * 0.5:
+            if len(wide_spreads) > len(chain.options) * _spread_block_ratio:
                 if config.disable_high_spread:
                     breaches.append(f"{symbol}: Wide spreads detected")
 
@@ -2320,9 +2611,29 @@ class RiskGuardianAgent(BaseBot):
         context.data["risk_checks"] = risk_checks
         context.data["risk_breaches"] = breaches
         context.data["blocked_orders"] = blocked_orders
-        context.data["trade_disabled"] = bool(context.data.get("trade_disabled") or breaches)
-        if breaches:
-            context.data["trade_disabled_reason"] = "; ".join(breaches[:3])
+
+        # Per-index breach tracking: only disable trading for indices with breaches,
+        # not the entire pipeline.  Global trade_disabled only set for non-index-specific
+        # breaches (consecutive losses, daily loss limit, etc.).
+        index_breaches = set()
+        global_breaches = []
+        for b in breaches:
+            # Index-specific breaches contain the symbol (e.g. "NSE:NIFTYBANK-INDEX: Wide spreads")
+            matched_idx = False
+            for symbol, chain in option_chains.items():
+                if symbol in b:
+                    index_breaches.add(symbol)
+                    matched_idx = True
+                    break
+            if not matched_idx:
+                global_breaches.append(b)
+
+        context.data["risk_blocked_indices"] = list(index_breaches)
+        context.data["trade_disabled"] = bool(context.data.get("trade_disabled") or global_breaches)
+        if global_breaches:
+            context.data["trade_disabled_reason"] = "; ".join(global_breaches[:3])
+        elif index_breaches and not context.data.get("trade_disabled"):
+            context.data["trade_disabled_reason"] = f"Partial: {', '.join(index_breaches)} blocked"
 
         # Use LLM Debate for risk validation on pending orders
         if pending_orders and HAS_DEBATE:

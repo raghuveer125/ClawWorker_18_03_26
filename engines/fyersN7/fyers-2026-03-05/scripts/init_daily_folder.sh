@@ -21,15 +21,44 @@
 # Index name (SENSEX, BANKNIFTY, NIFTY, etc.)
 INDEX="${INDEX:-SENSEX}"
 
+if [[ -z "${PROJECT_ROOT:-}" ]]; then
+  _resolve_project_root() {
+    local current="${ROOT_DIR}"
+
+    while [[ "${current}" != "/" ]]; do
+      if [[ -d "${current}/shared_project_engine" ]]; then
+        printf '%s\n' "${current}"
+        return 0
+      fi
+      current="$(dirname "${current}")"
+    done
+
+    return 1
+  }
+
+  PROJECT_ROOT="$(_resolve_project_root || true)"
+  export PROJECT_ROOT
+fi
+
 # =============================================================================
 # MARKET HOURS CHECK (IST)
 # =============================================================================
 # Load market hours from shared_project_engine.market (single source of truth)
 _load_market_hours() {
   local config
-  config=$("${ROOT_DIR}/.venv/bin/python" -c "
+  local market_hours_python="${PYTHON_BIN:-${ROOT_DIR}/.venv/bin/python}"
+
+  if [[ "${market_hours_python}" != */* ]]; then
+    market_hours_python="$(command -v "${market_hours_python}" 2>/dev/null || true)"
+  fi
+
+  if [[ -z "${market_hours_python}" ]] || [[ ! -x "${market_hours_python}" ]]; then
+    market_hours_python="/usr/bin/python3"
+  fi
+
+  config=$("${market_hours_python}" -c "
 import sys
-sys.path.insert(0, '${ROOT_DIR}/../..')
+sys.path.insert(0, '${PROJECT_ROOT}')
 try:
     from shared_project_engine.market import print_market_hours_for_shell
     print_market_hours_for_shell()
@@ -163,8 +192,11 @@ export TRADES_CSV="${TRADES_CSV:-${INDEX_DIR}/paper_trades.csv}"
 export EQUITY_CSV="${EQUITY_CSV:-${INDEX_DIR}/paper_equity.csv}"
 export EVENTS_CSV="${EVENTS_CSV:-${INDEX_DIR}/opportunity_events.csv}"
 
-# Keep the expected daily CSV files present even before the first signal/trade row is written.
-touch "${JOURNAL_CSV}" "${SIGNALS_CSV}" "${TRADES_CSV}" "${EQUITY_CSV}" "${EVENTS_CSV}"
+# Keep non-header CSVs present so signal/equity readers don't fail on missing file.
+# Do NOT touch paper_trades.csv or opportunity_events.csv — they require a header row
+# written by the process on first use; touching them creates an empty file that makes
+# csv.DictReader treat the first data row as column names.
+touch "${JOURNAL_CSV}" "${SIGNALS_CSV}" "${EQUITY_CSV}"
 
 # Export per-index state file paths (now in daily folder)
 export SIGNAL_STATE_FILE="${SIGNAL_STATE_FILE:-${SIGNAL_STATE}}"

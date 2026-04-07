@@ -227,17 +227,23 @@ def _normalize_position(position: Dict[str, Any]) -> Dict[str, Any]:
             )
         )
     )
+    current_price = float(position.get("current_price", 0.0) or 0.0)
+    entry_price = float(position.get("entry_price", 0.0) or 0.0)
+    quantity = int(position.get("remaining_qty", position.get("quantity", 0)) or 0)
+    unrealized = (current_price - entry_price) * quantity if current_price > 0 else float(position.get("unrealized_pnl", 0.0) or 0.0)
     return {
         "trade_id": position.get("trade_id", position.get("position_id", symbol)),
         "symbol": symbol,
         "index": position.get("index", index),
         "strike": position.get("strike", 0),
         "option_type": position.get("option_type", ""),
-        "quantity": position.get("quantity", 0),
-        "remaining_qty": position.get("remaining_qty", position.get("quantity", 0)),
-        "entry_price": position.get("entry_price", 0.0),
-        "current_sl": position.get("current_sl", position.get("trail_stop", position.get("sl_price", 0.0))),
-        "unrealized_pnl": position.get("unrealized_pnl", 0.0),
+        "quantity": int(position.get("quantity", 0) or 0),
+        "remaining_qty": quantity,
+        "entry_price": entry_price,
+        "current_price": current_price,
+        "current_sl": float(position.get("current_sl") or position.get("trail_stop") or position.get("sl_price") or 0.0),
+        "target_price": float(position.get("target_price", 0.0) or 0.0),
+        "unrealized_pnl": round(unrealized, 2),
         "status": position.get("status", "open"),
     }
 
@@ -306,7 +312,10 @@ def sync_engine_state(context: Any) -> None:
     capital = _serialize_item(context.data.get("capital_state") or {})
 
     state.positions = [_normalize_position(position) for position in positions]
-    state.trades = [_normalize_trade(trade) for trade in trades]
+    # Preserve simulated/backtest trades — only replace engine-sourced trades
+    simulated_trades = [t for t in state.trades if str(t.get("trade_id", "")).startswith(("BT-", "SIM-"))]
+    engine_trades = [_normalize_trade(trade) for trade in trades]
+    state.trades = engine_trades + simulated_trades
     state.capital = dict(capital)
 
     if capital:
@@ -397,22 +406,24 @@ def init_agents():
         AgentStatus(6, "Structure", "analysis", "idle", bot_type="structure"),
         AgentStatus(7, "Momentum", "analysis", "idle", bot_type="momentum"),
         AgentStatus(8, "TrapDetector", "analysis", "idle", bot_type="trap_detector"),
-        AgentStatus(9, "StrikeSelector", "analysis", "idle", bot_type="strike_selector"),
+        AgentStatus(9, "VolatilitySurface", "analysis", "idle", bot_type="volatility_surface"),
+        AgentStatus(10, "DealerPressure", "analysis", "idle", bot_type="dealer_pressure"),
+        AgentStatus(11, "StrikeSelector", "analysis", "idle", bot_type="strike_selector"),
         # Quality Gate
-        AgentStatus(10, "SignalQuality", "quality", "idle", bot_type="signal_quality"),
+        AgentStatus(12, "SignalQuality", "quality", "idle", bot_type="signal_quality"),
         # Risk Layer
-        AgentStatus(11, "LiquidityMonitor", "risk", "idle", bot_type="liquidity_monitor"),
-        AgentStatus(12, "RiskGuardian", "risk", "idle", bot_type="risk_guardian"),
-        AgentStatus(13, "CorrelationGuard", "risk", "idle", bot_type="correlation_guard"),
+        AgentStatus(13, "LiquidityMonitor", "risk", "idle", bot_type="liquidity_monitor"),
+        AgentStatus(14, "RiskGuardian", "risk", "idle", bot_type="risk_guardian"),
+        AgentStatus(15, "CorrelationGuard", "risk", "idle", bot_type="correlation_guard"),
+        AgentStatus(16, "MetaAllocator", "risk", "idle", bot_type="meta_allocator"),
         # Execution Layer
-        AgentStatus(14, "MetaAllocator", "execution", "idle", bot_type="meta_allocator"),
-        AgentStatus(15, "Entry", "execution", "idle", bot_type="entry"),
-        AgentStatus(16, "Exit", "execution", "idle", bot_type="exit"),
-        AgentStatus(17, "PositionManager", "execution", "idle", bot_type="position_manager"),
+        AgentStatus(17, "Entry", "execution", "idle", bot_type="entry"),
+        AgentStatus(18, "Exit", "execution", "idle", bot_type="exit"),
+        AgentStatus(19, "PositionManager", "execution", "idle", bot_type="position_manager"),
         # Learning Layer
-        AgentStatus(18, "QuantLearner", "learning", "idle", bot_type="quant_learner"),
-        AgentStatus(19, "StrategyOptimizer", "learning", "idle", bot_type="strategy_optimizer"),
-        AgentStatus(20, "ExitOptimizer", "learning", "idle", bot_type="exit_optimizer"),
+        AgentStatus(20, "QuantLearner", "learning", "idle", bot_type="quant_learner"),
+        AgentStatus(21, "StrategyOptimizer", "learning", "idle", bot_type="strategy_optimizer"),
+        AgentStatus(22, "ExitOptimizer", "learning", "idle", bot_type="exit_optimizer"),
     ]
     _state.agents = agents
     try:
@@ -699,8 +710,10 @@ async def get_pipeline():
     """Get pipeline flow visualization data."""
     state = get_state()
 
-    # Build pipeline stages - 21 agents total
-    # Agent IDs: 0=KillSwitch, 1-4=Data, 5-9=Analysis, 10=Quality, 11-13=Risk, 14-17=Execution, 18-20=Learning
+    # Build pipeline stages - 23 agents total
+    # Agent IDs match engine._agent_map:
+    # 0=KillSwitch, 1-4=Data, 5-11=Analysis(regime,structure,momentum,trap,volsurf,dealer,strike),
+    # 12=Quality, 13-16=Risk(liquidity,risk,corr,meta), 17-19=Execution(entry,exit,posmgr), 20-22=Learning
     def get_agents_by_ids(ids):
         return [a for a in state.agents if a.agent_id in ids]
 
@@ -722,32 +735,32 @@ async def get_pipeline():
             {
                 "id": "analysis",
                 "name": "Market Analysis",
-                "agents": [5, 6, 7, 8, 9],
-                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([5, 6, 7, 8, 9])) else "idle",
+                "agents": [5, 6, 7, 8, 9, 10, 11],
+                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([5, 6, 7, 8, 9, 10, 11])) else "idle",
             },
             {
                 "id": "quality",
                 "name": "Quality Gate",
-                "agents": [10],
-                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([10])) else "idle",
+                "agents": [12],
+                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([12])) else "idle",
             },
             {
                 "id": "risk",
                 "name": "Risk Check",
-                "agents": [11, 12, 13],
-                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([11, 12, 13])) else "idle",
+                "agents": [13, 14, 15, 16],
+                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([13, 14, 15, 16])) else "idle",
             },
             {
                 "id": "execution",
                 "name": "Execution",
-                "agents": [14, 15, 16, 17],
-                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([14, 15, 16, 17])) else "idle",
+                "agents": [17, 18, 19],
+                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([17, 18, 19])) else "idle",
             },
             {
                 "id": "learning",
                 "name": "Learning",
-                "agents": [18, 19, 20],
-                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([18, 19, 20])) else "idle",
+                "agents": [20, 21, 22],
+                "status": "running" if any(a.status == "running" for a in get_agents_by_ids([20, 21, 22])) else "idle",
                 "periodic": True,
             },
         ],
@@ -803,8 +816,8 @@ async def get_dataflow():
                         conn["last_data"] = flow.data_type
                         conn["latency_ms"] = flow.latency_ms
                         break
-        except:
-            pass
+        except (ValueError, TypeError, AttributeError):
+            pass  # intentional: skip flows with unparseable timestamps
 
     return {
         "connections": connections,
@@ -859,20 +872,117 @@ async def get_stats():
 async def get_config():
     """Get current configuration."""
     config = ScalpingConfig()
+    # Per-index configs (premium/delta are on IndexConfig, not ScalpingConfig)
+    index_details = {}
+    for idx_type in config.indices:
+        idx_cfg = get_index_config(idx_type)
+        if idx_cfg:
+            index_details[idx_type.value] = {
+                "lot_size": idx_cfg.lot_size,
+                "strike_interval": idx_cfg.strike_interval,
+                "otm_distance_min": idx_cfg.otm_distance_min,
+                "otm_distance_max": idx_cfg.otm_distance_max,
+                "premium_min": idx_cfg.premium_min,
+                "premium_max": idx_cfg.premium_max,
+                "delta_min": idx_cfg.delta_min,
+                "delta_max": idx_cfg.delta_max,
+            }
     return {
         "indices": [idx.value for idx in config.indices],
+        "index_configs": index_details,
         "total_capital": config.total_capital,
         "risk_per_trade_pct": config.risk_per_trade_pct,
         "daily_loss_limit_pct": config.daily_loss_limit_pct,
         "max_positions": config.max_positions,
-        "premium_min": config.premium_min,
-        "premium_max": config.premium_max,
-        "delta_min": config.delta_min,
-        "delta_max": config.delta_max,
-        "partial_exit_pct": config.partial_exit_pct,
-        "partial_exit_target": config.partial_exit_target,
-        "trail_after_partial": config.trail_after_partial,
+        "max_consecutive_losses": config.max_consecutive_losses,
+        "entry_rules": {
+            "require_structure_break": config.require_structure_break,
+            "require_futures_confirm": config.require_futures_confirm,
+            "require_volume_burst": config.require_volume_burst,
+            "require_trap_confirm": config.require_trap_confirm,
+            "late_entry_cutoff_time": config.late_entry_cutoff_time,
+        },
+        "exit_rules": {
+            "partial_exit_pct": config.partial_exit_pct,
+            "first_target_points": config.first_target_points,
+            "move_sl_to_entry": config.move_sl_to_entry,
+        },
+        "risk_controls": {
+            "max_bid_ask_spread_pct": config.max_bid_ask_spread_pct,
+            "min_volume_threshold": config.min_volume_threshold,
+            "min_oi_threshold": config.min_oi_threshold,
+            "disable_high_spread": config.disable_high_spread,
+            "trading_hours": config.trading_hours,
+        },
     }
+
+
+# ============================================================================
+# Index & Expiry Info (fetched from exchange, not hardcoded)
+# ============================================================================
+
+@app.get("/api/scalping/indices")
+async def get_indices_with_expiry():
+    """Get active indices with live expiry dates fetched from exchange."""
+    import sys
+    from pathlib import Path
+    _project_root = Path(__file__).resolve().parents[3]
+    if str(_project_root) not in sys.path:
+        sys.path.insert(0, str(_project_root))
+
+    config = ScalpingConfig()
+    result = {"indices": [], "timestamp": datetime.now().isoformat()}
+
+    try:
+        from shared_project_engine.indices import (
+            get_expiry_schedule,
+            get_todays_expiring_indices,
+            INDEX_CONFIG,
+        )
+        expiry_schedule = get_expiry_schedule(use_live=True)
+        todays_expiry = get_todays_expiring_indices(use_live=True)
+
+        for idx_type in config.indices:
+            # Map enum value to INDEX_CONFIG key (e.g. "NSE:NIFTY50-INDEX" → "NIFTY50")
+            idx_key = None
+            for name, cfg in INDEX_CONFIG.items():
+                if cfg.get("symbol") == idx_type.value or name in idx_type.value:
+                    idx_key = name
+                    break
+            if not idx_key:
+                idx_key = idx_type.name
+
+            expiry_info = expiry_schedule.get(idx_key, {})
+            idx_config = get_index_config(idx_type)
+
+            result["indices"].append({
+                "name": idx_key,
+                "symbol": idx_type.value,
+                "lot_size": idx_config.lot_size if idx_config else 0,
+                "strike_interval": idx_config.strike_interval if idx_config else 0,
+                "is_expiry_today": idx_key in todays_expiry,
+                "upcoming_expiry": expiry_info.get("nextExpiry", expiry_info.get("date")),
+                "expiry_weekday": expiry_info.get("weekday"),
+                "days_to_expiry": expiry_info.get("daysUntil"),
+                "source": expiry_info.get("source", "computed"),
+            })
+    except ImportError:
+        # Fallback if shared_project_engine not available
+        for idx_type in config.indices:
+            idx_config = get_index_config(idx_type)
+            result["indices"].append({
+                "name": idx_type.name,
+                "symbol": idx_type.value,
+                "lot_size": idx_config.lot_size if idx_config else 0,
+                "strike_interval": idx_config.strike_interval if idx_config else 0,
+                "is_expiry_today": False,
+                "upcoming_expiry": None,
+                "source": "unavailable",
+            })
+    except Exception as e:
+        result["error"] = str(e)
+
+    return result
 
 
 # ============================================================================
@@ -1441,24 +1551,202 @@ async def _run_engine_loop():
             await _engine_instance.stop()
 
 
+_price_ticker_task = None
+
+
+async def _price_ticker_loop():
+    """Background task: fetch live position prices and broadcast via WebSocket every 1.5s."""
+    from engines.scalping.scalping.agents.execution_agents import _batch_fetch_position_ltp, _fetch_live_option_ltp
+
+    while True:
+        try:
+            await asyncio.sleep(1.5)
+            if not manager.active_connections:
+                continue
+
+            state = get_state()
+            open_positions = [p for p in state.positions if p.get("status") in ("open", "partial")]
+            if not open_positions:
+                continue
+
+            # Build Position-like objects for batch fetch
+            class _PosStub:
+                def __init__(self, d):
+                    self.position_id = d.get("trade_id", "")
+                    self.symbol = d.get("symbol", "")
+                    self.strike = int(d.get("strike", 0) or 0)
+                    self.option_type = d.get("option_type", "")
+                    self.status = d.get("status", "open")
+                    self.entry_price = float(d.get("entry_price", 0) or 0)
+
+            stubs = [_PosStub(p) for p in open_positions]
+            ctx_data: dict = {}
+            ltp_map = _batch_fetch_position_ltp(stubs, ctx_data)
+
+            # Fallback: individual fetch for any missed
+            for stub in stubs:
+                if stub.position_id not in ltp_map:
+                    ltp = _fetch_live_option_ltp(stub.symbol, stub.strike, stub.option_type)
+                    if ltp > 0:
+                        ltp_map[stub.position_id] = ltp
+
+            if not ltp_map:
+                continue
+
+            # Build price update payload
+            updates = []
+            for p in open_positions:
+                tid = p.get("trade_id", "")
+                ltp = ltp_map.get(tid, 0)
+                if ltp <= 0:
+                    continue
+                entry = float(p.get("entry_price", 0) or 0)
+                qty = int(p.get("remaining_qty", p.get("quantity", 0)) or 0)
+                pnl = round((ltp - entry) * qty, 2)
+                updates.append({
+                    "trade_id": tid,
+                    "current_price": round(ltp, 2),
+                    "unrealized_pnl": pnl,
+                })
+
+            if updates:
+                await manager.broadcast({
+                    "type": "price_tick",
+                    "timestamp": datetime.now().isoformat(),
+                    "data": updates,
+                })
+        except asyncio.CancelledError:
+            break
+        except Exception:
+            await asyncio.sleep(3)
+
+
 @app.on_event("startup")
 async def startup_event():
-    """Start background engine when API starts."""
-    global _engine_task
+    """Start background engine and price ticker when API starts."""
+    global _engine_task, _price_ticker_task
+
+    # ── Daily expiry classification check (fresh on every startup) ──
+    _run_expiry_classification_check()
+
     _engine_task = asyncio.create_task(_run_engine_loop())
+    _price_ticker_task = asyncio.create_task(_price_ticker_loop())
     print("[API] Background engine task scheduled")
+    print("[API] Price ticker WebSocket task started (1.5s interval)")
+
+
+def _run_expiry_classification_check() -> None:
+    """Check expiry status per-index using exchange data. Runs every startup."""
+    import sys
+    from datetime import date
+    from pathlib import Path
+
+    today = date.today()
+    config = ScalpingConfig()
+
+    print()
+    print("╔══════════════════════════════════════════════════════════════╗")
+    print("║            EXPIRY CLASSIFICATION CHECK                       ║")
+    print("╠══════════════════════════════════════════════════════════════╣")
+
+    # Try exchange-sourced schedule
+    schedule_data = {}
+    todays_expiry = []
+    source = "unknown"
+
+    _project_root = Path(__file__).resolve().parents[2]
+    if str(_project_root) not in sys.path:
+        sys.path.insert(0, str(_project_root))
+
+    try:
+        from shared_project_engine.indices import get_expiry_schedule, get_todays_expiring_indices
+        schedule_data = get_expiry_schedule(use_live=True)
+        todays_expiry = get_todays_expiring_indices(use_live=True)
+        source = "exchange_live"
+    except ImportError:
+        source = "cache_file"
+    except Exception as e:
+        print(f"║  ⚠ Schedule fetch error: {e}")
+        source = "error"
+
+    # Fallback: read cache file directly
+    if not schedule_data:
+        try:
+            import json as _json
+            for parents_up in (2, 3, 4):
+                cache_path = Path(__file__).resolve().parents[parents_up] / "shared_project_engine" / "indices" / ".cache" / "expiry_schedule.json"
+                if cache_path.exists():
+                    raw = _json.loads(cache_path.read_text())
+                    data = raw.get("data", {})
+                    today_str = today.isoformat()
+                    schedule_data = {k: {"nextExpiry": v.get("next_expiry"), "source": v.get("source")}
+                                     for k, v in data.items() if isinstance(v, dict)}
+                    todays_expiry = [k for k, v in data.items()
+                                     if isinstance(v, dict) and v.get("next_expiry") == today_str]
+                    fetched_at = raw.get("fetched_at", "unknown")
+                    age_warning = ""
+                    if fetched_at != "unknown":
+                        try:
+                            from datetime import datetime as dt
+                            fetch_dt = dt.fromisoformat(str(fetched_at).replace("+05:30", ""))
+                            age_hours = (dt.now() - fetch_dt).total_seconds() / 3600
+                            if age_hours > 24:
+                                age_warning = f" ⚠ STALE ({age_hours:.0f}h old)"
+                        except Exception:
+                            pass
+                    source = f"cache_file{age_warning}"
+                    break
+        except Exception:
+            pass
+
+    # Map IndexType to names
+    _idx_names = {
+        "NSE:NIFTY50-INDEX": "NIFTY50",
+        "NSE:NIFTYBANK-INDEX": "BANKNIFTY",
+        "BSE:SENSEX-INDEX": "SENSEX",
+        "NSE:FINNIFTY-INDEX": "FINNIFTY",
+        "NSE:MIDCPNIFTY-INDEX": "MIDCPNIFTY",
+    }
+
+    print(f"║  Date:   {today}                                            ║")
+    print(f"║  Source: {source:<50}  ║")
+    print("║                                                              ║")
+
+    for idx_type in config.indices:
+        symbol = idx_type.value
+        name = _idx_names.get(symbol, idx_type.name)
+        is_expiry = name in todays_expiry
+        next_exp = schedule_data.get(name, {}).get("nextExpiry", schedule_data.get(name, {}).get("next_expiry", "?"))
+        marker = "★ EXPIRY" if is_expiry else "  ─"
+        print(f"║  {name:<12} next_expiry={str(next_exp):<12} is_expiry={str(is_expiry):<6} {marker:<8} ║")
+
+    if not todays_expiry:
+        print("║                                                              ║")
+        print("║  No index expiring today — non-expiry filters for all        ║")
+    else:
+        print("║                                                              ║")
+        print(f"║  Today's expiring: {', '.join(todays_expiry):<40} ║")
+
+    if not schedule_data:
+        print("║                                                              ║")
+        print("║  ⚠ WARNING: No expiry schedule available!                    ║")
+        print("║  Using weekday fallback (may be incorrect for holidays)      ║")
+
+    print("╚══════════════════════════════════════════════════════════════╝")
+    print()
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    """Stop background engine when API stops."""
-    global _engine_task
-    if _engine_task:
-        _engine_task.cancel()
-        try:
-            await _engine_task
-        except asyncio.CancelledError:
-            pass
+    """Stop background engine and price ticker when API stops."""
+    global _engine_task, _price_ticker_task
+    for task in (_engine_task, _price_ticker_task):
+        if task:
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
     print("[API] Background engine stopped")
 
 

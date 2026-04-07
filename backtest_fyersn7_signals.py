@@ -110,7 +110,7 @@ class ScalpingAPIClient:
         try:
             resp = requests.get(f"{self.base_url}/api/scalping/status", timeout=5)
             return resp.json() if resp.ok else None
-        except:
+        except Exception:
             return None
 
     def add_signal(self, signal: Dict):
@@ -120,8 +120,8 @@ class ScalpingAPIClient:
                 json=signal,
                 timeout=5
             )
-        except:
-            pass
+        except Exception:
+            pass  # intentional: dashboard update is best-effort
 
     def add_trade(self, trade: Dict):
         try:
@@ -130,8 +130,8 @@ class ScalpingAPIClient:
                 json=trade,
                 timeout=5
             )
-        except:
-            pass
+        except Exception:
+            pass  # intentional: dashboard update is best-effort
 
     def clear_backtest(self):
         try:
@@ -139,8 +139,8 @@ class ScalpingAPIClient:
                 f"{self.base_url}/api/scalping/backtest/clear",
                 timeout=5
             )
-        except:
-            pass
+        except Exception:
+            pass  # intentional: dashboard update is best-effort
 
     def update_portfolio(self, portfolio: Dict):
         try:
@@ -149,8 +149,8 @@ class ScalpingAPIClient:
                 json=portfolio,
                 timeout=5
             )
-        except:
-            pass
+        except Exception:
+            pass  # intentional: dashboard update is best-effort
 
 
 def load_signal_csv(path: Path) -> List[Dict[str, str]]:
@@ -179,14 +179,14 @@ def get_available_dates(base_path: Path) -> List[str]:
 def to_float(v: Any, default: float = 0.0) -> float:
     try:
         return float(v)
-    except:
+    except (TypeError, ValueError):
         return default
 
 
 def to_int(v: Any, default: int = 0) -> int:
     try:
         return int(float(v))
-    except:
+    except (TypeError, ValueError):
         return default
 
 

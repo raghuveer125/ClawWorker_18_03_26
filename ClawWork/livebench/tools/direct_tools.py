@@ -121,6 +121,27 @@ def decide_activity(activity: str, reasoning: str) -> Dict[str, Any]:
             "current_length": len(reasoning)
         }
 
+    # Persist decision to decisions/decisions.jsonl
+    signature = _global_state.get("signature")
+    current_date = _global_state.get("current_date")
+    data_path = _global_state.get("data_path")
+
+    if signature and current_date and data_path:
+        decision_log_dir = os.path.join(data_path, signature, "decisions")
+        os.makedirs(decision_log_dir, exist_ok=True)
+        decision_log_file = os.path.join(decision_log_dir, "decisions.jsonl")
+        log_entry = {
+            "date": current_date,
+            "activity": activity,
+            "reasoning": reasoning,
+            "timestamp": datetime.now().isoformat(),
+        }
+        try:
+            with open(decision_log_file, "a", encoding="utf-8") as f:
+                f.write(json.dumps(log_entry) + "\n")
+        except OSError:
+            pass  # best-effort — don't crash the agent
+
     return {
         "success": True,
         "activity": activity,
@@ -679,7 +700,9 @@ def fyers_run_screener(watchlist: Union[str, list, None] = None) -> Dict[str, An
 
     Args:
         watchlist: Optional comma-separated symbols or JSON list.
-                  If omitted, uses FYERS_WATCHLIST from .env.
+                  If omitted, uses the default SENSEX, NIFTY50, and BANKNIFTY
+                  watchlists from shared index config, with optional
+                  FYERS_WATCHLIST_<INDEX> env overrides.
                   Example: "NSE:RELIANCE-EQ,NSE:TCS-EQ,NSE:HDFCBANK-EQ"
     """
     client = MarketDataClient(fallback_to_local=bool(os.getenv("FYERS_ACCESS_TOKEN")))

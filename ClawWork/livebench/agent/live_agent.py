@@ -798,8 +798,8 @@ class LiveAgent:
                                         # Work was submitted but didn't meet quality threshold
                                         self.logger.terminal_print(f"\n   ⚠️  Quality score {evaluation_score:.2f} below threshold - no payment")
                                         activity_completed = True
-                                except:
-                                    pass
+                                except Exception:
+                                    pass  # intentional: payment parsing failure is non-fatal
                             if 'success' in str(tool_result).lower():
                                 activity_completed = True
                         elif tool_name == 'learn' and 'success' in str(tool_result).lower():
@@ -813,13 +813,16 @@ class LiveAgent:
                     # If activity is completed, stop the loop
                     if activity_completed:
                         self.logger.terminal_print(f"\n✅ Activity completed successfully!")
+                        # Log the full conversation so the dashboard can display decisions
+                        self._log_message(log_file, messages)
                         break
 
                     # Continue loop to get next response
                     continue
 
                 # No more tool calls - agent is done
-                self._log_message(log_file, [{"role": "assistant", "content": agent_response}])
+                messages.append({"role": "assistant", "content": agent_response})
+                self._log_message(log_file, messages)
                 self.logger.terminal_print(f"\n✅ Agent completed daily session")
                 break
 

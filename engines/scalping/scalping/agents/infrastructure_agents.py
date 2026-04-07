@@ -202,7 +202,7 @@ class LatencyGuardianAgent(BaseBot):
         if isinstance(timestamp, str):
             try:
                 timestamp = datetime.fromisoformat(timestamp)
-            except:
+            except (ValueError, TypeError):
                 timestamp = now
 
         staleness = (now - timestamp).total_seconds()

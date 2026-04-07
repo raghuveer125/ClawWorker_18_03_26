@@ -10,6 +10,12 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from zoneinfo import ZoneInfo
 
+_PROJECT_ROOT = Path(__file__).resolve().parents[4]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
+from core.utils import to_float_opt as to_float
+
 
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
@@ -98,13 +104,6 @@ def read_csv(path: Path) -> Tuple[List[str], List[Dict[str, str]], str]:
         return headers, rows, ""
     except Exception as exc:
         return [], [], f"parse_error:{type(exc).__name__}"
-
-
-def to_float(v: str) -> Optional[float]:
-    try:
-        return float((v or "").strip())
-    except Exception:
-        return None
 
 
 def time_to_seconds(t: str) -> Optional[int]:

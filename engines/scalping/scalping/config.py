@@ -155,7 +155,7 @@ class ScalpingConfig:
     partial_exit_pct: float = 0.55  # Exit 55% at first target
     first_target_points: float = 4.0  # ₹3-5 profit
     move_sl_to_entry: bool = True  # After partial exit
-    exit_time_stop_minutes: int = 10
+    exit_time_stop_minutes: int = 30  # Only exits losing positions after this duration
     exit_spread_widening_pct: float = 8.0
     profit_lock_trigger_points: float = 6.0
     profit_lock_buffer_points: float = 2.0
@@ -209,7 +209,7 @@ class ScalpingConfig:
         ("09:15", "09:20"),  # Opening chaos
         ("15:20", "15:30"),  # Closing
     ])
-    engine_watchdog_factor: float = 1.0
+    engine_watchdog_factor: float = 6.0  # Cycles take 10-25s with 3 indices; only trip on anomalous overruns
 
     # Learning Parameters
     log_all_signals: bool = True

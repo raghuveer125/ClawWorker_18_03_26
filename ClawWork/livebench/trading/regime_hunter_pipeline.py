@@ -31,16 +31,21 @@ This pipeline is instantiated separately from the AutoTrader and has:
 
 import json
 import logging
+import os
 import time
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
 from typing import Any, Callable, Dict, List, Optional
 
 from bots.base import SharedMemory, SignalType, OptionType
 from bots.regime_hunter import RegimeHunterBot
+from trading.auto_trader import _build_fyers_option_symbol
 
-# Import lot sizes
+# Import lot sizes; fallback to core/market.py
+from core.market import INDEX_LOT_SIZES as _FALLBACK_LOTS
+
 try:
     import sys
     _PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -49,10 +54,7 @@ try:
     from shared_project_engine.indices import INDEX_CONFIG
     _INDEX_LOT_SIZES = {name: cfg["lot_size"] for name, cfg in INDEX_CONFIG.items()}
 except ImportError:
-    _INDEX_LOT_SIZES = {
-        "NIFTY50": 25, "BANKNIFTY": 15, "SENSEX": 10,
-        "FINNIFTY": 25, "MIDCPNIFTY": 50,
-    }
+    _INDEX_LOT_SIZES = _FALLBACK_LOTS
 
 try:
     from .fyers_client import FyersClient
@@ -419,17 +421,9 @@ class RegimeHunterPipeline:
         if not self.fyers:
             return False
         try:
-            today = datetime.now()
-            days_thu = (3 - today.weekday()) % 7
-            if days_thu == 0 and today.hour >= 15:
-                days_thu = 7
-            expiry = (today + timedelta(days=days_thu)).strftime("%d%b%y").upper()
-            prefix = {
-                "NIFTY50": "NSE:NIFTY", "BANKNIFTY": "NSE:BANKNIFTY",
-                "SENSEX": "BSE:SENSEX", "FINNIFTY": "NSE:FINNIFTY",
-                "MIDCPNIFTY": "NSE:MIDCPNIFTY",
-            }.get(pos.index, "NSE:NIFTY")
-            fyers_sym = f"{prefix}{expiry}{pos.strike}{pos.option_type}"
+            fyers_sym = _build_fyers_option_symbol(pos.index, pos.strike, pos.option_type)
+            if not fyers_sym:
+                return False
 
             order = {
                 "symbol": fyers_sym,
@@ -468,7 +462,7 @@ class RegimeHunterPipeline:
         if open_ct >= self.risk.max_concurrent_positions:
             return False, f"Max positions open ({open_ct})"
 
-        now = datetime.now()
+        now = datetime.now(ZoneInfo("Asia/Kolkata"))  # IST enforced
         mkt_open = now.replace(hour=9, minute=15, second=0)
         mkt_close = now.replace(hour=15, minute=30, second=0)
         if now < mkt_open + timedelta(minutes=self.risk.no_trade_first_minutes):
@@ -481,15 +475,25 @@ class RegimeHunterPipeline:
     # ── persistence ──
 
     def _save_state(self):
-        data = {
-            "positions": [asdict(p) for p in self.positions.values()],
-            "daily_pnl": self.daily_pnl,
-            "daily_trades": self.daily_trades,
-            "bot_regime": self.bot._current_regime,
-            "last_updated": datetime.now().isoformat(),
-        }
-        with open(self._state_file, "w") as f:
-            json.dump(data, f, indent=2)
+        try:
+            data = {
+                "positions": [asdict(p) for p in self.positions.values()],
+                "daily_pnl": self.daily_pnl,
+                "daily_trades": self.daily_trades,
+                "bot_regime": self.bot._current_regime,
+                "last_updated": datetime.now().isoformat(),
+            }
+            tmp_file = Path(str(self._state_file) + ".tmp")
+            with open(tmp_file, "w") as f:
+                json.dump(data, f, indent=2)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp_file, self._state_file)
+        except Exception as e:
+            logger.critical(
+                "[RH-Pipeline][_save_state] Failed to persist state to %s: %s — in-memory state intact, restart may lose recent changes",
+                self._state_file, e,
+            )
 
     def _load_state(self):
         if not self._state_file.exists():
@@ -507,8 +511,14 @@ class RegimeHunterPipeline:
             pass
 
     def _log_trade(self, pos: RHPosition):
-        with open(self._trades_log, "a") as f:
-            f.write(json.dumps(asdict(pos)) + "\n")
+        try:
+            with open(self._trades_log, "a") as f:
+                f.write(json.dumps(asdict(pos)) + "\n")
+        except Exception as e:
+            logger.error(
+                "[RH-Pipeline][_log_trade] Failed to write trade log for %s: %s — trade occurred but record is missing",
+                pos.id, e,
+            )
 
     # ── status ──
 

@@ -1,9 +1,8 @@
-INFO:     Started server process [72431]
+INFO:     Started server process [78534]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-[LLMTrader] Warning: OpenAI not available, bot disabled
-[LLMVeto] Warning: OpenAI not available, veto layer disabled
+[Ensemble] LLM Trading Bot enabled - TRUE AI reasoning active
 [MTF] Mode set to: balanced
 [Ensemble] Multi-Timeframe Filter enabled (BALANCED mode) - Confidence-gated, ≥80% preserved
 [AdaptiveRisk] State loaded - Risk: NORMAL
@@ -27,216 +26,197 @@ INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
 [AdaptiveRisk] Daily reset complete
 [Ensemble] Running daily parameter optimization...
 [Optimizer] No optimizations needed (insufficient data or no improvements found)
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 1: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-INFO:     127.0.0.1:53334 - "GET /api/ HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53394 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53395 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53397 - "GET /api/agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53396 - "WebSocket /ws" [accepted]
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=90%, change=-2.25%
+[AutoTrader]   NIFTY50: PE signal, conf=86%, change=-2.09%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.67%
+[AutoTrader] Loop 1: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+INFO:     127.0.0.1:49185 - "GET /api/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49211 - "GET /api/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49212 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49213 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49214 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49217 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49216 - "WebSocket /ws" [accepted]
 INFO:     connection open
-INFO:     127.0.0.1:53403 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53406 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53407 - "GET /api/agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53409 - "GET /api/artifacts?count=30&sort=recent HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53411 - "GET /api/artifacts?count=30&sort=recent HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53424 - "WebSocket /ws" [accepted]
+INFO:     127.0.0.1:49222 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49223 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49232 - "GET /api/bots/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49233 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49234 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49235 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49241 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49242 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49247 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49248 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49251 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49254 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49260 - "GET /api/bots/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49261 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49264 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49267 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49270 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49273 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49278 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49279 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49282 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49286 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49289 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49298 - "GET /api/indices/expiry-schedule HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49299 - "GET /api/hybrid-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49300 - "GET /api/market/live HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49301 - "GET /api/agents/qwen3-max-10dollar-1/learning/roi HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49304 - "GET /api/indices/expiry-schedule HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49307 - "GET /api/hybrid-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49322 - "GET /api/market/live HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=90%, change=-2.25%
+[AutoTrader]   NIFTY50: PE signal, conf=86%, change=-2.09%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.67%
+[AutoTrader] Loop 2: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+INFO:     127.0.0.1:49338 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49339 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49340 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49341 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+INFO:     connection closed
+INFO:     127.0.0.1:49352 - "GET /api/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49353 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49354 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49355 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49357 - "WebSocket /ws" [accepted]
 INFO:     connection open
-INFO:     127.0.0.1:53428 - "GET /api/agents HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 2: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 3: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-INFO:     127.0.0.1:53481 - "GET /api/indices/config HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53482 - "GET /api/fyersn7/dates HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53489 - "GET /api/indices/config HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53490 - "GET /api/fyersn7/dates HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53494 - "GET /api/fyersn7/snapshot/2026-03-18?latest_only=true HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53512 - "GET /api/bots/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53514 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53516 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53517 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53520 - "GET /api/agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53521 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53527 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53529 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53533 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53537 - "GET /api/bots/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53543 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53545 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53551 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53553 - "GET /api/agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53557 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53561 - "GET /api/agents/qwen3-max-10dollar-1/learning/roi HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53565 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53569 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53573 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 4: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-INFO:     127.0.0.1:53583 - "GET /api/indices/expiry-schedule HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53584 - "GET /api/hybrid-pipeline/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53585 - "GET /api/market/live HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53593 - "GET /api/indices/expiry-schedule HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53597 - "GET /api/hybrid-pipeline/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53607 - "GET /api/market/live HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53612 - "POST /api/auto-trader/pause HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53626 - "GET /api/bots/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53628 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53632 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53633 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53636 - "GET /api/agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53637 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53643 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53645 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53649 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53661 - "POST /api/auto-trader/resume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53677 - "GET /api/bots/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53678 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53679 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53682 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53683 - "GET /api/agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53685 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53691 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53693 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53697 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53710 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53712 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53713 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 5: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-INFO:     127.0.0.1:53734 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53735 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53737 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 6: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+INFO:     127.0.0.1:49362 - "GET /api/settings/hidden-agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49365 - "GET /api/settings/displaying-names HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49370 - "GET /api/bots/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49371 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49372 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49375 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49378 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49381 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49384 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49389 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49390 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49397 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49398 - "GET /api/bots/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49399 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49402 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49407 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49408 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49411 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49414 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49419 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49420 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49423 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49426 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49429 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49438 - "GET /api/indices/expiry-schedule HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49439 - "GET /api/market/live HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49440 - "GET /api/hybrid-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49441 - "GET /api/agents/qwen3-max-10dollar-1/learning/roi HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49444 - "GET /api/indices/expiry-schedule HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49455 - "GET /api/market/live HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49456 - "GET /api/hybrid-pipeline/status HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=90%, change=-2.25%
+[AutoTrader]   NIFTY50: PE signal, conf=86%, change=-2.09%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.67%
+[AutoTrader] Loop 3: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+INFO:     127.0.0.1:49470 - "POST /api/hybrid-pipeline/analyze HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49486 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49487 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49488 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49489 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=90%, change=-2.25%
+[AutoTrader]   NIFTY50: PE signal, conf=86%, change=-2.09%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.67%
+[AutoTrader] Loop 4: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+INFO:     127.0.0.1:49493 - "POST /api/hybrid-pipeline/analyze HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49519 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49520 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49521 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49522 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=90%, change=-2.25%
+[AutoTrader]   NIFTY50: PE signal, conf=86%, change=-2.09%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.67%
+[AutoTrader] Loop 5: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+INFO:     127.0.0.1:49557 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49558 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49559 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49560 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49561 - "GET /api/bots/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49562 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49565 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49568 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49573 - "GET /api/agents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49574 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=90%, change=-2.25%
+[AutoTrader]   NIFTY50: PE signal, conf=86%, change=-2.09%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.67%
+[AutoTrader] Loop 6: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
 [AutoTrader] Skip SENSEX: Too late - market closing
 [AutoTrader] Skip NIFTY50: Too late - market closing
 [AutoTrader] Skip BANKNIFTY: Too late - market closing
-INFO:     127.0.0.1:53760 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53761 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53764 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53766 - "GET /api/bots/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53767 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53768 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53773 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53777 - "GET /api/agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53780 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 7: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-INFO:     127.0.0.1:53807 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53808 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53809 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 8: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-INFO:     127.0.0.1:53823 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53824 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53825 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 9: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-INFO:     127.0.0.1:53861 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53862 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53865 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53867 - "GET /api/bots/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53868 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53869 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53874 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53878 - "GET /api/agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53881 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 10: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-INFO:     127.0.0.1:53914 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53915 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53916 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 11: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-INFO:     127.0.0.1:53930 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53931 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53932 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 12: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-[AutoTrader] Skip SENSEX: Too late - market closing
-[AutoTrader] Skip NIFTY50: Too late - market closing
-[AutoTrader] Skip BANKNIFTY: Too late - market closing
-INFO:     127.0.0.1:53964 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53965 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53967 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53969 - "GET /api/bots/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53971 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53972 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53977 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53981 - "GET /api/agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53984 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 13: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-INFO:     127.0.0.1:54010 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54011 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54012 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 14: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-INFO:     127.0.0.1:54026 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54027 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54028 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 15: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-INFO:     127.0.0.1:54064 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54065 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54068 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54070 - "GET /api/bots/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54071 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54072 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54076 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54081 - "GET /api/agents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54084 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
-[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BULLISH
-[AutoTrader]   SENSEX: CE signal, conf=61%, change=0.83%
-[AutoTrader]   NIFTY50: CE signal, conf=61%, change=0.83%
-[AutoTrader]   BANKNIFTY: CE signal, conf=61%, change=0.82%
-[AutoTrader] Loop 16: Processing 0 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
-INFO:     127.0.0.1:54104 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54105 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54106 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49598 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49599 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49600 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49601 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=90%, change=-2.25%
+[AutoTrader]   NIFTY50: PE signal, conf=86%, change=-2.09%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.67%
+[AutoTrader] Loop 7: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+INFO:     127.0.0.1:49612 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49613 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49614 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49615 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=90%, change=-2.25%
+[AutoTrader]   NIFTY50: PE signal, conf=86%, change=-2.09%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.67%
+[AutoTrader] Loop 8: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+INFO:     127.0.0.1:49649 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49650 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49651 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49652 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49653 - "GET /api/bots/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49654 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49657 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49660 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49665 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49666 - "GET /api/agents HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=90%, change=-2.25%
+[AutoTrader]   NIFTY50: PE signal, conf=86%, change=-2.09%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.67%
+[AutoTrader] Loop 9: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+INFO:     127.0.0.1:49689 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49690 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49691 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49692 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=90%, change=-2.25%
+[AutoTrader]   NIFTY50: PE signal, conf=86%, change=-2.09%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.67%
+[AutoTrader] Loop 10: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+INFO:     127.0.0.1:49705 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49706 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49707 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49708 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+[AutoTrader] Loaded index data: ['SENSEX', 'NIFTY50', 'BANKNIFTY'], bias=BEARISH
+[AutoTrader]   SENSEX: PE signal, conf=90%, change=-2.25%
+[AutoTrader]   NIFTY50: PE signal, conf=86%, change=-2.09%
+[AutoTrader]   BANKNIFTY: PE signal, conf=90%, change=-2.67%
+[AutoTrader] Loop 11: Processing 92 stocks across ['SENSEX', 'NIFTY50', 'BANKNIFTY']
+INFO:     127.0.0.1:49735 - "GET /api/fyersn7/trades-flat/2026-03-27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49736 - "GET /api/auto-trader/trades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49737 - "GET /api/auto-trader/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49738 - "GET /api/regime-hunter-pipeline/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49739 - "GET /api/bots/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49740 - "GET /api/bots/leaderboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49743 - "GET /api/bots/ensemble-stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49747 - "GET /api/auto-trader/gates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49751 - "GET /api/bots/ict-sniper/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49752 - "GET /api/agents HTTP/1.1" 200 OK

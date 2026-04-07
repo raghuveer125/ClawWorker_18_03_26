@@ -140,6 +140,14 @@ class ScalpingEngine:
         self._micro_quote_state: Dict[str, Dict[str, Any]] = {}
         self._micro_tick_history: Dict[str, List[Dict[str, float]]] = {}
 
+        # EOE Shadow Logger (read-only, crash-safe)
+        self._eoe_shadow = None
+        try:
+            from .eoe import EOEShadowLogger
+            self._eoe_shadow = EOEShadowLogger(enabled=True)
+        except Exception:
+            pass
+
         # Initialize all agents
         self._init_agents()
 
@@ -458,7 +466,17 @@ class ScalpingEngine:
             return False
         if self.kill_switch and getattr(self.kill_switch, "state", None) and self.kill_switch.state.active:
             return False
-        if self.context.data.get("risk_breaches"):
+        # Per-index breach check: only block signals for breached indices
+        blocked_indices = set(self.context.data.get("risk_blocked_indices", []))
+        signal_symbol = signal.get("symbol", "")
+        if signal_symbol in blocked_indices:
+            return False
+        # Global breaches (non-index-specific) still block everything
+        global_breaches = [
+            b for b in self.context.data.get("risk_breaches", [])
+            if not any(idx in b for idx in blocked_indices)
+        ]
+        if global_breaches:
             return False
         positions = self.context.data.get("positions", [])
         open_positions = len([position for position in positions if getattr(position, "status", "") != "closed"])
@@ -1298,7 +1316,9 @@ class ScalpingEngine:
 
                     if results["risk_guardian"].status == BotStatus.BLOCKED:
                         results["cycle_skip_reason"] = "risk_blocked"
-                        await self.execution_queue.put(None)
+                        # Still pass context so Exit/PositionManager can monitor open positions
+                        stage_context.data["risk_blocked_new_entries"] = True
+                        await self.execution_queue.put(stage_context)
                         return
 
                     await self._publish_execution_snapshot(stage_context)
@@ -1321,7 +1341,12 @@ class ScalpingEngine:
                         await self.learning_queue.put(stage_context)
                         return
 
-                    if stage_context.data.get("trade_disabled"):
+                    has_open_positions = any(
+                        p.status != "closed" for p in stage_context.data.get("positions", [])
+                        if hasattr(p, "status")
+                    )
+
+                    if stage_context.data.get("trade_disabled") and not has_open_positions:
                         results["cycle_skip_reason"] = stage_context.data.get("trade_disabled_reason", "trade_disabled")
                         print(f"[Cycle {self.cycle_count}] Execution disabled: {results['cycle_skip_reason']}")
                         await self.learning_queue.put(stage_context)
@@ -1329,21 +1354,35 @@ class ScalpingEngine:
 
                     current_snapshot = stage_context.data.get("execution_candidates_snapshot", {})
                     current_version = int(current_snapshot.get("version", 0) or 0) if isinstance(current_snapshot, dict) else 0
-                    if current_version and stage_context.data.get("executed_snapshot_version") == current_version:
-                        results["cycle_skip_reason"] = "micro_execution_already_ran"
+                    # Skip new entries when: snapshot unchanged, risk blocked, or trade disabled
+                    version_match = current_version and stage_context.data.get("executed_snapshot_version") == current_version
+                    risk_blocked = bool(stage_context.data.get("risk_blocked_new_entries"))
+                    trade_off = bool(stage_context.data.get("trade_disabled"))
+                    skip_entry = bool(version_match or risk_blocked or trade_off)
+
+                    if self.cycle_count <= 5 or self.cycle_count % 50 == 0:
+                        print(f"[Cycle {self.cycle_count}] Exec debug: ver={current_version}, exec_ver={stage_context.data.get('executed_snapshot_version')}, "
+                              f"ver_match={version_match}, risk_blocked={risk_blocked}, trade_off={trade_off}, "
+                              f"skip={skip_entry}, open={has_open_positions}")
+
+                    if skip_entry and not has_open_positions:
+                        results["cycle_skip_reason"] = "no_new_signals_no_positions"
                         await self.learning_queue.put(stage_context)
                         return
 
-                    self._update_agent_api("meta_allocator", None, "running")
-                    results["meta_allocator"] = await self.meta_allocator.run(stage_context)
-                    self._update_agent_api("meta_allocator", results["meta_allocator"], "idle")
-                    self._record_flow("Meta", "Entry", "decision", 1)
+                    # Only run entry flow when new signals are available and not blocked
+                    if not skip_entry:
+                        self._update_agent_api("meta_allocator", None, "running")
+                        results["meta_allocator"] = await self.meta_allocator.run(stage_context)
+                        self._update_agent_api("meta_allocator", results["meta_allocator"], "idle")
+                        self._record_flow("Meta", "Entry", "decision", 1)
 
-                    self._update_agent_api("entry", None, "running")
-                    results["entry"] = await self.entry.run(stage_context)
-                    self._update_agent_api("entry", results["entry"], "idle")
-                    self._record_flow("Entry", "Position", "order", 1)
+                        self._update_agent_api("entry", None, "running")
+                        results["entry"] = await self.entry.run(stage_context)
+                        self._update_agent_api("entry", results["entry"], "idle")
+                        self._record_flow("Entry", "Position", "order", 1)
 
+                    # Always run exit monitoring and position management for open positions
                     self._update_agent_api("exit", None, "running")
                     results["exit"] = await self.exit.run(stage_context)
                     self._update_agent_api("exit", results["exit"], "idle")
@@ -1410,6 +1449,13 @@ class ScalpingEngine:
                     self._last_cycle_overrun = cycle_duration
                     print(f"[Cycle {self.cycle_count}] Watchdog warning: cycle {cycle_duration:.2f}s exceeded cadence {cadence:.2f}s")
                 api_state.sync_engine_state(self.context)
+
+                # EOE shadow tick (read-only, crash-safe)
+                if self._eoe_shadow:
+                    try:
+                        self._eoe_shadow.on_cycle(dict(self.context.data))
+                    except Exception:
+                        pass
 
                 self._print_cycle_summary(results, cycle_start)
                 return results

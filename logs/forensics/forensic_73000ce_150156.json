@@ -1,0 +1,82 @@
+{
+  "timestamp": "2026-04-02T15:01:56.904899",
+  "investigation": "SENSEX_73000_CE_missed",
+  "spot": {
+    "NSE:NIFTY50-INDEX": {
+      "symbol": "NSE:NIFTY50-INDEX",
+      "ltp": 22680.15,
+      "open": 22383.4,
+      "high": 22706.65,
+      "low": 22182.55,
+      "prev_close": 22679.4,
+      "volume": 0,
+      "vwap": 22680.15,
+      "change_pct": 0.0033069657927458397,
+      "timestamp": "2026-04-02T15:01:50.076939"
+    },
+    "NSE:NIFTYBANK-INDEX": {
+      "symbol": "NSE:NIFTYBANK-INDEX",
+      "ltp": 51321.7,
+      "open": 50625.65,
+      "high": 51381.55,
+      "low": 49954.85,
+      "prev_close": 51448.65,
+      "volume": 0,
+      "vwap": 51321.7,
+      "change_pct": -0.2467508865636015,
+      "timestamp": "2026-04-02T15:01:50.400627"
+    },
+    "BSE:SENSEX-INDEX": {
+      "symbol": "BSE:SENSEX-INDEX",
+      "ltp": 73186.73,
+      "open": 72262.05,
+      "high": 73255.52,
+      "low": 71545.81,
+      "prev_close": 73134.32,
+      "volume": 0,
+      "vwap": 73186.73,
+      "change_pct": 0.07166266125122779,
+      "timestamp": "2026-04-02T15:01:50.755503"
+    }
+  },
+  "structure": {
+    "NSE:NIFTY50-INDEX": "NSE:NIFTY50-INDEX: Bearish bias, conf=0.98",
+    "NSE:NIFTYBANK-INDEX": "NSE:NIFTYBANK-INDEX: Bearish bias, conf=1.00",
+    "BSE:SENSEX-INDEX": "BSE:SENSEX-INDEX: Bearish bias, conf=0.98"
+  },
+  "regimes": {
+    "NSE:NIFTY50-INDEX": "RANGE_BOUND",
+    "NSE:NIFTYBANK-INDEX": "RANGE_BOUND",
+    "BSE:SENSEX-INDEX": "RANGE_BOUND"
+  },
+  "selections": {
+    "BSE:SENSEX-INDEX": [
+      {
+        "strike": 73300,
+        "type": "CE",
+        "premium": 12.0,
+        "score": 1.0,
+        "reasons": [
+          "Optimal premium range",
+          "Very tight spread",
+          "High volume",
+          "High OI",
+          "Dealer short gamma acceleration",
+          "Adaptive premium-band fallback",
+          "Closer-to-ATM fallback",
+          "Execution-grade spread",
+          "Volume confirmation",
+          "High open interest"
+        ]
+      }
+    ]
+  },
+  "trades": {
+    "total": 8,
+    "ce": 0,
+    "pe": 8
+  },
+  "sensex_73000ce_in_selections": false,
+  "structure_bearish": true,
+  "diagnosis": "CE blocked by persistent bearish structure gate"
+}

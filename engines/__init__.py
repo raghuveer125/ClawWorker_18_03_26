@@ -1,0 +1,3 @@
+"""
+engines — trading engine implementations.
+"""

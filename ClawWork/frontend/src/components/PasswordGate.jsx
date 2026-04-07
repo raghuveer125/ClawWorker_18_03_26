@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { Lock, Eye, EyeOff, AlertCircle } from 'lucide-react'
 
 // Password from environment variable
-const APP_PASSWORD = import.meta.env.VITE_APP_PASSWORD || 'changeme'
+const APP_PASSWORD = (import.meta.env.VITE_APP_PASSWORD || '').trim()
+const IS_PASSWORD_CONFIGURED = APP_PASSWORD.length > 0
 const AUTH_KEY = 'clawwork_auth'
 const AUTH_EXPIRY_DAYS = 7
 
@@ -15,6 +16,12 @@ const PasswordGate = ({ children }) => {
 
   // Check if already authenticated
   useEffect(() => {
+    if (!IS_PASSWORD_CONFIGURED) {
+      localStorage.removeItem(AUTH_KEY)
+      setIsLoading(false)
+      return
+    }
+
     const authData = localStorage.getItem(AUTH_KEY)
     if (authData) {
       try {
@@ -57,6 +64,36 @@ const PasswordGate = ({ children }) => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+    )
+  }
+
+  if (!IS_PASSWORD_CONFIGURED) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-slate-900 to-gray-950 flex items-center justify-center p-4">
+        <div className="w-full max-w-lg rounded-3xl border border-amber-200/20 bg-white/95 p-8 shadow-2xl backdrop-blur">
+          <div className="mb-6 flex justify-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
+              <AlertCircle className="h-8 w-8 text-white" />
+            </div>
+          </div>
+
+          <h1 className="mb-2 text-center text-2xl font-bold text-gray-900">
+            Dashboard Password Required
+          </h1>
+          <p className="mb-6 text-center text-sm text-gray-600">
+            The dashboard is locked until <code>VITE_APP_PASSWORD</code> is configured.
+          </p>
+
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+            <p className="font-semibold">Configure one of these files, then restart the frontend:</p>
+            <div className="mt-3 space-y-2 font-mono text-xs text-amber-950">
+              <div>.env</div>
+              <div>ClawWork/frontend/.env</div>
+              <div>VITE_APP_PASSWORD=your_dashboard_password</div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }

@@ -45,8 +45,8 @@ class SessionSandbox:
         if cls._instance and cls._instance.sandbox:
             try:
                 cls._instance.sandbox.kill()  # Use kill() for immediate termination
-            except:
-                pass
+            except Exception:
+                pass  # intentional: best-effort sandbox cleanup
         cls._instance = None
     
     def get_or_create_sandbox(self, timeout: int = 3600) -> Sandbox:  # Default 1 hour for task duration
@@ -64,8 +64,8 @@ class SessionSandbox:
 
                 try:
                     self.sandbox.kill()  # Use kill() for immediate termination
-                except:
-                    pass
+                except Exception:
+                    pass  # intentional: sandbox may already be dead
                 
                 self.sandbox = None
                 self.sandbox_id = None
@@ -211,8 +211,8 @@ class SessionSandbox:
             try:
                 self.sandbox.kill()  # Use kill() for immediate termination
                 print(f"🧹 Killed E2B sandbox: {self.sandbox_id}")
-            except:
-                pass
+            except Exception:
+                pass  # intentional: best-effort sandbox cleanup
             self.sandbox = None
             self.sandbox_id = None
             self.uploaded_reference_files = {}

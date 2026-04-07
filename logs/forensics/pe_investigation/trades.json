@@ -1,0 +1,5184 @@
+{
+  "total": 8,
+  "filtered": 8,
+  "trades": [
+    {
+      "trade_id": "POS_c778045b",
+      "symbol": "BSE:SENSEX-INDEX",
+      "index": "SENSEX",
+      "strike": 71100,
+      "option_type": "PE",
+      "direction": "long",
+      "entry_time": "2026-04-02T12:31:20.796438",
+      "entry_price": 19.2,
+      "quantity": 10,
+      "lots": 1,
+      "status": "closed",
+      "exit_time": "2026-04-02T12:33:17.525637",
+      "exit_price": 17.5,
+      "initial_sl": 14.4,
+      "current_sl": 14.4,
+      "sl_moves": [],
+      "partial_exits": [],
+      "remaining_qty": 0,
+      "realized_pnl": -16.999999999999993,
+      "unrealized_pnl": -13.000000000000007,
+      "pnl_pct": -8.854166666666663,
+      "entry_signals": {
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 71100,
+        "option_type": "PE",
+        "premium": 19.1,
+        "delta": -0.1992427933895488,
+        "spread": 0.05000000000000071,
+        "spread_pct": 0.2607561929595866,
+        "volume": 68891220,
+        "oi": 2472720,
+        "score": 1.0,
+        "reasons": [
+          "Acceptable premium",
+          "Optimal delta",
+          "Very tight spread",
+          "High volume",
+          "High OI",
+          "Dealer short gamma acceleration"
+        ],
+        "confidence": 1.0,
+        "entry": 19.2,
+        "sl": 14.4,
+        "t1": 25.92,
+        "status": "",
+        "action": "",
+        "source": "live",
+        "underlying_symbol": "BSE:SENSEX-INDEX",
+        "option_symbol": "BSE:SENSEX2640271100PE",
+        "quality_grade": "C",
+        "quality_score": 0.6210918114143921,
+        "recommended_size_pct": 50,
+        "priority": 6,
+        "quality_reasons": [
+          "High confidence: 100%",
+          "Dealer short gamma acceleration"
+        ],
+        "bid_depth": 5000,
+        "ask_depth": 5000,
+        "liquidity_score": 1.0,
+        "fill_quote": {
+          "bid": 19.15,
+          "ask": 19.2,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.2607561929595866,
+          "slippage_pct": 0.5235602094240727,
+          "ask_drift_pct": 0.0
+        },
+        "regime": "bearish",
+        "momentum_strength": 1.0,
+        "micro_momentum_strength": 0.0,
+        "entry_confirmation": {},
+        "liquidity_vacuum": {},
+        "queue_risk": {},
+        "correlation_penalty": {},
+        "volatility_burst": {},
+        "setup_tag": "C",
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "strict_filter_pass": false,
+        "rr_ratio": 1.4,
+        "timeframe_alignment": {
+          "1m_trend": "bullish",
+          "1m_momentum_points": 18.0,
+          "1m_aligned": false,
+          "3m_trend": "bullish",
+          "3m_breakout": "bullish",
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "condition_count": 4,
+        "target_scale": 0.9,
+        "stop_scale": 1.0,
+        "multiplier": 0.275625,
+        "conditions_met": [
+          "structure_break",
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "lots": 1
+      },
+      "regime": "bearish",
+      "entry_conditions": [
+        "structure_break",
+        "futures_momentum",
+        "volume_burst",
+        "trap_alignment"
+      ],
+      "entry_condition_count": 4,
+      "spread_pct": 0.2607561929595866,
+      "momentum_strength": 1.0,
+      "outcome": "loss",
+      "decision_packet": {
+        "phase": "entry",
+        "signal_key": "BSE:SENSEX-INDEX|71100|PE",
+        "timestamp": "2026-04-02T12:31:20.796438",
+        "cycle_timestamp": "2026-04-02T12:31:20.796438",
+        "engine_mode": "LIVE_PAPER",
+        "index": "SENSEX",
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 71100,
+        "option_type": "PE",
+        "entry_price": 19.2,
+        "initial_sl": 14.4,
+        "initial_target": 25.9,
+        "conditions_met": [
+          "structure_break",
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "condition_count": 4,
+        "quality_grade": "C",
+        "quality_score": 0.6210918114143921,
+        "confidence": 1.0,
+        "setup_tag": "C",
+        "strict_filter_pass": false,
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "rr_ratio": 1.4,
+        "regime": {
+          "regime": "RANGE_BOUND",
+          "confidence": 0.6,
+          "factors": {
+            "vwap_deviation": 0.0,
+            "atr_ratio": 1.0,
+            "atr_regime": "normal",
+            "adx": 31.59685903964107,
+            "pcr": 1.278,
+            "iv_ratio": 1.0,
+            "change_pct": -1.659685903964107,
+            "volume_acceleration": 1.0,
+            "volume_trend": "stable",
+            "range_compressed": false,
+            "max_pain_distance": 0.028531495600982962,
+            "days_to_expiry": 7,
+            "futures_basis": 0
+          },
+          "vix": 15.0,
+          "vix_vs_avg": 1.0
+        },
+        "structure": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "current_price": 71920.52,
+          "swing_highs": [
+            71839.06,
+            71833.52,
+            71814.62
+          ],
+          "swing_lows": [
+            71761.59,
+            71752.43,
+            71697.9
+          ],
+          "break": {
+            "symbol": "BSE:SENSEX-INDEX",
+            "break_type": "bos_bullish",
+            "break_price": 71920.52,
+            "previous_level": 71814.62,
+            "strength": 0.14746300962117287,
+            "timestamp": "2026-04-02T12:31:23.116075"
+          },
+          "trend": "bearish",
+          "confidence": 0.9999999999999999,
+          "timeframes": {
+            "1m": {
+              "available": true,
+              "trend": "bullish",
+              "momentum_points": 18.0,
+              "close_change": 18.0
+            },
+            "3m": {
+              "available": true,
+              "trend": "bullish",
+              "breakout": "bullish",
+              "strength": 0.000995,
+              "close_change": 92.74
+            },
+            "5m": {
+              "available": true,
+              "trend": "bullish",
+              "change": 74.16
+            }
+          },
+          "timeframe_alignment": {
+            "bullish": true,
+            "bearish": false,
+            "three_tf_aligned": true
+          },
+          "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=1.00"
+        },
+        "stage_support": {
+          "strike": false,
+          "quality": true,
+          "liquidity": true
+        },
+        "spread_pct": 0.2607561929595866,
+        "momentum_strength": 1.0,
+        "timeframe_alignment": {
+          "1m_trend": "bullish",
+          "1m_momentum_points": 18.0,
+          "1m_aligned": false,
+          "3m_trend": "bullish",
+          "3m_breakout": "bullish",
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "entry_confirmation": {},
+        "queue_risk": {},
+        "liquidity_vacuum": {},
+        "volatility_burst": {},
+        "fill_quote": {
+          "bid": 19.15,
+          "ask": 19.2,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.2607561929595866,
+          "slippage_pct": 0.5235602094240727,
+          "ask_drift_pct": 0.0
+        },
+        "raw_signal": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 71100,
+          "option_type": "PE",
+          "premium": 19.1,
+          "delta": -0.1992427933895488,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.2607561929595866,
+          "volume": 68891220,
+          "oi": 2472720,
+          "score": 1.0,
+          "reasons": [
+            "Acceptable premium",
+            "Optimal delta",
+            "Very tight spread",
+            "High volume",
+            "High OI",
+            "Dealer short gamma acceleration"
+          ],
+          "confidence": 1.0,
+          "entry": 19.2,
+          "sl": 14.4,
+          "t1": 25.92,
+          "status": "",
+          "action": "",
+          "source": "live",
+          "underlying_symbol": "BSE:SENSEX-INDEX",
+          "option_symbol": "BSE:SENSEX2640271100PE",
+          "quality_grade": "C",
+          "quality_score": 0.6210918114143921,
+          "recommended_size_pct": 50,
+          "priority": 6,
+          "quality_reasons": [
+            "High confidence: 100%",
+            "Dealer short gamma acceleration"
+          ],
+          "bid_depth": 5000,
+          "ask_depth": 5000,
+          "liquidity_score": 1.0,
+          "fill_quote": {
+            "bid": 19.15,
+            "ask": 19.2,
+            "spread": 0.05000000000000071,
+            "spread_pct": 0.2607561929595866,
+            "slippage_pct": 0.5235602094240727,
+            "ask_drift_pct": 0.0
+          },
+          "regime": "bearish",
+          "momentum_strength": 1.0,
+          "micro_momentum_strength": 0.0,
+          "entry_confirmation": {},
+          "liquidity_vacuum": {},
+          "queue_risk": {},
+          "correlation_penalty": {},
+          "volatility_burst": {},
+          "setup_tag": "C",
+          "setup_reasons": [
+            "setup_tag=C",
+            "rr=1.40",
+            "3tf_aligned=False",
+            "trigger_active=False",
+            "live_confirmed=False"
+          ],
+          "strict_filter_pass": false,
+          "rr_ratio": 1.4,
+          "timeframe_alignment": {
+            "1m_trend": "bullish",
+            "1m_momentum_points": 18.0,
+            "1m_aligned": false,
+            "3m_trend": "bullish",
+            "3m_breakout": "bullish",
+            "3m_breakout_aligned": false,
+            "5m_trend": "bullish",
+            "5m_aligned": false,
+            "three_tf_aligned": false
+          },
+          "entry_trigger": {
+            "active": false,
+            "types": [],
+            "live_volatility_burst": false,
+            "live_liquidity_vacuum": false,
+            "synthetic_volatility_burst": false
+          },
+          "micro_momentum": {
+            "score": 0.0,
+            "timing": "unknown",
+            "aligned": false,
+            "live_confirmed": false
+          },
+          "condition_count": 4,
+          "target_scale": 0.9,
+          "stop_scale": 1.0,
+          "multiplier": 0.275625,
+          "conditions_met": [
+            "structure_break",
+            "futures_momentum",
+            "volume_burst",
+            "trap_alignment"
+          ],
+          "lots": 1
+        }
+      },
+      "agent_decisions": [
+        {
+          "phase": "entry",
+          "timestamp": "2026-04-02T12:31:20.796438",
+          "reason": "Entry: structure_break, futures_momentum, volume_burst, trap_alignment",
+          "decision_packet": {
+            "phase": "entry",
+            "signal_key": "BSE:SENSEX-INDEX|71100|PE",
+            "timestamp": "2026-04-02T12:31:20.796438",
+            "cycle_timestamp": "2026-04-02T12:31:20.796438",
+            "engine_mode": "LIVE_PAPER",
+            "index": "SENSEX",
+            "symbol": "BSE:SENSEX-INDEX",
+            "strike": 71100,
+            "option_type": "PE",
+            "entry_price": 19.2,
+            "initial_sl": 14.4,
+            "initial_target": 25.9,
+            "conditions_met": [
+              "structure_break",
+              "futures_momentum",
+              "volume_burst",
+              "trap_alignment"
+            ],
+            "condition_count": 4,
+            "quality_grade": "C",
+            "quality_score": 0.6210918114143921,
+            "confidence": 1.0,
+            "setup_tag": "C",
+            "strict_filter_pass": false,
+            "setup_reasons": [
+              "setup_tag=C",
+              "rr=1.40",
+              "3tf_aligned=False",
+              "trigger_active=False",
+              "live_confirmed=False"
+            ],
+            "rr_ratio": 1.4,
+            "regime": {
+              "regime": "RANGE_BOUND",
+              "confidence": 0.6,
+              "factors": {
+                "vwap_deviation": 0.0,
+                "atr_ratio": 1.0,
+                "atr_regime": "normal",
+                "adx": 31.59685903964107,
+                "pcr": 1.278,
+                "iv_ratio": 1.0,
+                "change_pct": -1.659685903964107,
+                "volume_acceleration": 1.0,
+                "volume_trend": "stable",
+                "range_compressed": false,
+                "max_pain_distance": 0.028531495600982962,
+                "days_to_expiry": 7,
+                "futures_basis": 0
+              },
+              "vix": 15.0,
+              "vix_vs_avg": 1.0
+            },
+            "structure": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "current_price": 71920.52,
+              "swing_highs": [
+                71839.06,
+                71833.52,
+                71814.62
+              ],
+              "swing_lows": [
+                71761.59,
+                71752.43,
+                71697.9
+              ],
+              "break": {
+                "symbol": "BSE:SENSEX-INDEX",
+                "break_type": "bos_bullish",
+                "break_price": 71920.52,
+                "previous_level": 71814.62,
+                "strength": 0.14746300962117287,
+                "timestamp": "2026-04-02T12:31:23.116075"
+              },
+              "trend": "bearish",
+              "confidence": 0.9999999999999999,
+              "timeframes": {
+                "1m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "momentum_points": 18.0,
+                  "close_change": 18.0
+                },
+                "3m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "breakout": "bullish",
+                  "strength": 0.000995,
+                  "close_change": 92.74
+                },
+                "5m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "change": 74.16
+                }
+              },
+              "timeframe_alignment": {
+                "bullish": true,
+                "bearish": false,
+                "three_tf_aligned": true
+              },
+              "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=1.00"
+            },
+            "stage_support": {
+              "strike": false,
+              "quality": true,
+              "liquidity": true
+            },
+            "spread_pct": 0.2607561929595866,
+            "momentum_strength": 1.0,
+            "timeframe_alignment": {
+              "1m_trend": "bullish",
+              "1m_momentum_points": 18.0,
+              "1m_aligned": false,
+              "3m_trend": "bullish",
+              "3m_breakout": "bullish",
+              "3m_breakout_aligned": false,
+              "5m_trend": "bullish",
+              "5m_aligned": false,
+              "three_tf_aligned": false
+            },
+            "micro_momentum": {
+              "score": 0.0,
+              "timing": "unknown",
+              "aligned": false,
+              "live_confirmed": false
+            },
+            "entry_trigger": {
+              "active": false,
+              "types": [],
+              "live_volatility_burst": false,
+              "live_liquidity_vacuum": false,
+              "synthetic_volatility_burst": false
+            },
+            "entry_confirmation": {},
+            "queue_risk": {},
+            "liquidity_vacuum": {},
+            "volatility_burst": {},
+            "fill_quote": {
+              "bid": 19.15,
+              "ask": 19.2,
+              "spread": 0.05000000000000071,
+              "spread_pct": 0.2607561929595866,
+              "slippage_pct": 0.5235602094240727,
+              "ask_drift_pct": 0.0
+            },
+            "raw_signal": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "strike": 71100,
+              "option_type": "PE",
+              "premium": 19.1,
+              "delta": -0.1992427933895488,
+              "spread": 0.05000000000000071,
+              "spread_pct": 0.2607561929595866,
+              "volume": 68891220,
+              "oi": 2472720,
+              "score": 1.0,
+              "reasons": [
+                "Acceptable premium",
+                "Optimal delta",
+                "Very tight spread",
+                "High volume",
+                "High OI",
+                "Dealer short gamma acceleration"
+              ],
+              "confidence": 1.0,
+              "entry": 19.2,
+              "sl": 14.4,
+              "t1": 25.92,
+              "status": "",
+              "action": "",
+              "source": "live",
+              "underlying_symbol": "BSE:SENSEX-INDEX",
+              "option_symbol": "BSE:SENSEX2640271100PE",
+              "quality_grade": "C",
+              "quality_score": 0.6210918114143921,
+              "recommended_size_pct": 50,
+              "priority": 6,
+              "quality_reasons": [
+                "High confidence: 100%",
+                "Dealer short gamma acceleration"
+              ],
+              "bid_depth": 5000,
+              "ask_depth": 5000,
+              "liquidity_score": 1.0,
+              "fill_quote": {
+                "bid": 19.15,
+                "ask": 19.2,
+                "spread": 0.05000000000000071,
+                "spread_pct": 0.2607561929595866,
+                "slippage_pct": 0.5235602094240727,
+                "ask_drift_pct": 0.0
+              },
+              "regime": "bearish",
+              "momentum_strength": 1.0,
+              "micro_momentum_strength": 0.0,
+              "entry_confirmation": {},
+              "liquidity_vacuum": {},
+              "queue_risk": {},
+              "correlation_penalty": {},
+              "volatility_burst": {},
+              "setup_tag": "C",
+              "setup_reasons": [
+                "setup_tag=C",
+                "rr=1.40",
+                "3tf_aligned=False",
+                "trigger_active=False",
+                "live_confirmed=False"
+              ],
+              "strict_filter_pass": false,
+              "rr_ratio": 1.4,
+              "timeframe_alignment": {
+                "1m_trend": "bullish",
+                "1m_momentum_points": 18.0,
+                "1m_aligned": false,
+                "3m_trend": "bullish",
+                "3m_breakout": "bullish",
+                "3m_breakout_aligned": false,
+                "5m_trend": "bullish",
+                "5m_aligned": false,
+                "three_tf_aligned": false
+              },
+              "entry_trigger": {
+                "active": false,
+                "types": [],
+                "live_volatility_burst": false,
+                "live_liquidity_vacuum": false,
+                "synthetic_volatility_burst": false
+              },
+              "micro_momentum": {
+                "score": 0.0,
+                "timing": "unknown",
+                "aligned": false,
+                "live_confirmed": false
+              },
+              "condition_count": 4,
+              "target_scale": 0.9,
+              "stop_scale": 1.0,
+              "multiplier": 0.275625,
+              "conditions_met": [
+                "structure_break",
+                "futures_momentum",
+                "volume_burst",
+                "trap_alignment"
+              ],
+              "lots": 1
+            }
+          }
+        },
+        {
+          "phase": "exit",
+          "timestamp": "2026-04-02T12:33:17.525637",
+          "order_id": "REV_496e1e98",
+          "reason": "Momentum reversal exit",
+          "partial": false,
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 71100,
+          "option_type": "PE",
+          "exit_price": 17.5,
+          "quantity": 10,
+          "pnl": -16.999999999999993,
+          "metadata": {}
+        }
+      ],
+      "current_price": 17.9,
+      "target_price": 25.9,
+      "average_exit_price": 17.5
+    },
+    {
+      "trade_id": "POS_1055e9a5",
+      "symbol": "BSE:SENSEX-INDEX",
+      "index": "SENSEX",
+      "strike": 71100,
+      "option_type": "PE",
+      "direction": "long",
+      "entry_time": "2026-04-02T12:26:57.250823",
+      "entry_price": 21.7,
+      "quantity": 10,
+      "lots": 1,
+      "status": "closed",
+      "exit_time": "2026-04-02T12:30:51.509563",
+      "exit_price": 18.9,
+      "initial_sl": 16.25,
+      "current_sl": 16.25,
+      "sl_moves": [],
+      "partial_exits": [],
+      "remaining_qty": 0,
+      "realized_pnl": -28.000000000000007,
+      "unrealized_pnl": -26.999999999999993,
+      "pnl_pct": -12.903225806451616,
+      "entry_signals": {
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 71100,
+        "option_type": "PE",
+        "premium": 21.7,
+        "delta": -0.21784171601197072,
+        "spread": 0.05000000000000071,
+        "spread_pct": 0.2306805074971198,
+        "volume": 66626260,
+        "oi": 2634680,
+        "score": 1.0,
+        "reasons": [
+          "Acceptable premium",
+          "Optimal delta",
+          "Very tight spread",
+          "High volume",
+          "High OI",
+          "Dealer short gamma acceleration"
+        ],
+        "confidence": 1.0,
+        "entry": 21.7,
+        "sl": 16.27,
+        "t1": 29.29,
+        "status": "",
+        "action": "",
+        "source": "live",
+        "underlying_symbol": "BSE:SENSEX-INDEX",
+        "option_symbol": "BSE:SENSEX2640271100PE",
+        "quality_grade": "C",
+        "quality_score": 0.6210918114143921,
+        "recommended_size_pct": 50,
+        "priority": 6,
+        "quality_reasons": [
+          "High confidence: 100%",
+          "Dealer short gamma acceleration"
+        ],
+        "bid_depth": 5000,
+        "ask_depth": 5000,
+        "liquidity_score": 1.0,
+        "fill_quote": {
+          "bid": 21.65,
+          "ask": 21.7,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.2306805074971198,
+          "slippage_pct": 0.0,
+          "ask_drift_pct": 0.0
+        },
+        "regime": "bearish",
+        "momentum_strength": 1.0,
+        "micro_momentum_strength": 0.0,
+        "entry_confirmation": {},
+        "liquidity_vacuum": {},
+        "queue_risk": {},
+        "correlation_penalty": {
+          "size_scale": 0.5,
+          "risk": "high",
+          "reasons": [
+            "Signal batch would create clustered same-direction exposure"
+          ],
+          "correlation": 0.8
+        },
+        "volatility_burst": {},
+        "setup_tag": "C",
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "strict_filter_pass": false,
+        "rr_ratio": 1.3978,
+        "timeframe_alignment": {
+          "1m_trend": "bullish",
+          "1m_momentum_points": 69.32,
+          "1m_aligned": false,
+          "3m_trend": "bullish",
+          "3m_breakout": "bullish",
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "condition_count": 4,
+        "target_scale": 0.9,
+        "stop_scale": 1.0,
+        "multiplier": 0.275625,
+        "conditions_met": [
+          "structure_break",
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "lots": 1
+      },
+      "regime": "bearish",
+      "entry_conditions": [
+        "structure_break",
+        "futures_momentum",
+        "volume_burst",
+        "trap_alignment"
+      ],
+      "entry_condition_count": 4,
+      "spread_pct": 0.2306805074971198,
+      "momentum_strength": 1.0,
+      "outcome": "loss",
+      "decision_packet": {
+        "phase": "entry",
+        "signal_key": "BSE:SENSEX-INDEX|71100|PE",
+        "timestamp": "2026-04-02T12:26:57.250823",
+        "cycle_timestamp": "2026-04-02T12:26:57.250823",
+        "engine_mode": "LIVE_PAPER",
+        "index": "SENSEX",
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 71100,
+        "option_type": "PE",
+        "entry_price": 21.7,
+        "initial_sl": 16.25,
+        "initial_target": 29.3,
+        "conditions_met": [
+          "structure_break",
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "condition_count": 4,
+        "quality_grade": "C",
+        "quality_score": 0.6210918114143921,
+        "confidence": 1.0,
+        "setup_tag": "C",
+        "strict_filter_pass": false,
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "rr_ratio": 1.3978,
+        "regime": {
+          "regime": "RANGE_BOUND",
+          "confidence": 0.6,
+          "factors": {
+            "vwap_deviation": 0.0,
+            "atr_ratio": 1.0,
+            "atr_regime": "normal",
+            "adx": 32.621959156795384,
+            "pcr": 1.283,
+            "iv_ratio": 1.0,
+            "change_pct": -1.7621959156795386,
+            "volume_acceleration": 1.0,
+            "volume_trend": "stable",
+            "range_compressed": false,
+            "max_pain_distance": 0.06339989045946882,
+            "days_to_expiry": 7,
+            "futures_basis": 0
+          },
+          "vix": 15.0,
+          "vix_vs_avg": 1.0
+        },
+        "structure": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "current_price": 71845.55,
+          "swing_highs": [
+            71839.06,
+            71833.52,
+            71814.62
+          ],
+          "swing_lows": [
+            71761.59,
+            71752.43,
+            71697.9
+          ],
+          "break": {
+            "symbol": "BSE:SENSEX-INDEX",
+            "break_type": "bos_bullish",
+            "break_price": 71845.55,
+            "previous_level": 71814.62,
+            "strength": 0.04306922462307476,
+            "timestamp": "2026-04-02T12:26:58.666355"
+          },
+          "trend": "bearish",
+          "confidence": 0.9939667791001109,
+          "timeframes": {
+            "1m": {
+              "available": true,
+              "trend": "bullish",
+              "momentum_points": 69.32,
+              "close_change": 69.32
+            },
+            "3m": {
+              "available": true,
+              "trend": "bullish",
+              "breakout": "bullish",
+              "strength": 0.001061,
+              "close_change": 80.35
+            },
+            "5m": {
+              "available": true,
+              "trend": "bullish",
+              "change": 126.65
+            }
+          },
+          "timeframe_alignment": {
+            "bullish": true,
+            "bearish": false,
+            "three_tf_aligned": true
+          },
+          "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=0.99"
+        },
+        "stage_support": {
+          "strike": false,
+          "quality": true,
+          "liquidity": true
+        },
+        "spread_pct": 0.2306805074971198,
+        "momentum_strength": 1.0,
+        "timeframe_alignment": {
+          "1m_trend": "bullish",
+          "1m_momentum_points": 69.32,
+          "1m_aligned": false,
+          "3m_trend": "bullish",
+          "3m_breakout": "bullish",
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "entry_confirmation": {},
+        "queue_risk": {},
+        "liquidity_vacuum": {},
+        "volatility_burst": {},
+        "fill_quote": {
+          "bid": 21.65,
+          "ask": 21.7,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.2306805074971198,
+          "slippage_pct": 0.0,
+          "ask_drift_pct": 0.0
+        },
+        "raw_signal": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 71100,
+          "option_type": "PE",
+          "premium": 21.7,
+          "delta": -0.21784171601197072,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.2306805074971198,
+          "volume": 66626260,
+          "oi": 2634680,
+          "score": 1.0,
+          "reasons": [
+            "Acceptable premium",
+            "Optimal delta",
+            "Very tight spread",
+            "High volume",
+            "High OI",
+            "Dealer short gamma acceleration"
+          ],
+          "confidence": 1.0,
+          "entry": 21.7,
+          "sl": 16.27,
+          "t1": 29.29,
+          "status": "",
+          "action": "",
+          "source": "live",
+          "underlying_symbol": "BSE:SENSEX-INDEX",
+          "option_symbol": "BSE:SENSEX2640271100PE",
+          "quality_grade": "C",
+          "quality_score": 0.6210918114143921,
+          "recommended_size_pct": 50,
+          "priority": 6,
+          "quality_reasons": [
+            "High confidence: 100%",
+            "Dealer short gamma acceleration"
+          ],
+          "bid_depth": 5000,
+          "ask_depth": 5000,
+          "liquidity_score": 1.0,
+          "fill_quote": {
+            "bid": 21.65,
+            "ask": 21.7,
+            "spread": 0.05000000000000071,
+            "spread_pct": 0.2306805074971198,
+            "slippage_pct": 0.0,
+            "ask_drift_pct": 0.0
+          },
+          "regime": "bearish",
+          "momentum_strength": 1.0,
+          "micro_momentum_strength": 0.0,
+          "entry_confirmation": {},
+          "liquidity_vacuum": {},
+          "queue_risk": {},
+          "correlation_penalty": {
+            "size_scale": 0.5,
+            "risk": "high",
+            "reasons": [
+              "Signal batch would create clustered same-direction exposure"
+            ],
+            "correlation": 0.8
+          },
+          "volatility_burst": {},
+          "setup_tag": "C",
+          "setup_reasons": [
+            "setup_tag=C",
+            "rr=1.40",
+            "3tf_aligned=False",
+            "trigger_active=False",
+            "live_confirmed=False"
+          ],
+          "strict_filter_pass": false,
+          "rr_ratio": 1.3978,
+          "timeframe_alignment": {
+            "1m_trend": "bullish",
+            "1m_momentum_points": 69.32,
+            "1m_aligned": false,
+            "3m_trend": "bullish",
+            "3m_breakout": "bullish",
+            "3m_breakout_aligned": false,
+            "5m_trend": "bullish",
+            "5m_aligned": false,
+            "three_tf_aligned": false
+          },
+          "entry_trigger": {
+            "active": false,
+            "types": [],
+            "live_volatility_burst": false,
+            "live_liquidity_vacuum": false,
+            "synthetic_volatility_burst": false
+          },
+          "micro_momentum": {
+            "score": 0.0,
+            "timing": "unknown",
+            "aligned": false,
+            "live_confirmed": false
+          },
+          "condition_count": 4,
+          "target_scale": 0.9,
+          "stop_scale": 1.0,
+          "multiplier": 0.275625,
+          "conditions_met": [
+            "structure_break",
+            "futures_momentum",
+            "volume_burst",
+            "trap_alignment"
+          ],
+          "lots": 1
+        }
+      },
+      "agent_decisions": [
+        {
+          "phase": "entry",
+          "timestamp": "2026-04-02T12:26:57.250823",
+          "reason": "Entry: structure_break, futures_momentum, volume_burst, trap_alignment",
+          "decision_packet": {
+            "phase": "entry",
+            "signal_key": "BSE:SENSEX-INDEX|71100|PE",
+            "timestamp": "2026-04-02T12:26:57.250823",
+            "cycle_timestamp": "2026-04-02T12:26:57.250823",
+            "engine_mode": "LIVE_PAPER",
+            "index": "SENSEX",
+            "symbol": "BSE:SENSEX-INDEX",
+            "strike": 71100,
+            "option_type": "PE",
+            "entry_price": 21.7,
+            "initial_sl": 16.25,
+            "initial_target": 29.3,
+            "conditions_met": [
+              "structure_break",
+              "futures_momentum",
+              "volume_burst",
+              "trap_alignment"
+            ],
+            "condition_count": 4,
+            "quality_grade": "C",
+            "quality_score": 0.6210918114143921,
+            "confidence": 1.0,
+            "setup_tag": "C",
+            "strict_filter_pass": false,
+            "setup_reasons": [
+              "setup_tag=C",
+              "rr=1.40",
+              "3tf_aligned=False",
+              "trigger_active=False",
+              "live_confirmed=False"
+            ],
+            "rr_ratio": 1.3978,
+            "regime": {
+              "regime": "RANGE_BOUND",
+              "confidence": 0.6,
+              "factors": {
+                "vwap_deviation": 0.0,
+                "atr_ratio": 1.0,
+                "atr_regime": "normal",
+                "adx": 32.621959156795384,
+                "pcr": 1.283,
+                "iv_ratio": 1.0,
+                "change_pct": -1.7621959156795386,
+                "volume_acceleration": 1.0,
+                "volume_trend": "stable",
+                "range_compressed": false,
+                "max_pain_distance": 0.06339989045946882,
+                "days_to_expiry": 7,
+                "futures_basis": 0
+              },
+              "vix": 15.0,
+              "vix_vs_avg": 1.0
+            },
+            "structure": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "current_price": 71845.55,
+              "swing_highs": [
+                71839.06,
+                71833.52,
+                71814.62
+              ],
+              "swing_lows": [
+                71761.59,
+                71752.43,
+                71697.9
+              ],
+              "break": {
+                "symbol": "BSE:SENSEX-INDEX",
+                "break_type": "bos_bullish",
+                "break_price": 71845.55,
+                "previous_level": 71814.62,
+                "strength": 0.04306922462307476,
+                "timestamp": "2026-04-02T12:26:58.666355"
+              },
+              "trend": "bearish",
+              "confidence": 0.9939667791001109,
+              "timeframes": {
+                "1m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "momentum_points": 69.32,
+                  "close_change": 69.32
+                },
+                "3m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "breakout": "bullish",
+                  "strength": 0.001061,
+                  "close_change": 80.35
+                },
+                "5m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "change": 126.65
+                }
+              },
+              "timeframe_alignment": {
+                "bullish": true,
+                "bearish": false,
+                "three_tf_aligned": true
+              },
+              "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=0.99"
+            },
+            "stage_support": {
+              "strike": false,
+              "quality": true,
+              "liquidity": true
+            },
+            "spread_pct": 0.2306805074971198,
+            "momentum_strength": 1.0,
+            "timeframe_alignment": {
+              "1m_trend": "bullish",
+              "1m_momentum_points": 69.32,
+              "1m_aligned": false,
+              "3m_trend": "bullish",
+              "3m_breakout": "bullish",
+              "3m_breakout_aligned": false,
+              "5m_trend": "bullish",
+              "5m_aligned": false,
+              "three_tf_aligned": false
+            },
+            "micro_momentum": {
+              "score": 0.0,
+              "timing": "unknown",
+              "aligned": false,
+              "live_confirmed": false
+            },
+            "entry_trigger": {
+              "active": false,
+              "types": [],
+              "live_volatility_burst": false,
+              "live_liquidity_vacuum": false,
+              "synthetic_volatility_burst": false
+            },
+            "entry_confirmation": {},
+            "queue_risk": {},
+            "liquidity_vacuum": {},
+            "volatility_burst": {},
+            "fill_quote": {
+              "bid": 21.65,
+              "ask": 21.7,
+              "spread": 0.05000000000000071,
+              "spread_pct": 0.2306805074971198,
+              "slippage_pct": 0.0,
+              "ask_drift_pct": 0.0
+            },
+            "raw_signal": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "strike": 71100,
+              "option_type": "PE",
+              "premium": 21.7,
+              "delta": -0.21784171601197072,
+              "spread": 0.05000000000000071,
+              "spread_pct": 0.2306805074971198,
+              "volume": 66626260,
+              "oi": 2634680,
+              "score": 1.0,
+              "reasons": [
+                "Acceptable premium",
+                "Optimal delta",
+                "Very tight spread",
+                "High volume",
+                "High OI",
+                "Dealer short gamma acceleration"
+              ],
+              "confidence": 1.0,
+              "entry": 21.7,
+              "sl": 16.27,
+              "t1": 29.29,
+              "status": "",
+              "action": "",
+              "source": "live",
+              "underlying_symbol": "BSE:SENSEX-INDEX",
+              "option_symbol": "BSE:SENSEX2640271100PE",
+              "quality_grade": "C",
+              "quality_score": 0.6210918114143921,
+              "recommended_size_pct": 50,
+              "priority": 6,
+              "quality_reasons": [
+                "High confidence: 100%",
+                "Dealer short gamma acceleration"
+              ],
+              "bid_depth": 5000,
+              "ask_depth": 5000,
+              "liquidity_score": 1.0,
+              "fill_quote": {
+                "bid": 21.65,
+                "ask": 21.7,
+                "spread": 0.05000000000000071,
+                "spread_pct": 0.2306805074971198,
+                "slippage_pct": 0.0,
+                "ask_drift_pct": 0.0
+              },
+              "regime": "bearish",
+              "momentum_strength": 1.0,
+              "micro_momentum_strength": 0.0,
+              "entry_confirmation": {},
+              "liquidity_vacuum": {},
+              "queue_risk": {},
+              "correlation_penalty": {
+                "size_scale": 0.5,
+                "risk": "high",
+                "reasons": [
+                  "Signal batch would create clustered same-direction exposure"
+                ],
+                "correlation": 0.8
+              },
+              "volatility_burst": {},
+              "setup_tag": "C",
+              "setup_reasons": [
+                "setup_tag=C",
+                "rr=1.40",
+                "3tf_aligned=False",
+                "trigger_active=False",
+                "live_confirmed=False"
+              ],
+              "strict_filter_pass": false,
+              "rr_ratio": 1.3978,
+              "timeframe_alignment": {
+                "1m_trend": "bullish",
+                "1m_momentum_points": 69.32,
+                "1m_aligned": false,
+                "3m_trend": "bullish",
+                "3m_breakout": "bullish",
+                "3m_breakout_aligned": false,
+                "5m_trend": "bullish",
+                "5m_aligned": false,
+                "three_tf_aligned": false
+              },
+              "entry_trigger": {
+                "active": false,
+                "types": [],
+                "live_volatility_burst": false,
+                "live_liquidity_vacuum": false,
+                "synthetic_volatility_burst": false
+              },
+              "micro_momentum": {
+                "score": 0.0,
+                "timing": "unknown",
+                "aligned": false,
+                "live_confirmed": false
+              },
+              "condition_count": 4,
+              "target_scale": 0.9,
+              "stop_scale": 1.0,
+              "multiplier": 0.275625,
+              "conditions_met": [
+                "structure_break",
+                "futures_momentum",
+                "volume_burst",
+                "trap_alignment"
+              ],
+              "lots": 1
+            }
+          }
+        },
+        {
+          "phase": "exit",
+          "timestamp": "2026-04-02T12:30:51.509563",
+          "order_id": "REV_9a5436bc",
+          "reason": "Momentum reversal exit",
+          "partial": false,
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 71100,
+          "option_type": "PE",
+          "exit_price": 18.9,
+          "quantity": 10,
+          "pnl": -28.000000000000007,
+          "metadata": {}
+        }
+      ],
+      "current_price": 19.0,
+      "target_price": 29.3,
+      "average_exit_price": 18.9
+    },
+    {
+      "trade_id": "POS_f780495b",
+      "symbol": "BSE:SENSEX-INDEX",
+      "index": "SENSEX",
+      "strike": 70900,
+      "option_type": "PE",
+      "direction": "long",
+      "entry_time": "2026-04-02T12:26:22.361757",
+      "entry_price": 11.85,
+      "quantity": 10,
+      "lots": 1,
+      "status": "closed",
+      "exit_time": "2026-04-02T12:26:48.619591",
+      "exit_price": 10.45,
+      "initial_sl": 8.9,
+      "current_sl": 8.9,
+      "sl_moves": [],
+      "partial_exits": [],
+      "remaining_qty": 0,
+      "realized_pnl": -14.000000000000004,
+      "unrealized_pnl": -16.500000000000004,
+      "pnl_pct": -11.814345991561185,
+      "entry_signals": {
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 70900,
+        "option_type": "PE",
+        "premium": 11.85,
+        "delta": -0.17918408202536504,
+        "spread": 0.049999999999998934,
+        "spread_pct": 0.4228329809725069,
+        "volume": 57206380,
+        "oi": 1636260,
+        "score": 0.9500000000000002,
+        "reasons": [
+          "Acceptable premium",
+          "Acceptable delta",
+          "Very tight spread",
+          "High volume",
+          "High OI",
+          "Dealer short gamma acceleration"
+        ],
+        "confidence": 0.9500000000000002,
+        "entry": 11.85,
+        "sl": 8.89,
+        "t1": 16.0,
+        "status": "",
+        "action": "",
+        "source": "live",
+        "underlying_symbol": "BSE:SENSEX-INDEX",
+        "option_symbol": "BSE:SENSEX2640270900PE",
+        "quality_grade": "C",
+        "quality_score": 0.6128048780487807,
+        "recommended_size_pct": 50,
+        "priority": 6,
+        "quality_reasons": [
+          "High confidence: 95%",
+          "Dealer short gamma acceleration"
+        ],
+        "bid_depth": 5000,
+        "ask_depth": 5000,
+        "liquidity_score": 1.0,
+        "fill_quote": {
+          "bid": 11.8,
+          "ask": 11.85,
+          "spread": 0.049999999999998934,
+          "spread_pct": 0.4228329809725069,
+          "slippage_pct": 0.0,
+          "ask_drift_pct": 0.0
+        },
+        "regime": "bearish",
+        "momentum_strength": 1.0,
+        "micro_momentum_strength": 0.0,
+        "entry_confirmation": {},
+        "liquidity_vacuum": {},
+        "queue_risk": {},
+        "correlation_penalty": {
+          "size_scale": 0.5,
+          "risk": "high",
+          "reasons": [
+            "Signal batch would create clustered same-direction exposure"
+          ],
+          "correlation": 0.8
+        },
+        "volatility_burst": {},
+        "setup_tag": "C",
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "strict_filter_pass": false,
+        "rr_ratio": 1.402,
+        "timeframe_alignment": {
+          "1m_trend": "bullish",
+          "1m_momentum_points": 23.65,
+          "1m_aligned": false,
+          "3m_trend": "bullish",
+          "3m_breakout": "bullish",
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "condition_count": 4,
+        "target_scale": 0.9,
+        "stop_scale": 1.0,
+        "multiplier": 0.275625,
+        "conditions_met": [
+          "structure_break",
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "lots": 1
+      },
+      "regime": "bearish",
+      "entry_conditions": [
+        "structure_break",
+        "futures_momentum",
+        "volume_burst",
+        "trap_alignment"
+      ],
+      "entry_condition_count": 4,
+      "spread_pct": 0.4228329809725069,
+      "momentum_strength": 1.0,
+      "outcome": "loss",
+      "decision_packet": {
+        "phase": "entry",
+        "signal_key": "BSE:SENSEX-INDEX|70900|PE",
+        "timestamp": "2026-04-02T12:26:22.361757",
+        "cycle_timestamp": "2026-04-02T12:26:22.361757",
+        "engine_mode": "LIVE_PAPER",
+        "index": "SENSEX",
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 70900,
+        "option_type": "PE",
+        "entry_price": 11.85,
+        "initial_sl": 8.9,
+        "initial_target": 16.0,
+        "conditions_met": [
+          "structure_break",
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "condition_count": 4,
+        "quality_grade": "C",
+        "quality_score": 0.6128048780487807,
+        "confidence": 0.9500000000000002,
+        "setup_tag": "C",
+        "strict_filter_pass": false,
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "rr_ratio": 1.402,
+        "regime": {
+          "regime": "RANGE_BOUND",
+          "confidence": 0.6,
+          "factors": {
+            "vwap_deviation": 0.0,
+            "atr_ratio": 1.0,
+            "atr_regime": "normal",
+            "adx": 33.24642657510184,
+            "pcr": 1.283,
+            "iv_ratio": 1.0,
+            "change_pct": -1.8246426575101844,
+            "volume_acceleration": 1.0,
+            "volume_trend": "stable",
+            "range_compressed": false,
+            "max_pain_distance": 0.00016713119854147858,
+            "days_to_expiry": 7,
+            "futures_basis": 0
+          },
+          "vix": 15.0,
+          "vix_vs_avg": 1.0
+        },
+        "structure": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "current_price": 71799.88,
+          "swing_highs": [
+            71839.06,
+            71833.52,
+            71814.62
+          ],
+          "swing_lows": [
+            71761.59,
+            71752.43,
+            71697.9
+          ],
+          "break": null,
+          "trend": "bearish",
+          "confidence": 0.9869131389850674,
+          "timeframes": {
+            "1m": {
+              "available": true,
+              "trend": "bullish",
+              "momentum_points": 23.65,
+              "close_change": 23.65
+            },
+            "3m": {
+              "available": true,
+              "trend": "bullish",
+              "breakout": "bullish",
+              "strength": 0.000424,
+              "close_change": 34.68
+            },
+            "5m": {
+              "available": true,
+              "trend": "bullish",
+              "change": 80.98
+            }
+          },
+          "timeframe_alignment": {
+            "bullish": true,
+            "bearish": false,
+            "three_tf_aligned": true
+          },
+          "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=0.99"
+        },
+        "stage_support": {
+          "strike": false,
+          "quality": true,
+          "liquidity": true
+        },
+        "spread_pct": 0.4228329809725069,
+        "momentum_strength": 1.0,
+        "timeframe_alignment": {
+          "1m_trend": "bullish",
+          "1m_momentum_points": 23.65,
+          "1m_aligned": false,
+          "3m_trend": "bullish",
+          "3m_breakout": "bullish",
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "entry_confirmation": {},
+        "queue_risk": {},
+        "liquidity_vacuum": {},
+        "volatility_burst": {},
+        "fill_quote": {
+          "bid": 11.8,
+          "ask": 11.85,
+          "spread": 0.049999999999998934,
+          "spread_pct": 0.4228329809725069,
+          "slippage_pct": 0.0,
+          "ask_drift_pct": 0.0
+        },
+        "raw_signal": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 70900,
+          "option_type": "PE",
+          "premium": 11.85,
+          "delta": -0.17918408202536504,
+          "spread": 0.049999999999998934,
+          "spread_pct": 0.4228329809725069,
+          "volume": 57206380,
+          "oi": 1636260,
+          "score": 0.9500000000000002,
+          "reasons": [
+            "Acceptable premium",
+            "Acceptable delta",
+            "Very tight spread",
+            "High volume",
+            "High OI",
+            "Dealer short gamma acceleration"
+          ],
+          "confidence": 0.9500000000000002,
+          "entry": 11.85,
+          "sl": 8.89,
+          "t1": 16.0,
+          "status": "",
+          "action": "",
+          "source": "live",
+          "underlying_symbol": "BSE:SENSEX-INDEX",
+          "option_symbol": "BSE:SENSEX2640270900PE",
+          "quality_grade": "C",
+          "quality_score": 0.6128048780487807,
+          "recommended_size_pct": 50,
+          "priority": 6,
+          "quality_reasons": [
+            "High confidence: 95%",
+            "Dealer short gamma acceleration"
+          ],
+          "bid_depth": 5000,
+          "ask_depth": 5000,
+          "liquidity_score": 1.0,
+          "fill_quote": {
+            "bid": 11.8,
+            "ask": 11.85,
+            "spread": 0.049999999999998934,
+            "spread_pct": 0.4228329809725069,
+            "slippage_pct": 0.0,
+            "ask_drift_pct": 0.0
+          },
+          "regime": "bearish",
+          "momentum_strength": 1.0,
+          "micro_momentum_strength": 0.0,
+          "entry_confirmation": {},
+          "liquidity_vacuum": {},
+          "queue_risk": {},
+          "correlation_penalty": {
+            "size_scale": 0.5,
+            "risk": "high",
+            "reasons": [
+              "Signal batch would create clustered same-direction exposure"
+            ],
+            "correlation": 0.8
+          },
+          "volatility_burst": {},
+          "setup_tag": "C",
+          "setup_reasons": [
+            "setup_tag=C",
+            "rr=1.40",
+            "3tf_aligned=False",
+            "trigger_active=False",
+            "live_confirmed=False"
+          ],
+          "strict_filter_pass": false,
+          "rr_ratio": 1.402,
+          "timeframe_alignment": {
+            "1m_trend": "bullish",
+            "1m_momentum_points": 23.65,
+            "1m_aligned": false,
+            "3m_trend": "bullish",
+            "3m_breakout": "bullish",
+            "3m_breakout_aligned": false,
+            "5m_trend": "bullish",
+            "5m_aligned": false,
+            "three_tf_aligned": false
+          },
+          "entry_trigger": {
+            "active": false,
+            "types": [],
+            "live_volatility_burst": false,
+            "live_liquidity_vacuum": false,
+            "synthetic_volatility_burst": false
+          },
+          "micro_momentum": {
+            "score": 0.0,
+            "timing": "unknown",
+            "aligned": false,
+            "live_confirmed": false
+          },
+          "condition_count": 4,
+          "target_scale": 0.9,
+          "stop_scale": 1.0,
+          "multiplier": 0.275625,
+          "conditions_met": [
+            "structure_break",
+            "futures_momentum",
+            "volume_burst",
+            "trap_alignment"
+          ],
+          "lots": 1
+        }
+      },
+      "agent_decisions": [
+        {
+          "phase": "entry",
+          "timestamp": "2026-04-02T12:26:22.361757",
+          "reason": "Entry: structure_break, futures_momentum, volume_burst, trap_alignment",
+          "decision_packet": {
+            "phase": "entry",
+            "signal_key": "BSE:SENSEX-INDEX|70900|PE",
+            "timestamp": "2026-04-02T12:26:22.361757",
+            "cycle_timestamp": "2026-04-02T12:26:22.361757",
+            "engine_mode": "LIVE_PAPER",
+            "index": "SENSEX",
+            "symbol": "BSE:SENSEX-INDEX",
+            "strike": 70900,
+            "option_type": "PE",
+            "entry_price": 11.85,
+            "initial_sl": 8.9,
+            "initial_target": 16.0,
+            "conditions_met": [
+              "structure_break",
+              "futures_momentum",
+              "volume_burst",
+              "trap_alignment"
+            ],
+            "condition_count": 4,
+            "quality_grade": "C",
+            "quality_score": 0.6128048780487807,
+            "confidence": 0.9500000000000002,
+            "setup_tag": "C",
+            "strict_filter_pass": false,
+            "setup_reasons": [
+              "setup_tag=C",
+              "rr=1.40",
+              "3tf_aligned=False",
+              "trigger_active=False",
+              "live_confirmed=False"
+            ],
+            "rr_ratio": 1.402,
+            "regime": {
+              "regime": "RANGE_BOUND",
+              "confidence": 0.6,
+              "factors": {
+                "vwap_deviation": 0.0,
+                "atr_ratio": 1.0,
+                "atr_regime": "normal",
+                "adx": 33.24642657510184,
+                "pcr": 1.283,
+                "iv_ratio": 1.0,
+                "change_pct": -1.8246426575101844,
+                "volume_acceleration": 1.0,
+                "volume_trend": "stable",
+                "range_compressed": false,
+                "max_pain_distance": 0.00016713119854147858,
+                "days_to_expiry": 7,
+                "futures_basis": 0
+              },
+              "vix": 15.0,
+              "vix_vs_avg": 1.0
+            },
+            "structure": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "current_price": 71799.88,
+              "swing_highs": [
+                71839.06,
+                71833.52,
+                71814.62
+              ],
+              "swing_lows": [
+                71761.59,
+                71752.43,
+                71697.9
+              ],
+              "break": null,
+              "trend": "bearish",
+              "confidence": 0.9869131389850674,
+              "timeframes": {
+                "1m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "momentum_points": 23.65,
+                  "close_change": 23.65
+                },
+                "3m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "breakout": "bullish",
+                  "strength": 0.000424,
+                  "close_change": 34.68
+                },
+                "5m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "change": 80.98
+                }
+              },
+              "timeframe_alignment": {
+                "bullish": true,
+                "bearish": false,
+                "three_tf_aligned": true
+              },
+              "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=0.99"
+            },
+            "stage_support": {
+              "strike": false,
+              "quality": true,
+              "liquidity": true
+            },
+            "spread_pct": 0.4228329809725069,
+            "momentum_strength": 1.0,
+            "timeframe_alignment": {
+              "1m_trend": "bullish",
+              "1m_momentum_points": 23.65,
+              "1m_aligned": false,
+              "3m_trend": "bullish",
+              "3m_breakout": "bullish",
+              "3m_breakout_aligned": false,
+              "5m_trend": "bullish",
+              "5m_aligned": false,
+              "three_tf_aligned": false
+            },
+            "micro_momentum": {
+              "score": 0.0,
+              "timing": "unknown",
+              "aligned": false,
+              "live_confirmed": false
+            },
+            "entry_trigger": {
+              "active": false,
+              "types": [],
+              "live_volatility_burst": false,
+              "live_liquidity_vacuum": false,
+              "synthetic_volatility_burst": false
+            },
+            "entry_confirmation": {},
+            "queue_risk": {},
+            "liquidity_vacuum": {},
+            "volatility_burst": {},
+            "fill_quote": {
+              "bid": 11.8,
+              "ask": 11.85,
+              "spread": 0.049999999999998934,
+              "spread_pct": 0.4228329809725069,
+              "slippage_pct": 0.0,
+              "ask_drift_pct": 0.0
+            },
+            "raw_signal": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "strike": 70900,
+              "option_type": "PE",
+              "premium": 11.85,
+              "delta": -0.17918408202536504,
+              "spread": 0.049999999999998934,
+              "spread_pct": 0.4228329809725069,
+              "volume": 57206380,
+              "oi": 1636260,
+              "score": 0.9500000000000002,
+              "reasons": [
+                "Acceptable premium",
+                "Acceptable delta",
+                "Very tight spread",
+                "High volume",
+                "High OI",
+                "Dealer short gamma acceleration"
+              ],
+              "confidence": 0.9500000000000002,
+              "entry": 11.85,
+              "sl": 8.89,
+              "t1": 16.0,
+              "status": "",
+              "action": "",
+              "source": "live",
+              "underlying_symbol": "BSE:SENSEX-INDEX",
+              "option_symbol": "BSE:SENSEX2640270900PE",
+              "quality_grade": "C",
+              "quality_score": 0.6128048780487807,
+              "recommended_size_pct": 50,
+              "priority": 6,
+              "quality_reasons": [
+                "High confidence: 95%",
+                "Dealer short gamma acceleration"
+              ],
+              "bid_depth": 5000,
+              "ask_depth": 5000,
+              "liquidity_score": 1.0,
+              "fill_quote": {
+                "bid": 11.8,
+                "ask": 11.85,
+                "spread": 0.049999999999998934,
+                "spread_pct": 0.4228329809725069,
+                "slippage_pct": 0.0,
+                "ask_drift_pct": 0.0
+              },
+              "regime": "bearish",
+              "momentum_strength": 1.0,
+              "micro_momentum_strength": 0.0,
+              "entry_confirmation": {},
+              "liquidity_vacuum": {},
+              "queue_risk": {},
+              "correlation_penalty": {
+                "size_scale": 0.5,
+                "risk": "high",
+                "reasons": [
+                  "Signal batch would create clustered same-direction exposure"
+                ],
+                "correlation": 0.8
+              },
+              "volatility_burst": {},
+              "setup_tag": "C",
+              "setup_reasons": [
+                "setup_tag=C",
+                "rr=1.40",
+                "3tf_aligned=False",
+                "trigger_active=False",
+                "live_confirmed=False"
+              ],
+              "strict_filter_pass": false,
+              "rr_ratio": 1.402,
+              "timeframe_alignment": {
+                "1m_trend": "bullish",
+                "1m_momentum_points": 23.65,
+                "1m_aligned": false,
+                "3m_trend": "bullish",
+                "3m_breakout": "bullish",
+                "3m_breakout_aligned": false,
+                "5m_trend": "bullish",
+                "5m_aligned": false,
+                "three_tf_aligned": false
+              },
+              "entry_trigger": {
+                "active": false,
+                "types": [],
+                "live_volatility_burst": false,
+                "live_liquidity_vacuum": false,
+                "synthetic_volatility_burst": false
+              },
+              "micro_momentum": {
+                "score": 0.0,
+                "timing": "unknown",
+                "aligned": false,
+                "live_confirmed": false
+              },
+              "condition_count": 4,
+              "target_scale": 0.9,
+              "stop_scale": 1.0,
+              "multiplier": 0.275625,
+              "conditions_met": [
+                "structure_break",
+                "futures_momentum",
+                "volume_burst",
+                "trap_alignment"
+              ],
+              "lots": 1
+            }
+          }
+        },
+        {
+          "phase": "exit",
+          "timestamp": "2026-04-02T12:26:48.619591",
+          "order_id": "THESIS_61f3adc6",
+          "reason": "Thesis invalidated after 3 cycles (strike, quality, liquidity)",
+          "partial": false,
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 70900,
+          "option_type": "PE",
+          "exit_price": 10.45,
+          "quantity": 10,
+          "pnl": -14.000000000000004,
+          "metadata": {
+            "thesis_support": {
+              "strike": false,
+              "quality": false,
+              "liquidity": false,
+              "supported": false,
+              "missing_stages": [
+                "strike",
+                "quality",
+                "liquidity"
+              ]
+            },
+            "thesis_loss_streak": 3
+          }
+        }
+      ],
+      "current_price": 10.2,
+      "target_price": 16.0,
+      "average_exit_price": 10.45
+    },
+    {
+      "trade_id": "POS_4714d7b9",
+      "symbol": "BSE:SENSEX-INDEX",
+      "index": "SENSEX",
+      "strike": 71000,
+      "option_type": "PE",
+      "direction": "long",
+      "entry_time": "2026-04-02T12:25:19.255978",
+      "entry_price": 18.0,
+      "quantity": 10,
+      "lots": 1,
+      "status": "closed",
+      "exit_time": "2026-04-02T12:26:13.063885",
+      "exit_price": 18.0,
+      "initial_sl": 13.5,
+      "current_sl": 13.5,
+      "sl_moves": [],
+      "partial_exits": [],
+      "remaining_qty": 0,
+      "realized_pnl": 0.0,
+      "unrealized_pnl": 3.500000000000014,
+      "pnl_pct": 0.0,
+      "entry_signals": {
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 71000,
+        "option_type": "PE",
+        "premium": 18.05,
+        "delta": -0.19848877154319894,
+        "spread": 0.05000000000000071,
+        "spread_pct": 0.278164116828933,
+        "volume": 173029180,
+        "oi": 8374940,
+        "score": 1.0,
+        "reasons": [
+          "Acceptable premium",
+          "Optimal delta",
+          "Very tight spread",
+          "High volume",
+          "High OI",
+          "Dealer short gamma acceleration"
+        ],
+        "confidence": 1.0,
+        "entry": 18.0,
+        "sl": 13.5,
+        "t1": 24.3,
+        "status": "",
+        "action": "",
+        "source": "live",
+        "underlying_symbol": "BSE:SENSEX-INDEX",
+        "option_symbol": "BSE:SENSEX2640271000PE",
+        "quality_grade": "C",
+        "quality_score": 0.6256097560975611,
+        "recommended_size_pct": 50,
+        "priority": 6,
+        "quality_reasons": [
+          "High confidence: 100%",
+          "Dealer short gamma acceleration"
+        ],
+        "bid_depth": 5000,
+        "ask_depth": 5000,
+        "liquidity_score": 1.0,
+        "fill_quote": {
+          "bid": 17.95,
+          "ask": 18.0,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.278164116828933,
+          "slippage_pct": -0.27700831024931144,
+          "ask_drift_pct": 0.0
+        },
+        "regime": "bearish",
+        "momentum_strength": 1.0,
+        "micro_momentum_strength": 0.0,
+        "entry_confirmation": {},
+        "liquidity_vacuum": {},
+        "queue_risk": {},
+        "correlation_penalty": {
+          "size_scale": 0.5,
+          "risk": "high",
+          "reasons": [
+            "Signal batch would create clustered same-direction exposure"
+          ],
+          "correlation": 0.8
+        },
+        "volatility_burst": {},
+        "setup_tag": "C",
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "strict_filter_pass": false,
+        "rr_ratio": 1.4,
+        "timeframe_alignment": {
+          "1m_trend": "bullish",
+          "1m_momentum_points": 3.89,
+          "1m_aligned": false,
+          "3m_trend": "bullish",
+          "3m_breakout": null,
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "condition_count": 4,
+        "target_scale": 0.9,
+        "stop_scale": 1.0,
+        "multiplier": 0.275625,
+        "conditions_met": [
+          "structure_break",
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "lots": 1
+      },
+      "regime": "bearish",
+      "entry_conditions": [
+        "structure_break",
+        "futures_momentum",
+        "volume_burst",
+        "trap_alignment"
+      ],
+      "entry_condition_count": 4,
+      "spread_pct": 0.278164116828933,
+      "momentum_strength": 1.0,
+      "outcome": "flat",
+      "decision_packet": {
+        "phase": "entry",
+        "signal_key": "BSE:SENSEX-INDEX|71000|PE",
+        "timestamp": "2026-04-02T12:25:19.255978",
+        "cycle_timestamp": "2026-04-02T12:25:19.255978",
+        "engine_mode": "LIVE_PAPER",
+        "index": "SENSEX",
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 71000,
+        "option_type": "PE",
+        "entry_price": 18.0,
+        "initial_sl": 13.5,
+        "initial_target": 24.3,
+        "conditions_met": [
+          "structure_break",
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "condition_count": 4,
+        "quality_grade": "C",
+        "quality_score": 0.6256097560975611,
+        "confidence": 1.0,
+        "setup_tag": "C",
+        "strict_filter_pass": false,
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "rr_ratio": 1.4,
+        "regime": {
+          "regime": "RANGE_BOUND",
+          "confidence": 0.6,
+          "factors": {
+            "vwap_deviation": 0.0,
+            "atr_ratio": 1.0,
+            "atr_regime": "normal",
+            "adx": 33.40203067451789,
+            "pcr": 1.28,
+            "iv_ratio": 1.0,
+            "change_pct": -1.8402030674517886,
+            "volume_acceleration": 1.0,
+            "volume_trend": "stable",
+            "range_compressed": false,
+            "max_pain_distance": 0.016019278853855422,
+            "days_to_expiry": 7,
+            "futures_basis": 0
+          },
+          "vix": 15.0,
+          "vix_vs_avg": 1.0
+        },
+        "structure": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "current_price": 71788.5,
+          "swing_highs": [
+            71839.06,
+            71833.52,
+            71814.62
+          ],
+          "swing_lows": [
+            71761.59,
+            71752.43,
+            71697.9
+          ],
+          "break": null,
+          "trend": "bearish",
+          "confidence": 0.9837482959029912,
+          "timeframes": {
+            "1m": {
+              "available": true,
+              "trend": "bullish",
+              "momentum_points": 3.89,
+              "close_change": 3.89
+            },
+            "3m": {
+              "available": true,
+              "trend": "bullish",
+              "breakout": null,
+              "strength": 0.0,
+              "close_change": 35.48
+            },
+            "5m": {
+              "available": true,
+              "trend": "bullish",
+              "change": 30.24
+            }
+          },
+          "timeframe_alignment": {
+            "bullish": false,
+            "bearish": false,
+            "three_tf_aligned": false
+          },
+          "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=0.98"
+        },
+        "stage_support": {
+          "strike": false,
+          "quality": true,
+          "liquidity": true
+        },
+        "spread_pct": 0.278164116828933,
+        "momentum_strength": 1.0,
+        "timeframe_alignment": {
+          "1m_trend": "bullish",
+          "1m_momentum_points": 3.89,
+          "1m_aligned": false,
+          "3m_trend": "bullish",
+          "3m_breakout": null,
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "entry_confirmation": {},
+        "queue_risk": {},
+        "liquidity_vacuum": {},
+        "volatility_burst": {},
+        "fill_quote": {
+          "bid": 17.95,
+          "ask": 18.0,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.278164116828933,
+          "slippage_pct": -0.27700831024931144,
+          "ask_drift_pct": 0.0
+        },
+        "raw_signal": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 71000,
+          "option_type": "PE",
+          "premium": 18.05,
+          "delta": -0.19848877154319894,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.278164116828933,
+          "volume": 173029180,
+          "oi": 8374940,
+          "score": 1.0,
+          "reasons": [
+            "Acceptable premium",
+            "Optimal delta",
+            "Very tight spread",
+            "High volume",
+            "High OI",
+            "Dealer short gamma acceleration"
+          ],
+          "confidence": 1.0,
+          "entry": 18.0,
+          "sl": 13.5,
+          "t1": 24.3,
+          "status": "",
+          "action": "",
+          "source": "live",
+          "underlying_symbol": "BSE:SENSEX-INDEX",
+          "option_symbol": "BSE:SENSEX2640271000PE",
+          "quality_grade": "C",
+          "quality_score": 0.6256097560975611,
+          "recommended_size_pct": 50,
+          "priority": 6,
+          "quality_reasons": [
+            "High confidence: 100%",
+            "Dealer short gamma acceleration"
+          ],
+          "bid_depth": 5000,
+          "ask_depth": 5000,
+          "liquidity_score": 1.0,
+          "fill_quote": {
+            "bid": 17.95,
+            "ask": 18.0,
+            "spread": 0.05000000000000071,
+            "spread_pct": 0.278164116828933,
+            "slippage_pct": -0.27700831024931144,
+            "ask_drift_pct": 0.0
+          },
+          "regime": "bearish",
+          "momentum_strength": 1.0,
+          "micro_momentum_strength": 0.0,
+          "entry_confirmation": {},
+          "liquidity_vacuum": {},
+          "queue_risk": {},
+          "correlation_penalty": {
+            "size_scale": 0.5,
+            "risk": "high",
+            "reasons": [
+              "Signal batch would create clustered same-direction exposure"
+            ],
+            "correlation": 0.8
+          },
+          "volatility_burst": {},
+          "setup_tag": "C",
+          "setup_reasons": [
+            "setup_tag=C",
+            "rr=1.40",
+            "3tf_aligned=False",
+            "trigger_active=False",
+            "live_confirmed=False"
+          ],
+          "strict_filter_pass": false,
+          "rr_ratio": 1.4,
+          "timeframe_alignment": {
+            "1m_trend": "bullish",
+            "1m_momentum_points": 3.89,
+            "1m_aligned": false,
+            "3m_trend": "bullish",
+            "3m_breakout": null,
+            "3m_breakout_aligned": false,
+            "5m_trend": "bullish",
+            "5m_aligned": false,
+            "three_tf_aligned": false
+          },
+          "entry_trigger": {
+            "active": false,
+            "types": [],
+            "live_volatility_burst": false,
+            "live_liquidity_vacuum": false,
+            "synthetic_volatility_burst": false
+          },
+          "micro_momentum": {
+            "score": 0.0,
+            "timing": "unknown",
+            "aligned": false,
+            "live_confirmed": false
+          },
+          "condition_count": 4,
+          "target_scale": 0.9,
+          "stop_scale": 1.0,
+          "multiplier": 0.275625,
+          "conditions_met": [
+            "structure_break",
+            "futures_momentum",
+            "volume_burst",
+            "trap_alignment"
+          ],
+          "lots": 1
+        }
+      },
+      "agent_decisions": [
+        {
+          "phase": "entry",
+          "timestamp": "2026-04-02T12:25:19.255978",
+          "reason": "Entry: structure_break, futures_momentum, volume_burst, trap_alignment",
+          "decision_packet": {
+            "phase": "entry",
+            "signal_key": "BSE:SENSEX-INDEX|71000|PE",
+            "timestamp": "2026-04-02T12:25:19.255978",
+            "cycle_timestamp": "2026-04-02T12:25:19.255978",
+            "engine_mode": "LIVE_PAPER",
+            "index": "SENSEX",
+            "symbol": "BSE:SENSEX-INDEX",
+            "strike": 71000,
+            "option_type": "PE",
+            "entry_price": 18.0,
+            "initial_sl": 13.5,
+            "initial_target": 24.3,
+            "conditions_met": [
+              "structure_break",
+              "futures_momentum",
+              "volume_burst",
+              "trap_alignment"
+            ],
+            "condition_count": 4,
+            "quality_grade": "C",
+            "quality_score": 0.6256097560975611,
+            "confidence": 1.0,
+            "setup_tag": "C",
+            "strict_filter_pass": false,
+            "setup_reasons": [
+              "setup_tag=C",
+              "rr=1.40",
+              "3tf_aligned=False",
+              "trigger_active=False",
+              "live_confirmed=False"
+            ],
+            "rr_ratio": 1.4,
+            "regime": {
+              "regime": "RANGE_BOUND",
+              "confidence": 0.6,
+              "factors": {
+                "vwap_deviation": 0.0,
+                "atr_ratio": 1.0,
+                "atr_regime": "normal",
+                "adx": 33.40203067451789,
+                "pcr": 1.28,
+                "iv_ratio": 1.0,
+                "change_pct": -1.8402030674517886,
+                "volume_acceleration": 1.0,
+                "volume_trend": "stable",
+                "range_compressed": false,
+                "max_pain_distance": 0.016019278853855422,
+                "days_to_expiry": 7,
+                "futures_basis": 0
+              },
+              "vix": 15.0,
+              "vix_vs_avg": 1.0
+            },
+            "structure": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "current_price": 71788.5,
+              "swing_highs": [
+                71839.06,
+                71833.52,
+                71814.62
+              ],
+              "swing_lows": [
+                71761.59,
+                71752.43,
+                71697.9
+              ],
+              "break": null,
+              "trend": "bearish",
+              "confidence": 0.9837482959029912,
+              "timeframes": {
+                "1m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "momentum_points": 3.89,
+                  "close_change": 3.89
+                },
+                "3m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "breakout": null,
+                  "strength": 0.0,
+                  "close_change": 35.48
+                },
+                "5m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "change": 30.24
+                }
+              },
+              "timeframe_alignment": {
+                "bullish": false,
+                "bearish": false,
+                "three_tf_aligned": false
+              },
+              "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=0.98"
+            },
+            "stage_support": {
+              "strike": false,
+              "quality": true,
+              "liquidity": true
+            },
+            "spread_pct": 0.278164116828933,
+            "momentum_strength": 1.0,
+            "timeframe_alignment": {
+              "1m_trend": "bullish",
+              "1m_momentum_points": 3.89,
+              "1m_aligned": false,
+              "3m_trend": "bullish",
+              "3m_breakout": null,
+              "3m_breakout_aligned": false,
+              "5m_trend": "bullish",
+              "5m_aligned": false,
+              "three_tf_aligned": false
+            },
+            "micro_momentum": {
+              "score": 0.0,
+              "timing": "unknown",
+              "aligned": false,
+              "live_confirmed": false
+            },
+            "entry_trigger": {
+              "active": false,
+              "types": [],
+              "live_volatility_burst": false,
+              "live_liquidity_vacuum": false,
+              "synthetic_volatility_burst": false
+            },
+            "entry_confirmation": {},
+            "queue_risk": {},
+            "liquidity_vacuum": {},
+            "volatility_burst": {},
+            "fill_quote": {
+              "bid": 17.95,
+              "ask": 18.0,
+              "spread": 0.05000000000000071,
+              "spread_pct": 0.278164116828933,
+              "slippage_pct": -0.27700831024931144,
+              "ask_drift_pct": 0.0
+            },
+            "raw_signal": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "strike": 71000,
+              "option_type": "PE",
+              "premium": 18.05,
+              "delta": -0.19848877154319894,
+              "spread": 0.05000000000000071,
+              "spread_pct": 0.278164116828933,
+              "volume": 173029180,
+              "oi": 8374940,
+              "score": 1.0,
+              "reasons": [
+                "Acceptable premium",
+                "Optimal delta",
+                "Very tight spread",
+                "High volume",
+                "High OI",
+                "Dealer short gamma acceleration"
+              ],
+              "confidence": 1.0,
+              "entry": 18.0,
+              "sl": 13.5,
+              "t1": 24.3,
+              "status": "",
+              "action": "",
+              "source": "live",
+              "underlying_symbol": "BSE:SENSEX-INDEX",
+              "option_symbol": "BSE:SENSEX2640271000PE",
+              "quality_grade": "C",
+              "quality_score": 0.6256097560975611,
+              "recommended_size_pct": 50,
+              "priority": 6,
+              "quality_reasons": [
+                "High confidence: 100%",
+                "Dealer short gamma acceleration"
+              ],
+              "bid_depth": 5000,
+              "ask_depth": 5000,
+              "liquidity_score": 1.0,
+              "fill_quote": {
+                "bid": 17.95,
+                "ask": 18.0,
+                "spread": 0.05000000000000071,
+                "spread_pct": 0.278164116828933,
+                "slippage_pct": -0.27700831024931144,
+                "ask_drift_pct": 0.0
+              },
+              "regime": "bearish",
+              "momentum_strength": 1.0,
+              "micro_momentum_strength": 0.0,
+              "entry_confirmation": {},
+              "liquidity_vacuum": {},
+              "queue_risk": {},
+              "correlation_penalty": {
+                "size_scale": 0.5,
+                "risk": "high",
+                "reasons": [
+                  "Signal batch would create clustered same-direction exposure"
+                ],
+                "correlation": 0.8
+              },
+              "volatility_burst": {},
+              "setup_tag": "C",
+              "setup_reasons": [
+                "setup_tag=C",
+                "rr=1.40",
+                "3tf_aligned=False",
+                "trigger_active=False",
+                "live_confirmed=False"
+              ],
+              "strict_filter_pass": false,
+              "rr_ratio": 1.4,
+              "timeframe_alignment": {
+                "1m_trend": "bullish",
+                "1m_momentum_points": 3.89,
+                "1m_aligned": false,
+                "3m_trend": "bullish",
+                "3m_breakout": null,
+                "3m_breakout_aligned": false,
+                "5m_trend": "bullish",
+                "5m_aligned": false,
+                "three_tf_aligned": false
+              },
+              "entry_trigger": {
+                "active": false,
+                "types": [],
+                "live_volatility_burst": false,
+                "live_liquidity_vacuum": false,
+                "synthetic_volatility_burst": false
+              },
+              "micro_momentum": {
+                "score": 0.0,
+                "timing": "unknown",
+                "aligned": false,
+                "live_confirmed": false
+              },
+              "condition_count": 4,
+              "target_scale": 0.9,
+              "stop_scale": 1.0,
+              "multiplier": 0.275625,
+              "conditions_met": [
+                "structure_break",
+                "futures_momentum",
+                "volume_burst",
+                "trap_alignment"
+              ],
+              "lots": 1
+            }
+          }
+        },
+        {
+          "phase": "exit",
+          "timestamp": "2026-04-02T12:26:13.063885",
+          "order_id": "REV_efd9500b",
+          "reason": "Momentum reversal exit",
+          "partial": false,
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 71000,
+          "option_type": "PE",
+          "exit_price": 18.0,
+          "quantity": 10,
+          "pnl": 0.0,
+          "metadata": {}
+        }
+      ],
+      "current_price": 18.35,
+      "target_price": 24.3,
+      "average_exit_price": 18.0
+    },
+    {
+      "trade_id": "POS_629dabaa",
+      "symbol": "BSE:SENSEX-INDEX",
+      "index": "SENSEX",
+      "strike": 71000,
+      "option_type": "PE",
+      "direction": "long",
+      "entry_time": "2026-04-02T12:10:15.355059",
+      "entry_price": 21.5,
+      "quantity": 10,
+      "lots": 1,
+      "status": "closed",
+      "exit_time": "2026-04-02T12:25:02.599199",
+      "exit_price": 18.35,
+      "initial_sl": 16.1,
+      "current_sl": 16.1,
+      "sl_moves": [],
+      "partial_exits": [],
+      "remaining_qty": 0,
+      "realized_pnl": -31.499999999999986,
+      "unrealized_pnl": -33.500000000000014,
+      "pnl_pct": -14.651162790697667,
+      "entry_signals": {
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 71000,
+        "option_type": "PE",
+        "premium": 21.4,
+        "delta": -0.20097474733163007,
+        "spread": 0.10000000000000142,
+        "spread_pct": 0.4662004662004729,
+        "volume": 162275160,
+        "oi": 8208920,
+        "score": 1.0,
+        "reasons": [
+          "Acceptable premium",
+          "Optimal delta",
+          "Very tight spread",
+          "High volume",
+          "High OI",
+          "Dealer short gamma acceleration"
+        ],
+        "confidence": 1.0,
+        "entry": 21.5,
+        "sl": 16.12,
+        "t1": 29.02,
+        "status": "",
+        "action": "",
+        "source": "live",
+        "underlying_symbol": "BSE:SENSEX-INDEX",
+        "option_symbol": "BSE:SENSEX2640271000PE",
+        "quality_grade": "C",
+        "quality_score": 0.6256097560975611,
+        "recommended_size_pct": 50,
+        "priority": 6,
+        "quality_reasons": [
+          "High confidence: 100%",
+          "Dealer short gamma acceleration"
+        ],
+        "bid_depth": 5000,
+        "ask_depth": 5000,
+        "liquidity_score": 1.0,
+        "fill_quote": {
+          "bid": 21.4,
+          "ask": 21.5,
+          "spread": 0.10000000000000142,
+          "spread_pct": 0.4662004662004729,
+          "slippage_pct": 0.4672897196261749,
+          "ask_drift_pct": 0.0
+        },
+        "regime": "bearish",
+        "momentum_strength": 1.0,
+        "micro_momentum_strength": 0.0,
+        "entry_confirmation": {},
+        "liquidity_vacuum": {},
+        "queue_risk": {},
+        "correlation_penalty": {},
+        "volatility_burst": {},
+        "setup_tag": "C",
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "strict_filter_pass": false,
+        "rr_ratio": 1.3978,
+        "timeframe_alignment": {
+          "1m_trend": "bullish",
+          "1m_momentum_points": 35.55,
+          "1m_aligned": false,
+          "3m_trend": "bullish",
+          "3m_breakout": null,
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "condition_count": 3,
+        "target_scale": 0.9,
+        "stop_scale": 1.0,
+        "multiplier": 0.275625,
+        "conditions_met": [
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "lots": 1
+      },
+      "regime": "bearish",
+      "entry_conditions": [
+        "futures_momentum",
+        "volume_burst",
+        "trap_alignment"
+      ],
+      "entry_condition_count": 3,
+      "spread_pct": 0.4662004662004729,
+      "momentum_strength": 1.0,
+      "outcome": "loss",
+      "decision_packet": {
+        "phase": "entry",
+        "signal_key": "BSE:SENSEX-INDEX|71000|PE",
+        "timestamp": "2026-04-02T12:10:15.355059",
+        "cycle_timestamp": "2026-04-02T12:10:15.355059",
+        "engine_mode": "LIVE_PAPER",
+        "index": "SENSEX",
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 71000,
+        "option_type": "PE",
+        "entry_price": 21.5,
+        "initial_sl": 16.1,
+        "initial_target": 29.0,
+        "conditions_met": [
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "condition_count": 3,
+        "quality_grade": "C",
+        "quality_score": 0.6256097560975611,
+        "confidence": 1.0,
+        "setup_tag": "C",
+        "strict_filter_pass": false,
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "rr_ratio": 1.3978,
+        "regime": {
+          "regime": "RANGE_BOUND",
+          "confidence": 0.6,
+          "factors": {
+            "vwap_deviation": 0.0,
+            "atr_ratio": 1.0,
+            "atr_regime": "normal",
+            "adx": 33.228104124028306,
+            "pcr": 1.276,
+            "iv_ratio": 1.0,
+            "change_pct": -1.8228104124028304,
+            "volume_acceleration": 1.0,
+            "volume_trend": "stable",
+            "range_compressed": false,
+            "max_pain_distance": 0.0016991354743013617,
+            "days_to_expiry": 7,
+            "futures_basis": 0
+          },
+          "vix": 15.0,
+          "vix_vs_avg": 1.0
+        },
+        "structure": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "current_price": 71801.22,
+          "swing_highs": [
+            71891.48,
+            71839.06
+          ],
+          "swing_lows": [
+            71698.48,
+            71781.91,
+            71734.46
+          ],
+          "break": null,
+          "trend": "bearish",
+          "confidence": 0.8184513161257325,
+          "timeframes": {
+            "1m": {
+              "available": true,
+              "trend": "bullish",
+              "momentum_points": 35.55,
+              "close_change": 35.55
+            },
+            "3m": {
+              "available": true,
+              "trend": "bullish",
+              "breakout": null,
+              "strength": 0.0,
+              "close_change": 62.76
+            },
+            "5m": {
+              "available": true,
+              "trend": "bullish",
+              "change": 24.21
+            }
+          },
+          "timeframe_alignment": {
+            "bullish": false,
+            "bearish": false,
+            "three_tf_aligned": false
+          },
+          "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=0.82"
+        },
+        "stage_support": {
+          "strike": false,
+          "quality": true,
+          "liquidity": true
+        },
+        "spread_pct": 0.4662004662004729,
+        "momentum_strength": 1.0,
+        "timeframe_alignment": {
+          "1m_trend": "bullish",
+          "1m_momentum_points": 35.55,
+          "1m_aligned": false,
+          "3m_trend": "bullish",
+          "3m_breakout": null,
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "entry_confirmation": {},
+        "queue_risk": {},
+        "liquidity_vacuum": {},
+        "volatility_burst": {},
+        "fill_quote": {
+          "bid": 21.4,
+          "ask": 21.5,
+          "spread": 0.10000000000000142,
+          "spread_pct": 0.4662004662004729,
+          "slippage_pct": 0.4672897196261749,
+          "ask_drift_pct": 0.0
+        },
+        "raw_signal": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 71000,
+          "option_type": "PE",
+          "premium": 21.4,
+          "delta": -0.20097474733163007,
+          "spread": 0.10000000000000142,
+          "spread_pct": 0.4662004662004729,
+          "volume": 162275160,
+          "oi": 8208920,
+          "score": 1.0,
+          "reasons": [
+            "Acceptable premium",
+            "Optimal delta",
+            "Very tight spread",
+            "High volume",
+            "High OI",
+            "Dealer short gamma acceleration"
+          ],
+          "confidence": 1.0,
+          "entry": 21.5,
+          "sl": 16.12,
+          "t1": 29.02,
+          "status": "",
+          "action": "",
+          "source": "live",
+          "underlying_symbol": "BSE:SENSEX-INDEX",
+          "option_symbol": "BSE:SENSEX2640271000PE",
+          "quality_grade": "C",
+          "quality_score": 0.6256097560975611,
+          "recommended_size_pct": 50,
+          "priority": 6,
+          "quality_reasons": [
+            "High confidence: 100%",
+            "Dealer short gamma acceleration"
+          ],
+          "bid_depth": 5000,
+          "ask_depth": 5000,
+          "liquidity_score": 1.0,
+          "fill_quote": {
+            "bid": 21.4,
+            "ask": 21.5,
+            "spread": 0.10000000000000142,
+            "spread_pct": 0.4662004662004729,
+            "slippage_pct": 0.4672897196261749,
+            "ask_drift_pct": 0.0
+          },
+          "regime": "bearish",
+          "momentum_strength": 1.0,
+          "micro_momentum_strength": 0.0,
+          "entry_confirmation": {},
+          "liquidity_vacuum": {},
+          "queue_risk": {},
+          "correlation_penalty": {},
+          "volatility_burst": {},
+          "setup_tag": "C",
+          "setup_reasons": [
+            "setup_tag=C",
+            "rr=1.40",
+            "3tf_aligned=False",
+            "trigger_active=False",
+            "live_confirmed=False"
+          ],
+          "strict_filter_pass": false,
+          "rr_ratio": 1.3978,
+          "timeframe_alignment": {
+            "1m_trend": "bullish",
+            "1m_momentum_points": 35.55,
+            "1m_aligned": false,
+            "3m_trend": "bullish",
+            "3m_breakout": null,
+            "3m_breakout_aligned": false,
+            "5m_trend": "bullish",
+            "5m_aligned": false,
+            "three_tf_aligned": false
+          },
+          "entry_trigger": {
+            "active": false,
+            "types": [],
+            "live_volatility_burst": false,
+            "live_liquidity_vacuum": false,
+            "synthetic_volatility_burst": false
+          },
+          "micro_momentum": {
+            "score": 0.0,
+            "timing": "unknown",
+            "aligned": false,
+            "live_confirmed": false
+          },
+          "condition_count": 3,
+          "target_scale": 0.9,
+          "stop_scale": 1.0,
+          "multiplier": 0.275625,
+          "conditions_met": [
+            "futures_momentum",
+            "volume_burst",
+            "trap_alignment"
+          ],
+          "lots": 1
+        }
+      },
+      "agent_decisions": [
+        {
+          "phase": "entry",
+          "timestamp": "2026-04-02T12:10:15.355059",
+          "reason": "Entry: futures_momentum, volume_burst, trap_alignment",
+          "decision_packet": {
+            "phase": "entry",
+            "signal_key": "BSE:SENSEX-INDEX|71000|PE",
+            "timestamp": "2026-04-02T12:10:15.355059",
+            "cycle_timestamp": "2026-04-02T12:10:15.355059",
+            "engine_mode": "LIVE_PAPER",
+            "index": "SENSEX",
+            "symbol": "BSE:SENSEX-INDEX",
+            "strike": 71000,
+            "option_type": "PE",
+            "entry_price": 21.5,
+            "initial_sl": 16.1,
+            "initial_target": 29.0,
+            "conditions_met": [
+              "futures_momentum",
+              "volume_burst",
+              "trap_alignment"
+            ],
+            "condition_count": 3,
+            "quality_grade": "C",
+            "quality_score": 0.6256097560975611,
+            "confidence": 1.0,
+            "setup_tag": "C",
+            "strict_filter_pass": false,
+            "setup_reasons": [
+              "setup_tag=C",
+              "rr=1.40",
+              "3tf_aligned=False",
+              "trigger_active=False",
+              "live_confirmed=False"
+            ],
+            "rr_ratio": 1.3978,
+            "regime": {
+              "regime": "RANGE_BOUND",
+              "confidence": 0.6,
+              "factors": {
+                "vwap_deviation": 0.0,
+                "atr_ratio": 1.0,
+                "atr_regime": "normal",
+                "adx": 33.228104124028306,
+                "pcr": 1.276,
+                "iv_ratio": 1.0,
+                "change_pct": -1.8228104124028304,
+                "volume_acceleration": 1.0,
+                "volume_trend": "stable",
+                "range_compressed": false,
+                "max_pain_distance": 0.0016991354743013617,
+                "days_to_expiry": 7,
+                "futures_basis": 0
+              },
+              "vix": 15.0,
+              "vix_vs_avg": 1.0
+            },
+            "structure": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "current_price": 71801.22,
+              "swing_highs": [
+                71891.48,
+                71839.06
+              ],
+              "swing_lows": [
+                71698.48,
+                71781.91,
+                71734.46
+              ],
+              "break": null,
+              "trend": "bearish",
+              "confidence": 0.8184513161257325,
+              "timeframes": {
+                "1m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "momentum_points": 35.55,
+                  "close_change": 35.55
+                },
+                "3m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "breakout": null,
+                  "strength": 0.0,
+                  "close_change": 62.76
+                },
+                "5m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "change": 24.21
+                }
+              },
+              "timeframe_alignment": {
+                "bullish": false,
+                "bearish": false,
+                "three_tf_aligned": false
+              },
+              "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=0.82"
+            },
+            "stage_support": {
+              "strike": false,
+              "quality": true,
+              "liquidity": true
+            },
+            "spread_pct": 0.4662004662004729,
+            "momentum_strength": 1.0,
+            "timeframe_alignment": {
+              "1m_trend": "bullish",
+              "1m_momentum_points": 35.55,
+              "1m_aligned": false,
+              "3m_trend": "bullish",
+              "3m_breakout": null,
+              "3m_breakout_aligned": false,
+              "5m_trend": "bullish",
+              "5m_aligned": false,
+              "three_tf_aligned": false
+            },
+            "micro_momentum": {
+              "score": 0.0,
+              "timing": "unknown",
+              "aligned": false,
+              "live_confirmed": false
+            },
+            "entry_trigger": {
+              "active": false,
+              "types": [],
+              "live_volatility_burst": false,
+              "live_liquidity_vacuum": false,
+              "synthetic_volatility_burst": false
+            },
+            "entry_confirmation": {},
+            "queue_risk": {},
+            "liquidity_vacuum": {},
+            "volatility_burst": {},
+            "fill_quote": {
+              "bid": 21.4,
+              "ask": 21.5,
+              "spread": 0.10000000000000142,
+              "spread_pct": 0.4662004662004729,
+              "slippage_pct": 0.4672897196261749,
+              "ask_drift_pct": 0.0
+            },
+            "raw_signal": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "strike": 71000,
+              "option_type": "PE",
+              "premium": 21.4,
+              "delta": -0.20097474733163007,
+              "spread": 0.10000000000000142,
+              "spread_pct": 0.4662004662004729,
+              "volume": 162275160,
+              "oi": 8208920,
+              "score": 1.0,
+              "reasons": [
+                "Acceptable premium",
+                "Optimal delta",
+                "Very tight spread",
+                "High volume",
+                "High OI",
+                "Dealer short gamma acceleration"
+              ],
+              "confidence": 1.0,
+              "entry": 21.5,
+              "sl": 16.12,
+              "t1": 29.02,
+              "status": "",
+              "action": "",
+              "source": "live",
+              "underlying_symbol": "BSE:SENSEX-INDEX",
+              "option_symbol": "BSE:SENSEX2640271000PE",
+              "quality_grade": "C",
+              "quality_score": 0.6256097560975611,
+              "recommended_size_pct": 50,
+              "priority": 6,
+              "quality_reasons": [
+                "High confidence: 100%",
+                "Dealer short gamma acceleration"
+              ],
+              "bid_depth": 5000,
+              "ask_depth": 5000,
+              "liquidity_score": 1.0,
+              "fill_quote": {
+                "bid": 21.4,
+                "ask": 21.5,
+                "spread": 0.10000000000000142,
+                "spread_pct": 0.4662004662004729,
+                "slippage_pct": 0.4672897196261749,
+                "ask_drift_pct": 0.0
+              },
+              "regime": "bearish",
+              "momentum_strength": 1.0,
+              "micro_momentum_strength": 0.0,
+              "entry_confirmation": {},
+              "liquidity_vacuum": {},
+              "queue_risk": {},
+              "correlation_penalty": {},
+              "volatility_burst": {},
+              "setup_tag": "C",
+              "setup_reasons": [
+                "setup_tag=C",
+                "rr=1.40",
+                "3tf_aligned=False",
+                "trigger_active=False",
+                "live_confirmed=False"
+              ],
+              "strict_filter_pass": false,
+              "rr_ratio": 1.3978,
+              "timeframe_alignment": {
+                "1m_trend": "bullish",
+                "1m_momentum_points": 35.55,
+                "1m_aligned": false,
+                "3m_trend": "bullish",
+                "3m_breakout": null,
+                "3m_breakout_aligned": false,
+                "5m_trend": "bullish",
+                "5m_aligned": false,
+                "three_tf_aligned": false
+              },
+              "entry_trigger": {
+                "active": false,
+                "types": [],
+                "live_volatility_burst": false,
+                "live_liquidity_vacuum": false,
+                "synthetic_volatility_burst": false
+              },
+              "micro_momentum": {
+                "score": 0.0,
+                "timing": "unknown",
+                "aligned": false,
+                "live_confirmed": false
+              },
+              "condition_count": 3,
+              "target_scale": 0.9,
+              "stop_scale": 1.0,
+              "multiplier": 0.275625,
+              "conditions_met": [
+                "futures_momentum",
+                "volume_burst",
+                "trap_alignment"
+              ],
+              "lots": 1
+            }
+          }
+        },
+        {
+          "phase": "exit",
+          "timestamp": "2026-04-02T12:25:02.599199",
+          "order_id": "REV_28215de1",
+          "reason": "Momentum reversal exit",
+          "partial": false,
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 71000,
+          "option_type": "PE",
+          "exit_price": 18.35,
+          "quantity": 10,
+          "pnl": -31.499999999999986,
+          "metadata": {}
+        }
+      ],
+      "current_price": 18.15,
+      "target_price": 29.0,
+      "average_exit_price": 18.35
+    },
+    {
+      "trade_id": "POS_62901058",
+      "symbol": "BSE:SENSEX-INDEX",
+      "index": "SENSEX",
+      "strike": 71000,
+      "option_type": "PE",
+      "direction": "long",
+      "entry_time": "2026-04-02T11:59:41.812551",
+      "entry_price": 19.8,
+      "quantity": 10,
+      "lots": 1,
+      "status": "closed",
+      "exit_time": "2026-04-02T12:10:06.879163",
+      "exit_price": 21.45,
+      "initial_sl": 14.85,
+      "current_sl": 14.85,
+      "sl_moves": [],
+      "partial_exits": [],
+      "remaining_qty": 0,
+      "realized_pnl": 16.499999999999986,
+      "unrealized_pnl": 15.500000000000007,
+      "pnl_pct": 8.333333333333325,
+      "entry_signals": {
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 71000,
+        "option_type": "PE",
+        "premium": 19.8,
+        "delta": -0.1997791480626553,
+        "spread": 0.05000000000000071,
+        "spread_pct": 0.2528445006321149,
+        "volume": 152805220,
+        "oi": 7686920,
+        "score": 1.0,
+        "reasons": [
+          "Acceptable premium",
+          "Optimal delta",
+          "Very tight spread",
+          "High volume",
+          "High OI",
+          "Dealer short gamma acceleration"
+        ],
+        "confidence": 1.0,
+        "entry": 19.8,
+        "sl": 14.85,
+        "t1": 26.73,
+        "status": "",
+        "action": "",
+        "source": "live",
+        "underlying_symbol": "BSE:SENSEX-INDEX",
+        "option_symbol": "BSE:SENSEX2640271000PE",
+        "quality_grade": "C",
+        "quality_score": 0.6210918114143921,
+        "recommended_size_pct": 50,
+        "priority": 6,
+        "quality_reasons": [
+          "High confidence: 100%",
+          "Dealer short gamma acceleration"
+        ],
+        "bid_depth": 5000,
+        "ask_depth": 5000,
+        "liquidity_score": 1.0,
+        "fill_quote": {
+          "bid": 19.75,
+          "ask": 19.8,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.2528445006321149,
+          "slippage_pct": 0.0,
+          "ask_drift_pct": 0.0
+        },
+        "regime": "bearish",
+        "momentum_strength": 1.0,
+        "micro_momentum_strength": 0.0,
+        "entry_confirmation": {},
+        "liquidity_vacuum": {},
+        "queue_risk": {},
+        "correlation_penalty": {},
+        "volatility_burst": {},
+        "setup_tag": "C",
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "strict_filter_pass": false,
+        "rr_ratio": 1.4,
+        "timeframe_alignment": {
+          "1m_trend": "bearish",
+          "1m_momentum_points": 48.03,
+          "1m_aligned": true,
+          "3m_trend": "bullish",
+          "3m_breakout": "bullish",
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "condition_count": 3,
+        "target_scale": 0.9,
+        "stop_scale": 1.0,
+        "multiplier": 0.275625,
+        "conditions_met": [
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "lots": 1
+      },
+      "regime": "bearish",
+      "entry_conditions": [
+        "futures_momentum",
+        "volume_burst",
+        "trap_alignment"
+      ],
+      "entry_condition_count": 3,
+      "spread_pct": 0.2528445006321149,
+      "momentum_strength": 1.0,
+      "outcome": "win",
+      "decision_packet": {
+        "phase": "entry",
+        "signal_key": "BSE:SENSEX-INDEX|71000|PE",
+        "timestamp": "2026-04-02T11:59:41.812551",
+        "cycle_timestamp": "2026-04-02T11:59:41.812551",
+        "engine_mode": "LIVE_PAPER",
+        "index": "SENSEX",
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 71000,
+        "option_type": "PE",
+        "entry_price": 19.8,
+        "initial_sl": 14.85,
+        "initial_target": 26.75,
+        "conditions_met": [
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "condition_count": 3,
+        "quality_grade": "C",
+        "quality_score": 0.6210918114143921,
+        "confidence": 1.0,
+        "setup_tag": "C",
+        "strict_filter_pass": false,
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "rr_ratio": 1.4,
+        "regime": {
+          "regime": "RANGE_BOUND",
+          "confidence": 0.6,
+          "factors": {
+            "vwap_deviation": 0.0,
+            "atr_ratio": 1.0,
+            "atr_regime": "normal",
+            "adx": 32.751720396115104,
+            "pcr": 1.197,
+            "iv_ratio": 1.0,
+            "change_pct": -1.7751720396115107,
+            "volume_acceleration": 1.0,
+            "volume_trend": "stable",
+            "range_compressed": false,
+            "max_pain_distance": 0.05019763054933368,
+            "days_to_expiry": 7,
+            "futures_basis": 0
+          },
+          "vix": 15.0,
+          "vix_vs_avg": 1.0
+        },
+        "structure": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "current_price": 71836.06,
+          "swing_highs": [],
+          "swing_lows": [
+            71698.48
+          ],
+          "break": null,
+          "trend": "bearish",
+          "confidence": 0.55,
+          "timeframes": {
+            "1m": {
+              "available": true,
+              "trend": "bearish",
+              "momentum_points": 48.03,
+              "close_change": -48.03
+            },
+            "3m": {
+              "available": true,
+              "trend": "bullish",
+              "breakout": "bullish",
+              "strength": 0.001363,
+              "close_change": 112.07
+            },
+            "5m": {
+              "available": true,
+              "trend": "bullish",
+              "change": 98.31
+            }
+          },
+          "timeframe_alignment": {
+            "bullish": false,
+            "bearish": false,
+            "three_tf_aligned": false
+          },
+          "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=0.55"
+        },
+        "stage_support": {
+          "strike": false,
+          "quality": true,
+          "liquidity": true
+        },
+        "spread_pct": 0.2528445006321149,
+        "momentum_strength": 1.0,
+        "timeframe_alignment": {
+          "1m_trend": "bearish",
+          "1m_momentum_points": 48.03,
+          "1m_aligned": true,
+          "3m_trend": "bullish",
+          "3m_breakout": "bullish",
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "entry_confirmation": {},
+        "queue_risk": {},
+        "liquidity_vacuum": {},
+        "volatility_burst": {},
+        "fill_quote": {
+          "bid": 19.75,
+          "ask": 19.8,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.2528445006321149,
+          "slippage_pct": 0.0,
+          "ask_drift_pct": 0.0
+        },
+        "raw_signal": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 71000,
+          "option_type": "PE",
+          "premium": 19.8,
+          "delta": -0.1997791480626553,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.2528445006321149,
+          "volume": 152805220,
+          "oi": 7686920,
+          "score": 1.0,
+          "reasons": [
+            "Acceptable premium",
+            "Optimal delta",
+            "Very tight spread",
+            "High volume",
+            "High OI",
+            "Dealer short gamma acceleration"
+          ],
+          "confidence": 1.0,
+          "entry": 19.8,
+          "sl": 14.85,
+          "t1": 26.73,
+          "status": "",
+          "action": "",
+          "source": "live",
+          "underlying_symbol": "BSE:SENSEX-INDEX",
+          "option_symbol": "BSE:SENSEX2640271000PE",
+          "quality_grade": "C",
+          "quality_score": 0.6210918114143921,
+          "recommended_size_pct": 50,
+          "priority": 6,
+          "quality_reasons": [
+            "High confidence: 100%",
+            "Dealer short gamma acceleration"
+          ],
+          "bid_depth": 5000,
+          "ask_depth": 5000,
+          "liquidity_score": 1.0,
+          "fill_quote": {
+            "bid": 19.75,
+            "ask": 19.8,
+            "spread": 0.05000000000000071,
+            "spread_pct": 0.2528445006321149,
+            "slippage_pct": 0.0,
+            "ask_drift_pct": 0.0
+          },
+          "regime": "bearish",
+          "momentum_strength": 1.0,
+          "micro_momentum_strength": 0.0,
+          "entry_confirmation": {},
+          "liquidity_vacuum": {},
+          "queue_risk": {},
+          "correlation_penalty": {},
+          "volatility_burst": {},
+          "setup_tag": "C",
+          "setup_reasons": [
+            "setup_tag=C",
+            "rr=1.40",
+            "3tf_aligned=False",
+            "trigger_active=False",
+            "live_confirmed=False"
+          ],
+          "strict_filter_pass": false,
+          "rr_ratio": 1.4,
+          "timeframe_alignment": {
+            "1m_trend": "bearish",
+            "1m_momentum_points": 48.03,
+            "1m_aligned": true,
+            "3m_trend": "bullish",
+            "3m_breakout": "bullish",
+            "3m_breakout_aligned": false,
+            "5m_trend": "bullish",
+            "5m_aligned": false,
+            "three_tf_aligned": false
+          },
+          "entry_trigger": {
+            "active": false,
+            "types": [],
+            "live_volatility_burst": false,
+            "live_liquidity_vacuum": false,
+            "synthetic_volatility_burst": false
+          },
+          "micro_momentum": {
+            "score": 0.0,
+            "timing": "unknown",
+            "aligned": false,
+            "live_confirmed": false
+          },
+          "condition_count": 3,
+          "target_scale": 0.9,
+          "stop_scale": 1.0,
+          "multiplier": 0.275625,
+          "conditions_met": [
+            "futures_momentum",
+            "volume_burst",
+            "trap_alignment"
+          ],
+          "lots": 1
+        }
+      },
+      "agent_decisions": [
+        {
+          "phase": "entry",
+          "timestamp": "2026-04-02T11:59:41.812551",
+          "reason": "Entry: futures_momentum, volume_burst, trap_alignment",
+          "decision_packet": {
+            "phase": "entry",
+            "signal_key": "BSE:SENSEX-INDEX|71000|PE",
+            "timestamp": "2026-04-02T11:59:41.812551",
+            "cycle_timestamp": "2026-04-02T11:59:41.812551",
+            "engine_mode": "LIVE_PAPER",
+            "index": "SENSEX",
+            "symbol": "BSE:SENSEX-INDEX",
+            "strike": 71000,
+            "option_type": "PE",
+            "entry_price": 19.8,
+            "initial_sl": 14.85,
+            "initial_target": 26.75,
+            "conditions_met": [
+              "futures_momentum",
+              "volume_burst",
+              "trap_alignment"
+            ],
+            "condition_count": 3,
+            "quality_grade": "C",
+            "quality_score": 0.6210918114143921,
+            "confidence": 1.0,
+            "setup_tag": "C",
+            "strict_filter_pass": false,
+            "setup_reasons": [
+              "setup_tag=C",
+              "rr=1.40",
+              "3tf_aligned=False",
+              "trigger_active=False",
+              "live_confirmed=False"
+            ],
+            "rr_ratio": 1.4,
+            "regime": {
+              "regime": "RANGE_BOUND",
+              "confidence": 0.6,
+              "factors": {
+                "vwap_deviation": 0.0,
+                "atr_ratio": 1.0,
+                "atr_regime": "normal",
+                "adx": 32.751720396115104,
+                "pcr": 1.197,
+                "iv_ratio": 1.0,
+                "change_pct": -1.7751720396115107,
+                "volume_acceleration": 1.0,
+                "volume_trend": "stable",
+                "range_compressed": false,
+                "max_pain_distance": 0.05019763054933368,
+                "days_to_expiry": 7,
+                "futures_basis": 0
+              },
+              "vix": 15.0,
+              "vix_vs_avg": 1.0
+            },
+            "structure": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "current_price": 71836.06,
+              "swing_highs": [],
+              "swing_lows": [
+                71698.48
+              ],
+              "break": null,
+              "trend": "bearish",
+              "confidence": 0.55,
+              "timeframes": {
+                "1m": {
+                  "available": true,
+                  "trend": "bearish",
+                  "momentum_points": 48.03,
+                  "close_change": -48.03
+                },
+                "3m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "breakout": "bullish",
+                  "strength": 0.001363,
+                  "close_change": 112.07
+                },
+                "5m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "change": 98.31
+                }
+              },
+              "timeframe_alignment": {
+                "bullish": false,
+                "bearish": false,
+                "three_tf_aligned": false
+              },
+              "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=0.55"
+            },
+            "stage_support": {
+              "strike": false,
+              "quality": true,
+              "liquidity": true
+            },
+            "spread_pct": 0.2528445006321149,
+            "momentum_strength": 1.0,
+            "timeframe_alignment": {
+              "1m_trend": "bearish",
+              "1m_momentum_points": 48.03,
+              "1m_aligned": true,
+              "3m_trend": "bullish",
+              "3m_breakout": "bullish",
+              "3m_breakout_aligned": false,
+              "5m_trend": "bullish",
+              "5m_aligned": false,
+              "three_tf_aligned": false
+            },
+            "micro_momentum": {
+              "score": 0.0,
+              "timing": "unknown",
+              "aligned": false,
+              "live_confirmed": false
+            },
+            "entry_trigger": {
+              "active": false,
+              "types": [],
+              "live_volatility_burst": false,
+              "live_liquidity_vacuum": false,
+              "synthetic_volatility_burst": false
+            },
+            "entry_confirmation": {},
+            "queue_risk": {},
+            "liquidity_vacuum": {},
+            "volatility_burst": {},
+            "fill_quote": {
+              "bid": 19.75,
+              "ask": 19.8,
+              "spread": 0.05000000000000071,
+              "spread_pct": 0.2528445006321149,
+              "slippage_pct": 0.0,
+              "ask_drift_pct": 0.0
+            },
+            "raw_signal": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "strike": 71000,
+              "option_type": "PE",
+              "premium": 19.8,
+              "delta": -0.1997791480626553,
+              "spread": 0.05000000000000071,
+              "spread_pct": 0.2528445006321149,
+              "volume": 152805220,
+              "oi": 7686920,
+              "score": 1.0,
+              "reasons": [
+                "Acceptable premium",
+                "Optimal delta",
+                "Very tight spread",
+                "High volume",
+                "High OI",
+                "Dealer short gamma acceleration"
+              ],
+              "confidence": 1.0,
+              "entry": 19.8,
+              "sl": 14.85,
+              "t1": 26.73,
+              "status": "",
+              "action": "",
+              "source": "live",
+              "underlying_symbol": "BSE:SENSEX-INDEX",
+              "option_symbol": "BSE:SENSEX2640271000PE",
+              "quality_grade": "C",
+              "quality_score": 0.6210918114143921,
+              "recommended_size_pct": 50,
+              "priority": 6,
+              "quality_reasons": [
+                "High confidence: 100%",
+                "Dealer short gamma acceleration"
+              ],
+              "bid_depth": 5000,
+              "ask_depth": 5000,
+              "liquidity_score": 1.0,
+              "fill_quote": {
+                "bid": 19.75,
+                "ask": 19.8,
+                "spread": 0.05000000000000071,
+                "spread_pct": 0.2528445006321149,
+                "slippage_pct": 0.0,
+                "ask_drift_pct": 0.0
+              },
+              "regime": "bearish",
+              "momentum_strength": 1.0,
+              "micro_momentum_strength": 0.0,
+              "entry_confirmation": {},
+              "liquidity_vacuum": {},
+              "queue_risk": {},
+              "correlation_penalty": {},
+              "volatility_burst": {},
+              "setup_tag": "C",
+              "setup_reasons": [
+                "setup_tag=C",
+                "rr=1.40",
+                "3tf_aligned=False",
+                "trigger_active=False",
+                "live_confirmed=False"
+              ],
+              "strict_filter_pass": false,
+              "rr_ratio": 1.4,
+              "timeframe_alignment": {
+                "1m_trend": "bearish",
+                "1m_momentum_points": 48.03,
+                "1m_aligned": true,
+                "3m_trend": "bullish",
+                "3m_breakout": "bullish",
+                "3m_breakout_aligned": false,
+                "5m_trend": "bullish",
+                "5m_aligned": false,
+                "three_tf_aligned": false
+              },
+              "entry_trigger": {
+                "active": false,
+                "types": [],
+                "live_volatility_burst": false,
+                "live_liquidity_vacuum": false,
+                "synthetic_volatility_burst": false
+              },
+              "micro_momentum": {
+                "score": 0.0,
+                "timing": "unknown",
+                "aligned": false,
+                "live_confirmed": false
+              },
+              "condition_count": 3,
+              "target_scale": 0.9,
+              "stop_scale": 1.0,
+              "multiplier": 0.275625,
+              "conditions_met": [
+                "futures_momentum",
+                "volume_burst",
+                "trap_alignment"
+              ],
+              "lots": 1
+            }
+          }
+        },
+        {
+          "phase": "exit",
+          "timestamp": "2026-04-02T12:10:06.879163",
+          "order_id": "REV_841e2254",
+          "reason": "Momentum reversal exit",
+          "partial": false,
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 71000,
+          "option_type": "PE",
+          "exit_price": 21.45,
+          "quantity": 10,
+          "pnl": 16.499999999999986,
+          "metadata": {}
+        }
+      ],
+      "current_price": 21.35,
+      "target_price": 26.75,
+      "average_exit_price": 21.45
+    },
+    {
+      "trade_id": "POS_f1645269",
+      "symbol": "BSE:SENSEX-INDEX",
+      "index": "SENSEX",
+      "strike": 71000,
+      "option_type": "PE",
+      "direction": "long",
+      "entry_time": "2026-04-02T11:58:03.539703",
+      "entry_price": 19.05,
+      "quantity": 10,
+      "lots": 1,
+      "status": "closed",
+      "exit_time": "2026-04-02T11:58:21.380050",
+      "exit_price": 18.35,
+      "initial_sl": 14.3,
+      "current_sl": 14.3,
+      "sl_moves": [],
+      "partial_exits": [],
+      "remaining_qty": 0,
+      "realized_pnl": -6.999999999999993,
+      "unrealized_pnl": -5.0,
+      "pnl_pct": -3.6745406824146944,
+      "entry_signals": {
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 71000,
+        "option_type": "PE",
+        "premium": 19.0,
+        "delta": -0.19918941444425606,
+        "spread": 0.05000000000000071,
+        "spread_pct": 0.2628120893561141,
+        "volume": 150278540,
+        "oi": 8234900,
+        "score": 1.0,
+        "reasons": [
+          "Acceptable premium",
+          "Optimal delta",
+          "Very tight spread",
+          "High volume",
+          "High OI",
+          "Dealer short gamma acceleration"
+        ],
+        "confidence": 1.0,
+        "entry": 19.05,
+        "sl": 14.29,
+        "t1": 25.72,
+        "status": "",
+        "action": "",
+        "source": "live",
+        "underlying_symbol": "BSE:SENSEX-INDEX",
+        "option_symbol": "BSE:SENSEX2640271000PE",
+        "quality_grade": "C",
+        "quality_score": 0.6210918114143921,
+        "recommended_size_pct": 50,
+        "priority": 6,
+        "quality_reasons": [
+          "High confidence: 100%",
+          "Dealer short gamma acceleration"
+        ],
+        "bid_depth": 5000,
+        "ask_depth": 5000,
+        "liquidity_score": 1.0,
+        "fill_quote": {
+          "bid": 19.0,
+          "ask": 19.05,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.2628120893561141,
+          "slippage_pct": 0.2631578947368458,
+          "ask_drift_pct": 0.0
+        },
+        "regime": "bearish",
+        "momentum_strength": 1.0,
+        "micro_momentum_strength": 0.0,
+        "entry_confirmation": {},
+        "liquidity_vacuum": {},
+        "queue_risk": {},
+        "correlation_penalty": {},
+        "volatility_burst": {},
+        "setup_tag": "C",
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "strict_filter_pass": false,
+        "rr_ratio": 1.4013,
+        "timeframe_alignment": {
+          "1m_trend": "bullish",
+          "1m_momentum_points": 2.56,
+          "1m_aligned": false,
+          "3m_trend": "bullish",
+          "3m_breakout": "bullish",
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "condition_count": 3,
+        "target_scale": 0.9,
+        "stop_scale": 1.0,
+        "multiplier": 0.275625,
+        "conditions_met": [
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "lots": 1
+      },
+      "regime": "bearish",
+      "entry_conditions": [
+        "futures_momentum",
+        "volume_burst",
+        "trap_alignment"
+      ],
+      "entry_condition_count": 3,
+      "spread_pct": 0.2628120893561141,
+      "momentum_strength": 1.0,
+      "outcome": "loss",
+      "decision_packet": {
+        "phase": "entry",
+        "signal_key": "BSE:SENSEX-INDEX|71000|PE",
+        "timestamp": "2026-04-02T11:58:03.539703",
+        "cycle_timestamp": "2026-04-02T11:58:03.539703",
+        "engine_mode": "LIVE_PAPER",
+        "index": "SENSEX",
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 71000,
+        "option_type": "PE",
+        "entry_price": 19.05,
+        "initial_sl": 14.3,
+        "initial_target": 25.7,
+        "conditions_met": [
+          "futures_momentum",
+          "volume_burst",
+          "trap_alignment"
+        ],
+        "condition_count": 3,
+        "quality_grade": "C",
+        "quality_score": 0.6210918114143921,
+        "confidence": 1.0,
+        "setup_tag": "C",
+        "strict_filter_pass": false,
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "rr_ratio": 1.4013,
+        "regime": {
+          "regime": "RANGE_BOUND",
+          "confidence": 0.6,
+          "factors": {
+            "vwap_deviation": 0.0,
+            "atr_ratio": 1.0,
+            "atr_regime": "normal",
+            "adx": 33.04487961329252,
+            "pcr": 1.153,
+            "iv_ratio": 1.0,
+            "change_pct": -1.8044879613292522,
+            "volume_acceleration": 1.0,
+            "volume_trend": "stable",
+            "range_compressed": false,
+            "max_pain_distance": 0.020357971677626846,
+            "days_to_expiry": 7,
+            "futures_basis": 0
+          },
+          "vix": 15.0,
+          "vix_vs_avg": 1.0
+        },
+        "structure": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "current_price": 71814.62,
+          "swing_highs": [],
+          "swing_lows": [
+            71698.48
+          ],
+          "break": null,
+          "trend": "bearish",
+          "confidence": 0.55,
+          "timeframes": {
+            "1m": {
+              "available": true,
+              "trend": "bullish",
+              "momentum_points": 2.56,
+              "close_change": 2.56
+            },
+            "3m": {
+              "available": true,
+              "trend": "bullish",
+              "breakout": "bullish",
+              "strength": 0.001044,
+              "close_change": 85.19
+            },
+            "5m": {
+              "available": true,
+              "trend": "bullish",
+              "change": 76.32
+            }
+          },
+          "timeframe_alignment": {
+            "bullish": true,
+            "bearish": false,
+            "three_tf_aligned": true
+          },
+          "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=0.55"
+        },
+        "stage_support": {
+          "strike": false,
+          "quality": true,
+          "liquidity": true
+        },
+        "spread_pct": 0.2628120893561141,
+        "momentum_strength": 1.0,
+        "timeframe_alignment": {
+          "1m_trend": "bullish",
+          "1m_momentum_points": 2.56,
+          "1m_aligned": false,
+          "3m_trend": "bullish",
+          "3m_breakout": "bullish",
+          "3m_breakout_aligned": false,
+          "5m_trend": "bullish",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "entry_confirmation": {},
+        "queue_risk": {},
+        "liquidity_vacuum": {},
+        "volatility_burst": {},
+        "fill_quote": {
+          "bid": 19.0,
+          "ask": 19.05,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.2628120893561141,
+          "slippage_pct": 0.2631578947368458,
+          "ask_drift_pct": 0.0
+        },
+        "raw_signal": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 71000,
+          "option_type": "PE",
+          "premium": 19.0,
+          "delta": -0.19918941444425606,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.2628120893561141,
+          "volume": 150278540,
+          "oi": 8234900,
+          "score": 1.0,
+          "reasons": [
+            "Acceptable premium",
+            "Optimal delta",
+            "Very tight spread",
+            "High volume",
+            "High OI",
+            "Dealer short gamma acceleration"
+          ],
+          "confidence": 1.0,
+          "entry": 19.05,
+          "sl": 14.29,
+          "t1": 25.72,
+          "status": "",
+          "action": "",
+          "source": "live",
+          "underlying_symbol": "BSE:SENSEX-INDEX",
+          "option_symbol": "BSE:SENSEX2640271000PE",
+          "quality_grade": "C",
+          "quality_score": 0.6210918114143921,
+          "recommended_size_pct": 50,
+          "priority": 6,
+          "quality_reasons": [
+            "High confidence: 100%",
+            "Dealer short gamma acceleration"
+          ],
+          "bid_depth": 5000,
+          "ask_depth": 5000,
+          "liquidity_score": 1.0,
+          "fill_quote": {
+            "bid": 19.0,
+            "ask": 19.05,
+            "spread": 0.05000000000000071,
+            "spread_pct": 0.2628120893561141,
+            "slippage_pct": 0.2631578947368458,
+            "ask_drift_pct": 0.0
+          },
+          "regime": "bearish",
+          "momentum_strength": 1.0,
+          "micro_momentum_strength": 0.0,
+          "entry_confirmation": {},
+          "liquidity_vacuum": {},
+          "queue_risk": {},
+          "correlation_penalty": {},
+          "volatility_burst": {},
+          "setup_tag": "C",
+          "setup_reasons": [
+            "setup_tag=C",
+            "rr=1.40",
+            "3tf_aligned=False",
+            "trigger_active=False",
+            "live_confirmed=False"
+          ],
+          "strict_filter_pass": false,
+          "rr_ratio": 1.4013,
+          "timeframe_alignment": {
+            "1m_trend": "bullish",
+            "1m_momentum_points": 2.56,
+            "1m_aligned": false,
+            "3m_trend": "bullish",
+            "3m_breakout": "bullish",
+            "3m_breakout_aligned": false,
+            "5m_trend": "bullish",
+            "5m_aligned": false,
+            "three_tf_aligned": false
+          },
+          "entry_trigger": {
+            "active": false,
+            "types": [],
+            "live_volatility_burst": false,
+            "live_liquidity_vacuum": false,
+            "synthetic_volatility_burst": false
+          },
+          "micro_momentum": {
+            "score": 0.0,
+            "timing": "unknown",
+            "aligned": false,
+            "live_confirmed": false
+          },
+          "condition_count": 3,
+          "target_scale": 0.9,
+          "stop_scale": 1.0,
+          "multiplier": 0.275625,
+          "conditions_met": [
+            "futures_momentum",
+            "volume_burst",
+            "trap_alignment"
+          ],
+          "lots": 1
+        }
+      },
+      "agent_decisions": [
+        {
+          "phase": "entry",
+          "timestamp": "2026-04-02T11:58:03.539703",
+          "reason": "Entry: futures_momentum, volume_burst, trap_alignment",
+          "decision_packet": {
+            "phase": "entry",
+            "signal_key": "BSE:SENSEX-INDEX|71000|PE",
+            "timestamp": "2026-04-02T11:58:03.539703",
+            "cycle_timestamp": "2026-04-02T11:58:03.539703",
+            "engine_mode": "LIVE_PAPER",
+            "index": "SENSEX",
+            "symbol": "BSE:SENSEX-INDEX",
+            "strike": 71000,
+            "option_type": "PE",
+            "entry_price": 19.05,
+            "initial_sl": 14.3,
+            "initial_target": 25.7,
+            "conditions_met": [
+              "futures_momentum",
+              "volume_burst",
+              "trap_alignment"
+            ],
+            "condition_count": 3,
+            "quality_grade": "C",
+            "quality_score": 0.6210918114143921,
+            "confidence": 1.0,
+            "setup_tag": "C",
+            "strict_filter_pass": false,
+            "setup_reasons": [
+              "setup_tag=C",
+              "rr=1.40",
+              "3tf_aligned=False",
+              "trigger_active=False",
+              "live_confirmed=False"
+            ],
+            "rr_ratio": 1.4013,
+            "regime": {
+              "regime": "RANGE_BOUND",
+              "confidence": 0.6,
+              "factors": {
+                "vwap_deviation": 0.0,
+                "atr_ratio": 1.0,
+                "atr_regime": "normal",
+                "adx": 33.04487961329252,
+                "pcr": 1.153,
+                "iv_ratio": 1.0,
+                "change_pct": -1.8044879613292522,
+                "volume_acceleration": 1.0,
+                "volume_trend": "stable",
+                "range_compressed": false,
+                "max_pain_distance": 0.020357971677626846,
+                "days_to_expiry": 7,
+                "futures_basis": 0
+              },
+              "vix": 15.0,
+              "vix_vs_avg": 1.0
+            },
+            "structure": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "current_price": 71814.62,
+              "swing_highs": [],
+              "swing_lows": [
+                71698.48
+              ],
+              "break": null,
+              "trend": "bearish",
+              "confidence": 0.55,
+              "timeframes": {
+                "1m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "momentum_points": 2.56,
+                  "close_change": 2.56
+                },
+                "3m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "breakout": "bullish",
+                  "strength": 0.001044,
+                  "close_change": 85.19
+                },
+                "5m": {
+                  "available": true,
+                  "trend": "bullish",
+                  "change": 76.32
+                }
+              },
+              "timeframe_alignment": {
+                "bullish": true,
+                "bearish": false,
+                "three_tf_aligned": true
+              },
+              "summary": "BSE:SENSEX-INDEX: Bearish bias, conf=0.55"
+            },
+            "stage_support": {
+              "strike": false,
+              "quality": true,
+              "liquidity": true
+            },
+            "spread_pct": 0.2628120893561141,
+            "momentum_strength": 1.0,
+            "timeframe_alignment": {
+              "1m_trend": "bullish",
+              "1m_momentum_points": 2.56,
+              "1m_aligned": false,
+              "3m_trend": "bullish",
+              "3m_breakout": "bullish",
+              "3m_breakout_aligned": false,
+              "5m_trend": "bullish",
+              "5m_aligned": false,
+              "three_tf_aligned": false
+            },
+            "micro_momentum": {
+              "score": 0.0,
+              "timing": "unknown",
+              "aligned": false,
+              "live_confirmed": false
+            },
+            "entry_trigger": {
+              "active": false,
+              "types": [],
+              "live_volatility_burst": false,
+              "live_liquidity_vacuum": false,
+              "synthetic_volatility_burst": false
+            },
+            "entry_confirmation": {},
+            "queue_risk": {},
+            "liquidity_vacuum": {},
+            "volatility_burst": {},
+            "fill_quote": {
+              "bid": 19.0,
+              "ask": 19.05,
+              "spread": 0.05000000000000071,
+              "spread_pct": 0.2628120893561141,
+              "slippage_pct": 0.2631578947368458,
+              "ask_drift_pct": 0.0
+            },
+            "raw_signal": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "strike": 71000,
+              "option_type": "PE",
+              "premium": 19.0,
+              "delta": -0.19918941444425606,
+              "spread": 0.05000000000000071,
+              "spread_pct": 0.2628120893561141,
+              "volume": 150278540,
+              "oi": 8234900,
+              "score": 1.0,
+              "reasons": [
+                "Acceptable premium",
+                "Optimal delta",
+                "Very tight spread",
+                "High volume",
+                "High OI",
+                "Dealer short gamma acceleration"
+              ],
+              "confidence": 1.0,
+              "entry": 19.05,
+              "sl": 14.29,
+              "t1": 25.72,
+              "status": "",
+              "action": "",
+              "source": "live",
+              "underlying_symbol": "BSE:SENSEX-INDEX",
+              "option_symbol": "BSE:SENSEX2640271000PE",
+              "quality_grade": "C",
+              "quality_score": 0.6210918114143921,
+              "recommended_size_pct": 50,
+              "priority": 6,
+              "quality_reasons": [
+                "High confidence: 100%",
+                "Dealer short gamma acceleration"
+              ],
+              "bid_depth": 5000,
+              "ask_depth": 5000,
+              "liquidity_score": 1.0,
+              "fill_quote": {
+                "bid": 19.0,
+                "ask": 19.05,
+                "spread": 0.05000000000000071,
+                "spread_pct": 0.2628120893561141,
+                "slippage_pct": 0.2631578947368458,
+                "ask_drift_pct": 0.0
+              },
+              "regime": "bearish",
+              "momentum_strength": 1.0,
+              "micro_momentum_strength": 0.0,
+              "entry_confirmation": {},
+              "liquidity_vacuum": {},
+              "queue_risk": {},
+              "correlation_penalty": {},
+              "volatility_burst": {},
+              "setup_tag": "C",
+              "setup_reasons": [
+                "setup_tag=C",
+                "rr=1.40",
+                "3tf_aligned=False",
+                "trigger_active=False",
+                "live_confirmed=False"
+              ],
+              "strict_filter_pass": false,
+              "rr_ratio": 1.4013,
+              "timeframe_alignment": {
+                "1m_trend": "bullish",
+                "1m_momentum_points": 2.56,
+                "1m_aligned": false,
+                "3m_trend": "bullish",
+                "3m_breakout": "bullish",
+                "3m_breakout_aligned": false,
+                "5m_trend": "bullish",
+                "5m_aligned": false,
+                "three_tf_aligned": false
+              },
+              "entry_trigger": {
+                "active": false,
+                "types": [],
+                "live_volatility_burst": false,
+                "live_liquidity_vacuum": false,
+                "synthetic_volatility_burst": false
+              },
+              "micro_momentum": {
+                "score": 0.0,
+                "timing": "unknown",
+                "aligned": false,
+                "live_confirmed": false
+              },
+              "condition_count": 3,
+              "target_scale": 0.9,
+              "stop_scale": 1.0,
+              "multiplier": 0.275625,
+              "conditions_met": [
+                "futures_momentum",
+                "volume_burst",
+                "trap_alignment"
+              ],
+              "lots": 1
+            }
+          }
+        },
+        {
+          "phase": "exit",
+          "timestamp": "2026-04-02T11:58:21.380050",
+          "order_id": "REV_eebaf32b",
+          "reason": "Momentum reversal exit",
+          "partial": false,
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 71000,
+          "option_type": "PE",
+          "exit_price": 18.35,
+          "quantity": 10,
+          "pnl": -6.999999999999993,
+          "metadata": {}
+        }
+      ],
+      "current_price": 18.55,
+      "target_price": 25.7,
+      "average_exit_price": 18.35
+    },
+    {
+      "trade_id": "POS_05e2ddce",
+      "symbol": "BSE:SENSEX-INDEX",
+      "index": "SENSEX",
+      "strike": 70900,
+      "option_type": "PE",
+      "direction": "long",
+      "entry_time": "2026-04-02T11:51:46.870767",
+      "entry_price": 17.1,
+      "quantity": 10,
+      "lots": 1,
+      "status": "closed",
+      "exit_time": "2026-04-02T11:57:42.963602",
+      "exit_price": 12.95,
+      "initial_sl": 12.85,
+      "current_sl": 12.85,
+      "sl_moves": [],
+      "partial_exits": [],
+      "remaining_qty": 0,
+      "realized_pnl": -41.50000000000002,
+      "unrealized_pnl": -34.500000000000014,
+      "pnl_pct": -24.269005847953228,
+      "entry_signals": {
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 70900,
+        "option_type": "PE",
+        "premium": 17.05,
+        "delta": -0.19775486777702478,
+        "spread": 0.05000000000000071,
+        "spread_pct": 0.29282576866764687,
+        "volume": 47806800,
+        "oi": 1839780,
+        "score": 1.0,
+        "reasons": [
+          "Optimal premium range",
+          "Optimal delta",
+          "Very tight spread",
+          "High volume",
+          "High OI",
+          "Surface cautious",
+          "Dealer short gamma acceleration"
+        ],
+        "confidence": 1.0,
+        "entry": 17.1,
+        "sl": 12.83,
+        "t1": 23.09,
+        "status": "",
+        "action": "",
+        "source": "live",
+        "underlying_symbol": "BSE:SENSEX-INDEX",
+        "option_symbol": "BSE:SENSEX2640270900PE",
+        "quality_grade": "C",
+        "quality_score": 0.617,
+        "recommended_size_pct": 50,
+        "priority": 6,
+        "quality_reasons": [
+          "High confidence: 100%",
+          "Vol surface defensive",
+          "Dealer short gamma acceleration"
+        ],
+        "bid_depth": 5000,
+        "ask_depth": 5000,
+        "liquidity_score": 1.0,
+        "fill_quote": {
+          "bid": 17.05,
+          "ask": 17.1,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.29282576866764687,
+          "slippage_pct": 0.29325513196481356,
+          "ask_drift_pct": 0.0
+        },
+        "regime": "bearish",
+        "momentum_strength": 1.0,
+        "micro_momentum_strength": 0.0,
+        "entry_confirmation": {},
+        "liquidity_vacuum": {},
+        "queue_risk": {},
+        "correlation_penalty": {},
+        "volatility_burst": {},
+        "setup_tag": "C",
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "strict_filter_pass": false,
+        "rr_ratio": 1.4028,
+        "timeframe_alignment": {
+          "1m_trend": "neutral",
+          "1m_momentum_points": 0.0,
+          "1m_aligned": false,
+          "3m_trend": "neutral",
+          "3m_breakout": null,
+          "3m_breakout_aligned": false,
+          "5m_trend": "neutral",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "condition_count": 2,
+        "target_scale": 0.9,
+        "stop_scale": 1.0,
+        "multiplier": 0.275625,
+        "conditions_met": [
+          "futures_momentum",
+          "volume_burst"
+        ],
+        "lots": 1
+      },
+      "regime": "bearish",
+      "entry_conditions": [
+        "futures_momentum",
+        "volume_burst"
+      ],
+      "entry_condition_count": 2,
+      "spread_pct": 0.29282576866764687,
+      "momentum_strength": 1.0,
+      "outcome": "loss",
+      "decision_packet": {
+        "phase": "entry",
+        "signal_key": "BSE:SENSEX-INDEX|70900|PE",
+        "timestamp": "2026-04-02T11:51:46.870767",
+        "cycle_timestamp": "2026-04-02T11:51:46.870767",
+        "engine_mode": "LIVE_PAPER",
+        "index": "SENSEX",
+        "symbol": "BSE:SENSEX-INDEX",
+        "strike": 70900,
+        "option_type": "PE",
+        "entry_price": 17.1,
+        "initial_sl": 12.85,
+        "initial_target": 23.1,
+        "conditions_met": [
+          "futures_momentum",
+          "volume_burst"
+        ],
+        "condition_count": 2,
+        "quality_grade": "C",
+        "quality_score": 0.617,
+        "confidence": 1.0,
+        "setup_tag": "C",
+        "strict_filter_pass": false,
+        "setup_reasons": [
+          "setup_tag=C",
+          "rr=1.40",
+          "3tf_aligned=False",
+          "trigger_active=False",
+          "live_confirmed=False"
+        ],
+        "rr_ratio": 1.4028,
+        "regime": {
+          "regime": "RANGE_BOUND",
+          "confidence": 0.6,
+          "factors": {
+            "vwap_deviation": 0.0,
+            "atr_ratio": 1.0,
+            "atr_regime": "normal",
+            "adx": 34.10047157066626,
+            "pcr": 1.138,
+            "iv_ratio": 1.0,
+            "change_pct": -1.9100471570666255,
+            "volume_acceleration": 1.0,
+            "volume_trend": "stable",
+            "range_compressed": false,
+            "max_pain_distance": 0.052162455800610415,
+            "days_to_expiry": 7,
+            "futures_basis": 0
+          },
+          "vix": 15.0,
+          "vix_vs_avg": 1.0
+        },
+        "structure": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "current_price": 71737.42,
+          "swing_highs": [],
+          "swing_lows": [],
+          "break": null,
+          "trend": "bearish",
+          "confidence": 0.08,
+          "timeframes": {
+            "1m": {
+              "available": false,
+              "trend": "neutral",
+              "momentum_points": 0.0
+            },
+            "3m": {
+              "available": false,
+              "trend": "neutral",
+              "breakout": null,
+              "strength": 0.0
+            },
+            "5m": {
+              "available": false,
+              "trend": "neutral",
+              "change": 0.0
+            }
+          },
+          "timeframe_alignment": {
+            "bullish": false,
+            "bearish": false,
+            "three_tf_aligned": false
+          },
+          "summary": "BSE:SENSEX-INDEX: structure warming up (1/5 candles)"
+        },
+        "stage_support": {
+          "strike": false,
+          "quality": true,
+          "liquidity": true
+        },
+        "spread_pct": 0.29282576866764687,
+        "momentum_strength": 1.0,
+        "timeframe_alignment": {
+          "1m_trend": "neutral",
+          "1m_momentum_points": 0.0,
+          "1m_aligned": false,
+          "3m_trend": "neutral",
+          "3m_breakout": null,
+          "3m_breakout_aligned": false,
+          "5m_trend": "neutral",
+          "5m_aligned": false,
+          "three_tf_aligned": false
+        },
+        "micro_momentum": {
+          "score": 0.0,
+          "timing": "unknown",
+          "aligned": false,
+          "live_confirmed": false
+        },
+        "entry_trigger": {
+          "active": false,
+          "types": [],
+          "live_volatility_burst": false,
+          "live_liquidity_vacuum": false,
+          "synthetic_volatility_burst": false
+        },
+        "entry_confirmation": {},
+        "queue_risk": {},
+        "liquidity_vacuum": {},
+        "volatility_burst": {},
+        "fill_quote": {
+          "bid": 17.05,
+          "ask": 17.1,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.29282576866764687,
+          "slippage_pct": 0.29325513196481356,
+          "ask_drift_pct": 0.0
+        },
+        "raw_signal": {
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 70900,
+          "option_type": "PE",
+          "premium": 17.05,
+          "delta": -0.19775486777702478,
+          "spread": 0.05000000000000071,
+          "spread_pct": 0.29282576866764687,
+          "volume": 47806800,
+          "oi": 1839780,
+          "score": 1.0,
+          "reasons": [
+            "Optimal premium range",
+            "Optimal delta",
+            "Very tight spread",
+            "High volume",
+            "High OI",
+            "Surface cautious",
+            "Dealer short gamma acceleration"
+          ],
+          "confidence": 1.0,
+          "entry": 17.1,
+          "sl": 12.83,
+          "t1": 23.09,
+          "status": "",
+          "action": "",
+          "source": "live",
+          "underlying_symbol": "BSE:SENSEX-INDEX",
+          "option_symbol": "BSE:SENSEX2640270900PE",
+          "quality_grade": "C",
+          "quality_score": 0.617,
+          "recommended_size_pct": 50,
+          "priority": 6,
+          "quality_reasons": [
+            "High confidence: 100%",
+            "Vol surface defensive",
+            "Dealer short gamma acceleration"
+          ],
+          "bid_depth": 5000,
+          "ask_depth": 5000,
+          "liquidity_score": 1.0,
+          "fill_quote": {
+            "bid": 17.05,
+            "ask": 17.1,
+            "spread": 0.05000000000000071,
+            "spread_pct": 0.29282576866764687,
+            "slippage_pct": 0.29325513196481356,
+            "ask_drift_pct": 0.0
+          },
+          "regime": "bearish",
+          "momentum_strength": 1.0,
+          "micro_momentum_strength": 0.0,
+          "entry_confirmation": {},
+          "liquidity_vacuum": {},
+          "queue_risk": {},
+          "correlation_penalty": {},
+          "volatility_burst": {},
+          "setup_tag": "C",
+          "setup_reasons": [
+            "setup_tag=C",
+            "rr=1.40",
+            "3tf_aligned=False",
+            "trigger_active=False",
+            "live_confirmed=False"
+          ],
+          "strict_filter_pass": false,
+          "rr_ratio": 1.4028,
+          "timeframe_alignment": {
+            "1m_trend": "neutral",
+            "1m_momentum_points": 0.0,
+            "1m_aligned": false,
+            "3m_trend": "neutral",
+            "3m_breakout": null,
+            "3m_breakout_aligned": false,
+            "5m_trend": "neutral",
+            "5m_aligned": false,
+            "three_tf_aligned": false
+          },
+          "entry_trigger": {
+            "active": false,
+            "types": [],
+            "live_volatility_burst": false,
+            "live_liquidity_vacuum": false,
+            "synthetic_volatility_burst": false
+          },
+          "micro_momentum": {
+            "score": 0.0,
+            "timing": "unknown",
+            "aligned": false,
+            "live_confirmed": false
+          },
+          "condition_count": 2,
+          "target_scale": 0.9,
+          "stop_scale": 1.0,
+          "multiplier": 0.275625,
+          "conditions_met": [
+            "futures_momentum",
+            "volume_burst"
+          ],
+          "lots": 1
+        }
+      },
+      "agent_decisions": [
+        {
+          "phase": "entry",
+          "timestamp": "2026-04-02T11:51:46.870767",
+          "reason": "Entry: futures_momentum, volume_burst",
+          "decision_packet": {
+            "phase": "entry",
+            "signal_key": "BSE:SENSEX-INDEX|70900|PE",
+            "timestamp": "2026-04-02T11:51:46.870767",
+            "cycle_timestamp": "2026-04-02T11:51:46.870767",
+            "engine_mode": "LIVE_PAPER",
+            "index": "SENSEX",
+            "symbol": "BSE:SENSEX-INDEX",
+            "strike": 70900,
+            "option_type": "PE",
+            "entry_price": 17.1,
+            "initial_sl": 12.85,
+            "initial_target": 23.1,
+            "conditions_met": [
+              "futures_momentum",
+              "volume_burst"
+            ],
+            "condition_count": 2,
+            "quality_grade": "C",
+            "quality_score": 0.617,
+            "confidence": 1.0,
+            "setup_tag": "C",
+            "strict_filter_pass": false,
+            "setup_reasons": [
+              "setup_tag=C",
+              "rr=1.40",
+              "3tf_aligned=False",
+              "trigger_active=False",
+              "live_confirmed=False"
+            ],
+            "rr_ratio": 1.4028,
+            "regime": {
+              "regime": "RANGE_BOUND",
+              "confidence": 0.6,
+              "factors": {
+                "vwap_deviation": 0.0,
+                "atr_ratio": 1.0,
+                "atr_regime": "normal",
+                "adx": 34.10047157066626,
+                "pcr": 1.138,
+                "iv_ratio": 1.0,
+                "change_pct": -1.9100471570666255,
+                "volume_acceleration": 1.0,
+                "volume_trend": "stable",
+                "range_compressed": false,
+                "max_pain_distance": 0.052162455800610415,
+                "days_to_expiry": 7,
+                "futures_basis": 0
+              },
+              "vix": 15.0,
+              "vix_vs_avg": 1.0
+            },
+            "structure": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "current_price": 71737.42,
+              "swing_highs": [],
+              "swing_lows": [],
+              "break": null,
+              "trend": "bearish",
+              "confidence": 0.08,
+              "timeframes": {
+                "1m": {
+                  "available": false,
+                  "trend": "neutral",
+                  "momentum_points": 0.0
+                },
+                "3m": {
+                  "available": false,
+                  "trend": "neutral",
+                  "breakout": null,
+                  "strength": 0.0
+                },
+                "5m": {
+                  "available": false,
+                  "trend": "neutral",
+                  "change": 0.0
+                }
+              },
+              "timeframe_alignment": {
+                "bullish": false,
+                "bearish": false,
+                "three_tf_aligned": false
+              },
+              "summary": "BSE:SENSEX-INDEX: structure warming up (1/5 candles)"
+            },
+            "stage_support": {
+              "strike": false,
+              "quality": true,
+              "liquidity": true
+            },
+            "spread_pct": 0.29282576866764687,
+            "momentum_strength": 1.0,
+            "timeframe_alignment": {
+              "1m_trend": "neutral",
+              "1m_momentum_points": 0.0,
+              "1m_aligned": false,
+              "3m_trend": "neutral",
+              "3m_breakout": null,
+              "3m_breakout_aligned": false,
+              "5m_trend": "neutral",
+              "5m_aligned": false,
+              "three_tf_aligned": false
+            },
+            "micro_momentum": {
+              "score": 0.0,
+              "timing": "unknown",
+              "aligned": false,
+              "live_confirmed": false
+            },
+            "entry_trigger": {
+              "active": false,
+              "types": [],
+              "live_volatility_burst": false,
+              "live_liquidity_vacuum": false,
+              "synthetic_volatility_burst": false
+            },
+            "entry_confirmation": {},
+            "queue_risk": {},
+            "liquidity_vacuum": {},
+            "volatility_burst": {},
+            "fill_quote": {
+              "bid": 17.05,
+              "ask": 17.1,
+              "spread": 0.05000000000000071,
+              "spread_pct": 0.29282576866764687,
+              "slippage_pct": 0.29325513196481356,
+              "ask_drift_pct": 0.0
+            },
+            "raw_signal": {
+              "symbol": "BSE:SENSEX-INDEX",
+              "strike": 70900,
+              "option_type": "PE",
+              "premium": 17.05,
+              "delta": -0.19775486777702478,
+              "spread": 0.05000000000000071,
+              "spread_pct": 0.29282576866764687,
+              "volume": 47806800,
+              "oi": 1839780,
+              "score": 1.0,
+              "reasons": [
+                "Optimal premium range",
+                "Optimal delta",
+                "Very tight spread",
+                "High volume",
+                "High OI",
+                "Surface cautious",
+                "Dealer short gamma acceleration"
+              ],
+              "confidence": 1.0,
+              "entry": 17.1,
+              "sl": 12.83,
+              "t1": 23.09,
+              "status": "",
+              "action": "",
+              "source": "live",
+              "underlying_symbol": "BSE:SENSEX-INDEX",
+              "option_symbol": "BSE:SENSEX2640270900PE",
+              "quality_grade": "C",
+              "quality_score": 0.617,
+              "recommended_size_pct": 50,
+              "priority": 6,
+              "quality_reasons": [
+                "High confidence: 100%",
+                "Vol surface defensive",
+                "Dealer short gamma acceleration"
+              ],
+              "bid_depth": 5000,
+              "ask_depth": 5000,
+              "liquidity_score": 1.0,
+              "fill_quote": {
+                "bid": 17.05,
+                "ask": 17.1,
+                "spread": 0.05000000000000071,
+                "spread_pct": 0.29282576866764687,
+                "slippage_pct": 0.29325513196481356,
+                "ask_drift_pct": 0.0
+              },
+              "regime": "bearish",
+              "momentum_strength": 1.0,
+              "micro_momentum_strength": 0.0,
+              "entry_confirmation": {},
+              "liquidity_vacuum": {},
+              "queue_risk": {},
+              "correlation_penalty": {},
+              "volatility_burst": {},
+              "setup_tag": "C",
+              "setup_reasons": [
+                "setup_tag=C",
+                "rr=1.40",
+                "3tf_aligned=False",
+                "trigger_active=False",
+                "live_confirmed=False"
+              ],
+              "strict_filter_pass": false,
+              "rr_ratio": 1.4028,
+              "timeframe_alignment": {
+                "1m_trend": "neutral",
+                "1m_momentum_points": 0.0,
+                "1m_aligned": false,
+                "3m_trend": "neutral",
+                "3m_breakout": null,
+                "3m_breakout_aligned": false,
+                "5m_trend": "neutral",
+                "5m_aligned": false,
+                "three_tf_aligned": false
+              },
+              "entry_trigger": {
+                "active": false,
+                "types": [],
+                "live_volatility_burst": false,
+                "live_liquidity_vacuum": false,
+                "synthetic_volatility_burst": false
+              },
+              "micro_momentum": {
+                "score": 0.0,
+                "timing": "unknown",
+                "aligned": false,
+                "live_confirmed": false
+              },
+              "condition_count": 2,
+              "target_scale": 0.9,
+              "stop_scale": 1.0,
+              "multiplier": 0.275625,
+              "conditions_met": [
+                "futures_momentum",
+                "volume_burst"
+              ],
+              "lots": 1
+            }
+          }
+        },
+        {
+          "phase": "exit",
+          "timestamp": "2026-04-02T11:57:42.963602",
+          "order_id": "SL_bfcd417c",
+          "reason": "SL hit: 12.60 <= 12.85",
+          "partial": false,
+          "symbol": "BSE:SENSEX-INDEX",
+          "strike": 70900,
+          "option_type": "PE",
+          "exit_price": 12.95,
+          "quantity": 10,
+          "pnl": -41.50000000000002,
+          "metadata": {}
+        }
+      ],
+      "current_price": 13.65,
+      "target_price": 23.1,
+      "average_exit_price": 12.95
+    }
+  ]
+}

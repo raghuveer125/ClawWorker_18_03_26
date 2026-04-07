@@ -1132,6 +1132,57 @@ class StrikeSelectorAgent(BaseBot):
 
         return "CE"  # Default to CE
 
+    @staticmethod
+    def _is_expiry_day_for_symbol(symbol: str = "") -> bool:
+        """Check if today is expiry day for a specific index using exchange data.
+
+        Reads the expiry schedule cache (populated from Fyers/exchange API)
+        rather than assuming fixed weekdays. Falls back to weekday heuristic
+        only if cache is unavailable.
+        """
+        from datetime import date
+        from pathlib import Path
+        import json as _json
+
+        today = date.today()
+        today_str = today.isoformat()
+
+        # Map symbol to index name for cache lookup
+        _sym_to_name = {
+            "NSE:NIFTY50-INDEX": "NIFTY50",
+            "NSE:NIFTYBANK-INDEX": "BANKNIFTY",
+            "BSE:SENSEX-INDEX": "SENSEX",
+            "NSE:FINNIFTY-INDEX": "FINNIFTY",
+            "NSE:MIDCPNIFTY-INDEX": "MIDCPNIFTY",
+        }
+        index_name = _sym_to_name.get(str(symbol).upper(), "")
+
+        # Priority: exchange-sourced expiry cache
+        if index_name:
+            for parents_up in (5, 4, 3, 6):
+                cache_path = Path(__file__).resolve().parents[parents_up] / "shared_project_engine" / "indices" / ".cache" / "expiry_schedule.json"
+                try:
+                    if cache_path.exists():
+                        data = _json.loads(cache_path.read_text()).get("data", {})
+                        info = data.get(index_name, {})
+                        if isinstance(info, dict) and info.get("next_expiry"):
+                            return info["next_expiry"] == today_str
+                except Exception:
+                    continue
+
+        # Fallback: weekday heuristic (clearly inferior, log warning)
+        import logging
+        logging.getLogger("scalping.strike_selector").warning(
+            "Expiry cache unavailable for %s — using weekday fallback", symbol
+        )
+        return today.weekday() in (3, 4)
+
+    @staticmethod
+    def _is_expiry_day() -> bool:
+        """Legacy global check — DEPRECATED. Use _is_expiry_day_for_symbol()."""
+        from datetime import date
+        return date.today().weekday() in (3, 4)
+
     def _select_strikes(
         self,
         chain: Any,
@@ -1143,13 +1194,26 @@ class StrikeSelectorAgent(BaseBot):
         volatility_surface: Optional[Dict[str, Any]] = None,
         dealer_pressure: Optional[Dict[str, Any]] = None,
     ) -> List[StrikeSelection]:
-        """Select optimal strikes based on criteria."""
+        """Select optimal strikes — institutional approach.
+
+        Expiry day:  Allow wider spreads, use strict OTM/premium/delta filters.
+        Non-expiry:  Relax premium/delta filters, rank by movement quality
+                     (volume×OI momentum, spread tightness, institutional flow).
+        """
         idx_config = self._get_index_config(symbol)
         if not idx_config:
             idx_config = get_index_config(IndexType.NIFTY50)
         volatility_surface = volatility_surface or {}
         dealer_pressure = dealer_pressure or {}
         otm_min, otm_max = self._adaptive_otm_range(idx_config, config, vix, volatility_surface)
+        is_expiry = self._is_expiry_day_for_symbol(symbol)
+
+        # Non-expiry: relax thresholds to find best-movement strikes
+        spread_limit = config.max_bid_ask_spread_pct if is_expiry else config.max_bid_ask_spread_pct * 0.6
+        min_vol = config.min_volume_threshold if is_expiry else max(100, config.min_volume_threshold // 5)
+        min_oi = config.min_oi_threshold if is_expiry else max(500, config.min_oi_threshold // 5)
+        premium_lo = idx_config.premium_min
+        premium_hi = idx_config.premium_max if is_expiry else idx_config.premium_max * 4  # wider range on non-expiry
 
         candidates = []
         adaptive_candidates = []
@@ -1169,18 +1233,46 @@ class StrikeSelectorAgent(BaseBot):
             if otm_distance < idx_config.strike_interval:
                 continue
 
-            # Filter by spread
-            if opt.spread_pct > config.max_bid_ask_spread_pct:
+            # Filter by spread — strict on non-expiry (want tight), relaxed on expiry
+            if opt.spread_pct > spread_limit:
                 continue
 
-            # Filter by liquidity
-            if opt.volume < config.min_volume_threshold:
+            # Filter by liquidity — relaxed on non-expiry to find movement
+            if opt.volume < min_vol:
                 continue
-            if opt.oi < config.min_oi_threshold:
+            if opt.oi < min_oi:
                 continue
 
             # Calculate selection score
             score, reasons = self._calculate_score(opt, idx_config, config, spot_price, volatility_surface, dealer_pressure)
+
+            # Non-expiry: boost score for institutional movement indicators
+            if not is_expiry:
+                movement_bonus = 0.0
+                # High volume relative to OI = institutional entry
+                if opt.oi > 0 and opt.volume / opt.oi > 0.1:
+                    movement_bonus += 0.15
+                    reasons = reasons + ["high_vol_oi_ratio"]
+                # Tight spread = institutional interest
+                if opt.spread_pct < 2.0:
+                    movement_bonus += 0.10
+                    reasons = reasons + ["tight_spread"]
+                # Good OI buildup
+                if opt.oi > config.min_oi_threshold:
+                    movement_bonus += 0.05
+                    reasons = reasons + ["strong_oi"]
+                score += movement_bonus
+
+            entry_price = float(getattr(opt, "ask", 0) or getattr(opt, "ltp", 0) or 0)
+            # Scalping SL/target — percentage-based for all premium ranges
+            # SL: ~25% of premium (tight scalping risk)
+            # Target: ~35% of premium (gives R:R ~1.4)
+            sl_price = round(entry_price * 0.75, 2) if entry_price > 0 else 0.0
+            first_target_pts = float(getattr(config, "first_target_points", 4.0) or 4.0)
+            # Use max of fixed target or 35% of premium
+            target_offset = max(first_target_pts, entry_price * 0.35)
+            target_price = round(entry_price + target_offset, 2)
+
             selection = StrikeSelection(
                 symbol=opt.symbol,
                 strike=opt.strike,
@@ -1194,19 +1286,30 @@ class StrikeSelectorAgent(BaseBot):
                 score=score,
                 reasons=reasons,
                 confidence=score,
-                entry=float(getattr(opt, "ask", 0) or getattr(opt, "ltp", 0) or 0),
+                entry=entry_price,
+                sl=sl_price,
+                t1=target_price,
             )
 
             delta_reliable = abs(float(opt.delta or 0)) >= 0.01
             delta_ok = (idx_config.delta_min <= abs(opt.delta) <= idx_config.delta_max) if delta_reliable else True
-            premium_ok = idx_config.premium_min <= opt.ltp <= idx_config.premium_max
+            premium_ok = premium_lo <= opt.ltp <= premium_hi
             otm_ok = otm_min <= otm_distance <= otm_max
 
-            if otm_ok and premium_ok and delta_ok:
-                candidates.append(selection)
-                continue
+            if is_expiry:
+                # Expiry: strict filters — must match OTM + premium + delta
+                if otm_ok and premium_ok and delta_ok:
+                    candidates.append(selection)
+                    continue
+            else:
+                # Non-expiry: institutional approach — prioritize movement quality
+                # Accept if premium is in range (wider), skip strict delta/OTM
+                if premium_ok:
+                    candidates.append(selection)
+                    continue
 
-            if premium_ok:
+            # Adaptive fallback for both modes
+            if premium_ok or (not is_expiry and opt.ltp > 0):
                 adaptive_score, adaptive_reasons = self._calculate_adaptive_live_score(
                     opt=opt,
                     idx_config=idx_config,

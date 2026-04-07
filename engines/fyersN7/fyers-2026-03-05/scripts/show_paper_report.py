@@ -7,11 +7,10 @@ import os
 from typing import Any, Dict, List, Tuple
 
 
-def to_float(v: Any, default: float = 0.0) -> float:
-    try:
-        return float(v)
-    except Exception:
-        return default
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parents[4]))
+from core.utils import to_float  # noqa: E402
 
 
 def load_csv(path: str) -> List[Dict[str, str]]:

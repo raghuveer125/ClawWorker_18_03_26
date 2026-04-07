@@ -38,14 +38,14 @@ POSTMORTEM_BASE = PROJECT_ROOT / "fyersN7" / "fyers-2026-03-05" / "postmortem"
 def to_float(v: Any, default: float = 0.0) -> float:
     try:
         return float(v)
-    except:
+    except (TypeError, ValueError):
         return default
 
 
 def to_int(v: Any, default: int = 0) -> int:
     try:
         return int(float(v))
-    except:
+    except (TypeError, ValueError):
         return default
 
 

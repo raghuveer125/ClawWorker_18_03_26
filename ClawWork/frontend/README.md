@@ -56,6 +56,19 @@ npm run dev
 
 The frontend will start on `http://localhost:3000` and automatically proxy API requests to the backend.
 
+### Environment Variables
+
+The frontend supports Vite env vars from either:
+
+- the repo-root [`.env`](/Users/raghuveersingh.choudhari/ClawWorker_18_03_26/.env)
+- a frontend-local `ClawWork/frontend/.env`
+
+Useful vars:
+
+- `VITE_APP_PASSWORD` - password for the dashboard gate
+- `VITE_API_PORT` - backend API port override
+- `VITE_SCALPING_API_PORT` - scalping API port override
+
 ## Development
 
 ### Project Structure
@@ -88,6 +101,17 @@ frontend/
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
+- `npm run test` - Run frontend regression tests once
+- `npm run test:watch` - Run frontend regression tests in watch mode
+
+### Testing
+
+```bash
+npm run test
+npm run test:watch
+```
+
+The current frontend coverage is intentionally lightweight and focused on dashboard/route regressions such as invalid worker URLs.
 
 ## Features Overview
 

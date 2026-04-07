@@ -14,8 +14,18 @@ Usage:
     symbols = get_watchlist("BANKNIFTY")
 """
 
+import json
 import re
-from typing import Dict, List, Optional, Any
+import time
+from datetime import date, datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+from zoneinfo import ZoneInfo
+
+try:
+    import requests
+except ImportError:  # pragma: no cover - exercised in environments without requests
+    requests = None
 
 # =============================================================================
 # INDEX CONFIGURATION
@@ -144,8 +154,8 @@ INDEX_ALIASES: Dict[str, str] = {
     "MIDCPNIFTY": "MIDCPNIFTY",
 }
 
-# Monthly expiry dates (actual dates from exchange calendar)
-# Update this dict monthly with actual expiry dates
+# Historical monthly expiry dates used by backdated parsers and archived views.
+# Live dashboard expiry badges must not rely on this table.
 MONTHLY_EXPIRY_DATES = {
     "2026-03": {
         "SENSEX": "2026-03-12",
@@ -166,10 +176,272 @@ MONTHLY_EXPIRY_DATES = {
 # Active indices for trading (order matters for display)
 ACTIVE_INDICES: List[str] = ["SENSEX", "NIFTY50", "BANKNIFTY", "FINNIFTY"]
 
+IST = ZoneInfo("Asia/Kolkata")
+_EXPIRY_CACHE_TTL_SECONDS = 3600
+_EXPIRY_CACHE_DIR = Path(__file__).parent / ".cache"
+_EXPIRY_CACHE_FILE = _EXPIRY_CACHE_DIR / "expiry_schedule.json"
+_EXCHANGE_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0 Safari/537.36"
+    ),
+    "Accept": "application/json,text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Cache-Control": "no-cache",
+    "Pragma": "no-cache",
+}
+_NSE_OPTION_CHAIN_BOOTSTRAP_URL = "https://www.nseindia.com/option-chain"
+_NSE_OPTION_CHAIN_URL = "https://www.nseindia.com/api/option-chain-indices"
+_BSE_DERIVATIVES_PAGE_URL = "https://m.bseindia.com/derivatives.aspx"
+_NSE_OPTION_CHAIN_SYMBOLS: Dict[str, str] = {
+    "NIFTY50": "NIFTY",
+    "BANKNIFTY": "BANKNIFTY",
+    "FINNIFTY": "FINNIFTY",
+    "MIDCPNIFTY": "MIDCPNIFTY",
+}
+_MONTH_TEXT_TO_NUMBER = {
+    "JAN": 1,
+    "FEB": 2,
+    "MAR": 3,
+    "APR": 4,
+    "MAY": 5,
+    "JUN": 6,
+    "JUL": 7,
+    "AUG": 8,
+    "SEP": 9,
+    "OCT": 10,
+    "NOV": 11,
+    "DEC": 12,
+}
+_SINGLE_CHAR_MONTH_TO_NUMBER = {"O": 10, "N": 11, "D": 12}
+_SUPPORTED_EXPIRY_SOURCES = {"exchange", "fyers"}
+
 
 # =============================================================================
 # HELPER FUNCTIONS
 # =============================================================================
+
+
+def _ist_now() -> datetime:
+    """Current timestamp in IST for exchange-aligned date calculations."""
+    return datetime.now(IST)
+
+
+def _ist_today() -> date:
+    return _ist_now().date()
+
+
+def _build_exchange_session():
+    if requests is None:
+        return None
+    session = requests.Session()
+    session.headers.update(_EXCHANGE_HEADERS)
+    return session
+
+
+def _parse_exchange_date(value: Any) -> Optional[date]:
+    raw_value = str(value or "").strip()
+    if not raw_value:
+        return None
+
+    for fmt in ("%Y-%m-%d", "%d-%b-%Y", "%d %b %Y", "%d/%m/%Y", "%Y/%m/%d", "%d-%m-%Y"):
+        try:
+            return datetime.strptime(raw_value, fmt).date()
+        except ValueError:
+            continue
+
+    # Handle Unix timestamps (Fyers returns expiry as epoch seconds)
+    try:
+        ts = float(raw_value)
+        if ts > 1_000_000_000:
+            return date.fromtimestamp(ts)
+    except (ValueError, OSError, OverflowError):
+        pass
+
+    return None
+
+
+def _format_weekday_info(expiry_date: date) -> Dict[str, Any]:
+    weekday_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    weekday = expiry_date.weekday()
+    return {
+        "weekday": weekday,
+        "weekday_name": weekday_names[weekday],
+        "weekday_short": weekday_names[weekday][:3],
+    }
+
+
+def _extract_nse_expiry_dates(payload: Dict[str, Any], today: date) -> List[str]:
+    expiry_values = (
+        ((payload or {}).get("records") or {}).get("expiryDates")
+        or ((payload or {}).get("filtered") or {}).get("expiryDates")
+        or []
+    )
+    dates = {
+        parsed.isoformat()
+        for parsed in (_parse_exchange_date(value) for value in expiry_values)
+        if parsed and parsed >= today
+    }
+    return sorted(dates)
+
+
+def _extract_bse_series_expiry_dates(page_text: str, today: date) -> List[str]:
+    expiry_dates = set()
+    patterns = (
+        re.compile(r"SENSEX(?P<yy>\d{2})(?P<m>[1-9OND])(?P<dd>\d{2})\d+(?:CE|PE)"),
+        re.compile(r"SENSEX(?P<yy>\d{2})(?P<mm>\d{2})(?P<dd>\d{2})\d+(?:CE|PE)"),
+    )
+
+    for pattern in patterns:
+        for match in pattern.finditer(page_text or ""):
+            year = 2000 + int(match.group("yy"))
+            if "mm" in match.groupdict() and match.group("mm"):
+                month = int(match.group("mm"))
+            else:
+                raw_month = match.group("m")
+                month = _SINGLE_CHAR_MONTH_TO_NUMBER.get(raw_month)
+                if month is None:
+                    month = int(raw_month)
+            day = int(match.group("dd"))
+            try:
+                parsed = date(year, month, day)
+            except ValueError:
+                continue
+            if parsed >= today:
+                expiry_dates.add(parsed.isoformat())
+
+    return sorted(expiry_dates)
+
+
+def _parse_option_symbol_expiry(symbol: str) -> Optional[date]:
+    raw_symbol = str(symbol or "").upper().split(":")[-1]
+    if not raw_symbol:
+        return None
+
+    weekly_y_m_dd = re.search(
+        r"^[A-Z]+(?P<yy>\d{2})(?P<m>[1-9OND])(?P<dd>\d{2})\d+(CE|PE)$",
+        raw_symbol,
+    )
+    if weekly_y_m_dd:
+        yy = int(weekly_y_m_dd.group("yy"))
+        month_token = weekly_y_m_dd.group("m")
+        month = _SINGLE_CHAR_MONTH_TO_NUMBER.get(month_token)
+        if month is None:
+            month = int(month_token)
+        day = int(weekly_y_m_dd.group("dd"))
+        try:
+            return date(2000 + yy, month, day)
+        except ValueError:
+            return None
+
+    weekly_y_mm_dd = re.search(
+        r"^[A-Z]+(?P<yy>\d{2})(?P<mm>\d{2})(?P<dd>\d{2})\d+(CE|PE)$",
+        raw_symbol,
+    )
+    if weekly_y_mm_dd:
+        try:
+            return date(
+                2000 + int(weekly_y_mm_dd.group("yy")),
+                int(weekly_y_mm_dd.group("mm")),
+                int(weekly_y_mm_dd.group("dd")),
+            )
+        except ValueError:
+            return None
+
+    weekly_dd_mon_yy = re.search(
+        r"^[A-Z]+(?P<dd>\d{2})(?P<mon>JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?P<yy>\d{2})\d{3,}(CE|PE)$",
+        raw_symbol,
+    )
+    if weekly_dd_mon_yy:
+        try:
+            return date(
+                2000 + int(weekly_dd_mon_yy.group("yy")),
+                _MONTH_TEXT_TO_NUMBER[weekly_dd_mon_yy.group("mon")],
+                int(weekly_dd_mon_yy.group("dd")),
+            )
+        except ValueError:
+            return None
+
+    return None
+
+
+def _extract_fyers_chain_expiry_dates(payload: Dict[str, Any], today: date) -> List[str]:
+    data = payload.get("data", payload) if isinstance(payload, dict) else {}
+    if isinstance(data.get("data"), dict):
+        data = data["data"]
+
+    expiry_dates = set()
+
+    # Prefer expiryData — direct list of expiry dates, avoids symbol regex entirely
+    for entry in data.get("expiryData") or []:
+        if not isinstance(entry, dict):
+            continue
+        parsed = _parse_exchange_date(entry.get("date") or entry.get("expiry"))
+        if parsed and parsed >= today:
+            expiry_dates.add(parsed.isoformat())
+
+    if expiry_dates:
+        return sorted(expiry_dates)
+
+    # Fallback: parse from individual option contract entries
+    options = data.get("optionsChain", data.get("options", []))
+    for option in options or []:
+        if not isinstance(option, dict):
+            continue
+        parsed = (
+            _parse_exchange_date(option.get("expiry"))
+            or _parse_exchange_date(option.get("expiryDate"))
+            or _parse_option_symbol_expiry(option.get("symbol"))
+        )
+        if parsed and parsed >= today:
+            expiry_dates.add(parsed.isoformat())
+
+    return sorted(expiry_dates)
+
+
+def _load_expiry_cache() -> Optional[Dict[str, Any]]:
+    try:
+        if not _EXPIRY_CACHE_FILE.exists():
+            return None
+        with open(_EXPIRY_CACHE_FILE, "r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+        if time.time() - float(payload.get("timestamp", 0) or 0) > _EXPIRY_CACHE_TTL_SECONDS:
+            return None
+        data = payload.get("data")
+        if not isinstance(data, dict):
+            return None
+        return {
+            "data": data,
+            "fetched_at": payload.get("fetched_at"),
+        }
+    except Exception:
+        return None
+
+
+def _save_expiry_cache(data: Dict[str, Any]) -> str:
+    fetched_at = _ist_now().isoformat()
+    try:
+        _EXPIRY_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        with open(_EXPIRY_CACHE_FILE, "w", encoding="utf-8") as handle:
+            json.dump(
+                {
+                    "data": data,
+                    "fetched_at": fetched_at,
+                    "timestamp": time.time(),
+                },
+                handle,
+            )
+    except Exception:
+        pass
+    return fetched_at
+
+
+def clear_expiry_cache() -> None:
+    """Remove the on-disk exchange expiry cache."""
+    try:
+        _EXPIRY_CACHE_FILE.unlink(missing_ok=True)
+    except Exception:
+        pass
 
 def canonicalize_index_name(index_name: str) -> str:
     """Normalize user-provided names to the shared canonical key."""
@@ -279,183 +551,271 @@ def is_expiry_today(index_name: str, check_date: Optional[Any] = None) -> bool:
     return check_date.weekday() == expiry_weekday
 
 
-def fetch_live_expiry_dates() -> Dict[str, str]:
+def fetch_nse_exchange_expiries(session=None, today: Optional[date] = None) -> Dict[str, str]:
     """
-    Fetch actual next expiry dates from FYERS symbol master CSV.
-
-    Returns:
-        Dict of index name -> next expiry date (YYYY-MM-DD)
+    Fetch upcoming expiries for NSE index options from the official NSE option-chain response.
     """
-    import csv
-    import io
-    import requests
-    from datetime import datetime, timedelta
+    if requests is None:
+        return {}
 
-    NSE_FO_URL = "https://public.fyers.in/sym_details/NSE_FO.csv"
-    BSE_FO_URL = "https://public.fyers.in/sym_details/BSE_FO.csv"
+    today = today or _ist_today()
+    own_session = session is None
+    session = session or _build_exchange_session()
+    if session is None:
+        return {}
 
-    result = {}
-    now = datetime.now()
-    # Look for expiries within next 7 days for weekly options
-    max_date = now + timedelta(days=7)
-
-    # Index patterns to match in symbol descriptions
-    index_patterns = {
-        "NIFTY50": lambda desc: "NIFTY" in desc and "BANKNIFTY" not in desc and "FINNIFTY" not in desc and "MIDCPNIFTY" not in desc,
-        "BANKNIFTY": lambda desc: "BANKNIFTY" in desc,
-        "FINNIFTY": lambda desc: "FINNIFTY" in desc,
-        "MIDCPNIFTY": lambda desc: "MIDCPNIFTY" in desc,
-    }
-
+    result: Dict[str, str] = {}
     try:
-        # Fetch NSE F&O symbols
-        resp = requests.get(NSE_FO_URL, timeout=30)
-        if resp.status_code == 200:
-            reader = csv.reader(io.StringIO(resp.text))
-            for row in reader:
-                if len(row) < 10:
-                    continue
-                desc = row[1] if len(row) > 1 else ""
-                expiry_ts = row[8] if len(row) > 8 else ""
-
-                # Only process options (CE/PE)
-                if "CE" not in desc and "PE" not in desc:
-                    continue
-
-                try:
-                    exp_ts = int(expiry_ts)
-                    exp_date = datetime.fromtimestamp(exp_ts)
-                    # Skip past expiries and far future expiries
-                    if exp_date <= now:
-                        continue
-
-                    # Check which index this belongs to
-                    for idx_name, matcher in index_patterns.items():
-                        if matcher(desc):
-                            exp_str = exp_date.strftime("%Y-%m-%d")
-                            # Keep earliest upcoming expiry
-                            if idx_name not in result or exp_str < result[idx_name]:
-                                result[idx_name] = exp_str
-                            break
-                except (ValueError, OSError):
-                    continue
+        session.get(_NSE_OPTION_CHAIN_BOOTSTRAP_URL, timeout=20)
     except Exception:
         pass
 
-    try:
-        # Fetch BSE F&O for SENSEX
-        resp = requests.get(BSE_FO_URL, timeout=30)
-        if resp.status_code == 200:
-            reader = csv.reader(io.StringIO(resp.text))
-            for row in reader:
-                if len(row) < 10:
-                    continue
-                desc = row[1] if len(row) > 1 else ""
-                expiry_ts = row[8] if len(row) > 8 else ""
+    for index_name, symbol in _NSE_OPTION_CHAIN_SYMBOLS.items():
+        try:
+            response = session.get(_NSE_OPTION_CHAIN_URL, params={"symbol": symbol}, timeout=20)
+            response.raise_for_status()
+            expiries = _extract_nse_expiry_dates(response.json(), today)
+            if expiries:
+                result[index_name] = expiries[0]
+        except Exception:
+            continue
 
-                if "SENSEX" not in desc:
-                    continue
-                if "CE" not in desc and "PE" not in desc:
-                    continue
-
-                try:
-                    exp_ts = int(expiry_ts)
-                    exp_date = datetime.fromtimestamp(exp_ts)
-                    if exp_date <= now:
-                        continue
-
-                    exp_str = exp_date.strftime("%Y-%m-%d")
-                    if "SENSEX" not in result or exp_str < result["SENSEX"]:
-                        result["SENSEX"] = exp_str
-                except (ValueError, OSError):
-                    continue
-    except Exception:
-        pass
+    if own_session:
+        session.close()
 
     return result
 
 
-# Cache for live expiry data (refreshed every hour)
-_live_expiry_cache: Dict[str, Any] = {"data": {}, "timestamp": None}
+def fetch_bse_exchange_expiries(session=None, today: Optional[date] = None) -> Dict[str, str]:
+    """
+    Fetch upcoming SENSEX expiries from the official BSE derivatives page.
+    """
+    if requests is None:
+        return {}
+
+    today = today or _ist_today()
+    own_session = session is None
+    session = session or _build_exchange_session()
+    if session is None:
+        return {}
+
+    result: Dict[str, str] = {}
+    try:
+        response = session.get(_BSE_DERIVATIVES_PAGE_URL, timeout=20)
+        response.raise_for_status()
+        expiries = _extract_bse_series_expiry_dates(response.text, today)
+        if expiries:
+            result["SENSEX"] = expiries[0]
+    except Exception:
+        pass
+
+    if own_session:
+        session.close()
+
+    return result
+
+
+def fetch_fyers_expiry_dates(today: Optional[date] = None) -> Dict[str, str]:
+    """
+    Fetch upcoming expiries from authenticated FYERS option-chain data.
+    """
+    today = today or _ist_today()
+
+    try:
+        from shared_project_engine.auth import get_client
+    except Exception:
+        return {}
+
+    try:
+        client = get_client()
+    except Exception:
+        return {}
+
+    result: Dict[str, str] = {}
+    for name, cfg in INDEX_CONFIG.items():
+        symbol = cfg.get("symbol")
+        if not symbol:
+            continue
+        try:
+            response = client.option_chain(symbol=symbol, strike_count=2)
+            if not response.get("success"):
+                continue
+            expiries = _extract_fyers_chain_expiry_dates(response.get("data", {}), today)
+            if expiries:
+                result[name] = expiries[0]
+        except Exception:
+            continue
+
+    return result
+
+
+def fetch_live_expiry_dates() -> Dict[str, str]:
+    """
+    Backwards-compatible alias for exchange-published expiry discovery.
+    """
+    result = {}
+    result.update(fetch_nse_exchange_expiries())
+    result.update(fetch_bse_exchange_expiries())
+    return result
+
+
+def _fetch_exchange_expiry_snapshot(today: date) -> Dict[str, Any]:
+    data: Dict[str, Dict[str, str]] = {}
+    try:
+        session = _build_exchange_session()
+        if session is not None:
+            for index_name, expiry in fetch_nse_exchange_expiries(session=session, today=today).items():
+                data[index_name] = {"next_expiry": expiry, "source": "exchange"}
+            for index_name, expiry in fetch_bse_exchange_expiries(session=session, today=today).items():
+                data[index_name] = {"next_expiry": expiry, "source": "exchange"}
+            session.close()
+    except Exception:
+        data = {}
+
+    missing_indices = [name for name in INDEX_CONFIG if name not in data]
+    if missing_indices:
+        fyers_data = fetch_fyers_expiry_dates(today=today)
+        for index_name in missing_indices:
+            expiry = fyers_data.get(index_name)
+            if expiry:
+                data[index_name] = {"next_expiry": expiry, "source": "fyers"}
+
+    if not data:
+        return {"data": {}, "fetched_at": None}
+
+    return {
+        "data": data,
+        "fetched_at": _save_expiry_cache(data),
+    }
+
+
+def _build_static_expiry_schedule(today: date) -> Dict[str, Any]:
+    schedule = {}
+    todays_expiry = []
+
+    for name, cfg in INDEX_CONFIG.items():
+        expiry_weekday = cfg.get("expiry_weekday")
+        if expiry_weekday is None:
+            continue
+        weekday_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        is_expiry_today_value = today.weekday() == expiry_weekday
+        if is_expiry_today_value:
+            todays_expiry.append(name)
+        schedule[name] = {
+            "exchange": cfg.get("exchange"),
+            "source": "static",
+            "next_expiry": None,
+            "weekday": expiry_weekday,
+            "weekday_name": weekday_names[expiry_weekday],
+            "weekday_short": weekday_names[expiry_weekday][:3],
+            "is_expiry_today": is_expiry_today_value,
+        }
+
+    return {
+        "expirySchedule": schedule,
+        "todaysExpiry": todays_expiry,
+        "sourceStatus": "static",
+        "fetchedAt": None,
+    }
+
+
+def get_expiry_snapshot(use_live: bool = True, force_refresh: bool = False) -> Dict[str, Any]:
+    """
+    Return the exchange-backed expiry snapshot used by live dashboards.
+    """
+    today = _ist_today()
+
+    if not use_live:
+        return _build_static_expiry_schedule(today)
+
+    snapshot = None if force_refresh else _load_expiry_cache()
+    if snapshot is None:
+        snapshot = _fetch_exchange_expiry_snapshot(today)
+
+    live_expiries = snapshot.get("data", {}) if isinstance(snapshot, dict) else {}
+    fetched_at = snapshot.get("fetched_at") if isinstance(snapshot, dict) else None
+
+    schedule: Dict[str, Dict[str, Any]] = {}
+    available_count = 0
+    exchange_count = 0
+    fyers_count = 0
+    todays_expiry: List[str] = []
+    today_str = today.isoformat()
+
+    for name, cfg in INDEX_CONFIG.items():
+        raw_expiry_entry = live_expiries.get(name)
+        if isinstance(raw_expiry_entry, dict):
+            next_expiry = raw_expiry_entry.get("next_expiry")
+            source = raw_expiry_entry.get("source", "unavailable")
+        else:
+            next_expiry = raw_expiry_entry
+            source = "exchange" if next_expiry else "unavailable"
+        parsed_expiry = _parse_exchange_date(next_expiry)
+        if parsed_expiry and parsed_expiry >= today:
+            available_count += 1
+            if source == "exchange":
+                exchange_count += 1
+            elif source == "fyers":
+                fyers_count += 1
+            weekday_info = _format_weekday_info(parsed_expiry)
+            is_expiry_today_value = parsed_expiry.isoformat() == today_str
+            if is_expiry_today_value:
+                todays_expiry.append(name)
+            schedule[name] = {
+                "exchange": cfg.get("exchange"),
+                "source": source,
+                "next_expiry": parsed_expiry.isoformat(),
+                "is_expiry_today": is_expiry_today_value,
+                **weekday_info,
+            }
+            continue
+
+        schedule[name] = {
+            "exchange": cfg.get("exchange"),
+            "source": "unavailable",
+            "next_expiry": None,
+            "weekday": None,
+            "weekday_name": None,
+            "weekday_short": None,
+            "is_expiry_today": False,
+        }
+
+    source_status = "exchange"
+    if available_count == 0:
+        source_status = "unavailable"
+    elif fyers_count and not exchange_count:
+        source_status = "fyers"
+    elif fyers_count and exchange_count:
+        source_status = "mixed"
+    elif available_count < len(INDEX_CONFIG):
+        source_status = "partial"
+
+    return {
+        "expirySchedule": schedule,
+        "todaysExpiry": todays_expiry,
+        "sourceStatus": source_status,
+        "fetchedAt": fetched_at,
+    }
 
 
 def get_expiry_schedule(use_live: bool = True) -> Dict[str, Dict[str, Any]]:
     """
     Get expiry schedule for all indices.
 
-    Args:
-        use_live: If True, fetch actual expiry dates from FYERS (default True)
-
-    Returns:
-        Dict with index name -> {weekday, weekday_name, is_expiry_today, next_expiry}
+    Live callers receive exchange-backed contract dates only. Static weekday
+    values remain available only for non-live/historical consumers.
     """
-    from datetime import date, datetime, timedelta
-
-    weekday_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    today = date.today()
-    today_weekday = today.weekday()
-    today_str = today.strftime("%Y-%m-%d")
-
-    # Try to get live expiry data (with caching)
-    live_expiries = {}
-    if use_live:
-        global _live_expiry_cache
-        cache_age = None
-        if _live_expiry_cache["timestamp"]:
-            cache_age = datetime.now() - _live_expiry_cache["timestamp"]
-
-        # Refresh cache if older than 1 hour or empty
-        if not _live_expiry_cache["data"] or (cache_age and cache_age > timedelta(hours=1)):
-            try:
-                _live_expiry_cache["data"] = fetch_live_expiry_dates()
-                _live_expiry_cache["timestamp"] = datetime.now()
-            except Exception:
-                pass
-
-        live_expiries = _live_expiry_cache.get("data", {})
-
-    result = {}
-    for name, cfg in INDEX_CONFIG.items():
-        expiry_weekday = cfg.get("expiry_weekday")
-        if expiry_weekday is None:
-            continue
-
-        # Check if we have live expiry data
-        next_expiry = live_expiries.get(name)
-        is_expiry_today = False
-
-        if next_expiry:
-            # Use actual expiry date
-            is_expiry_today = (next_expiry == today_str)
-            try:
-                exp_date = datetime.strptime(next_expiry, "%Y-%m-%d").date()
-                actual_weekday = exp_date.weekday()
-            except ValueError:
-                actual_weekday = expiry_weekday
-        else:
-            # Fallback to weekday pattern
-            is_expiry_today = (today_weekday == expiry_weekday)
-            actual_weekday = expiry_weekday
-
-        result[name] = {
-            "weekday": actual_weekday,
-            "weekday_name": weekday_names[actual_weekday],
-            "weekday_short": weekday_names[actual_weekday][:3],
-            "is_expiry_today": is_expiry_today,
-            "next_expiry": next_expiry,
-        }
-
-    return result
+    return get_expiry_snapshot(use_live=use_live)["expirySchedule"]
 
 
-def get_todays_expiring_indices() -> List[str]:
+def get_todays_expiring_indices(use_live: bool = True) -> List[str]:
     """Get list of indices expiring today."""
-    schedule = get_expiry_schedule()
-    return [name for name, info in schedule.items() if info.get("is_expiry_today")]
+    return list(get_expiry_snapshot(use_live=use_live)["todaysExpiry"])
 
 
 def export_for_frontend() -> Dict[str, Any]:
     """Export config in a format suitable for frontend JSON."""
+    expiry_snapshot = get_expiry_snapshot()
     return {
         "indices": {
             name: {
@@ -471,6 +831,8 @@ def export_for_frontend() -> Dict[str, Any]:
         },
         "activeIndices": ACTIVE_INDICES,
         "monthlyExpiry": MONTHLY_EXPIRY_DATES,
-        "expirySchedule": get_expiry_schedule(),
-        "todaysExpiry": get_todays_expiring_indices(),
+        "expirySchedule": expiry_snapshot["expirySchedule"],
+        "todaysExpiry": expiry_snapshot["todaysExpiry"],
+        "sourceStatus": expiry_snapshot["sourceStatus"],
+        "fetchedAt": expiry_snapshot["fetchedAt"],
     }

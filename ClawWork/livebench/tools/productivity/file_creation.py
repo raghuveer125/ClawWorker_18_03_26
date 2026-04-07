@@ -91,7 +91,7 @@ def create_file(filename: str, content: str, file_type: str = "txt") -> Dict[str
                     # Try parsing as JSON for structured data
                     data = json_lib.loads(content)
                     df = pd.DataFrame(data)
-                except:
+                except (json_lib.JSONDecodeError, ValueError):
                     # Fall back to CSV parsing
                     import io
                     df = pd.read_csv(io.StringIO(content))

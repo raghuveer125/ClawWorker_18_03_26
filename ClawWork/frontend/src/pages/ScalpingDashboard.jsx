@@ -1,7 +1,35 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
-const SCALPING_API = 'http://localhost:8002/api/scalping';
-const WS_URL = 'ws://localhost:8002/ws/scalping';
+const FRONTEND_PORT = import.meta.env.VITE_FRONTEND_PORT || '3001';
+const SCALPING_API_PORT = import.meta.env.VITE_SCALPING_API_PORT || '8002';
+const SCALPING_API_ORIGIN = import.meta.env.VITE_SCALPING_API_ORIGIN || '';
+const SCALPING_WS_ORIGIN = import.meta.env.VITE_SCALPING_WS_ORIGIN || '';
+
+function trimTrailingSlash(value) {
+  return value.replace(/\/$/, '');
+}
+
+function resolveScalpingHttpOrigin() {
+  if (SCALPING_API_ORIGIN) return trimTrailingSlash(SCALPING_API_ORIGIN);
+  if (typeof window === 'undefined') return `http://localhost:${SCALPING_API_PORT}`;
+
+  const { protocol, hostname, origin, port } = window.location;
+  if (port === FRONTEND_PORT) {
+    return `${protocol}//${hostname}:${SCALPING_API_PORT}`;
+  }
+
+  return origin;
+}
+
+function resolveScalpingWebSocketUrl() {
+  if (SCALPING_WS_ORIGIN) return `${trimTrailingSlash(SCALPING_WS_ORIGIN)}/ws/scalping`;
+  if (typeof window === 'undefined') return `ws://localhost:${SCALPING_API_PORT}/ws/scalping`;
+
+  return `${resolveScalpingHttpOrigin().replace(/^http/, 'ws')}/ws/scalping`;
+}
+
+const SCALPING_API = `${resolveScalpingHttpOrigin()}/api/scalping`;
+const WS_URL = resolveScalpingWebSocketUrl();
 
 // Agent layer colors
 const LAYER_COLORS = {
@@ -494,7 +522,7 @@ function CapitalSummary({ capital }) {
 }
 
 // Positions table component
-function PositionsTable({ positions }) {
+function PositionsTable({ positions, agents }) {
   if (!positions?.positions?.length) {
     return (
       <div className="positions-empty">
@@ -506,6 +534,29 @@ function PositionsTable({ positions }) {
   return (
     <div className="positions-table">
       <h3>Open Positions ({positions.count})</h3>
+      {(() => {
+        // Extract spot prices from DataFeed agent (agent_id 0 or name DataFeed)
+        const dataFeed = agents?.agents?.find(a => a.bot_type === 'data_feed' || a.name === 'DataFeed');
+        const spotPrices = {};
+        if (dataFeed?.last_output) {
+          Object.entries(dataFeed.last_output).forEach(([sym, data]) => {
+            if (data?.ltp) {
+              const idx = sym.includes('BANKNIFTY') ? 'BANKNIFTY' : sym.includes('SENSEX') ? 'SENSEX' : sym.includes('NIFTY') ? 'NIFTY50' : sym;
+              spotPrices[idx] = data.ltp;
+            }
+          });
+        }
+        const uniqueIndices = [...new Set(positions.positions.map(p => p.index))];
+        return uniqueIndices.length > 0 && (
+          <div className="spot-prices" style={{ display: 'flex', gap: '24px', marginBottom: '8px', fontSize: '14px' }}>
+            {uniqueIndices.map(idx => (
+              <span key={idx} style={{ color: '#e2e8f0' }}>
+                <strong>{idx}</strong>: <span style={{ color: '#60a5fa', fontWeight: 600 }}>{spotPrices[idx]?.toFixed(2) || '--'}</span>
+              </span>
+            ))}
+          </div>
+        );
+      })()}
       <table>
         <thead>
           <tr>
@@ -514,14 +565,20 @@ function PositionsTable({ positions }) {
             <th>Type</th>
             <th>Qty</th>
             <th>Entry</th>
-            <th>LTP</th>
+            <th>Cur. Price</th>
             <th>SL</th>
+            <th>Target</th>
             <th>P&L</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          {positions.positions.map(pos => (
+          {positions.positions.map(pos => {
+            const ltp = pos.current_price || 0;
+            const sl = pos.current_sl || 0;
+            const target = pos.target_price || 0;
+            const pnl = pos.unrealized_pnl || 0;
+            return (
             <tr key={pos.trade_id}>
               <td className="symbol">{pos.index}</td>
               <td>{pos.strike}</td>
@@ -530,16 +587,20 @@ function PositionsTable({ positions }) {
               </td>
               <td>{pos.remaining_qty || pos.quantity}</td>
               <td>{pos.entry_price.toFixed(2)}</td>
-              <td>--</td>
-              <td className="sl">{pos.current_sl.toFixed(2)}</td>
-              <td>{formatPnL(pos.unrealized_pnl)}</td>
+              <td className={ltp > pos.entry_price ? 'profit' : ltp < pos.entry_price ? 'loss' : ''} style={{ fontWeight: 600 }}>
+                {ltp > 0 ? ltp.toFixed(2) : '--'}
+              </td>
+              <td className="sl">{sl > 0 ? sl.toFixed(2) : '--'}</td>
+              <td className="target">{target > 0 ? target.toFixed(2) : '--'}</td>
+              <td>{formatPnL(pnl)}</td>
               <td>
                 <span className={`status-badge ${pos.status}`}>
                   {pos.status}
                 </span>
               </td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>
@@ -778,42 +839,53 @@ export default function ScalpingDashboard() {
   const [selectedReplayFile, setSelectedReplayFile] = useState(null);
   const [selectedMode, setSelectedMode] = useState('LIVE_PAPER');
   const [connected, setConnected] = useState(false);
+  const [apiReady, setApiReady] = useState(false);
   const [error, setError] = useState(null);
   const replayResultsRef = useRef(null);
 
   const fetchData = useCallback(async () => {
+    const safeFetch = (url) => fetch(url).then(r => r.json()).catch(() => null);
     try {
       const [statusRes, capitalRes, positionsRes, tradesRes, agentsRes, pipelineRes, dataflowRes, replayRes, debateRes, learningRes] = await Promise.all([
-        fetch(`${SCALPING_API}/status`).then(r => r.json()),
-        fetch(`${SCALPING_API}/capital`).then(r => r.json()),
-        fetch(`${SCALPING_API}/positions`).then(r => r.json()),
-        fetch(`${SCALPING_API}/trades?limit=20`).then(r => r.json()),
-        fetch(`${SCALPING_API}/agents`).then(r => r.json()),
-        fetch(`${SCALPING_API}/pipeline`).then(r => r.json()),
-        fetch(`${SCALPING_API}/dataflow`).then(r => r.json()),
-        fetch(`${SCALPING_API}/replay/status`).then(r => r.json()),
-        fetch(`${SCALPING_API}/debate`).then(r => r.json()),
-        fetch(`${SCALPING_API}/learning`).then(r => r.json()),
+        safeFetch(`${SCALPING_API}/status`),
+        safeFetch(`${SCALPING_API}/capital`),
+        safeFetch(`${SCALPING_API}/positions`),
+        safeFetch(`${SCALPING_API}/trades?limit=20`),
+        safeFetch(`${SCALPING_API}/agents`),
+        safeFetch(`${SCALPING_API}/pipeline`),
+        safeFetch(`${SCALPING_API}/dataflow`),
+        safeFetch(`${SCALPING_API}/replay/status`),
+        safeFetch(`${SCALPING_API}/debate`),
+        safeFetch(`${SCALPING_API}/learning`),
       ]);
 
-      setStatus(statusRes);
-      setCapital(capitalRes);
-      setPositions(positionsRes);
-      setTrades(tradesRes);
-      setAgents(agentsRes);
-      setPipeline(pipelineRes);
-      setDataflow(dataflowRes);
-      setReplay(replayRes);
-      if (!isSeeking) {
-        setReplaySeekPct(Math.min(100, Math.max(0, replayRes?.progress_pct || 0)));
+      // Update each piece of state independently — one failure doesn't block others
+      if (statusRes) setStatus(statusRes);
+      if (capitalRes) setCapital(capitalRes);
+      if (positionsRes) setPositions(positionsRes);
+      if (tradesRes) setTrades(tradesRes);
+      if (agentsRes) setAgents(agentsRes);
+      if (pipelineRes) setPipeline(pipelineRes);
+      if (dataflowRes) setDataflow(dataflowRes);
+      if (replayRes) {
+        setReplay(replayRes);
+        if (!isSeeking) {
+          setReplaySeekPct(Math.min(100, Math.max(0, replayRes?.progress_pct || 0)));
+        }
       }
-      setDebateMode(debateRes?.mode || 'debate');
-      setLearningMode(learningRes?.mode || 'hybrid');
-      setLearningMetrics(learningRes?.metrics || null);
-      setLearningLastUpdate(learningRes?.last_update || null);
+      if (debateRes) setDebateMode(debateRes?.mode || 'debate');
+      if (learningRes) {
+        setLearningMode(learningRes?.mode || 'hybrid');
+        setLearningMetrics(learningRes?.metrics || null);
+        setLearningLastUpdate(learningRes?.last_update || null);
+      }
+      setApiReady(true);
       setError(null);
+      return true;
     } catch (err) {
+      setApiReady(false);
       setError('Failed to fetch scalping data. Is the API running on port 8002?');
+      return false;
     }
   }, []);
 
@@ -938,7 +1010,7 @@ export default function ScalpingDashboard() {
 
   useEffect(() => {
     fetchData();
-    const pollIntervalMs = replay?.active || status?.mode === 'REPLAY' ? 250 : 2000;
+    const pollIntervalMs = replay?.active || status?.mode === 'REPLAY' ? 250 : 1000;
     const interval = setInterval(fetchData, pollIntervalMs);
     return () => clearInterval(interval);
   }, [fetchData, replay?.active, status?.mode]);
@@ -964,21 +1036,55 @@ export default function ScalpingDashboard() {
   }, [postmortemActive, replay?.active, replay?.result]);
 
   useEffect(() => {
+    if (!apiReady) {
+      setConnected(false);
+      return undefined;
+    }
+
     let ws;
     let reconnectTimeout;
+    let disposed = false;
 
     const connect = () => {
+      if (disposed) return;
       ws = new WebSocket(WS_URL);
 
       ws.onopen = () => {
+        if (disposed) {
+          ws?.close();
+          return;
+        }
         setConnected(true);
         console.log('WebSocket connected');
       };
 
       ws.onmessage = (event) => {
+        if (disposed) return;
         const msg = JSON.parse(event.data);
         if (msg.type === 'update') {
           fetchData();
+        }
+        if (msg.type === 'price_tick' && Array.isArray(msg.data)) {
+          // Real-time position price update — apply without waiting for poll
+          setPositions(prev => {
+            if (!prev?.positions) return prev;
+            const updates = {};
+            msg.data.forEach(u => { updates[u.trade_id] = u; });
+            const newPositions = prev.positions.map(pos => {
+              const upd = updates[pos.trade_id];
+              if (upd) {
+                return { ...pos, current_price: upd.current_price, unrealized_pnl: upd.unrealized_pnl };
+              }
+              return pos;
+            });
+            return { ...prev, positions: newPositions };
+          });
+          // Update capital P&L too
+          setCapital(prev => {
+            if (!prev) return prev;
+            const totalPnl = msg.data.reduce((sum, u) => sum + (u.unrealized_pnl || 0), 0);
+            return { ...prev, unrealized_pnl: totalPnl, total_pnl: (prev.realized_pnl || 0) + totalPnl };
+          });
         }
         if (msg.type === 'replay_progress') {
           setReplay(prev => ({
@@ -1000,11 +1106,13 @@ export default function ScalpingDashboard() {
       };
 
       ws.onclose = () => {
+        if (disposed) return;
         setConnected(false);
         reconnectTimeout = setTimeout(connect, 5000);
       };
 
       ws.onerror = () => {
+        if (disposed) return;
         setConnected(false);
       };
     };
@@ -1012,10 +1120,11 @@ export default function ScalpingDashboard() {
     connect();
 
     return () => {
+      disposed = true;
       ws?.close();
       clearTimeout(reconnectTimeout);
     };
-  }, [fetchData]);
+  }, [apiReady, fetchData]);
 
   return (
     <div className="scalping-dashboard">
@@ -1892,7 +2001,7 @@ export default function ScalpingDashboard() {
         </div>
 
         <CapitalSummary capital={capital} />
-        <PositionsTable positions={positions} />
+        <PositionsTable positions={positions} agents={agents} />
 
         <div className="full-width">
           <TradeHistory trades={trades} />
