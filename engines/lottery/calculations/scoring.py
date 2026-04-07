@@ -1,14 +1,14 @@
-"""Strike scoring — composite score, tie-break, and final selection.
+"""Strike scoring — market-relative composite score and selection.
 
-Scores visible chain candidates and extrapolated candidates.
-Composite score: w1*f_dist + w2*f_mom + w3*f_liq + w4*f_band + w5*B
+Candidates are selected by market structure, not fixed premium bands.
+Tradability is the primary gate. Premium is a soft preference.
 
-Tie-break priority:
-1. band-fit score
-2. spread quality (lowest spread %)
-3. liquidity (highest volume)
-4. distance closeness to target OTM
-5. highest composite score
+Score = w_structure * StructureScore
+      + w_liquidity * LiquidityScore
+      + w_premium_eff * PremiumEfficiency
+      + w_distance * DistanceSuitability
+      + w_tradability * TradabilityScore
+      + w_momentum * MomentumScore
 
 All raw component values and weighted final score are stored for audit.
 """
@@ -73,113 +73,83 @@ def score_and_select(
     bias_score: Optional[float],
     config: LotteryConfig,
 ) -> tuple[Optional[ScoredCandidate], Optional[ScoredCandidate], list[ScoredCandidate]]:
-    """Score all candidates and select best CE and PE strikes.
+    """Score all tradable OTM candidates and select best CE and PE.
 
-    Args:
-        rows: Full chain CalculatedRows with base + advanced metrics.
-        extrapolated_ce: Projected CE strikes beyond visible chain.
-        extrapolated_pe: Projected PE strikes beyond visible chain.
-        spot: Current spot price.
-        preferred_side: Side bias from decay analysis (or None).
-        bias_score: Numeric bias value (positive = PE preferred).
-        config: Config with scoring weights, band, distance rules.
-
-    Returns:
-        (best_ce, best_pe, all_candidates) — best picks per side + full scored list.
+    Key design: tradability is the PRIMARY gate, premium is a soft preference.
+    All OTM strikes with valid bid/ask and acceptable spread are scored.
     """
-    band_min = config.premium_band.min
-    band_max = config.premium_band.max
-    otm_min = config.otm_distance.min_points
-    otm_max = config.otm_distance.max_points
-    weights = config.scoring
     step = config.instrument.strike_step
-    eps = config.scoring.tie_epsilon
+    max_spread = config.tradability.max_spread_pct
+    min_volume = config.tradability.min_recent_volume
     min_candidates = config.scoring.min_valid_candidates
+    eps = config.scoring.tie_epsilon
+
+    # Compute chain-wide statistics for relative scoring
+    all_volumes = []
+    all_oi = []
+    for row in rows:
+        if row.call_volume and row.call_volume > 0:
+            all_volumes.append(row.call_volume)
+        if row.put_volume and row.put_volume > 0:
+            all_volumes.append(row.put_volume)
+        if hasattr(row, 'call_vol_oi_ratio'):
+            pass  # OI accessed via volume/ratio
+    max_volume = max(all_volumes) if all_volumes else 1
 
     all_candidates: list[ScoredCandidate] = []
 
-    # ── Score visible chain candidates ─────────────────────────────
+    # ── Score ALL tradable OTM strikes (no premium band gate) ──────
     for row in rows:
-        # CE candidate
-        if (row.call_ltp is not None
-                and band_min <= row.call_ltp <= band_max
-                and row.strike > spot
-                and row.distance >= otm_min):
-            candidate = _score_visible_candidate(
-                row=row,
-                option_type=OptionType.CE,
-                ltp=row.call_ltp,
-                spot=spot,
-                step=step,
-                bias_score=bias_score,
-                config=config,
+        # CE: must be OTM, have bid/ask, acceptable spread
+        if (row.call_ltp is not None and row.call_ltp > 0
+                and row.strike > spot):
+            spread = row.call_spread_pct
+            vol = row.call_volume or 0
+            # Tradability gate: bid/ask exist + spread ok + volume ok
+            tradable = (
+                spread is not None
+                and spread <= max_spread
+                and vol >= min_volume
             )
-            all_candidates.append(candidate)
-
-        # PE candidate
-        if (row.put_ltp is not None
-                and band_min <= row.put_ltp <= band_max
-                and row.strike < spot
-                and abs(row.distance) >= otm_min):
-            candidate = _score_visible_candidate(
-                row=row,
-                option_type=OptionType.PE,
-                ltp=row.put_ltp,
-                spot=spot,
-                step=step,
-                bias_score=bias_score,
-                config=config,
-            )
-            all_candidates.append(candidate)
-
-    # ── Score extrapolated candidates (ADVISORY ONLY) ───────────────
-    # Extrapolated candidates are only included if no real quoted
-    # candidates exist for that side. Prefer real market data.
-    visible_ce = [c for c in all_candidates if c.option_type == OptionType.CE]
-    visible_pe = [c for c in all_candidates if c.option_type == OptionType.PE]
-
-    if not visible_ce:
-        for ext in extrapolated_ce:
-            if ext.in_band and abs(ext.strike - spot) >= otm_min:
-                candidate = _score_extrapolated_candidate(
-                    ext=ext,
-                    spot=spot,
-                    step=step,
-                    bias_score=bias_score,
-                    config=config,
+            if tradable:
+                candidate = _score_candidate(
+                    row=row, option_type=OptionType.CE, ltp=row.call_ltp,
+                    spot=spot, step=step, bias_score=bias_score,
+                    config=config, max_volume=max_volume,
                 )
                 all_candidates.append(candidate)
-        if extrapolated_ce:
-            logger.info("Extrapolation advisory: %d CE projected (no visible CE in band)", len(extrapolated_ce))
 
-    if not visible_pe:
-        for ext in extrapolated_pe:
-            if ext.in_band and abs(ext.strike - spot) >= otm_min:
-                candidate = _score_extrapolated_candidate(
-                    ext=ext,
-                    spot=spot,
-                    step=step,
-                    bias_score=bias_score,
-                    config=config,
+        # PE: must be OTM, have bid/ask, acceptable spread
+        if (row.put_ltp is not None and row.put_ltp > 0
+                and row.strike < spot):
+            spread = row.put_spread_pct
+            vol = row.put_volume or 0
+            tradable = (
+                spread is not None
+                and spread <= max_spread
+                and vol >= min_volume
+            )
+            if tradable:
+                candidate = _score_candidate(
+                    row=row, option_type=OptionType.PE, ltp=row.put_ltp,
+                    spot=spot, step=step, bias_score=bias_score,
+                    config=config, max_volume=max_volume,
                 )
                 all_candidates.append(candidate)
-        if extrapolated_pe:
-            logger.info("Extrapolation advisory: %d PE projected (no visible PE in band)", len(extrapolated_pe))
 
     # ── Separate by side ──────────────────────────────────────────
     ce_candidates = [c for c in all_candidates if c.option_type == OptionType.CE]
     pe_candidates = [c for c in all_candidates if c.option_type == OptionType.PE]
 
-    # ── Select best per side with tie-break ────────────────────────
+    # ── Select best per side ──────────────────────────────────────
     best_ce = _select_best(ce_candidates, eps, config) if len(ce_candidates) >= min_candidates else None
     best_pe = _select_best(pe_candidates, eps, config) if len(pe_candidates) >= min_candidates else None
 
     logger.info(
-        "Scoring: %d CE (%d visible, %d extrap), %d PE (%d visible, %d extrap). Best CE=%s, Best PE=%s",
-        len(ce_candidates), len(visible_ce), len(ce_candidates) - len(visible_ce),
-        len(pe_candidates), len(visible_pe), len(pe_candidates) - len(visible_pe),
-        f"K={best_ce.strike:.0f} score={best_ce.score:.4f} ({best_ce.source})" if best_ce else "None",
-        f"K={best_pe.strike:.0f} score={best_pe.score:.4f} ({best_pe.source})" if best_pe else "None",
+        "Scoring: %d CE, %d PE tradable. Best CE=%s, Best PE=%s",
+        len(ce_candidates), len(pe_candidates),
+        f"K={best_ce.strike:.0f} @{best_ce.ltp} score={best_ce.score:.2f}" if best_ce else "None",
+        f"K={best_pe.strike:.0f} @{best_pe.ltp} score={best_pe.score:.2f}" if best_pe else "None",
     )
 
     return best_ce, best_pe, all_candidates
@@ -189,16 +159,7 @@ def update_rows_with_scores(
     rows: list[CalculatedRow],
     all_candidates: list[ScoredCandidate],
 ) -> list[CalculatedRow]:
-    """Write scoring results back into CalculatedRows for audit/display.
-
-    Args:
-        rows: Original CalculatedRows.
-        all_candidates: All scored candidates.
-
-    Returns:
-        New list with score fields populated where candidates matched.
-    """
-    # Build lookup: (strike, option_type) → ScoredCandidate
+    """Write scoring results back into CalculatedRows for audit/display."""
     score_map: dict[tuple[float, str], ScoredCandidate] = {}
     for c in all_candidates:
         score_map[(c.strike, c.option_type.value)] = c
@@ -207,7 +168,6 @@ def update_rows_with_scores(
     for row in rows:
         ce_cand = score_map.get((row.strike, "CE"))
         pe_cand = score_map.get((row.strike, "PE"))
-
         updated.append(replace(
             row,
             call_candidate_score=ce_cand.score if ce_cand else None,
@@ -215,13 +175,12 @@ def update_rows_with_scores(
             put_candidate_score=pe_cand.score if pe_cand else None,
             put_score_components=pe_cand.components if pe_cand else None,
         ))
-
     return updated
 
 
-# ── Scoring Helpers ────────────────────────────────────────────────────────
+# ── Scoring Engine ────────────────────────────────────────────────────────
 
-def _score_visible_candidate(
+def _score_candidate(
     row: CalculatedRow,
     option_type: OptionType,
     ltp: float,
@@ -229,61 +188,126 @@ def _score_visible_candidate(
     step: int,
     bias_score: Optional[float],
     config: LotteryConfig,
+    max_volume: int,
 ) -> ScoredCandidate:
-    """Score a visible chain candidate."""
+    """Score a tradable OTM candidate using market-relative features.
+
+    Six scoring components:
+    1. LiquidityScore:     volume relative to chain max + spread quality
+    2. OIStructure:        OI concentration (high OI = market commitment)
+    3. PremiumEfficiency:   payoff potential relative to cost
+    4. DistanceSuitability: closeness to ideal OTM distance
+    5. TradabilityScore:   spread tightness (tighter = better)
+    6. MomentumScore:      bias alignment + premium ROC
+    """
     w = config.scoring
+    distance = abs(row.strike - spot)
 
-    # f_dist: distance from spot normalized by step
-    f_dist = abs(row.strike - spot) / step
-
-    # f_mom: momentum (decay ratio)
-    if option_type == OptionType.CE:
-        f_mom = row.call_decay_ratio if row.call_decay_ratio is not None else 0.0
-    else:
-        f_mom = row.put_decay_ratio if row.put_decay_ratio is not None else 0.0
-
-    # f_liq: liquidity (log volume)
+    # ── 1. Liquidity Score (volume + OI relative to chain) ─────────
     if option_type == OptionType.CE:
         vol = row.call_volume or 0
+        spread_pct = row.call_spread_pct
     else:
         vol = row.put_volume or 0
-    f_liq = math.log(1 + vol) if vol > 0 else 0.0
+        spread_pct = row.put_spread_pct
 
-    # f_band: premium band fit
-    f_band = _compute_band_fit(ltp, config)
+    # Volume percentile within chain (0-1)
+    vol_score = math.log(1 + vol) / math.log(1 + max_volume) if max_volume > 0 and vol > 0 else 0.0
+    # Spread quality (inverted: lower spread = higher score)
+    spread_score = max(0.0, 1.0 - (spread_pct or 10.0) / 10.0)
+    f_liquidity = 0.5 * vol_score + 0.5 * spread_score
 
-    # B: bias alignment
+    # ── 2. OI Structure (high OI = market participants committed) ──
+    if option_type == OptionType.CE:
+        oi_ratio = row.call_vol_oi_ratio
+    else:
+        oi_ratio = row.put_vol_oi_ratio
+    # vol/OI ratio 1-3 = healthy, >10 = churn, <0.5 = stale
+    if oi_ratio is not None and oi_ratio > 0:
+        if oi_ratio < 0.5:
+            f_structure = 0.2  # stale
+        elif oi_ratio <= 5.0:
+            f_structure = 1.0  # healthy participation
+        else:
+            f_structure = max(0.3, 1.0 - (oi_ratio - 5.0) / 20.0)  # churn penalty
+    else:
+        f_structure = 0.5  # neutral when OI ratio unavailable
+
+    # ── 3. Premium Efficiency (payoff potential / cost) ────────────
+    # A Rs 5 option 100pts OTM can move Rs 15-20 on a 100pt breakout = 3-4x
+    # A Rs 0.40 option 300pts OTM barely moves = poor efficiency
+    # Efficiency = distance / (premium * step) — how much OTM bang per premium buck
+    if ltp > 0:
+        f_premium_eff = min(1.0, (distance / step) / (ltp * 2 + 1))
+    else:
+        f_premium_eff = 0.0
+
+    # Soft premium preference (Gaussian around preferred mid)
+    # Instead of hard band, prefer premiums in Rs 1-20 range (configurable center)
+    band_min = config.premium_band.min
+    band_max = config.premium_band.max
+    preferred_mid = (band_min + band_max) / 2
+    sigma = (band_max - band_min) / 2 if band_max > band_min else 5.0
+    premium_pref = math.exp(-((ltp - preferred_mid) ** 2) / (2 * sigma ** 2))
+
+    # Combine efficiency + preference
+    f_premium = 0.6 * f_premium_eff + 0.4 * premium_pref
+
+    # ── 4. Distance Suitability (closeness to ideal OTM) ──────────
+    otm_min = config.otm_distance.min_points
+    otm_max = config.otm_distance.max_points
+    target_otm = (otm_min + otm_max) / 2
+    otm_range = (otm_max - otm_min) / 2 if otm_max > otm_min else 100.0
+
+    if distance < otm_min * 0.5:
+        # Too close to ATM — less lottery-like
+        f_distance = max(0.0, distance / (otm_min * 0.5)) * 0.5
+    elif otm_min <= distance <= otm_max:
+        # Sweet spot — peaks at target
+        f_distance = max(0.0, 1.0 - abs(distance - target_otm) / otm_range)
+    else:
+        # Beyond max — penalty but don't exclude
+        f_distance = max(0.0, 1.0 - (distance - otm_max) / otm_max)
+
+    # ── 5. Tradability Score (spread tightness) ───────────────────
+    # Already gated by max_spread, but tighter is better for scoring
+    f_tradability = max(0.0, 1.0 - (spread_pct or 10.0) / config.tradability.max_spread_pct)
+
+    # ── 6. Momentum Score (bias alignment + premium ROC) ──────────
     b = bias_score if bias_score is not None else 0.0
+    if option_type == OptionType.CE:
+        raw_roc = row.call_premium_roc if row.call_premium_roc is not None else 0.0
+    else:
+        raw_roc = row.put_premium_roc if row.put_premium_roc is not None else 0.0
+    f_roc = max(0.0, raw_roc * 100)
+    f_momentum = 0.5 * min(1.0, abs(b)) + 0.5 * min(1.0, f_roc)
 
-    # Composite score
+    # ── Composite Score ───────────────────────────────────────────
     score = (
-        w.w1_distance * f_dist
-        + w.w2_momentum * f_mom
-        + w.w3_liquidity * f_liq
-        + w.w4_band_fit * f_band
-        + w.w5_bias * b
+        w.w1_distance * f_distance          # was distance, now suitability
+        + w.w2_momentum * f_momentum         # bias + ROC
+        + w.w3_liquidity * f_liquidity       # volume + spread quality
+        + w.w4_band_fit * f_premium          # premium efficiency + soft preference
+        + w.w5_bias * f_structure            # OI structure
+        + w.w6_roc * f_tradability           # spread tightness
     )
 
     components = {
-        "f_dist": round(f_dist, 4),
-        "f_mom": round(f_mom, 4),
-        "f_liq": round(f_liq, 4),
-        "f_band": round(f_band, 4),
-        "bias": round(b, 4),
-        "w1_dist": round(w.w1_distance * f_dist, 4),
-        "w2_mom": round(w.w2_momentum * f_mom, 4),
-        "w3_liq": round(w.w3_liquidity * f_liq, 4),
-        "w4_band": round(w.w4_band_fit * f_band, 4),
-        "w5_bias": round(w.w5_bias * b, 4),
+        "f_liquidity": round(f_liquidity, 4),
+        "f_structure": round(f_structure, 4),
+        "f_premium": round(f_premium, 4),
+        "f_distance": round(f_distance, 4),
+        "f_tradability": round(f_tradability, 4),
+        "f_momentum": round(f_momentum, 4),
+        "premium_pref": round(premium_pref, 4),
+        "premium_eff": round(f_premium_eff, 4),
+        "vol_score": round(vol_score, 4),
+        "spread_score": round(spread_score, 4),
+        "ltp": round(ltp, 2),
+        "spread_pct": round(spread_pct, 2) if spread_pct else None,
+        "volume": vol,
+        "distance_pts": round(distance, 0),
     }
-
-    # Spread % for tie-break
-    if option_type == OptionType.CE:
-        spread_pct = row.call_spread_pct
-        volume = row.call_volume
-    else:
-        spread_pct = row.put_spread_pct
-        volume = row.put_volume
 
     return ScoredCandidate(
         strike=row.strike,
@@ -291,87 +315,28 @@ def _score_visible_candidate(
         ltp=ltp,
         score=round(score, 6),
         components=components,
-        band_fit=f_band,
+        band_fit=premium_pref,
         spread_pct=spread_pct,
-        volume=volume,
-        distance=abs(row.strike - spot),
+        volume=vol,
+        distance=distance,
         source="VISIBLE",
     )
 
 
-def _score_extrapolated_candidate(
-    ext: ExtrapolatedStrike,
-    spot: float,
-    step: int,
-    bias_score: Optional[float],
-    config: LotteryConfig,
-) -> ScoredCandidate:
-    """Score an extrapolated candidate (no spread/volume data)."""
-    w = config.scoring
-    ltp = ext.adjusted_premium
-
-    f_dist = abs(ext.strike - spot) / step
-    f_mom = 0.0  # no decay data for extrapolated strikes
-    f_liq = 0.0  # no volume data
-    f_band = _compute_band_fit(ltp, config)
-    b = bias_score if bias_score is not None else 0.0
-
-    score = (
-        w.w1_distance * f_dist
-        + w.w2_momentum * f_mom
-        + w.w3_liquidity * f_liq
-        + w.w4_band_fit * f_band
-        + w.w5_bias * b
-    )
-
-    components = {
-        "f_dist": round(f_dist, 4),
-        "f_mom": 0.0,
-        "f_liq": 0.0,
-        "f_band": round(f_band, 4),
-        "bias": round(b, 4),
-        "w1_dist": round(w.w1_distance * f_dist, 4),
-        "w2_mom": 0.0,
-        "w3_liq": 0.0,
-        "w4_band": round(w.w4_band_fit * f_band, 4),
-        "w5_bias": round(w.w5_bias * b, 4),
-    }
-
-    return ScoredCandidate(
-        strike=ext.strike,
-        option_type=ext.option_type,
-        ltp=ltp,
-        score=round(score, 6),
-        components=components,
-        band_fit=f_band,
-        spread_pct=None,
-        volume=None,
-        distance=abs(ext.strike - spot),
-        source="EXTRAPOLATED",
-    )
-
-
 def _compute_band_fit(ltp: float, config: LotteryConfig) -> float:
-    """Compute premium band fit score.
+    """Compute premium band fit score (soft Gaussian preference).
 
-    BINARY mode: 1 if in band, 0 otherwise.
-    DISTANCE mode: 1 - |LTP - mid| / range (closer to center = higher).
+    Used by external modules that still reference this function.
     """
     band_min = config.premium_band.min
     band_max = config.premium_band.max
+    preferred_mid = (band_min + band_max) / 2
+    sigma = (band_max - band_min) / 2 if band_max > band_min else 5.0
 
-    if ltp < band_min or ltp > band_max:
+    if ltp <= 0:
         return 0.0
 
-    if config.premium_band.fit_mode == BandFitMode.BINARY:
-        return 1.0
-
-    # DISTANCE mode
-    mid = (band_min + band_max) / 2
-    band_range = (band_max - band_min) / 2
-    if band_range <= 0:
-        return 1.0
-    return max(0.0, 1.0 - abs(ltp - mid) / band_range)
+    return math.exp(-((ltp - preferred_mid) ** 2) / (2 * sigma ** 2))
 
 
 def _select_best(
@@ -379,15 +344,7 @@ def _select_best(
     tie_epsilon: float,
     config: Optional[LotteryConfig] = None,
 ) -> Optional[ScoredCandidate]:
-    """Select best candidate with tie-break logic.
-
-    Priority:
-    1. Highest composite score
-    2. If tie (within epsilon): best band-fit
-    3. If still tied: lowest spread %
-    4. If still tied: highest volume
-    5. If still tied: closest to target OTM distance (from config)
-    """
+    """Select best candidate. Highest score wins. Tie-break by spread then volume."""
     if not candidates:
         return None
 
@@ -395,34 +352,14 @@ def _select_best(
     best = sorted_cands[0]
 
     tied = [c for c in sorted_cands if abs(c.score - best.score) <= tie_epsilon]
-
     if len(tied) == 1:
         return tied[0]
 
-    # Tie-break 1: best band-fit
-    tied.sort(key=lambda c: c.band_fit, reverse=True)
-    best_band = tied[0].band_fit
-    tied = [c for c in tied if abs(c.band_fit - best_band) <= tie_epsilon]
-    if len(tied) == 1:
-        return tied[0]
-
-    # Tie-break 2: lowest spread %
+    # Tie-break: lowest spread
     tied.sort(key=lambda c: c.spread_pct if c.spread_pct is not None else 999.0)
-    if len(tied) > 1 and tied[0].spread_pct is not None:
-        best_spread = tied[0].spread_pct
-        tied = [c for c in tied if c.spread_pct is not None and c.spread_pct <= best_spread + tie_epsilon]
     if len(tied) == 1:
         return tied[0]
 
-    # Tie-break 3: highest volume
+    # Tie-break: highest volume
     tied.sort(key=lambda c: c.volume if c.volume is not None else 0, reverse=True)
-    if len(tied) == 1:
-        return tied[0]
-
-    # Tie-break 4: closest to target OTM distance — from config, not hardcoded
-    otm_min = config.otm_distance.min_points if config else 250
-    otm_max = config.otm_distance.max_points if config else 450
-    target_otm = (otm_min + otm_max) / 2
-    tied.sort(key=lambda c: abs(c.distance - target_otm))
-
     return tied[0]

@@ -8,6 +8,7 @@ import {
   fetchLotteryStatus, fetchLotteryRawData, fetchLotteryFormulaAudit,
   fetchLotteryQuality, fetchLotterySignals, fetchLotteryTrades,
   fetchLotteryCapital, fetchLotteryCandidates, fetchLotteryRejections,
+  fetchLotteryBandCandidates,
 } from '../api'
 
 const formatINR = (v) => `\u20B9${(v || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -48,7 +49,7 @@ const StatusPill = ({ status }) => {
   return <span className={`px-2 py-0.5 rounded text-xs font-semibold border ${cls}`}>{status}</span>
 }
 
-const TABS = ['Status', 'Raw Data', 'Formula Audit', 'Quality', 'Signals', 'Trades', 'Capital']
+const TABS = ['Status', 'Band Candidates', 'Raw Data', 'Formula Audit', 'Quality', 'Signals', 'Trades', 'Capital']
 
 function Lottery() {
   const [symbol, setSymbol] = useState('NIFTY')
@@ -60,17 +61,19 @@ function Lottery() {
   const [signals, setSignals] = useState(null)
   const [trades, setTrades] = useState(null)
   const [capital, setCapital] = useState(null)
+  const [bandCandidates, setBandCandidates] = useState(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setStatus(null); setRawData(null); setAudit(null); setQuality(null)
-    setSignals(null); setTrades(null); setCapital(null)
+    setSignals(null); setTrades(null); setCapital(null); setBandCandidates(null)
   }, [symbol])
 
   const fetchTab = useCallback(async () => {
     setLoading(true)
     try {
       if (tab === 'Status') setStatus(await fetchLotteryStatus(symbol))
+      else if (tab === 'Band Candidates') setBandCandidates(await fetchLotteryBandCandidates(symbol))
       else if (tab === 'Raw Data') setRawData(await fetchLotteryRawData(symbol))
       else if (tab === 'Formula Audit') setAudit(await fetchLotteryFormulaAudit(symbol))
       else if (tab === 'Quality') setQuality(await fetchLotteryQuality(symbol))
@@ -140,6 +143,7 @@ function Lottery() {
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm">
         <div className="p-4">
           {tab === 'Status' && <StatusTab data={status?.data} />}
+          {tab === 'Band Candidates' && <BandCandidatesTab data={bandCandidates?.data} />}
           {tab === 'Raw Data' && <RawDataTab data={rawData?.data} />}
           {tab === 'Formula Audit' && <FormulaAuditTab data={audit?.data} />}
           {tab === 'Quality' && <QualityTab data={quality?.data} />}
@@ -202,6 +206,183 @@ function StatusTab({ data }) {
             </div>
           ))}
         </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Band Candidates Tab ──────────────────────────────────────────────────────
+
+function BandCandidatesTab({ data }) {
+  if (!data || !data.rows?.length) return (
+    <div className="text-center py-10">
+      <Ticket className="w-8 h-8 text-gray-300 mx-auto mb-3" />
+      <p className="text-gray-500 font-medium">No band candidates available</p>
+      <p className="text-gray-400 text-sm mt-1">Waiting for option chain data</p>
+    </div>
+  )
+
+  const trig = data.triggers
+  const spotToUpper = trig?.spot_to_upper
+  const spotToLower = trig?.spot_to_lower
+
+  return (
+    <div className="space-y-4">
+      {/* Trigger Zone Info */}
+      {trig && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+            <div className="flex items-center space-x-2 mb-1">
+              <ArrowUpRight className="w-4 h-4 text-emerald-600" />
+              <span className="text-[11px] text-gray-500 font-medium">CE Activation</span>
+            </div>
+            <p className="text-base font-bold text-gray-900">{formatINR(trig.ce_activation)}</p>
+            <p className="text-xs text-emerald-600 font-medium">{spotToUpper > 0 ? `${spotToUpper} pts away` : 'ACTIVE'}</p>
+          </div>
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
+            <div className="flex items-center space-x-2 mb-1">
+              <Activity className="w-4 h-4 text-gray-500" />
+              <span className="text-[11px] text-gray-500 font-medium">Spot</span>
+            </div>
+            <p className="text-base font-bold text-gray-900">{formatINR(data.spot)}</p>
+            <p className="text-xs text-gray-500">
+              Triggers: {trig.lower} — {trig.upper} | Buffer: {trig.buffer} pts
+            </p>
+          </div>
+          <div className="bg-rose-50 border border-rose-200 rounded-xl p-3">
+            <div className="flex items-center space-x-2 mb-1">
+              <ArrowDownRight className="w-4 h-4 text-rose-600" />
+              <span className="text-[11px] text-gray-500 font-medium">PE Activation</span>
+            </div>
+            <p className="text-base font-bold text-gray-900">{formatINR(trig.pe_activation)}</p>
+            <p className="text-xs text-rose-600 font-medium">{spotToLower > 0 ? `${spotToLower} pts away` : 'ACTIVE'}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Final Live Entry Table */}
+      {data.best_entries?.length > 0 && (
+        <div className="mt-4 bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-4 shadow-lg">
+          <div className="flex items-center space-x-2 mb-3">
+            <Zap className="w-5 h-5 text-amber-400" />
+            <h3 className="text-sm font-bold text-amber-400 tracking-wide uppercase">
+              Final Live Entry (from current screen)
+            </h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-gray-700">
+                  <th className="px-3 py-2 text-left text-gray-400 font-medium">Trade</th>
+                  <th className="px-3 py-2 text-right text-gray-400 font-medium">Strike</th>
+                  <th className="px-3 py-2 text-left text-amber-400 font-semibold">EXACT ENTRY</th>
+                  <th className="px-3 py-2 text-right text-gray-400 font-medium">SL</th>
+                  <th className="px-3 py-2 text-right text-gray-400 font-medium">T1 (2x)</th>
+                  <th className="px-3 py-2 text-right text-gray-400 font-medium">T2 (3x)</th>
+                  <th className="px-3 py-2 text-right text-gray-400 font-medium">T3 (4x)</th>
+                  <th className="px-3 py-2 text-left text-gray-400 font-medium">Trigger</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.best_entries.map((e, i) => (
+                  <tr key={i} className="border-b border-gray-700/50 hover:bg-gray-700/30">
+                    <td className="px-3 py-2.5">
+                      <span className="text-base mr-1.5">{e.emoji}</span>
+                      <span className={`font-bold text-sm ${e.option_type === 'PE' ? 'text-rose-400' : 'text-emerald-400'}`}>
+                        {e.label}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5 text-right">
+                      <span className="text-white font-mono font-bold text-sm">{e.strike}</span>
+                      <span className={`ml-1 text-[10px] font-bold ${e.option_type === 'PE' ? 'text-rose-400' : 'text-emerald-400'}`}>
+                        {e.option_type}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5">
+                      <span className="text-amber-300 font-mono font-bold text-sm">
+                        BUY ABOVE {formatINR(e.entry_price)}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5 text-right text-red-400 font-mono">{formatINR(e.sl)}</td>
+                    <td className="px-3 py-2.5 text-right text-green-400 font-mono">{formatINR(e.t1)}</td>
+                    <td className="px-3 py-2.5 text-right text-green-300 font-mono">{formatINR(e.t2)}</td>
+                    <td className="px-3 py-2.5 text-right text-green-200 font-mono">{formatINR(e.t3)}</td>
+                    <td className="px-3 py-2.5 text-left">
+                      <span className="text-gray-400 text-[10px]">{e.direction}</span>
+                      <span className="text-gray-500 text-[10px] ml-1 font-mono">({e.trigger_condition})</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-[10px] text-gray-500 mt-2">
+            Entry = Ask price at trigger strike | SL = 50% of entry | Targets = 2x, 3x, 4x entry
+          </p>
+        </div>
+      )}
+
+      {/* Band Info */}
+      <div className="flex items-center justify-between">
+        <h3 className="text-base font-semibold text-gray-800">
+          Band Candidates ({data.rows.length})
+          <span className="ml-2 text-xs font-normal text-gray-500">
+            Premium {formatINR(data.band?.min)} — {formatINR(data.band?.max)}
+          </span>
+        </h3>
+        {data.state && <StatusPill status={data.state} />}
+      </div>
+
+      {/* Candidates Table */}
+      <div className="overflow-x-auto max-h-[500px] overflow-y-auto border border-gray-200 rounded-lg">
+        <table className="w-full text-xs">
+          <thead className="sticky top-0 bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th className="px-3 py-2 text-right text-gray-600 font-semibold">Strike</th>
+              <th className="px-3 py-2 text-right text-gray-500">Dist (pts)</th>
+              <th className="px-3 py-2 text-center text-gray-500">Side</th>
+              <th className="px-3 py-2 text-right text-blue-700 font-semibold">CE LTP</th>
+              <th className="px-3 py-2 text-right text-blue-600">CE Spread</th>
+              <th className="px-3 py-2 text-right text-blue-600">CE Vol</th>
+              <th className="px-3 py-2 text-right text-blue-600">CE OI</th>
+              <th className="px-3 py-2 text-right text-rose-700 font-semibold">PE LTP</th>
+              <th className="px-3 py-2 text-right text-rose-600">PE Spread</th>
+              <th className="px-3 py-2 text-right text-rose-600">PE Vol</th>
+              <th className="px-3 py-2 text-right text-rose-600">PE OI</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.rows.map((r, i) => {
+              const isSelected = data.selected_strike && r.strike === data.selected_strike
+              return (
+                <tr key={i} className={`border-b border-gray-100 ${isSelected ? 'bg-amber-50 ring-1 ring-amber-300' : 'hover:bg-gray-50'}`}>
+                  <td className={`px-3 py-1.5 text-right font-mono ${isSelected ? 'text-amber-700 font-bold' : 'text-gray-800 font-medium'}`}>
+                    {r.strike}
+                    {isSelected && <Zap className="w-3 h-3 text-amber-500 inline ml-1" />}
+                  </td>
+                  <td className="px-3 py-1.5 text-right text-gray-500 font-mono">{r.distance}</td>
+                  <td className="px-3 py-1.5 text-center">
+                    <span className={`text-[10px] font-bold ${r.side === 'OTM-CE' ? 'text-emerald-600' : r.side === 'OTM-PE' ? 'text-rose-600' : 'text-gray-500'}`}>
+                      {r.side}
+                    </span>
+                  </td>
+                  <td className="px-3 py-1.5 text-right text-blue-800 font-mono font-bold">{r.CE_LTP?.toFixed(2) || '-'}</td>
+                  <td className={`px-3 py-1.5 text-right font-mono ${(r.CE_spread_pct || 0) > 5 ? 'text-red-600' : 'text-gray-500'}`}>
+                    {r.CE_spread_pct ? `${r.CE_spread_pct}%` : '-'}
+                  </td>
+                  <td className="px-3 py-1.5 text-right text-gray-500">{r.CE_volume?.toLocaleString() || '-'}</td>
+                  <td className="px-3 py-1.5 text-right text-gray-500">{r.CE_OI?.toLocaleString() || '-'}</td>
+                  <td className="px-3 py-1.5 text-right text-rose-800 font-mono font-bold">{r.PE_LTP?.toFixed(2) || '-'}</td>
+                  <td className={`px-3 py-1.5 text-right font-mono ${(r.PE_spread_pct || 0) > 5 ? 'text-red-600' : 'text-gray-500'}`}>
+                    {r.PE_spread_pct ? `${r.PE_spread_pct}%` : '-'}
+                  </td>
+                  <td className="px-3 py-1.5 text-right text-gray-500">{r.PE_volume?.toLocaleString() || '-'}</td>
+                  <td className="px-3 py-1.5 text-right text-gray-500">{r.PE_OI?.toLocaleString() || '-'}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   )

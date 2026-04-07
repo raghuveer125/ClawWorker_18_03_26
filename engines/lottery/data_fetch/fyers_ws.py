@@ -22,8 +22,9 @@ logger = logging.getLogger(__name__)
 class FyersWebSocketClient:
     """WebSocket client for real-time FYERS data.
 
-    Subscribes to index spot price via WebSocket.
-    Calls on_tick callback with each spot update.
+    Subscribes to index spot + option candidates via WebSocket.
+    Calls on_tick callback with each update.
+    Supports dynamic re-subscription when candidates change.
     """
 
     def __init__(
@@ -42,6 +43,8 @@ class FyersWebSocketClient:
         self._thread: Optional[threading.Thread] = None
         self._last_ltp: Optional[float] = None
         self._last_tick_time: Optional[datetime] = None
+        self._subscribed_symbols: list[str] = []
+        self._lock = threading.Lock()
 
     @property
     def last_ltp(self) -> Optional[float]:
@@ -66,6 +69,7 @@ class FyersWebSocketClient:
             return
 
         self._running = True
+        self._subscribed_symbols = list(symbols)
         self._thread = threading.Thread(
             target=self._run_ws,
             args=(symbols,),
@@ -84,6 +88,39 @@ class FyersWebSocketClient:
             except Exception:
                 pass
         logger.info("FYERS WebSocket stopped")
+
+    def update_subscriptions(self, option_symbols: list[str]) -> None:
+        """Dynamically subscribe to option candidate symbols.
+
+        Unsubscribes from old option symbols and subscribes to new ones.
+        Keeps the index spot symbol always subscribed.
+        Max ~10 option symbols to stay well under FYERS 50-symbol limit.
+        """
+        if not self._ws or not self._running:
+            return
+
+        with self._lock:
+            # Keep only first symbol (index spot) + new option symbols
+            base_symbols = self._subscribed_symbols[:1]  # index spot
+            new_option_syms = option_symbols[:10]  # cap at 10
+
+            # Find what to unsub/sub
+            old_option_syms = self._subscribed_symbols[1:]
+            to_unsub = [s for s in old_option_syms if s not in new_option_syms]
+            to_sub = [s for s in new_option_syms if s not in old_option_syms]
+
+            try:
+                if to_unsub:
+                    self._ws.unsubscribe(symbols=to_unsub)
+                    logger.debug("WS unsubscribed: %s", to_unsub)
+
+                if to_sub:
+                    self._ws.subscribe(symbols=to_sub, data_type="symbolUpdate")
+                    logger.debug("WS subscribed: %s", to_sub)
+
+                self._subscribed_symbols = base_symbols + new_option_syms
+            except Exception as e:
+                logger.warning("WS subscription update failed: %s", e)
 
     def _run_ws(self, symbols: list[str]) -> None:
         """WebSocket connection loop with auto-reconnect."""
@@ -140,19 +177,26 @@ class FyersWebSocketClient:
             raise
 
     def _handle_message(self, msg: dict) -> None:
-        """Process incoming WebSocket tick."""
+        """Process incoming WebSocket tick (spot or option)."""
         try:
             if isinstance(msg, dict):
                 ltp = msg.get("ltp") or msg.get("lp")
+                symbol = msg.get("symbol", "")
+                now = datetime.now(timezone.utc)
+
                 if ltp and ltp > 0:
                     self._last_ltp = float(ltp)
-                    self._last_tick_time = datetime.now(timezone.utc)
+                    self._last_tick_time = now
 
                     if self._on_tick:
                         self._on_tick({
-                            "ltp": self._last_ltp,
-                            "timestamp": self._last_tick_time,
-                            "symbol": msg.get("symbol", ""),
+                            "ltp": float(ltp),
+                            "timestamp": now,
+                            "symbol": symbol,
+                            "bid": msg.get("bid") or msg.get("bp"),
+                            "ask": msg.get("ask") or msg.get("sp"),
+                            "bid_qty": msg.get("bid_qty") or msg.get("bq"),
+                            "ask_qty": msg.get("ask_qty") or msg.get("sq"),
                             "high": msg.get("high_price"),
                             "low": msg.get("low_price"),
                             "open": msg.get("open_price"),

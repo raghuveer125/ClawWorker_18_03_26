@@ -278,12 +278,24 @@ class TestTradability:
         result = check_tradability(row, cfg.tradability)
         assert not result.tradable
 
-    def test_low_qty_fails(self, cfg):
+    def test_low_qty_passes_when_disabled(self, cfg):
+        """With min_bid_qty=0 (FYERS doesn't provide depth qty), low qty passes."""
         from engines.lottery.calculations.tradability import check_tradability
         row = OptionRow(symbol="NIFTY", expiry="2026-04-09", strike=24000,
             option_type=OptionType.CE, ltp=3.50,
             bid=3.40, ask=3.60, bid_qty=5, ask_qty=5, volume=5000000)
         result = check_tradability(row, cfg.tradability)
+        assert result.tradable  # min_bid_qty=0 in config, so qty checks are disabled
+
+    def test_low_qty_fails_when_configured(self, cfg):
+        """When min_bid_qty is explicitly set, low qty should fail."""
+        from dataclasses import replace as dc_replace
+        from engines.lottery.calculations.tradability import check_tradability
+        strict_trad = dc_replace(cfg.tradability, min_bid_qty=50, min_ask_qty=50)
+        row = OptionRow(symbol="NIFTY", expiry="2026-04-09", strike=24000,
+            option_type=OptionType.CE, ltp=3.50,
+            bid=3.40, ask=3.60, bid_qty=5, ask_qty=5, volume=5000000)
+        result = check_tradability(row, strict_trad)
         assert not result.tradable
 
     def test_multi_failure_all_captured(self, cfg):
@@ -436,7 +448,8 @@ class TestExtrapolationAdvisory:
         if best_ce:
             assert best_ce.source == "VISIBLE"
 
-    def test_no_visible_allows_extrapolated(self, cfg):
+    def test_no_visible_rejects_extrapolated(self, cfg):
+        """Extrapolated candidates are excluded from scoring — advisory only."""
         from engines.lottery.calculations.scoring import score_and_select
         rows = [CalculatedRow(strike=22900, distance=0, abs_distance=0, call_ltp=200, put_ltp=200)]
         ext_pe = [ExtrapolatedStrike(strike=20000, option_type=OptionType.PE,
@@ -444,7 +457,8 @@ class TestExtrapolationAdvisory:
             alpha_used=0.05, in_band=True)]
         _, best_pe, cands = score_and_select(rows, [], ext_pe, 22900, None, None, cfg)
         extrap = [c for c in cands if c.source == "EXTRAPOLATED"]
-        assert len(extrap) == 1
+        # New design: extrapolated candidates are never included in scoring
+        assert len(extrap) == 0
 
 
 # ══════════════════════════════════════════════════════════════════════════

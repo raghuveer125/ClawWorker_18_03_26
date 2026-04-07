@@ -286,6 +286,8 @@ class DataQualityValidator:
                 negative_oi += 1
 
             # Intrinsic floor check — only within strike window (ATM ± N)
+            # Epsilon scales with intrinsic: fixed floor for low intrinsic,
+            # percentage-based for deep ITM (which routinely trades 1-3% below)
             if abs(row.strike - spot) <= step * window:
                 floor_checked += 1
                 if row.option_type == OptionType.CE:
@@ -293,7 +295,10 @@ class DataQualityValidator:
                 else:
                     intrinsic = max(row.strike - spot, 0)
 
-                if row.ltp > 0 and row.ltp < intrinsic - eps:
+                # Scale epsilon: max(fixed_eps, 3% of intrinsic)
+                # Deep ITM options trade up to 3% below intrinsic normally
+                scaled_eps = max(eps, intrinsic * 0.03)
+                if row.ltp > 0 and row.ltp < intrinsic - scaled_eps:
                     floor_violations += 1
 
         # LTP check

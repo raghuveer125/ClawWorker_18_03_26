@@ -236,18 +236,26 @@ class TestExtrapolation:
 
 class TestScoring:
 
-    def test_band_fit_binary(self, cfg):
-        cfg_bin = replace(cfg, premium_band=replace(cfg.premium_band, fit_mode=BandFitMode.BINARY))
-        assert _compute_band_fit(5.0, cfg_bin) == 1.0
-        assert _compute_band_fit(1.0, cfg_bin) == 0.0
-        assert _compute_band_fit(10.0, cfg_bin) == 0.0
+    def test_band_fit_gaussian(self, cfg):
+        """Band fit is now a soft Gaussian preference, not a hard gate."""
+        mid = (cfg.premium_band.min + cfg.premium_band.max) / 2
+        score_mid = _compute_band_fit(mid, cfg)
+        score_far = _compute_band_fit(50.0, cfg)
+        score_zero = _compute_band_fit(0.0, cfg)
+        # Mid should score highest
+        assert score_mid > score_far
+        # Zero premium should score 0
+        assert score_zero == 0.0
+        # All positive premiums get some score (Gaussian never reaches 0)
+        assert _compute_band_fit(0.10, cfg) > 0
+        assert _compute_band_fit(100.0, cfg) > 0  # very low but not zero
 
-    def test_band_fit_distance(self, cfg):
-        # Mid = (2.1 + 8.5) / 2 = 5.3
-        score_mid = _compute_band_fit(5.3, cfg)
-        score_edge = _compute_band_fit(2.1, cfg)
+    def test_band_fit_preference(self, cfg):
+        """Premiums closer to band center score higher."""
+        mid = (cfg.premium_band.min + cfg.premium_band.max) / 2
+        score_mid = _compute_band_fit(mid, cfg)
+        score_edge = _compute_band_fit(cfg.premium_band.min, cfg)
         assert score_mid > score_edge
-        assert _compute_band_fit(1.0, cfg) == 0.0
 
     def test_score_and_select(self, sample_chain, cfg):
         rows = compute_base_metrics(sample_chain, cfg)
@@ -273,16 +281,22 @@ class TestScoring:
             rows, ext_ce, ext_pe, sample_chain.spot_ltp, None, None, cfg,
         )
         for c in cands:
-            assert "f_dist" in c.components
-            assert "f_mom" in c.components
-            assert "f_liq" in c.components
-            assert "f_band" in c.components
+            # New market-relative scoring components
+            assert "f_liquidity" in c.components
+            assert "f_structure" in c.components
+            assert "f_premium" in c.components
+            assert "f_distance" in c.components
+            assert "f_tradability" in c.components
+            assert "f_momentum" in c.components
 
-    def test_otm_distance_filter(self, sample_chain, cfg):
+    def test_otm_candidates_are_tradable(self, sample_chain, cfg):
+        """All scored candidates must pass tradability gate (bid/ask + spread)."""
         rows = compute_base_metrics(sample_chain, cfg)
         ext_ce, ext_pe = extrapolate_otm_strikes(rows, sample_chain.spot_ltp, cfg)
         _, _, cands = score_and_select(
             rows, ext_ce, ext_pe, sample_chain.spot_ltp, None, None, cfg,
         )
         for c in cands:
-            assert c.distance >= cfg.otm_distance.min_points
+            assert c.source == "VISIBLE"  # no extrapolated candidates in scoring
+            assert c.spread_pct is not None
+            assert c.spread_pct <= cfg.tradability.max_spread_pct

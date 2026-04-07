@@ -151,7 +151,7 @@ def _extrapolate_side(
         return []
 
     # ── Step 3: Calibrate α ────────────────────────────────────────
-    alpha = _calibrate_alpha(otm_rows, spot, step, config, ltp_getter)
+    alpha = _calibrate_alpha(otm_rows, spot, step, config, ltp_getter, fit_window_override=fit_window)
 
     # ── Step 4: Project forward ────────────────────────────────────
     # Start from the furthest visible OTM strike
@@ -210,6 +210,7 @@ def _calibrate_alpha(
     step: int,
     config: LotteryConfig,
     ltp_getter,
+    fit_window_override: Optional[int] = None,
 ) -> float:
     """Calibrate compression factor α from visible chain.
 
@@ -239,7 +240,7 @@ def _calibrate_alpha(
         return config.extrapolation.alpha_value
 
     # Use last fit_window points (furthest OTM) for fitting
-    fit_window = config.extrapolation.fit_window_ce
+    fit_window = fit_window_override or config.extrapolation.fit_window_ce
     fit_points = sorted(points, key=lambda p: p[0])[-max(fit_window, 3):]
 
     # Simple linear regression: ln(LTP) = a - α * n

@@ -120,6 +120,8 @@ class ScoringConfig:
     w3_liquidity: float = 1.0
     w4_band_fit: float = 1.0
     w5_bias: float = 1.0
+    w6_roc: float = 0.5              # weight for 1-min premium rate-of-change
+    w_spread_penalty: float = 0.5    # weight for spread penalty (subtracted)
     tie_epsilon: float = 0.01
     min_valid_candidates: int = 1
 

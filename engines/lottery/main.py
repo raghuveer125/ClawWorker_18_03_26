@@ -55,6 +55,7 @@ from .models import (
 from .paper_trading import CapitalManager, PaperBroker
 from .storage import LotteryDB
 from .strategy import RiskGuard, SignalEngine, StateMachine, resolve_triggers
+from .strategy.state_machine import TriggerZone
 from .strategy.confirmation import (
     BreakoutConfirmation,
     ConfirmationConfig,
@@ -79,6 +80,7 @@ class LotteryPipeline:
         self._symbol = symbol
         self._exchange = exchange
         self._running = False
+        self._resolved_expiry = ""  # resolved once at startup or first chain fetch
 
         # ── Core components ────────────────────────────────────────
         self._logger = setup_logger(config, symbol, f"lottery.{symbol}")
@@ -160,9 +162,15 @@ class LotteryPipeline:
         self._ws_client: Optional[FyersWebSocketClient] = None
         self._last_ws_ltp: Optional[float] = None
         self._last_ws_time: Optional[datetime] = None
+        self._ws_option_quotes: dict = {}  # {symbol_str: {ltp, bid, ask, ...}}
+        self._ws_subscribed_candidates: set = set()
 
         # ── Candidate refresh state ────────────────────────────────
         self._cached_candidate_quotes: dict = {}
+
+        # ── Session-locked triggers ────────────────────────────────
+        # Fixed at first analysis cycle — do NOT drift with spot
+        self._session_triggers: Optional[TriggerZone] = None
 
         # Save config version
         self._db.save_config_version(config)
@@ -333,7 +341,10 @@ class LotteryPipeline:
         rows = compute_base_metrics(snapshot, self._config)
         rows = compute_advanced_metrics(rows, self._config)
         window = filter_window(rows, snapshot.spot_ltp, self._config)
-        side, bias, avg_c, avg_p = compute_side_bias(window, self._config)
+        spot_hist = [e["ltp"] for e in self._rsm.get_spot_history(30) if e.get("ltp")]
+        side, bias, avg_c, avg_p = compute_side_bias(
+            window, self._config, spot=snapshot.spot_ltp, spot_history=spot_hist,
+        )
         ext_ce, ext_pe = extrapolate_otm_strikes(rows, snapshot.spot_ltp, self._config)
         best_ce, best_pe, all_cands = score_and_select(
             rows, ext_ce, ext_pe, snapshot.spot_ltp, side, bias, self._config,
@@ -397,6 +408,19 @@ class LotteryPipeline:
         except Exception as e:
             self._failures.record("PERSISTENCE", f"calc save: {e}")
 
+        # Lock triggers at first successful analysis (session-fixed)
+        if self._session_triggers is None:
+            self._session_triggers = resolve_triggers(
+                snapshot.spot_ltp, self._config,
+                snapshot.strikes if hasattr(snapshot, 'strikes') else None,
+            )
+            self._logger.info(
+                "SESSION TRIGGERS LOCKED: lower=%.0f upper=%.0f (spot=%.1f)",
+                self._session_triggers.lower_trigger,
+                self._session_triggers.upper_trigger,
+                snapshot.spot_ltp,
+            )
+
         elapsed = (time.monotonic() - t_start) * 1000
         self._logger.info(
             "Analysis cycle: spot=%.2f quality=%s candidates=%d (CE=%s PE=%s) %.1fms",
@@ -405,6 +429,9 @@ class LotteryPipeline:
             f"K={best_pe.strike:.0f}" if best_pe else "None",
             elapsed,
         )
+
+        # Update WebSocket subscriptions for new candidates
+        self._update_ws_candidate_subscriptions()
 
     # ══════════════════════════════════════════════════════════════
     # TRIGGER CYCLE — every 1s (live spot + candidate quotes)
@@ -449,7 +476,7 @@ class LotteryPipeline:
 
         # ── Signal for new entry ───────────────────────────────────
         if self._rsm.state.active_trade is None:
-            triggers = resolve_triggers(live_spot, self._config, analysis.chain.strikes)
+            triggers = self._session_triggers or resolve_triggers(live_spot, self._config, analysis.chain.strikes)
             spot_time = self._last_ws_time or datetime.now(timezone.utc)
 
             # ── Hysteresis gate ────────────────────────────────────
@@ -499,14 +526,26 @@ class LotteryPipeline:
                     # ── Tradability gate ────────────────────────────
                     from .calculations.tradability import check_tradability
                     cq = trigger_snap.get_candidate_quote(candidate.strike, candidate.option_type)
+
+                    # Fall back to chain data for bid/ask when candidate quote is missing them
+                    chain_bid, chain_ask, chain_vol = None, None, None
+                    if analysis.chain:
+                        for cr in analysis.chain.rows:
+                            if cr.strike == candidate.strike and cr.option_type == candidate.option_type:
+                                chain_bid = cr.bid
+                                chain_ask = cr.ask
+                                chain_vol = cr.volume
+                                break
+
                     if cq:
-                        # Build a synthetic OptionRow from candidate quote for tradability
+                        # Build a synthetic OptionRow — use chain fallback for missing bid/ask
                         from .models import OptionRow
                         trad_row = OptionRow(
                             symbol=self._symbol, expiry="", strike=candidate.strike,
                             option_type=candidate.option_type, ltp=cq.ltp,
-                            bid=cq.bid, ask=cq.ask, bid_qty=cq.bid_qty,
-                            ask_qty=cq.ask_qty, volume=cq.volume,
+                            bid=cq.bid or chain_bid, ask=cq.ask or chain_ask,
+                            bid_qty=cq.bid_qty, ask_qty=cq.ask_qty,
+                            volume=cq.volume or chain_vol,
                         )
                         trad_result = check_tradability(trad_row, self._config.tradability)
                         if not trad_result.tradable:
@@ -521,7 +560,12 @@ class LotteryPipeline:
                     trigger_price = triggers.upper_trigger if direction == "above" else triggers.lower_trigger
                     current_vol = cq.volume if cq else candidate.volume
                     recent_avg_vol = float(candidate.volume or 0) * 0.8
-                    current_spread = cq.spread_pct if cq else candidate.spread_pct
+                    # Use candidate quote spread, fall back to chain-computed spread
+                    current_spread = cq.spread_pct if cq and cq.spread_pct is not None else candidate.spread_pct
+                    if current_spread is None and chain_bid and chain_ask and chain_bid > 0 and chain_ask > 0:
+                        _mid = (chain_bid + chain_ask) / 2
+                        if _mid > 0:
+                            current_spread = round(((chain_ask - chain_bid) / _mid) * 100, 2)
 
                     conf_result = self._confirmation.evaluate(
                         candidate=candidate,
@@ -561,9 +605,19 @@ class LotteryPipeline:
         max_retries = self._config.polling.retry_max_attempts
         backoff_base = self._config.polling.retry_backoff_base_ms / 1000
 
+        # Resolve expiry once per session (fetch_expiries is lightweight)
+        if not self._resolved_expiry:
+            try:
+                expiries = self._adapter.fetch_expiries(self._symbol, self._exchange)
+                if expiries:
+                    self._resolved_expiry = expiries[0].expiry_date  # nearest expiry
+                    self._logger.info("Resolved expiry: %s", self._resolved_expiry)
+            except Exception as e:
+                self._logger.warning("Expiry resolution failed: %s", e)
+
         for attempt in range(max_retries):
             snapshot = self._adapter.fetch_option_chain(
-                self._symbol, self._exchange, "",
+                self._symbol, self._exchange, self._resolved_expiry,
             )
             if snapshot:
                 return snapshot
@@ -633,7 +687,7 @@ class LotteryPipeline:
                 timestamp=data.get("timestamp", datetime.now(timezone.utc)),
             ))
 
-        triggers = resolve_triggers(live_spot, self._config, analysis.chain.strikes if analysis.chain else None)
+        triggers = self._session_triggers or resolve_triggers(live_spot, self._config, analysis.chain.strikes if analysis.chain else None)
 
         return TriggerSnapshot(
             spot_ltp=live_spot,
@@ -647,8 +701,10 @@ class LotteryPipeline:
 
     def _check_exit(self, trade, live_spot, trigger_snap, analysis, tracer):
         """Check active trade for exit using live data."""
-        triggers = resolve_triggers(live_spot, self._config,
-            analysis.chain.strikes if analysis.chain else None)
+        triggers = self._session_triggers or resolve_triggers(
+            live_spot, self._config,
+            analysis.chain.strikes if analysis.chain else None,
+        )
 
         # Get current LTP — prefer live candidate quote
         cq = trigger_snap.get_candidate_quote(trade.strike, trade.option_type)
@@ -682,7 +738,14 @@ class LotteryPipeline:
 
         self._rsm.update_trade_ltp(current_ltp)
 
-        exit_reason = self._se.evaluate_exit(trade, current_ltp, live_spot, triggers)
+        # Compute spot ATR from recent history (1-min candle ranges)
+        spot_atr = self._compute_spot_atr()
+
+        exit_reason = self._se.evaluate_exit(
+            trade, current_ltp, live_spot, triggers,
+            peak_ltp=self._rsm.state.active_trade_peak_ltp,
+            spot_atr=spot_atr,
+        )
 
         if exit_reason:
             closed = self._broker.execute_exit(trade, current_ltp, exit_reason, trade.lots)
@@ -745,8 +808,47 @@ class LotteryPipeline:
         qty, lots = self._capital.compute_position_size(candidate.ltp, lot_size)
 
         cq = trigger_snap.get_candidate_quote(candidate.strike, candidate.option_type)
-        bid = cq.bid if cq else None
-        ask = cq.ask if cq else None
+
+        # Chain fallback for bid/ask (candidate quote API often returns None)
+        chain_bid, chain_ask = None, None
+        if analysis.chain:
+            for cr in analysis.chain.rows:
+                if cr.strike == candidate.strike and cr.option_type == candidate.option_type:
+                    chain_bid = cr.bid
+                    chain_ask = cr.ask
+                    break
+
+        bid = (cq.bid if cq and cq.bid else None) or chain_bid
+        ask = (cq.ask if cq and cq.ask else None) or chain_ask
+
+        # Compute spread from best available bid/ask
+        entry_spread_pct = None
+        if bid and ask and bid > 0 and ask > 0:
+            mid = (bid + ask) / 2
+            if mid > 0:
+                entry_spread_pct = round(((ask - bid) / mid) * 100, 2)
+
+        # Microstructure risk signal guard: block if spoof or other risk detected
+        ms_summary = self._microstructure.get_confirmation_summary(
+            candidate.strike, candidate.option_type,
+        )
+        if ms_summary.get("risk_signals", 0) > 0:
+            self._logger.warning(
+                "Entry blocked: microstructure risk signal for K=%s %s: %s",
+                candidate.strike, candidate.option_type.value, ms_summary,
+            )
+            tracer.record_paper_execution(None, f"MICROSTRUCTURE_RISK: {ms_summary.get('risk_signals', 0)} signals")
+            return
+
+        # Entry-moment spread guard: block if spread widened since scoring
+        max_entry_spread = self._config.tradability.max_spread_pct
+        if entry_spread_pct is not None and entry_spread_pct > max_entry_spread:
+            self._logger.warning(
+                "Entry blocked: spread %.1f%% > max %.1f%% at entry moment for K=%s %s",
+                entry_spread_pct, max_entry_spread, candidate.strike, candidate.option_type.value,
+            )
+            tracer.record_paper_execution(None, f"SPREAD_WIDE_AT_ENTRY: {entry_spread_pct:.1f}%")
+            return
 
         self._sm.enter_trade()
         trade = self._broker.execute_entry(
@@ -812,11 +914,116 @@ class LotteryPipeline:
             self._logger.warning("WebSocket start failed: %s", e)
 
     def _on_ws_tick(self, tick: dict) -> None:
-        """WebSocket tick callback — updates spot + candle builder."""
+        """WebSocket tick callback — updates spot, option quotes, and microstructure."""
         ltp = tick.get("ltp")
+        symbol = tick.get("symbol", "")
+
+        # Option tick — update candidate quote cache + microstructure
+        if symbol and "CE" in symbol or "PE" in symbol:
+            if ltp and ltp > 0:
+                self._ws_option_quotes[symbol] = {
+                    "ltp": ltp,
+                    "bid": tick.get("bid"),
+                    "ask": tick.get("ask"),
+                    "bid_qty": tick.get("bid_qty"),
+                    "ask_qty": tick.get("ask_qty"),
+                    "volume": tick.get("volume"),
+                    "timestamp": tick.get("timestamp"),
+                }
+                # Also update cached_candidate_quotes for the trigger cycle
+                for key, fyers_sym in self._ws_subscribed_candidates:
+                    if fyers_sym == symbol:
+                        bid = tick.get("bid")
+                        ask = tick.get("ask")
+                        mid = ((bid or 0) + (ask or 0)) / 2 if bid and ask else 0
+                        spread_pct = round(((ask - bid) / mid) * 100, 2) if mid > 0 else None
+                        self._cached_candidate_quotes[key] = {
+                            "ltp": ltp,
+                            "bid": bid,
+                            "ask": ask,
+                            "bid_qty": tick.get("bid_qty"),
+                            "ask_qty": tick.get("ask_qty"),
+                            "volume": tick.get("volume"),
+                            "spread_pct": spread_pct,
+                            "timestamp": tick.get("timestamp"),
+                        }
+            return
+
+        # Spot tick
         if ltp and ltp > 0:
             self._last_ws_ltp = ltp
             self._last_ws_time = tick.get("timestamp") or datetime.now(timezone.utc)
+
+    def _compute_spot_atr(self, lookback: int = 5) -> float:
+        """Compute 1-minute spot ATR from recent spot history.
+
+        Uses the spot_history deque in RSM (300 entries at 1s = 5 min).
+        Groups into 60-second candles and computes average range.
+        """
+        history = self._rsm.get_spot_history(300)
+        if len(history) < 120:  # need at least 2 minutes
+            return self._config.instrument.strike_step * 0.4  # fallback
+
+        spots = [h["ltp"] for h in history if h.get("ltp")]
+        if len(spots) < 120:
+            return self._config.instrument.strike_step * 0.4
+
+        # Build 1-min candles (60 entries each)
+        ranges = []
+        for i in range(0, len(spots) - 60, 60):
+            chunk = spots[i:i + 60]
+            ranges.append(max(chunk) - min(chunk))
+
+        if not ranges:
+            return self._config.instrument.strike_step * 0.4
+
+        # Average of last N candle ranges
+        recent = ranges[-lookback:] if len(ranges) >= lookback else ranges
+        return sum(recent) / len(recent)
+
+    def _update_ws_candidate_subscriptions(self) -> None:
+        """Subscribe WebSocket to current best candidate option symbols."""
+        if not self._ws_client or not self._last_analysis:
+            return
+
+        analysis = self._last_analysis
+        symbols_to_sub = []
+        new_candidate_map = set()
+
+        for cand in [analysis.best_ce, analysis.best_pe]:
+            if not cand:
+                continue
+            fyers_sym = self._adapter._build_option_symbol(
+                self._symbol, int(cand.strike), cand.option_type.value,
+            )
+            if fyers_sym:
+                key = (cand.strike, cand.option_type.value)
+                symbols_to_sub.append(fyers_sym)
+                new_candidate_map.add((key, fyers_sym))
+
+        # Also subscribe to the 4 entry table strikes (nearest OTM)
+        if analysis.chain:
+            spot = analysis.chain.spot_ltp
+            strikes = sorted(set(r.strike for r in analysis.chain.rows))
+            pe_otm = [s for s in strikes if s < spot][-3:]  # nearest 3 PE
+            ce_otm = [s for s in strikes if s > spot][:3]    # nearest 3 CE
+            for s in pe_otm:
+                sym = self._adapter._build_option_symbol(self._symbol, int(s), "PE")
+                if sym:
+                    symbols_to_sub.append(sym)
+                    new_candidate_map.add(((s, "PE"), sym))
+            for s in ce_otm:
+                sym = self._adapter._build_option_symbol(self._symbol, int(s), "CE")
+                if sym:
+                    symbols_to_sub.append(sym)
+                    new_candidate_map.add(((s, "CE"), sym))
+
+        # Deduplicate
+        symbols_to_sub = list(dict.fromkeys(symbols_to_sub))
+
+        self._ws_subscribed_candidates = new_candidate_map
+        self._ws_client.update_subscriptions(symbols_to_sub)
+        self._logger.debug("WS candidate subs updated: %d symbols", len(symbols_to_sub))
 
     def _warmup_candles(self) -> None:
         """Seed candle builder from historical API."""
@@ -849,7 +1056,9 @@ class LotteryPipeline:
                     rows = compute_base_metrics(snapshot, self._config)
                     rows = compute_advanced_metrics(rows, self._config)
                     window = filter_window(rows, snapshot.spot_ltp, self._config)
-                    side, bias, _, _ = compute_side_bias(window, self._config)
+                    side, bias, _, _ = compute_side_bias(
+                        window, self._config, spot=snapshot.spot_ltp,
+                    )
                     ext_ce, ext_pe = extrapolate_otm_strikes(rows, snapshot.spot_ltp, self._config)
                     best_ce, best_pe, cands = score_and_select(
                         rows, ext_ce, ext_pe, snapshot.spot_ltp, side, bias, self._config,

@@ -102,6 +102,12 @@ def compute_base_metrics(
         call_band_eligible = band_min <= call_ltp <= band_max if call_ltp > 0 else False
         put_band_eligible = band_min <= put_ltp <= band_max if put_ltp > 0 else False
 
+        # ── Volume/OI Ratio (diagnostic) ─────────────────────────
+        call_oi = ce.oi if ce and ce.oi else None
+        put_oi = pe.oi if pe and pe.oi else None
+        call_vol_oi = (call_volume / max(call_oi, 1)) if call_volume and call_oi and call_oi > 0 else None
+        put_vol_oi = (put_volume / max(put_oi, 1)) if put_volume and put_oi and put_oi > 0 else None
+
         results.append(CalculatedRow(
             strike=strike,
             distance=distance,
@@ -125,6 +131,8 @@ def compute_base_metrics(
             put_ltp=put_ltp,
             call_band_eligible=call_band_eligible,
             put_band_eligible=put_band_eligible,
+            call_vol_oi_ratio=call_vol_oi,
+            put_vol_oi_ratio=put_vol_oi,
         ))
 
     return sorted(results, key=lambda r: r.strike)

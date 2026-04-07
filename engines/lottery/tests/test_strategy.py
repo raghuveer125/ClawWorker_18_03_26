@@ -195,8 +195,9 @@ class TestSignalEngine:
         se = SignalEngine(config=cfg, state_machine=sm)
         trade = PaperTrade(
             strike=24000, option_type=OptionType.CE,
-            entry_price=3.50, sl=1.75, t1=7.0, t2=10.5, t3=14.0,
+            entry_price=3.50, sl=1.40, t1=7.0, t2=10.5, t3=14.0,
         )
+        # LTP=1.00 is well below SL floor (3.50 * 0.40 = 1.40)
         result = se.evaluate_exit(trade, current_ltp=1.50, spot=22750, triggers=triggers)
         assert result == ExitReason.STOP_LOSS
 
@@ -221,16 +222,17 @@ class TestSignalEngine:
         result = se.evaluate_exit(trade, current_ltp=15.0, spot=22750, triggers=triggers)
         assert result == ExitReason.TARGET_3
 
-    def test_exit_invalidation_ce(self, cfg, triggers):
+    def test_exit_invalidation_disabled(self, cfg, triggers):
+        """Invalidation is disabled (causes whipsaw). Spot reversal should NOT exit."""
         sm = StateMachine(config=cfg)
         se = SignalEngine(config=cfg, state_machine=sm)
         trade = PaperTrade(
             strike=24000, option_type=OptionType.CE,
-            entry_price=3.50, sl=1.75, t1=7.0, t2=10.5, t3=14.0,
+            entry_price=3.50, sl=2.10, t1=7.0, t2=10.5, t3=14.0,
         )
-        # Spot drops below upper trigger
+        # Spot drops below upper trigger — with invalidation_exit=false, should HOLD
         result = se.evaluate_exit(trade, current_ltp=3.50, spot=triggers.upper_trigger - 10, triggers=triggers)
-        assert result == ExitReason.INVALIDATION
+        assert result is None
 
     def test_hold_between_sl_and_t1(self, cfg, triggers):
         sm = StateMachine(config=cfg)
@@ -242,11 +244,54 @@ class TestSignalEngine:
         result = se.evaluate_exit(trade, current_ltp=5.0, spot=22750, triggers=triggers)
         assert result is None  # HOLD
 
+    def test_exit_trailing_stop_from_peak(self, cfg, triggers):
+        sm = StateMachine(config=cfg)
+        se = SignalEngine(config=cfg, state_machine=sm)
+        trade = PaperTrade(
+            strike=24000, option_type=OptionType.CE,
+            entry_price=3.50, sl=1.75, t1=7.0, t2=10.5, t3=14.0,
+        )
+        # Peak was 6.0, trailing_stop_pct=30% means trail at 6.0*0.70 = 4.20
+        # LTP dropped to 4.0 which is below 4.20 → should trigger
+        result = se.evaluate_exit(
+            trade, current_ltp=4.0, spot=22750, triggers=triggers, peak_ltp=6.0,
+        )
+        assert result == ExitReason.TRAILING_STOP
+
+    def test_trailing_stop_holds_above_trail(self, cfg, triggers):
+        sm = StateMachine(config=cfg)
+        se = SignalEngine(config=cfg, state_machine=sm)
+        trade = PaperTrade(
+            strike=24000, option_type=OptionType.CE,
+            entry_price=3.50, sl=1.75, t1=7.0, t2=10.5, t3=14.0,
+        )
+        # Peak was 5.0, trail at 5.0*0.70 = 3.50
+        # LTP is 4.0 which is above 3.50 → should hold
+        result = se.evaluate_exit(
+            trade, current_ltp=4.0, spot=22750, triggers=triggers, peak_ltp=5.0,
+        )
+        assert result is None
+
+    def test_trailing_stop_ignored_below_entry(self, cfg, triggers):
+        sm = StateMachine(config=cfg)
+        se = SignalEngine(config=cfg, state_machine=sm)
+        trade = PaperTrade(
+            strike=24000, option_type=OptionType.CE,
+            entry_price=3.50, sl=3.43, t1=7.0, t2=10.5, t3=14.0,
+        )
+        # Peak is at entry (no gain yet) → trailing should not activate
+        # LTP=3.45 is above SL (3.50*0.98=3.43) so no SL hit
+        # peak_ltp=3.50 is not > entry=3.50, so trailing guard blocks it
+        result = se.evaluate_exit(
+            trade, current_ltp=3.45, spot=22750, triggers=triggers, peak_ltp=3.50,
+        )
+        assert result is None
+
     def test_exit_levels(self, cfg):
         sm = StateMachine(config=cfg)
         se = SignalEngine(config=cfg, state_machine=sm)
         levels = se.compute_exit_levels(4.0)
-        assert levels["sl"] == 2.0
+        assert levels["sl"] == pytest.approx(4.0 * 0.60, abs=0.01)  # 40% max loss floor
         assert levels["t1"] == 8.0
         assert levels["t2"] == 12.0
         assert levels["t3"] == 16.0

@@ -167,7 +167,7 @@ class StateMachine:
             return self._ctx.state
 
         elif self._ctx.state == MachineState.COOLDOWN:
-            return self._eval_cooldown()
+            return self._eval_cooldown(now)
 
         return self._ctx.state
 
@@ -271,13 +271,13 @@ class StateMachine:
         )
         return self._ctx.state
 
-    def _eval_cooldown(self) -> MachineState:
+    def _eval_cooldown(self, now: datetime) -> MachineState:
         """COOLDOWN → IDLE when cooldown period expires."""
         if self._ctx.cooldown_start is None:
             self._transition_to_idle("cooldown start missing — resetting")
             return self._ctx.state
 
-        elapsed = time.time() - self._ctx.cooldown_start
+        elapsed = now.timestamp() - self._ctx.cooldown_start
         if elapsed >= self._config.cooldown.seconds:
             self._transition_to_idle(
                 f"cooldown expired ({elapsed:.0f}s >= {self._config.cooldown.seconds}s)"

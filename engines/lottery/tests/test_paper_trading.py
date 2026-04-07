@@ -71,7 +71,7 @@ class TestPaperBroker:
             candidate, "NIFTY", "2026-04-07", 75, 1, 100000,
             "sig1", "snap1", "v1",
         )
-        assert trade.sl == pytest.approx(trade.entry_price * 0.5, abs=0.01)
+        assert trade.sl == pytest.approx(trade.entry_price * 0.60, abs=0.01)  # 40% max loss floor
         assert trade.t1 == pytest.approx(trade.entry_price * 2.0, abs=0.01)
         assert trade.t2 == pytest.approx(trade.entry_price * 3.0, abs=0.01)
         assert trade.t3 == pytest.approx(trade.entry_price * 4.0, abs=0.01)

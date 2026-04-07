@@ -340,4 +340,7 @@ export const fetchLotteryCandidates = (symbol = 'NIFTY') =>
 export const fetchLotteryRejections = (symbol = 'NIFTY', limit = 20) =>
   get(liveUrl(`lottery/rejections?symbol=${symbol}&limit=${limit}`))
 
+export const fetchLotteryBandCandidates = (symbol = 'NIFTY') =>
+  get(liveUrl(`lottery/band-candidates?symbol=${symbol}`))
+
 export const IS_STATIC = STATIC

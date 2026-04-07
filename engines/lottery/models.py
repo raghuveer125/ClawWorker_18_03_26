@@ -188,6 +188,14 @@ class CalculatedRow:
     call_band_eligible: bool = False
     put_band_eligible: bool = False
 
+    # Premium ROC (1-minute rate of change)
+    call_premium_roc: Optional[float] = None
+    put_premium_roc: Optional[float] = None
+
+    # Volume/OI diagnostic ratio
+    call_vol_oi_ratio: Optional[float] = None
+    put_vol_oi_ratio: Optional[float] = None
+
     # Scoring
     call_candidate_score: Optional[float] = None
     put_candidate_score: Optional[float] = None

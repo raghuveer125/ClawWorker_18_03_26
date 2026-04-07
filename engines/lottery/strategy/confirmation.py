@@ -311,10 +311,10 @@ class BreakoutConfirmation:
     def _check_spread_stability(self, current_spread_pct: Optional[float]) -> ConfirmationCheck:
         """Check if spread hasn't widened excessively since candidate found."""
         if current_spread_pct is None or self._candidate_initial_spread_pct is None:
-            # If no spread data, pass by default (don't block on missing data)
+            # Missing spread data = cannot confirm stability → fail
             return ConfirmationCheck(
-                name="spread_stable", passed=True,
-                observed="spread data unavailable — defaulting to pass",
+                name="spread_stable", passed=False,
+                observed="spread data unavailable — cannot confirm stability",
                 threshold=f"widen < {self._config.spread_widen_max_pct:.0f}%",
             )
 

@@ -70,6 +70,8 @@ def compute_advanced_metrics(
 def compute_side_bias(
     window_rows: list[CalculatedRow],
     config: LotteryConfig,
+    spot: Optional[float] = None,
+    spot_history: Optional[list[float]] = None,
 ) -> tuple[Optional[Side], Optional[float], Optional[float], Optional[float]]:
     """Compute directional side bias from decay asymmetry.
 
@@ -78,27 +80,37 @@ def compute_side_bias(
     - VOLUME_WEIGHTED: weighted by respective volumes
     - DISTANCE_WEIGHTED: weighted by inverse distance from ATM
 
+    Falls back to multi-factor bias (OI PCR + momentum + price position)
+    when decay data is unavailable (FYERS returns change=None).
+
     Args:
         window_rows: Rows within the configured strike window.
         config: Config with bias aggregation mode.
+        spot: Current spot price (for multi-factor fallback).
+        spot_history: Recent spot prices newest-first (for momentum).
 
     Returns:
         (preferred_side, bias_score, avg_call_decay, avg_put_decay)
-        - preferred_side: Side.PE if calls decay faster, Side.CE if puts decay faster, None if no data
-        - bias_score: avg_call_decay - avg_put_decay (positive = PE preferred)
-        - avg_call_decay: aggregated call decay
-        - avg_put_decay: aggregated put decay
     """
     mode = config.bias.aggregation
 
     if mode == BiasAggregation.MEAN:
-        return _bias_simple_mean(window_rows)
+        result = _bias_simple_mean(window_rows)
     elif mode == BiasAggregation.VOLUME_WEIGHTED:
-        return _bias_volume_weighted(window_rows)
+        result = _bias_volume_weighted(window_rows)
     elif mode == BiasAggregation.DISTANCE_WEIGHTED:
-        return _bias_distance_weighted(window_rows)
+        result = _bias_distance_weighted(window_rows)
     else:
-        return _bias_simple_mean(window_rows)
+        result = _bias_simple_mean(window_rows)
+
+    # Fallback: if decay data unavailable (FYERS returns change=None),
+    # use multi-factor bias: OI PCR + spot momentum + price position
+    if result[0] is None:
+        bias = _bias_multi_factor(window_rows, spot, spot_history)
+        if bias[0] is not None:
+            return bias
+
+    return result
 
 
 def compute_pcr_bias(
@@ -239,3 +251,73 @@ def _bias_distance_weighted(
 
     side = Side.PE if bias > 0 else Side.CE if bias < 0 else None
     return side, bias, avg_call, avg_put
+
+
+def _bias_multi_factor(
+    rows: list[CalculatedRow],
+    spot: Optional[float] = None,
+    spot_history: Optional[list[float]] = None,
+) -> tuple[Optional[Side], Optional[float], Optional[float], Optional[float]]:
+    """Multi-factor bias when decay data is unavailable.
+
+    Factors (weighted):
+    1. OI/Volume PCR: >1 = bearish (PE), <1 = bullish (CE)   [40%]
+    2. Spot momentum: falling = PE, rising = CE               [35%]
+    3. Price position: near resistance = PE, near support = CE [25%]
+
+    Bias > 0 = PE favoured, Bias < 0 = CE favoured.
+    """
+    if not rows:
+        return None, None, None, None
+
+    # Factor 1: PCR from volume (OI not available from FYERS option chain)
+    total_call_vol = 0
+    total_put_vol = 0
+    for row in rows:
+        if row.call_volume is not None:
+            total_call_vol += row.call_volume
+        if row.put_volume is not None:
+            total_put_vol += row.put_volume
+
+    oi_factor = 0.0
+    if total_call_vol > 0:
+        pcr = total_put_vol / total_call_vol
+        # PCR > 1 = more puts = bearish = PE favoured (positive)
+        # PCR < 1 = more calls = bullish = CE favoured (negative)
+        oi_factor = pcr - 1.0
+        oi_factor = max(-1.0, min(1.0, oi_factor))
+
+    # Factor 2: Spot momentum
+    momentum_factor = 0.0
+    if spot_history and len(spot_history) >= 2:
+        recent = spot_history[0]
+        older = spot_history[min(len(spot_history) - 1, 9)]
+        if older > 0:
+            pct_change = (recent - older) / older * 100
+            # Falling = PE favoured (positive), Rising = CE favoured (negative)
+            momentum_factor = -pct_change * 10
+            momentum_factor = max(-1.0, min(1.0, momentum_factor))
+
+    # Factor 3: Price position relative to nearest strikes
+    position_factor = 0.0
+    if spot and rows:
+        strikes_below = [r.strike for r in rows if r.strike < spot]
+        strikes_above = [r.strike for r in rows if r.strike > spot]
+        if strikes_below and strikes_above:
+            support = max(strikes_below)
+            resistance = min(strikes_above)
+            rng = resistance - support
+            if rng > 0:
+                position = (spot - support) / rng
+                # Near resistance (1) = PE, near support (0) = CE
+                position_factor = (position - 0.5) * 2
+                position_factor = max(-1.0, min(1.0, position_factor))
+
+    # Weighted combination
+    composite = 0.40 * oi_factor + 0.35 * momentum_factor + 0.25 * position_factor
+
+    # Always return a side — even weak bias is better than no bias
+    side = Side.PE if composite >= 0 else Side.CE
+    logger.debug("Multi-factor bias: oi=%.3f mom=%.3f pos=%.3f → %s (%.4f)",
+                  oi_factor, momentum_factor, position_factor, side.value, composite)
+    return side, round(composite, 4), None, None

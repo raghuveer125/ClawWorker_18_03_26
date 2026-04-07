@@ -13,14 +13,14 @@ instrument:
 
 # --- Premium Band ---
 premium_band:
-  min: 2.10
-  max: 8.50
+  min: 0.30                       # lowered: expiry-day OTM premiums are Rs 0.40-3.75
+  max: 15.00
   fit_mode: "DISTANCE"            # BINARY | DISTANCE
 
 # --- OTM Distance ---
 otm_distance:
-  min_points: 250
-  max_points: 450
+  min_points: 150                  # tightened: was 250, now allows closer strikes
+  max_points: 400                  # tightened: was 450, prevents ultra-deep OTM
 
 # --- Trigger Zones ---
 triggers:
@@ -32,11 +32,13 @@ triggers:
 
 # --- Scoring Weights ---
 scoring:
-  w1_distance: 1.0
-  w2_momentum: 1.0
+  w1_distance: 0.5                 # reduced: distance already filtered by otm_min/max
+  w2_momentum: 1.5                 # increased: momentum is primary edge on expiry day
   w3_liquidity: 1.0
-  w4_band_fit: 1.0
-  w5_bias: 1.0
+  w4_band_fit: 2.0                 # increased: band-center candidates preferred
+  w5_bias: 0.5                     # reduced: bias uses stale session decay
+  w6_roc: 0.5                      # 1-min premium rate-of-change
+  w_spread_penalty: 0.5            # spread penalty (subtracted from score)
   tie_epsilon: 0.01
   min_valid_candidates: 1
 
@@ -98,15 +100,15 @@ execution:
 
 # --- Exit Rules ---
 exit_rules:
-  sl_ratio: 0.5                   # SL = sl_ratio * entry_price
+  sl_ratio: 0.60                  # 40% max loss — best backtested: cuts worst losers, lets winners reach time stop
   t1_ratio: 2.0                   # T1 = t1_ratio * entry_price
   t2_ratio: 3.0
   t3_ratio: 4.0
-  time_stop_minutes: 0            # 0 = disabled
+  time_stop_minutes: 5             # exit after 5 min (best strategy from backtest)
   eod_exit: true                  # mandatory square-off at session end
-  trailing_stop: false
-  trailing_stop_pct: 0.0
-  invalidation_exit: true         # exit if trigger reverses
+  trailing_stop: true
+  trailing_stop_pct: 30.0             # protect 70% of peak premium gain
+  invalidation_exit: false        # disabled: causes whipsaw exits on choppy days
 
 # --- Time Filters ---
 time_filters:
@@ -138,17 +140,17 @@ hysteresis:
 tradability:
   require_bid: true               # bid must be > 0
   require_ask: true               # ask must be > 0
-  min_bid_qty: 50                 # minimum bid quantity
-  min_ask_qty: 50                 # minimum ask quantity
+  min_bid_qty: 0                  # FYERS option chain API does not provide depth qty
+  min_ask_qty: 0                  # FYERS option chain API does not provide depth qty
   min_recent_volume: 500          # minimum volume on the specific strike
-  max_spread_pct: 10.0            # max spread % for candidate acceptance
+  max_spread_pct: 8.0             # max spread % for candidate acceptance (tightened from 10%)
   max_last_trade_age_seconds: 0   # 0 = disabled (FYERS field unreliable)
 
 # --- Breakout Confirmation ---
 confirmation:
   mode: "QUORUM"                  # CANDLE | PREMIUM | HYBRID | QUORUM | DISABLED
-  quorum: 2                       # min checks to pass in QUORUM mode
-  hold_duration_seconds: 15.0     # min seconds spot must hold beyond trigger
+  quorum: 1                       # reduced from 2: hold_duration alone is sufficient
+  hold_duration_seconds: 10.0     # reduced from 15s: faster entry on confirmed breakout
   premium_expansion_min_pct: 5.0  # min % premium increase since candidate found
   volume_spike_multiplier: 1.5    # current vol > avg * multiplier
   spread_widen_max_pct: 20.0      # max % spread can widen during confirmation
